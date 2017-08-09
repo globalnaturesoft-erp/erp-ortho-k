@@ -1,0 +1,385 @@
+@charset "utf-8";
+/* CSS Document */
+body, html {
+	height: 100%;
+	width: 100%;
+}
+body {
+	color: 1A1A1A;
+	font-family: 'Montserrat', sans-serif;
+	line-height: 1.5;
+}
+img {
+	max-width: 100%;
+	border: none;
+}
+.main-section {
+	padding: 15px;
+	height: 100vh;
+	background-color: #FEA921;
+	min-height: 100%;
+	height: 100%;
+}
+.wrapper {
+	background-color: #fff;
+	height: 100%;
+}
+/*start header section css*/
+.header-section {
+	padding: 10px 15px;
+	position: relative;
+}
+.header-section .logo {
+	float: left;
+}
+.header-section .nav {
+	float: right;
+	position: relative;
+	margin-right: 15px;
+}
+.header-section .nav li {
+	display: inline-block;
+	margin: 0 15px;
+}
+.header-section .nav li > a {
+	background-color: transparent;
+	border: 0 solid;
+	height: 35px;
+	line-height: 35px;
+	padding: 0;
+	top: 45px;
+	width: 35px;
+	text-align: center;
+	color: #fff;
+}
+.header-section .nav li > a:before {
+	background-color: #FEA921;
+	border-radius: 3px;
+	content: "";
+	height: 100%;
+	left: 0;
+	position: absolute;
+	top: 0;
+	-moz-transform: rotate(45deg);
+	-webkit-transform: rotate(45deg);
+	-o-transform: rotate(45deg);
+	-ms-transform: rotate(45deg);
+	transform: rotate(45deg);
+	width: 100%;
+	border: 1px solid #1A1A1A;
+	-webkit-transition: all 0.5s ease;
+	-moz-transition: all 0.5s ease;
+	-ms-transition: all 0.5s ease;
+	-o-transition: all 0.5s ease;
+	transition: all 0.5s ease;
+}
+.header-section .nav li:hover a:before {
+	background-color: #1A1A1A;
+}
+.header-section .nav li > a::after {
+	background-color: #1A1A1A;
+	content: "";
+	height: 50px;
+	left: 49.5%;
+	position: absolute;
+	top: -55px;
+	width: 1px;
+}
+.header-section .nav li > a i {
+	position: relative;
+	z-index: 3;
+}
+/* End header section css */
+
+
+/* Start Main content section css */
+.main-content-section {
+	padding: 100px 0 0 0;
+}
+.coming-soon-content {
+	padding: 80px 0;
+	text-align: center;
+}
+/* Start SVG Animation css */
+.animation-wrapper {
+	position: relative;
+	width: 100%;
+}
+.gear-animation {
+	-webkit-animation-name: spinsettings;
+	animation-name: spinsettings;
+	-webkit-animation-iteration-count: infinite;
+	animation-iteration-count: infinite;
+	-webkit-animation-duration: 10s;
+	animation-duration: 10s;
+	animation-timing-function: linear;
+	-webkit-animation-timing-function: linear;
+	position: absolute;
+	top: 40px;
+	left: 80px;
+}
+.gear-animation {
+	-webkit-transform-origin: 50% 50%;
+	transform-origin: 50% 50%;
+}
+.coming-soon-animated {
+	position: absolute;
+	top: 68px;
+	left: 140px;
+}
+@-webkit-keyframes spinsettings {
+ 0% {
+transform: rotate(0);
+-webkit-transform: rotate(0);
+}
+ 100% {
+transform: rotate(360deg);
+-webkit-transform: rotate(360deg);
+}
+}
+@keyframes spinsettings {
+ 0% {
+transform: rotate(0);
+-webkit-transform: rotate(0);
+}
+ 100% {
+transform: rotate(360deg);
+-webkit-transform: rotate(360deg);
+}
+}
+@-webkit-keyframes shake {
+ from, to {
+ transform: translate3d(0, 0, 0);
+ -webkit-transform: translate3d(0, 0, 0);
+}
+ 10%, 30%, 50%, 70%, 90% {
+ transform: translate3d(-10px, 0, 0);
+ -webkit-transform: translate3d(-10px, 0, 0);
+}
+ 20%, 40%, 60%, 80% {
+ transform: translate3d(10px, 0, 0);
+ -webkit-transform: translate3d(10px, 0, 0);
+}
+}
+ @keyframes shake {
+ from, to {
+ transform: translate3d(0, 0, 0);
+ -webkit-transform: translate3d(0, 0, 0);
+}
+ 10%, 30%, 50%, 70%, 90% {
+ transform: translate3d(-10px, 0, 0);
+ -webkit-transform: translate3d(-10px, 0, 0);
+}
+ 20%, 40%, 60%, 80% {
+ transform: translate3d(10px, 0, 0);
+ -webkit-transform: translate3d(10px, 0, 0);
+}
+}
+.animated {
+	animation-duration: 15s;
+	-webkit-animation-duration: 15s;
+	animation-fill-mode: both;
+	-webkit-animation-fill-mode: both;
+}
+.animated.infinite {
+	animation-iteration-count: infinite;
+	-webkit-animation-iteration-count: infinite;
+}
+.shake {
+	animation-name: shake;
+	-webkit-animation-name: shake;
+}
+/* End SVG Animation css */
+
+/* Start countdown timer css */
+.countdown-alt-2 {
+	display: block;
+	overflow: auto;
+	padding: 20px 0;
+	margin: 30px 0;
+	font-family: 'Montserrat', sans-serif;
+	color: #333;
+	text-align: center;
+}
+.countdown-alt-2 .item {
+	display: inline-block;
+	position: relative;
+	font-size: 22px;
+	font-weight: bold;
+	margin: 0 20px;
+	width: 70px;
+	height: 70px;
+	text-align: center;
+}
+.countdown-alt-2 .item span {
+	margin-top: 9px;
+	display: inline-block;
+	color: #fff;
+	position: relative;
+}
+.countdown-alt-2 .item:before {
+	-moz-transform: rotate(45deg);
+	-webkit-transform: rotate(45deg);
+	-o-transform: rotate(45deg);
+	-ms-transform: rotate(45deg);
+	transform: rotate(45deg);
+	border: 1px solid #1A1A1A;
+	position: absolute;
+	content: "";
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	background: #FEA921;
+	border-radius: 3px;
+}
+.countdown-alt-2 .label {
+	font-weight: normal;
+	position: absolute;
+	bottom: 16px;
+	left: 0;
+	font-size: 12px;
+	width: 100%;
+	padding: 5px 10px;
+	color: #FEA921;
+}
+/* End countdown timer css */
+
+/* Start Newsletter-modal css */
+.main-section .modal-content {
+	padding: 15px 15px 50px 15px;
+	text-align: center;
+}
+.main-section .modal-header {
+	border: none;
+	padding: 0px;
+}
+.main-section .modal-header .close {
+	font-size: 30px;
+}
+.main-section .modal-content h2 {
+	margin: 20px 0px;
+}
+.main-section .modal-content p {
+	padding: 0px 80px;
+	line-height: 2em;
+	margin: 10px 0px;
+}
+.subscribe-form {
+	display: inline-block;
+	padding-top: 40px;
+}
+.subscribe-form input {
+	border: medium none;
+	border-radius: 3px;
+	box-sizing: border-box;
+	display: block;
+	font-family: 'Montserrat', sans-serif;
+	font-size: 14px;
+	height: 55px;
+	margin: 0;
+	padding: 0 20px;
+	width: 300px;
+	background-color: #eee;
+	margin-bottom: 30px;
+	text-align: center;
+}
+.subscribe-form .button-subscribe {
+	cursor: pointer;
+	font-size: 14px;
+	letter-spacing: 0.1em;
+	margin-bottom: 30px;
+	text-transform: uppercase;
+	background-color: rgb(254, 169, 33, 1);
+	color: #fff;
+	padding: 0 20px;
+	width: 300px;
+	height: 55px;
+	border: medium none;
+	font-family: 'Montserrat', sans-serif;
+	border-radius: 3px;
+	margin-bottom: 30px;
+	-webkit-transition: all 0.5s ease;
+	-moz-transition: all 0.5s ease;
+	-ms-transition: all 0.5s ease;
+	-o-transition: all 0.5s ease;
+	transition: all 0.5s ease;
+}
+.subscribe-form .button-subscribe:hover {
+	background-color: rgb(254, 169, 33, 0.7);
+}
+/* End Newsletter-modal css */
+
+/* Start Contact-modal css */
+.main-section .contact-modal .contact-row {
+	margin-top: 30px;
+}
+.main-section .contact-modal i {
+	font-size: 24px;
+}
+.main-section .contact-modal h3 {
+	font-size: 20px;
+}
+.main-section .contact-modal .contact-row p {
+	padding: 0px;
+}
+/* End Contact-modal css */
+
+/* Start Info-modal css */
+.social-icon {
+	list-style: none;
+	padding: 0px;
+	margin: 30px 0px;
+}
+.social-icon li {
+	display: inline-block;
+	position: relative;
+	margin: 0px 15px;
+}
+.social-icon li > a::before {
+	background-color: #fea921;
+	border-radius: 3px;
+	content: "";
+	height: 100%;
+	left: 0;
+	position: absolute;
+	top: 0;
+	transform: rotate(45deg);
+	transition: all 0.5s ease 0s;
+	width: 100%;
+}
+.social-icon li > a {
+	background-color: transparent;
+	border: 0 solid;
+	color: #fff;
+	height: 35px;
+	line-height: 35px;
+	padding: 0;
+	text-align: center;
+	top: 45px;
+	width: 35px;
+	display: block;
+}
+.social-icon li > a i {
+	position: relative;
+}
+.social-icon li.facebook a::before {
+	background-color: #3B5998;
+}
+.social-icon li.twitter a::before {
+	background-color: #55ACEE;
+}
+.social-icon li.linkedin a::before {
+	background-color: #0E76A8;
+}
+.social-icon li.pinterest a::before {
+	background-color: #CB2027;
+}
+.social-icon li.google-plus a::before {
+	background-color: #FF1D25;
+}
+
+/* End Info-modal css */
+
+
+

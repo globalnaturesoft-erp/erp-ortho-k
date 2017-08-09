@@ -1,0 +1,53 @@
+<div class="page-sidebar-wrapper">
+    <!-- BEGIN SIDEBAR -->
+    <!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
+    <!-- DOC: Change data-auto-speed="200" to adjust the sub menu slide up/down speed -->
+    <div class="page-sidebar navbar-collapse collapse">
+        <!-- END SIDEBAR MENU -->
+        <div class="page-sidebar-wrapper">
+            <!-- BEGIN RESPONSIVE MENU FOR HORIZONTAL & SIDEBAR MENU -->
+            <ul class="page-sidebar-menu page-header-fixed" data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200" style="padding-top: 20px">
+                <!-- DOC: To remove the search box from the sidebar you just need to completely remove the below "sidebar-search-wrapper" LI element -->
+                <!-- BEGIN SIDEBAR TOGGLER BUTTON -->
+                <li class="sidebar-toggler-wrapper hide">
+                    <div class="sidebar-toggler">
+                        <span></span>
+                    </div>
+                </li>
+                <!-- END SIDEBAR TOGGLER BUTTON -->
+                <!-- DOC: This is mobile version of the horizontal menu. The desktop version is defined(duplicated) in the header above -->
+                <!-- DOC: To remove the search box from the sidebar you just need to completely remove the below "sidebar-search-wrapper" LI element -->
+                <li class="nav-item start ">
+                    <a href="<%= erp.backend_path %>" class="nav-link nav-toggle">
+                        <i class="icon-home"></i>
+                        <span class="title">Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item <%= "active open" if ["erp/backend/users"].include?(params[:controller]) %>">
+                    <a href="javascript:;" class="nav-link nav-toggle">
+                        <i class="fa fa-users"></i>
+                        <span class="title"><%= t('.user') %></span>
+                        <% if ["erp/backend/users"].include?(params[:controller]) %>
+                            <span class="selected"></span>
+                            <span class="arrow open"></span>
+                        <% else %>
+                            <span class="arrow"></span>
+                        <% end %>
+                    </a>
+                    <ul class="sub-menu">
+                        <li class="nav-item <%= "active open" if ["erp/backend/users"].include?(params[:controller]) %>">
+                            <a href="<%= erp.backend_users_path %>" class="nav-link ">
+                                <span class="title"><%= t('.users') %></span>
+                                <% if ["erp/backend/contacts"].include?(params[:controller]) %>
+                                <span class="selected"></span>
+                                <% end %>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            <!-- END RESPONSIVE MENU FOR HORIZONTAL & SIDEBAR MENU -->
+        </div>
+    </div>
+    <!-- END SIDEBAR -->
+</div>
