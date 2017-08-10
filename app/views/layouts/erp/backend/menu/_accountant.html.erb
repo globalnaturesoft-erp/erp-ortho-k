@@ -1,6 +1,8 @@
-<li class="nav-item <%= "active open" if ["erp/payments/backend/accounts"].include?(params[:controller]) %>">
+<li class="nav-item <%= "active open" if ["erp/payments/backend/accounts",
+                                          "erp/payments/backend/payment_records"
+                                          ].include?(params[:controller]) %>">
   <a href="javascript:;" class="nav-link nav-toggle">
-      <i class="fa fa-credit-card"></i>
+      <i class="icon-calendar"></i>
       <span class="title"><%= t('.accountant') %></span>
       <% if ["erp/payments/backend/accounts"].include?(params[:controller]) %>
           <span class="selected"></span>
@@ -11,12 +13,12 @@
   </a>
   <ul class="sub-menu">
       <li class="nav-item ">
-          <a href="" class="nav-link ">
+          <a href="javascript:;" class="nav-link ">
               <span class="title"><%= t('.invoice_for_sales') %></span>
           </a>
       </li>
       <li class="nav-item ">
-          <a href="" class="nav-link ">
+          <a href="javascript:;" class="nav-link ">
               <span class="title"><%= t('.purchase_invoice') %></span>
           </a>
       </li>
@@ -28,28 +30,28 @@
               <% end %>
           </a>
       </li>
-      <li class="nav-item ">
-          <a href="" class="nav-link ">
+      <li class="nav-item <%= "active open" if ["erp/payments/backend/payment_records"].include?(params[:controller]) %>">
+          <a href="<%= erp_payments.backend_payment_records_path %>" class="nav-link ">
               <span class="title"><%= t('.cash_book') %></span>
           </a>
       </li>
       <li class="nav-item ">
-          <a href="" class="nav-link ">
+          <a href="javascript:;" class="nav-link ">
               <span class="title"><%= t('.tracking_customer') %></span>
           </a>
       </li>
       <li class="nav-item ">
-          <a href="" class="nav-link ">
+          <a href="javascript:;" class="nav-link ">
               <span class="title"><%= t('.sales_statistics') %></span>
           </a>
       </li>
       <li class="nav-item ">
-          <a href="" class="nav-link ">
+          <a href="javascript:;" class="nav-link ">
               <span class="title"><%= t('.discounts') %></span>
           </a>
       </li>
       <li class="nav-item ">
-          <a href="" class="nav-link ">
+          <a href="javascript:;" class="nav-link ">
               <span class="title"><%= t('.commissions') %></span>
           </a>
       </li>

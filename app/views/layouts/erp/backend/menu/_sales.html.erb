@@ -1,17 +1,22 @@
-<li class="nav-item">
+<li class="nav-item <%= "active open" if ["erp/sales/backend/sales"].include?(params[:controller]) %>">
     <a href="javascript:;" class="nav-link nav-toggle">
-        <i class="fa fa-line-chart"></i>
+        <i class="icon-pie-chart"></i>
         <span class="title"><%= t('.sales') %></span>
-        <span class="arrow"></span>
+        <% if ["erp/sales/backend/sales"].include?(params[:controller]) %>
+            <span class="selected"></span>
+            <span class="arrow open"></span>
+        <% else %>
+            <span class="arrow"></span>
+        <% end %>
     </a>
     <ul class="sub-menu">
         <li class="nav-item ">
-            <a href="" class="nav-link ">
+            <a href="<%= erp_sales.backend_sales_orders_path %>" class="nav-link ">
                 <span class="title"><%= t('.sales_orders') %></span>
             </a>
         </li>
         <li class="nav-item ">
-            <a href="" class="nav-link ">
+            <a href="javascript:;" class="nav-link ">
                 <span class="title"><%= t('.sales_history') %></span>
             </a>
         </li>        

@@ -1,22 +1,27 @@
-<li class="nav-item">
+<li class="nav-item <%= "active open" if ["erp/purchase/backend/purchases"].include?(params[:controller]) %>">
     <a href="javascript:;" class="nav-link nav-toggle">
-        <i class="fa fa-cart-arrow-down"></i>
+        <i class="icon-basket"></i>
         <span class="title"><%= t('.purchases') %></span>
-        <span class="arrow"></span>
+        <% if ["erp/purchase/backend/purchases"].include?(params[:controller]) %>
+            <span class="selected"></span>
+            <span class="arrow open"></span>
+        <% else %>
+            <span class="arrow"></span>
+        <% end %>
     </a>
     <ul class="sub-menu">
         <li class="nav-item ">
-            <a href="" class="nav-link ">
+            <a href="<%= erp_purchase.backend_purchase_orders_path %>" class="nav-link ">
                 <span class="title"><%= t('.purchase_orders') %></span>
             </a>
         </li>
         <li class="nav-item ">
-            <a href="" class="nav-link ">
+            <a href="javascript:;" class="nav-link ">
                 <span class="title"><%= t('.manufacturers') %></span>
             </a>
         </li>
         <li class="nav-item ">
-            <a href="" class="nav-link ">
+            <a href="javascript:;" class="nav-link ">
                 <span class="title"><%= t('.purchase_statistics') %></span>
             </a>
         </li>
