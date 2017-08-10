@@ -1,0 +1,57 @@
+<li class="nav-item <%= "active open" if ["erp/payments/backend/accounts"].include?(params[:controller]) %>">
+  <a href="javascript:;" class="nav-link nav-toggle">
+      <i class="fa fa-th"></i>
+      <span class="title"><%= t('.accountant') %></span>
+      <% if ["erp/payments/backend/accounts"].include?(params[:controller]) %>
+          <span class="selected"></span>
+          <span class="arrow open"></span>
+      <% else %>
+          <span class="arrow"></span>
+      <% end %>
+  </a>
+  <ul class="sub-menu">
+      <li class="nav-item ">
+          <a href="" class="nav-link ">
+              <span class="title"><%= t('.invoice_for_sales') %></span>
+          </a>
+      </li>
+      <li class="nav-item ">
+          <a href="" class="nav-link ">
+              <span class="title"><%= t('.purchase_invoice') %></span>
+          </a>
+      </li>
+      <li class="nav-item <%= "active open" if ["erp/payments/backend/accounts"].include?(params[:controller]) %>">
+          <a href="<%= erp_payments.backend_accounts_path %>" class="nav-link ">
+              <span class="title"><%= t('.accounts') %></span>
+              <% if ["erp/payments/backend/accounts"].include?(params[:controller]) %>
+              <span class="selected"></span>
+              <% end %>
+          </a>
+      </li>
+      <li class="nav-item ">
+          <a href="" class="nav-link ">
+              <span class="title"><%= t('.cash_book') %></span>
+          </a>
+      </li>
+      <li class="nav-item ">
+          <a href="" class="nav-link ">
+              <span class="title"><%= t('.tracking_customer') %></span>
+          </a>
+      </li>
+      <li class="nav-item ">
+          <a href="" class="nav-link ">
+              <span class="title"><%= t('.sales_statistics') %></span>
+          </a>
+      </li>
+      <li class="nav-item ">
+          <a href="" class="nav-link ">
+              <span class="title"><%= t('.discounts') %></span>
+          </a>
+      </li>
+      <li class="nav-item ">
+          <a href="" class="nav-link ">
+              <span class="title"><%= t('.commissions') %></span>
+          </a>
+      </li>
+  </ul>
+</li>

@@ -1,0 +1,98 @@
+<li class="nav-item <%= "active open" if ["erp/deliveries/backend/deliveries",
+                                          "erp/products/backend/products",
+                                          "erp/products/backend/categories",
+                                          "erp/products/backend/brands"].include?(params[:controller]) %>">
+    <a href="javascript:;" class="nav-link nav-toggle">
+        <i class="fa fa-th"></i>
+        <span class="title"><%= t('.inventory') %></span>
+        <% if ["erp/deliveries/backend/deliveries",
+               "erp/products/backend/products",
+               "erp/products/backend/categories",
+               "erp/products/backend/brands"].include?(params[:controller]) %>
+            <span class="selected"></span>
+            <span class="arrow open"></span>
+        <% else %>
+            <span class="arrow"></span>
+        <% end %>
+    </a>
+    <ul class="sub-menu">
+        <li class="nav-item ">
+            <a href="" class="nav-link ">
+                <span class="title"><%= t('.sales_deliveries') %></span>
+            </a>
+        </li>
+        <li class="nav-item ">
+            <a href="" class="nav-link ">
+                <span class="title"><%= t('.purchase_deliveries') %></span>
+            </a>
+        </li>
+        <li class="nav-item <%= "active open" if ["erp/products/backend/products"].include?(params[:controller]) %>">
+            <a href="<%= erp_products.backend_products_path %>" class="nav-link ">
+                <span class="title"><%= t('.products') %></span>
+                <% if ["erp/products/backend/products"].include?(params[:controller]) %>
+                <span class="selected"></span>
+                <% end %>
+            </a>
+        </li>
+        <li class="nav-item <%= "active open" if ["erp/products/backend/properties"].include?(params[:controller]) %>">
+            <a href="<%= erp_products.backend_properties_path %>" class="nav-link ">
+                <span class="title"><%= t('.properties') %></span>
+                <% if ["erp/products/backend/properties"].include?(params[:controller]) %>
+                <span class="selected"></span>
+                <% end %>
+            </a>
+        </li>
+        <li class="nav-item <%= "active open" if ["erp/products/backend/categories"].include?(params[:controller]) %>">
+            <a href="<%= erp_products.backend_categories_path %>" class="nav-link ">
+                <span class="title"><%= t('.categories') %></span>
+                <% if ["erp/products/backend/categories"].include?(params[:controller]) %>
+                <span class="selected"></span>
+                <% end %>
+            </a>
+        </li>
+        <li class="nav-item <%= "active open" if ["erp/products/backend/brands"].include?(params[:controller]) %>">
+            <a href="<%= erp_products.backend_brands_path %>" class="nav-link ">
+                <span class="title"><%= t('.brands') %></span>
+                <% if ["erp/products/backend/brands"].include?(params[:controller]) %>
+                <span class="selected"></span>
+                <% end %>
+            </a>
+        </li>
+        <li class="nav-item <%= "active open" if ["erp/warehouses/backend/warehouses"].include?(params[:controller]) %>">
+            <a href="<%= erp_warehouses.backend_warehouses_path %>" class="nav-link ">
+                <span class="title"><%= t('.warehouses') %></span>
+                <% if ["erp/warehouses/backend/warehouses"].include?(params[:controller]) %>
+                <span class="selected"></span>
+                <% end %>
+            </a>
+        </li>
+        <li class="nav-item <%= "active open" if ["erp/stock_transfers/backend/transfers"].include?(params[:controller]) %>">
+            <a href="<%= erp_stock_transfers.backend_transfers_path %>" class="nav-link ">
+                <span class="title"><%= t('.stock_transfers') %></span>
+                <% if ["erp/stock_transfers/backend/transfers"].include?(params[:controller]) %>
+                <span class="selected"></span>
+                <% end %>
+            </a>
+        </li>
+        <li class="nav-item ">
+            <a href="" class="nav-link ">
+                <span class="title"><%= t('.inventory_report') %></span>
+            </a>
+        </li>
+        <li class="nav-item ">
+            <a href="" class="nav-link ">
+                <span class="title"><%= t('.output_input_report') %></span>
+            </a>
+        </li>
+        <li class="nav-item ">
+            <a href="" class="nav-link ">
+                <span class="title"><%= t('.smashed_report') %></span>
+            </a>
+        </li>
+        <li class="nav-item ">
+            <a href="" class="nav-link ">
+                <span class="title"><%= t('.scratched_report') %></span>
+            </a>
+        </li> 
+    </ul>
+</li>

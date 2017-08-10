@@ -23,28 +23,12 @@
                         <span class="title">Dashboard</span>
                     </a>
                 </li>
-                <li class="nav-item <%= "active open" if ["erp/backend/users"].include?(params[:controller]) %>">
-                    <a href="javascript:;" class="nav-link nav-toggle">
-                        <i class="fa fa-users"></i>
-                        <span class="title"><%= t('.user') %></span>
-                        <% if ["erp/backend/users"].include?(params[:controller]) %>
-                            <span class="selected"></span>
-                            <span class="arrow open"></span>
-                        <% else %>
-                            <span class="arrow"></span>
-                        <% end %>
-                    </a>
-                    <ul class="sub-menu">
-                        <li class="nav-item <%= "active open" if ["erp/backend/users"].include?(params[:controller]) %>">
-                            <a href="<%= erp.backend_users_path %>" class="nav-link ">
-                                <span class="title"><%= t('.users') %></span>
-                                <% if ["erp/backend/contacts"].include?(params[:controller]) %>
-                                <span class="selected"></span>
-                                <% end %>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
+                <%= render "layouts/erp/backend/menu/sales" %>
+                <%= render "layouts/erp/backend/menu/purchases" %>
+                <%= render "layouts/erp/backend/menu/inventory" %>
+                <%= render "layouts/erp/backend/menu/accountant" %>
+                <%= render "layouts/erp/backend/menu/system" %>
+                <%= render "layouts/erp/backend/menu/support" %>
             </ul>
             <!-- END RESPONSIVE MENU FOR HORIZONTAL & SIDEBAR MENU -->
         </div>
