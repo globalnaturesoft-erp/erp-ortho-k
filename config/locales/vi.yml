@@ -14,7 +14,7 @@ vi:
             purchases: "Nhập hàng"
             purchase_orders: "Đơn nhập hàng"
             manufacturers: "Nhà cung cấp"
-            purchase_statistics: "Thống kê mua hàng"
+            purchase_statistics: "Thống kê nhập hàng"
           accountant:
             accountant: "Kế toán"
             invoice_for_sales: "Hóa đơn bán hàng"
