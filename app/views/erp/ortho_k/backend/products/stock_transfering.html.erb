@@ -1,0 +1,129 @@
+<% content_for :title do %>
+    <%= t('.stock_transfering') %>
+<% end %>
+
+<% content_for :page_title do %>
+    <i class="fa fa-archive"></i> <%= t('.stock_transfering') %>
+<% end %>
+
+<% content_for :global_filter do %>
+    <div class="row">
+        <div class="col-md-3">
+            <%= erp_form_control("dataselect", {
+                name: 'from_warehouse',
+                value: '',
+                text: '',
+                label: t('.from_warehouse'),
+                placeholder: t('.choose_from_warehouse'),
+                url: erp_warehouses.dataselect_backend_warehouses_path(format: 'json'),
+                required: true
+            }) %>
+        </div>
+        <div class="col-md-3">
+            <%= erp_form_control("dataselect", {
+                name: 'to_warehouse',
+                value: '',
+                text: '',
+                label: t('.to_warehouse'),
+                placeholder: t('.choose_to_warehouse'),
+                url: erp_warehouses.dataselect_backend_warehouses_path(format: 'json'),
+                required: true
+            }) %>
+        </div>
+        <div class="col-md-3">
+            <%= erp_form_control("dataselect", {
+                name: 'category',
+                value: '',
+                text: '',
+                multiple: true,
+                label: t('.category'),
+                placeholder: t('.all_categories'),
+                url: erp_products.dataselect_backend_categories_path(format: 'json'),
+            }) %>
+        </div>
+        <div class="col-md-3">
+            <% diameter = Erp::Products::Property.where(name: "Đường kính").first %>
+            <%= erp_form_control("select", {
+                name: 'diameter',
+                value: '',
+                text: '',
+                multiple: true,
+                label: Erp::Products::Property.where(name: "Đường kính").first().name,
+                options: (diameter.properties_values.map {|ppv| {value: ppv.id, text: ppv.value}}),
+                placeholder: t('.all_diameters'),
+            }) %>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <%= erp_form_control("select", {
+                name: 'condition',
+                value: '1',
+                text: '',
+                label: t('.condition'),
+                placeholder: t('.choose_condition'),
+                options: [
+                    {text: 'Kho xuất dư hàng', value: 'from_redundant'},
+                    {text: 'Kho nhập thiếu hàng', value: 'to_required'},
+                ],
+                required: true
+            }) %>
+        </div>
+        <div class="col-md-3">
+            <%= erp_form_control("text", {
+                name: 'condition_value',
+                value: '1',
+                text: '',
+                label: t('.condition_value'),
+                placeholder: t('.choose_condition_value'),
+                required: true
+            }) %>
+        </div>
+        <div class="col-md-3">
+            <%= erp_form_control("text", {
+                name: 'transfer_quantity',
+                value: '1',
+                text: '',
+                label: t('.transfer_quantity'),
+                placeholder: t('.choose_transfer_quantity'),
+                required: true
+            }) %>
+        </div>
+        <div class="col-md-3">
+            <label class="invisible">.</label><br>
+            <%= erp_component('button/primary', {
+                text: t('.create_stock_transfer')
+            }) %>
+        </div>
+    </div>
+<% end %>
+
+<%= erp_datalist(
+    url: erp_ortho_k.stock_transfering_table_backend_products_path,
+    sortable: true,
+    keywords: [
+        {
+            text: t('.name'), name: 'erp_products_products.name'
+        },
+    ],
+    filters: [
+        {
+            text: t('.show_virtual'), name: 'show_virtual', value: true, checked: false
+        },
+        {
+            divider: true
+        },
+        {
+            text: t('.state_normal'), name: 'state_normal', value: true, checked: true
+        },
+        {
+            text: t('.state_scratched'), name: 'state_scratched', value: true, checked: false
+        },
+        {
+            text: t('.state_broken'), name: 'state_broken', value: true, checked: false
+        },
+    ],
+    columns: [
+    ],
+    header: 'dddddd'
+) %>

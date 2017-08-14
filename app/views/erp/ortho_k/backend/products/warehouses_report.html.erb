@@ -1,0 +1,99 @@
+<% content_for :title do %>
+    <%= t('.warehouses_report') %>
+<% end %>
+
+<% content_for :page_title do %>
+    <i class="fa fa-archive"></i> <%= t('.warehouses_report') %>
+<% end %>
+
+<% content_for :global_filter do %>
+    <div class="row">
+        <div class="col-md-3">
+            <%= erp_form_control('date', {
+                label: t('.from_date'),
+                name: 'from_date',
+                placeholder: t('.select_from_date')
+            }) %>
+        </div>
+        <div class="col-md-3">
+            <%= erp_form_control('date', {
+                label: t('.to_date'),
+                name: 'to_date',
+                placeholder: t('.select_to_date')
+            }) %>
+        </div>
+        <div class="col-md-3">
+            <%= erp_form_control("dataselect", {
+                name: 'category',
+                value: '',
+                text: '',
+                label: t('.category'),
+                placeholder: t('.choose_category'),
+                url: erp_products.dataselect_backend_categories_path(format: 'json'),
+            }) %>
+        </div>
+        <div class="col-md-3">
+            <%= erp_form_control("dataselect", {
+                name: 'warehouse',
+                value: '',
+                text: '',
+                label: t('.warehouse'),
+                placeholder: t('.choose_warehouse'),
+                url: erp_warehouses.dataselect_backend_warehouses_path(format: 'json'),
+            }) %>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <%= erp_form_control("dataselect", {
+                name: 'group_by_category',
+                value: '',
+                text: '',
+                label: t('.group_by_category'),
+                placeholder: t('.choose_group_by_category'),
+                url: erp_products.dataselect_backend_categories_path(format: 'json'),
+                include_all: {text: t('.all_category'), value: 'all'},
+            }) %>
+        </div>
+        <div class="col-md-3">
+            <%= erp_form_control("dataselect", {
+                name: 'group_by_property',
+                value: '',
+                text: '',
+                label: t('.group_by_property'),
+                placeholder: t('.choose_group_by_property'),
+                url: erp_products.dataselect_backend_properties_path(format: 'json'),
+            }) %>
+        </div>
+    </div>
+<% end %>
+
+<%= erp_datalist(
+    url: erp_ortho_k.warehouses_report_table_backend_products_path,
+    sortable: true,
+    keywords: [
+        {
+            text: t('.name'), name: 'erp_products_products.name'
+        },
+    ],
+    filters: [
+        {
+            text: t('.show_virtual'), name: 'show_virtual', value: true, checked: false
+        },
+        {
+            divider: true
+        },
+        {
+            text: t('.state_normal'), name: 'state_normal', value: true, checked: true
+        },
+        {
+            text: t('.state_scratched'), name: 'state_scratched', value: true, checked: false
+        },
+        {
+            text: t('.state_broken'), name: 'state_broken', value: true, checked: false
+        },
+    ],
+    columns: [
+    ],
+    header: 'dddddd'
+) %>

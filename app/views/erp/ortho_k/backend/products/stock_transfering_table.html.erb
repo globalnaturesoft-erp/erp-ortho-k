@@ -1,0 +1,46 @@
+<% if @from_warehouse.present? and @to_warehouse.present? and @transfer_quantity.present? and @condition_value.present? %>
+    <table class="table table-bordered table-advance order-column" id="">
+        <tr>
+            <th class="bg-grey text-center" width="1%"><%= t('.number') %></th>
+            <th class="bg-grey"><%= t('.code') %></th>
+            <th class="bg-grey"><%= t('.name') %></th>
+            <th class="bg-grey text-center">Từ kho: <%= @from_warehouse.name %></th>
+            <th class="bg-grey text-center">Đến kho: <%= @to_warehouse.name %></th>
+            <th class="bg-grey text-center"><%= t('.transfer_quantity') %></th>
+        </tr>
+        <% @products.each_with_index do |product,index| %>
+            <%
+                if @condition == 'from_redundant'
+                    from = rand(@condition_value.to_i..(@condition_value.to_i+4))
+                    to = rand(0..2)
+                    transfer = @transfer_quantity
+                else
+                    to = rand(0..@condition_value.to_i)
+                    from = rand(1..6)
+                    transfer = from > @transfer_quantity.to_i ? @transfer_quantity.to_i : from
+                end
+            %>
+            <tr>
+                <td class="text-center"><%= index+1 %></td>
+                <td class=""><%= product.code %></td>
+                <td class=""><%= product.name %></td>
+                <td class="text-center">
+                    <%= from %>
+                </td>
+                <td class="text-center"><%= to %></td>
+                <td class="text-center bg-warning">
+                    <%= transfer %>
+                </td>
+            </tr>
+        <% end %>
+    </table>
+<% else %>
+    <div class="alert alert-warning">
+        <p>Vui lòng chọn các tham số bắt buộc:
+            <br>- <strong>Kho xuất</strong>
+            <br>- <strong>Kho nhập</strong>
+            <br>- <strong>Điều kiện, tham số chuyển kho</strong>
+            <br>- <strong>Số lượng chyuển</strong>
+        </p>
+    </div>
+<% end %>

@@ -1,0 +1,25 @@
+<table class="table table-bordered table-advance order-column" id="">
+    <tr>
+        <th class="bg-grey text-center" width="1%"><%= t('.number') %></th>
+        <th class="bg-grey"><%= t('.code') %></th>
+        <th class="bg-grey"><%= t('.name') %></th>
+        <th class="bg-grey text-center"><%= t('.stock') %></th>
+        <th class="bg-grey text-center"><%= t('.import_quantity') %></th>
+        <th class="bg-grey text-center"><%= t('.center_quantity') %></th>
+        <th class="bg-grey text-center"><%= t('.total_quantity') %></th>
+    </tr>
+    <% @products.each_with_index do |product,index| %>
+        <tr>
+            <td class="text-center"><%= index+1 %></td>
+            <td class=""><%= product.code %></td>
+            <td class=""><%= product.name %></td>
+            <td class="text-center">0</td>
+            <td class="text-center"><%= @import_quantity %></td>
+            <td class="text-center">
+                <% center = [0, @center_quantity].sample %>
+                <%= center %>
+            </td>
+            <td class="bg-warning text-center"><strong><%= center+@import_quantity %></strong></td>
+        </tr>
+    <% end %>
+</table>

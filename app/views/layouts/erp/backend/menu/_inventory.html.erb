@@ -43,7 +43,7 @@
             </a>
         </li>
         <li class="nav-item <%= "active open" if ["erp/products/backend/products"].include?(params[:controller]) %>">
-            <a href="<%= erp_products.stock_transfering_backend_products_path %>" class="nav-link ">
+            <a href="<%= erp_ortho_k.stock_transfering_backend_products_path %>" class="nav-link ">
                 <span class="title"><%= t('.stock_transfering') %></span>
                 <% if ["erp/products/backend/products"].include?(params[:controller]) %>
                 <span class="selected"></span>
@@ -75,12 +75,12 @@
             </a>
         </li>
         <li class="nav-item ">
-            <a href="<%= erp_products.matrix_report_backend_products_path %>" class="nav-link ">
+            <a href="<%= erp_ortho_k.matrix_report_backend_products_path %>" class="nav-link ">
                 <span class="title"><%= t('.inventory_report') %></span>
             </a>
         </li>
         <li class="nav-item ">
-            <a href="<%= erp_products.delivery_report_backend_products_path %>" class="nav-link ">
+            <a href="<%= erp_ortho_k.delivery_report_backend_products_path %>" class="nav-link ">
                 <span class="title"><%= t('.output_input_report') %></span>
             </a>
         </li>

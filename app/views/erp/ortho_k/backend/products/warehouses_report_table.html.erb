@@ -1,0 +1,106 @@
+<% col_width = 70/@warehouses.count %>
+<% if @group_by_category.nil? and @group_by_property.nil? %>
+    <table class="table table-bordered table-advance order-column" id="">
+        <tr>
+            <td class="text-right text-bold" colspan="2"><%= t('.total_row') %></td>
+            <% @warehouses.each_with_index do |warehouse,index| %>
+                <td class="text-center stock-num text-bold"><%= (50..1000).to_a.sample %></td>
+            <% end %>
+        </tr>
+        <tr>
+            <th class="bg-grey text-center"><%= t('.code') %></th>
+            <th class="bg-grey text-center"><%= t('.name') %></th>
+            <% @warehouses.each_with_index do |warehouse,index| %>
+                <th class="bg-grey text-center" width="<%= col_width %>%"><%= warehouse.name %></th>
+            <% end %>
+        </tr>
+        <% @products.each_with_index do |product,index| %>
+            <tr>
+                <td class="text-left">#<%= product.code %></td>
+                <td class="text-left"><%= product.name %></td>
+                <% @warehouses.each_with_index do |warehouse,index| %>
+                    <td class="text-center stock-num"><%= (0..5).to_a.sample %></td>
+                <% end %>
+            </tr>
+        <% end %>
+    </table>
+    <%= erp_datalist_pagination(@products) %>
+<% elsif @group_by_property.nil? %>
+    <table class="table table-bordered table-advance order-column" id="">
+        <tr>
+            <td class="text-right text-bold"><%= t('.total_row') %></td>
+            <% @warehouses.each_with_index do |warehouse,index| %>
+                <td class="text-center stock-num text-bold"><%= (50..1000).to_a.sample %></td>
+            <% end %>
+        </tr>
+        <tr>
+            <th class="bg-grey text-center"><%= t('.category') %></th>
+            <% @warehouses.each_with_index do |warehouse,index| %>
+                <th class="bg-grey text-center" width="<%= col_width %>%"><%= warehouse.name %></th>
+            <% end %>
+        </tr>
+        <% @categories.each_with_index do |category,index| %>
+            <tr>
+                <td class="text-left"><%= category.name %></td>
+                <% @warehouses.each_with_index do |warehouse,index| %>
+                    <td class="text-center stock-num"><%= (0..5).to_a.sample %></td>
+                <% end %>
+            </tr>
+        <% end %>
+    </table>
+<% elsif !@group_by_category.nil? %>
+    <table class="table table-bordered table-advance order-column" id="">
+        <tr>
+            <td class="text-right text-bold" colspan="2"><%= t('.total_row') %></td>
+            <% @warehouses.each_with_index do |warehouse,index| %>
+                <td class="text-center stock-num text-bold"><%= (50..1000).to_a.sample %></td>
+            <% end %>
+        </tr>
+        <tr>
+            <th class="bg-grey text-center"><%= t('.category') %></th>
+            <th class="bg-grey text-center"><%= t('.property') %></th>
+            <% @warehouses.each_with_index do |warehouse,index| %>
+                <th class="bg-grey text-center" width="<%= col_width %>%"><%= warehouse.name %></th>
+            <% end %>
+        </tr>
+        <% @categories.each_with_index do |category,index| %>
+            <% rowspan = @properties_values.count %>
+            <% @properties_values.each_with_index do |property_value,index| %>
+                <tr>
+                    <% if index == 0 %>
+                        <td class="text-left text-bold" rowspan="<%= rowspan %>"><%= category.name %></td>
+                    <% end %>
+                    <td class="text-left"><%= property_value.value %></td>
+                    <% @warehouses.each_with_index do |warehouse,index| %>
+                        <td class="text-center stock-num"><%= (0..5).to_a.sample %></td>
+                    <% end %>
+                </tr>
+            <% end %>
+        <% end %>
+    </table>
+<% else %>
+    <table class="table table-bordered table-advance order-column" id="">
+        <tr>
+            <td class="text-right text-bold"><%= t('.total_row') %></td>
+            <% @warehouses.each_with_index do |warehouse,index| %>
+                <td class="text-center stock-num text-bold"><%= (50..1000).to_a.sample %></td>
+            <% end %>
+        </tr>
+        <tr>
+            <th class="bg-grey text-center"><%= t('.property') %></th>
+            <% @warehouses.each_with_index do |warehouse,index| %>
+                <th class="bg-grey text-center" width="<%= col_width %>%"><%= warehouse.name %></th>
+            <% end %>
+        </tr>
+        <% @properties_values.each_with_index do |properties_value,index| %>
+            <tr>
+                <td class="text-left"><%= properties_value.value %></td>
+                <% @warehouses.each_with_index do |warehouse,index| %>
+                    <td class="text-center stock-num"><%= (0..5).to_a.sample %></td>
+                <% end %>
+            </tr>
+        <% end %>
+    </table>
+<% end %>
+
+
