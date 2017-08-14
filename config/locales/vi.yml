@@ -11,8 +11,9 @@ vi:
             sales_orders: "Đơn bán hàng"
             sales_history: "Lịch sử bán hàng"
           purchases:
-            purchases: "Nhập hàng"
+            purchases: "Nhập hàng"            
             purchase_orders: "Đơn nhập hàng"
+            stock_importing: "Nhập hàng"
             manufacturers: "Nhà cung cấp"
             purchase_statistics: "Thống kê nhập hàng"
           accountant:
@@ -31,6 +32,7 @@ vi:
             purchase_orders: "Đơn nhập hàng"            
             warehouses: "Quản lý kho hàng"
             stock_transfers: "Chuyển kho"
+            stock_transfering: "Kiểm tra chuyển kho"
             inventory_report: "Thống kê tồn kho"
             output_input_report: "Thống kê xuất – nhập"
             smashed_scratched_report: "Thống kê len xước - vỡ"

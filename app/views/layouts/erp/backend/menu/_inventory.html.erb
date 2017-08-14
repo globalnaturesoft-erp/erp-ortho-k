@@ -25,7 +25,7 @@
             <a href="" class="nav-link ">
                 <span class="title"><%= t('.purchase_orders') %></span>
             </a>
-        </li>        
+        </li>
         <li class="nav-item <%= "active open" if ["erp/warehouses/backend/warehouses"].include?(params[:controller]) %>">
             <a href="<%= erp_warehouses.backend_warehouses_path %>" class="nav-link ">
                 <span class="title"><%= t('.warehouses') %></span>
@@ -38,6 +38,14 @@
             <a href="<%= erp_stock_transfers.backend_transfers_path %>" class="nav-link ">
                 <span class="title"><%= t('.stock_transfers') %></span>
                 <% if ["erp/stock_transfers/backend/transfers"].include?(params[:controller]) %>
+                <span class="selected"></span>
+                <% end %>
+            </a>
+        </li>
+        <li class="nav-item <%= "active open" if ["erp/products/backend/products"].include?(params[:controller]) %>">
+            <a href="<%= erp_products.stock_transfering_backend_products_path %>" class="nav-link ">
+                <span class="title"><%= t('.stock_transfering') %></span>
+                <% if ["erp/products/backend/products"].include?(params[:controller]) %>
                 <span class="selected"></span>
                 <% end %>
             </a>
@@ -67,12 +75,12 @@
             </a>
         </li>
         <li class="nav-item ">
-            <a href="" class="nav-link ">
+            <a href="<%= erp_products.matrix_report_backend_products_path %>" class="nav-link ">
                 <span class="title"><%= t('.inventory_report') %></span>
             </a>
         </li>
         <li class="nav-item ">
-            <a href="" class="nav-link ">
+            <a href="<%= erp_products.delivery_report_backend_products_path %>" class="nav-link ">
                 <span class="title"><%= t('.output_input_report') %></span>
             </a>
         </li>
