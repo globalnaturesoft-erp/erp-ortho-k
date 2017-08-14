@@ -141,7 +141,7 @@ vi:
         menu:
           contact:
             contact: "Danh bạ"
-            contacts: "Khách hàng"
+            contacts: "Sổ địa chỉ"
           sales:
             sales: "Bán hàng"
             sales_orders: "Đơn bán hàng"
