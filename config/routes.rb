@@ -2,7 +2,7 @@ Erp::OrthoK::Engine.routes.draw do
 	root to: "frontend/home#index"
 
   scope "(:locale)", locale: /en|vi/ do
-		namespace :backend, module: "backend", path: "backend/products" do
+		namespace :backend, module: "backend", path: "orthor/backend/products" do
       resources :products do
         collection do
           get 'matrix_report'
