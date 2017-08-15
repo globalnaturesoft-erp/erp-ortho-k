@@ -3,6 +3,7 @@
                                           "erp/products/backend/categories",
                                           "erp/products/backend/brands",
                                           "erp/products/backend/states",
+                                          "erp/products/backend/state_checks",
                                           "erp/orthok/backend/products/central_areas"].include?(params[:controller]) %>">
     <a href="javascript:;" class="nav-link nav-toggle">
         <i class="fa fa-archive"></i>
@@ -12,6 +13,7 @@
                "erp/products/backend/categories",
                "erp/products/backend/brands",
                "erp/products/backend/states",
+               "erp/products/backend/state_checks",
                "erp/orthok/backend/products/central_areas"].include?(params[:controller]) %>
             <span class="selected"></span>
             <span class="arrow open"></span>
@@ -32,6 +34,14 @@
             <a href="<%= erp_products.backend_states_path %>" class="nav-link ">
                 <span class="title"><%= t('.states') %></span>
                 <% if ["erp/products/backend/states"].include?(params[:controller]) %>
+                <span class="selected"></span>
+                <% end %>
+            </a>
+        </li>
+        <li class="nav-item <%= "active open" if ["erp/products/backend/state_checks"].include?(params[:controller]) %>">
+            <a href="<%= erp_products.backend_state_checks_path %>" class="nav-link ">
+                <span class="title"><%= t('.state_checks') %></span>
+                <% if ["erp/products/backend/state_checks"].include?(params[:controller]) %>
                 <span class="selected"></span>
                 <% end %>
             </a>

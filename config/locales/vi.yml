@@ -242,6 +242,7 @@ vi:
             brands: "Thương hiệu sản phẩm"
             states: "Trạng thái sản phẩm"
             central_areas: "Phân vùng/Vùng T.tâm"
+            state_checks: "Phiếu kiểm tra sản phẩm"
           system:
             system: "Hệ thống"
             users: "Quản lý thành viên"
