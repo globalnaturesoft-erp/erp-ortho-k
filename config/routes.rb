@@ -2,7 +2,7 @@ Erp::OrthoK::Engine.routes.draw do
 	root to: "frontend/home#index"
 
   scope "(:locale)", locale: /en|vi/ do
-		namespace :backend, module: "backend", path: "orthor/backend/products" do
+		namespace :backend, module: "backend", path: "orthok/backend/products" do
       resources :products do
         collection do
           get 'matrix_report'
@@ -17,6 +17,18 @@ Erp::OrthoK::Engine.routes.draw do
           post 'stock_transfering_table'
         end
       end
+      resources :central_areas do
+        collection do
+					post 'list'
+					get 'dataselect'
+				end
+			end
+      resources :property_values do
+        collection do
+					post 'list'
+					get 'dataselect'
+				end
+			end
     end
 	end
 end

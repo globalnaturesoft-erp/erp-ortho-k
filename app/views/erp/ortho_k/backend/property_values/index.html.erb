@@ -1,0 +1,39 @@
+<% content_for :title do %>
+    <%= t('.property_values') %>
+<% end %>
+
+<% content_for :page_title do %>
+    <i class="fa fa-flask"></i> <%= t('.property_values') %>
+<% end %>
+
+<% content_for :page_toolbar do %>
+    <%= erp_component('button/create', {
+        text: t('.create'),
+        href: erp_ortho_k.new_backend_property_value_path,
+        class: 'btn-noborder'
+    }) %>
+<% end %>
+
+<%= erp_datalist(
+    url: erp_ortho_k.list_backend_property_values_path,
+    keywords: [
+        {
+            text: t('.value'), name: 'value'
+        }
+    ],
+    actions: [
+      
+    ],
+    filters: [
+      
+    ],
+    columns: [
+        {
+            text: t('.value'), name: 'value', value: true, checked: true
+        },
+        {
+            text: t('.created_at'), name: 'created_at', value: true, checked: true
+        }
+    ],
+    sort: { sort_by: 'erp_ortho_k_property_values.value', sort_direction: 'asc' }
+) %>

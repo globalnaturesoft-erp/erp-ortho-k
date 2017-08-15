@@ -1,0 +1,16 @@
+<%= form_for([erp_ortho_k, :backend, property_value]) do |f| %>    
+    <%= erp_form_control("text", {
+        name: 'property_value[value]',
+        value: property_value.value,                   
+        label: t('.value'),
+        required: true,
+        errors: property_value.errors.full_messages_for(:value)
+    }) %>
+    <%= erp_component('button/save', {
+        text: t('.save')
+    }) %>
+    <%= erp_component('button/cancel', {
+        text: t('.cancel'),
+        href: erp_ortho_k.backend_property_values_path
+    }) %>
+<% end %>

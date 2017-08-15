@@ -135,6 +135,65 @@ vi:
             stock: "Tồn kho"
             sotck_areas: "Phân vùng"
             transfer_quantity: "Số lượng chuyển"
+        central_areas:
+          create:
+            success: "Thêm vùng trung tâm thành công"
+          update:
+            success: "Cập nhật vùng trung tâm thành công"
+          destroy:
+            success: "Xóa vùng trung tâm thành công"
+          index:
+            central_areas: "Vùng trung tâm"
+            create: "Thêm vùng"
+            name: "Tên"
+            created_at: "Ngày tạo"
+          list:
+            name: "Tên"
+            created_at: "Ngày tạo"
+            actions: "Thao tác"
+            edit: "Chỉnh sửa"
+            delete: "Xóa vùng"
+            delete_confirm: "Không thể hoàn tác sau khi xóa. Bạn có muốn tiếp tục?"
+          new:
+            central_areas: "Vùng trung tâm"
+            create: "Thêm vùng"
+          edit:
+            central_areas: "Vùng trung tâm"
+            create: "Thêm vùng"
+          form:
+            name: "Tên vùng"
+            property_values: "Các thuộc tính"
+            save: "Lưu"
+            cancel: "Hủy"
+        property_values:
+          create:
+            success: "Thêm thuộc tính thành công"
+          update:
+            success: "Cập nhật thuộc tính thành công"
+          destroy:
+            success: "Xóa thuộc tính thành công"
+          index:
+            property_values: "Thuộc tính vùng trung tâm"
+            create: "Thêm thuộc tính"
+            value: "Tên thuộc tính"
+            created_at: "Ngày tạo"
+          list:
+            value: "Tên thuộc tính"
+            created_at: "Ngày tạo"
+            actions: "Thao tác"
+            delete: "Xóa thuộc tính"
+            delete_confirm: "Không thể hoàn tác sau khi xóa. Bạn có muốn tiếp tục?"
+          new:
+            property_values: "Thuộc tính vùng trung tâm"
+            create: "Thêm thuộc tính"
+          edit:
+            property_values: "Thuộc tính vùng trung tâm"
+            create: "Thêm thuộc tính"
+          form:
+            value: "Tên thuộc tính"
+            created_at: "Ngày tạo"
+            save: "Lưu"
+            cancel: "Hủy"
   layouts:
     erp:
       backend:
@@ -182,6 +241,7 @@ vi:
             properties: "Thuộc tính sản phẩm"
             brands: "Thương hiệu sản phẩm"
             states: "Trạng thái sản phẩm"
+            central_areas: "Phân vùng/Vùng T.tâm"
           system:
             system: "Hệ thống"
             users: "Quản lý thành viên"

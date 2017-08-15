@@ -1,0 +1,58 @@
+<table class="table table-advance table-hover table-striped table-checkable order-column" id="">
+    <thead>
+        <tr>
+            <th width='1%'>
+                <%= erp_datalist_check_all %>
+            </th>
+            <% if get_columns(params).include?("value") %>
+                <th class="sortable" sort-by='erp_ortho_k_property_values.value'>
+                    <%= t('.value') %>
+                </th>
+            <% end %>
+            <% if get_columns(params).include?("created_at") %>
+                <th>
+                    <%= t('.created_at') %>
+                </th>
+            <% end %>
+            <th width="7%"><%= t('.actions') %></th>
+        </tr>
+    </thead>
+    <tbody>
+        <% @property_values.each do |property_value| %>
+            <tr class="odd gradeX">
+                <td>
+                    <%= erp_datalist_check_row(id: property_value.id) %>
+                </td>
+                <% if get_columns(params).include?("value") %>
+                    <td><%= link_to property_value.value, erp_ortho_k.edit_backend_property_value_path(property_value) %></td>
+                <% end %>
+                <% if get_columns(params).include?("created_at") %>
+                    <td><%= property_value.created_at.strftime("%d/%m/%Y") %></td>
+                <% end %>
+                <td>
+                    <%= erp_datalist_row_actions(
+                        [
+                            {
+                                text: '<i class="fa fa-edit"></i> '+t('.edit'),
+                                href: erp_ortho_k.edit_backend_property_value_path(property_value)
+                            },
+                            { divider: true },
+                            {
+                              text: '<i class="fa fa-trash"></i> '+t('.delete'),
+                              url: erp_ortho_k.backend_property_value_path(property_value),
+                              data_method: 'DELETE',
+                              data_confirm: t('.delete_confirm'),
+                              class: 'ajax-link'
+                            }
+                        ]
+                    ) %>
+                </td>
+            </tr>
+        <% end %>
+    </tbody>
+</table>
+<% if @property_values.empty? %>
+    <div class="datalist-empty-line"><%= t('.no_matching_records_found') %></div>
+<% end %>
+        
+<%= erp_datalist_pagination(@property_values) %>

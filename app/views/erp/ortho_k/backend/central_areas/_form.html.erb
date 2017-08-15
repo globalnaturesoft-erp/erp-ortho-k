@@ -1,0 +1,29 @@
+<%= form_for([erp_ortho_k, :backend, central_area]) do |f| %>    
+    <%= erp_form_control("text", {
+        name: 'central_area[name]',
+        value: central_area.name,                   
+        label: t('.name'),
+        required: true,
+        errors: central_area.errors.full_messages_for(:name)
+    }) %>
+    <%= erp_form_control("dataselect", {
+        name: 'central_area[property_value_ids][]',
+        values: (central_area.property_values.map {|pv| {text: pv.value, value: pv.id}}),
+        multiple: true,
+        label: t('.property_values'),
+        url: erp_ortho_k.dataselect_backend_property_values_path(format: 'json'),
+        create: {
+            url: erp_ortho_k.new_backend_property_value_path,
+            title: t('.create'),
+            container_selector: '.new_property_value',
+            input_selector: 'input[name="property_value[name]"]'
+        }
+    }) %>
+    <%= erp_component('button/save', {
+        text: t('.save')
+    }) %>
+    <%= erp_component('button/cancel', {
+        text: t('.cancel'),
+        href: erp_ortho_k.backend_central_areas_path
+    }) %>
+<% end %>

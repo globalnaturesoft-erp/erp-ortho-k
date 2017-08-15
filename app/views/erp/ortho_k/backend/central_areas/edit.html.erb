@@ -1,0 +1,33 @@
+<% content_for :title do %>
+    <%= @central_area.name %>
+<% end %>
+
+<% content_for :page_title do %>    
+    <a href="<%= erp_ortho_k.backend_central_areas_path %>">
+    <i class="icon-target"></i> <%= t('.central_areas') %>
+    </a> / <%= @central_area.name %>
+<% end %>
+
+<% content_for :page_toolbar do %>
+    <%= erp_component('button/create', {
+        text: t('.create'),
+        href: erp_ortho_k.new_backend_central_area_path,
+        class: 'btn-sm'
+    }) %>
+<% end %>
+
+<div class="row">
+    <div class="col-md-6">
+        <% if @central_area.errors.any? %>
+            <%= erp_form_control("form_error_message") %>
+        <% end %>
+        
+        <!-- BEGIN SAMPLE FORM PORTLET-->
+        <div class="portlet light bordered">
+            <div class="portlet-body">
+                <%= render 'form', central_area: @central_area %>
+            </div>
+        </div>
+        <!-- END SAMPLE FORM PORTLET-->
+    </div>
+</div>
