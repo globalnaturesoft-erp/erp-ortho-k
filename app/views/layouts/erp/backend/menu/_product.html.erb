@@ -1,14 +1,16 @@
 <li class="nav-item <%= "active open" if ["erp/products/backend/products",
                                           "erp/products/backend/properties",
                                           "erp/products/backend/categories",
-                                          "erp/products/backend/brands"].include?(params[:controller]) %>">
+                                          "erp/products/backend/brands",
+                                          "erp/products/backend/staes"].include?(params[:controller]) %>">
     <a href="javascript:;" class="nav-link nav-toggle">
         <i class="fa fa-archive"></i>
         <span class="title"><%= t('.product') %></span>
         <% if ["erp/products/backend/products",
                "erp/products/backend/properties",
                "erp/products/backend/categories",
-               "erp/products/backend/brands"].include?(params[:controller]) %>
+               "erp/products/backend/brands",
+               "erp/products/backend/states"].include?(params[:controller]) %>
             <span class="selected"></span>
             <span class="arrow open"></span>
         <% else %>
@@ -20,6 +22,14 @@
             <a href="<%= erp_products.backend_products_path %>" class="nav-link ">
                 <span class="title"><%= t('.products') %></span>
                 <% if ["erp/products/backend/products"].include?(params[:controller]) %>
+                <span class="selected"></span>
+                <% end %>
+            </a>
+        </li>
+        <li class="nav-item <%= "active open" if ["erp/products/backend/states"].include?(params[:controller]) %>">
+            <a href="<%= erp_products.backend_states_path %>" class="nav-link ">
+                <span class="title"><%= t('.states') %></span>
+                <% if ["erp/products/backend/states"].include?(params[:controller]) %>
                 <span class="selected"></span>
                 <% end %>
             </a>

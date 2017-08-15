@@ -181,6 +181,7 @@ vi:
             categories: "Chuyên mục sản phẩm"
             properties: "Thuộc tính sản phẩm"
             brands: "Thương hiệu sản phẩm"
+            states: "Trạng thái sản phẩm"
           system:
             system: "Hệ thống"
             users: "Quản lý thành viên"
