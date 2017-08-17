@@ -15,6 +15,8 @@ Erp::OrthoK::Engine.routes.draw do
           post 'stock_importing_table'
           get 'stock_transfering'
           post 'stock_transfering_table'
+          get 'export_report'
+          post 'export_report_table'
         end
       end
       resources :central_areas do

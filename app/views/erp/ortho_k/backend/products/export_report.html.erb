@@ -1,0 +1,101 @@
+<% content_for :title do %>
+    <%= t('.export_report') %>
+<% end %>
+
+<% content_for :page_title do %>
+    <i class="fa fa-archive"></i> <%= t('.export_report') %>
+<% end %>
+
+<% content_for :global_filter do %>
+    <div class="row">
+        <div class="col-md-3">
+            <%= erp_form_control('date', {
+                label: t('.from_date'),
+                name: 'from_date',
+                placeholder: t('.select_from_date')
+            }) %>
+        </div>
+        <div class="col-md-3">
+            <%= erp_form_control('date', {
+                label: t('.to_date'),
+                name: 'to_date',
+                placeholder: t('.select_to_date')
+            }) %>
+        </div>
+        <div class="col-md-3">
+            <%= erp_form_control("dataselect", {
+                name: 'category',
+                value: '',
+                text: '',
+                label: t('.category'),
+                placeholder: t('.choose_category'),
+                url: erp_products.dataselect_backend_categories_path(format: 'json'),
+                multiple: true
+            }) %>
+        </div>
+        <div class="col-md-3">
+            <%= erp_form_control("dataselect", {
+                name: 'warehouse',
+                value: '',
+                text: '',
+                label: t('.warehouse'),
+                placeholder: t('.choose_warehouse'),
+                url: erp_warehouses.dataselect_backend_warehouses_path(format: 'json'),
+                multiple: true
+            }) %>
+        </div>
+        <div class="col-md-3">
+            <%= erp_form_control('select', {
+                label: t('.currency'),
+                name: 'currency',
+                value: '',
+                text: '',
+                options: [ {text: 'USD',value: ''}, {text: 'VNĐ',value: ''}, {text: 'Tất cả',value: ''} ]
+            }) %>
+        </div>
+        <div class="col-md-3">
+            <%= erp_form_control("dataselect", {
+                name: 'customer',
+                value: '',
+                text: '',
+                label: t('.customer'),
+                placeholder: t('.chooose_customer'),
+                url: erp_contacts.dataselect_backend_contacts_path(format: 'json'),
+            }) %>
+        </div>
+        <div class="col-md-3">
+            <%= erp_form_control("dataselect", {
+                name: 'product',
+                value: '',
+                text: '',
+                label: t('.product'),
+                placeholder: t('.chooose_product'),
+                url: erp_products.dataselect_backend_products_path(format: 'json'),
+            }) %>
+        </div>
+    </div>
+<% end %>
+
+<%= erp_datalist(
+    url: erp_ortho_k.export_report_table_backend_products_path,
+    sortable: true,
+    keywords: [
+        {
+            text: t('.name'), name: 'erp_products_products.name'
+        },
+    ],
+    filters: [
+        {
+            text: 'Hàng mới', name: '', value: true, checked: false
+        },
+        {
+            text: 'Hàng xước', name: '', value: true, checked: false
+        },
+        {
+            text: 'Hàng vỡ', name: '', value: true, checked: false
+        },
+    ],
+    columns: [
+    ],
+    header: 'dddddd'
+) %>

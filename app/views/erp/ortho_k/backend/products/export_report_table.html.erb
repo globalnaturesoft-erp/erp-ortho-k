@@ -1,0 +1,81 @@
+<div class="table-scrollable">
+    <table class="table table-bordered table-advance order-column" id="">
+        <tr>
+            <td class="text-right text-bold" colspan="8"><%= t('.total_row') %></td>
+            <td class="text-center stock-num text-bold bg-warning"><%= (0..1000).to_a.sample %></td>
+            <td colspan="4"></td>
+            <td class="text-right stock-num text-bold text-primary"><%= format_number((400..999).to_a.sample*1000) %></td>
+            <td class="text-right stock-num text-bold text-primary"><%= format_number((400..999).to_a.sample*1000) %></td>
+            <td colspan="3"></td>
+            <td class="text-right stock-num text-bold font-green-seagreen"><%= format_number((50..500).to_a.sample*1000) %></td>
+            <td class="text-right stock-num text-bold font-green-seagreen"><%= format_number((50..500).to_a.sample*1000) %></td>
+            <td class="text-right stock-num text-bold text-warning"><%= format_number((400..999).to_a.sample*1000) %></td>
+            <td class="text-right stock-num text-bold font-yellow-gold"><%= format_number((400..999).to_a.sample*1000) %></td>
+            <td colspan="1"></td>
+            <td class="text-right stock-num text-bold font-yellow-gold"><%= format_number((400..999).to_a.sample*1000) %></td>
+            <td colspan="1"></td>
+        </tr>
+        <tr>
+            <th class="bg-grey text-center text-nowrap" rowspan="2"><%= t('.record_date') %></th>
+            <th class="bg-grey text-center text-nowrap" rowspan="2"><%= t('.voucher_date') %></th>
+            <th class="bg-grey text-center text-nowrap" rowspan="2"><%= t('.voucher_code') %></th>
+            <th class="bg-grey text-center text-nowrap" rowspan="2"><%= t('.customer') %></th>
+            <th class="bg-green-sharp bg-font-green-sharp text-center text-nowrap" colspan="3"><%= t('.product_code') %></th>
+            <th class="bg-grey text-center text-nowrap" rowspan="2" width="7%"><%= t('.product_name') %></th>
+            <th class="bg-grey text-center text-nowrap" rowspan="2" width="7%"><%= t('.quantity') %></th>
+            <th class="bg-grey text-center text-nowrap" rowspan="2" width="7%"><%= t('.description') %></th>
+            <th class="bg-grey text-center text-nowrap" rowspan="2" width="7%"><%= t('.status') %></th>
+            <th class="bg-grey text-center text-nowrap" rowspan="2" width="7%"><%= t('.warehouse') %></th>
+            <th class="bg-grey text-center text-nowrap" rowspan="2" width="7%"><%= t('.unit') %></th>
+            <th class="bg-grey text-center text-nowrap" rowspan="2" width="7%"><%= t('.unknown_1') %></th>
+            <th class="bg-grey text-center text-nowrap" rowspan="2" width="7%"><%= t('.unknown_2') %></th>
+            <th class="bg-blue-oleo bg-font-blue-oleo text-center text-nowrap" colspan="7"><%= t('.purchase_price') %></th>
+            <th class="bg-yellow-mint bg-font-yellow-mint text-center text-nowrap" colspan="2"><%= t('.sales_price') %></th>
+            <th class="bg-grey text-center text-nowrap" rowspan="2" width="7%"><%= t('.note') %></th>
+        </tr>
+        <tr>
+            <th class="bg-green-sharp bg-font-green-sharp text-center text-nowrap" width="7%"><%= t('.code') %></th>
+            <th class="bg-green-sharp bg-font-green-sharp text-center text-nowrap" width="7%"><%= t('.diameter') %></th>
+            <th class="bg-green-sharp bg-font-green-sharp text-center text-nowrap" width="7%"><%= t('.category') %></th>
+            <th class="bg-blue-oleo bg-font-blue-oleo text-center text-nowrap" width="7%"><%= t('.currency') %></th>
+            <th class="bg-blue-oleo bg-font-blue-oleo text-center text-nowrap" width="7%"><%= t('.rate') %></th>
+            <th class="bg-blue-oleo bg-font-blue-oleo text-center text-nowrap" width="7%"><%= t('.price') %></th>
+            <th class="bg-blue-oleo bg-font-blue-oleo text-center text-nowrap" width="7%"><%= t('.tax_amount') %></th>
+            <th class="bg-blue-oleo bg-font-blue-oleo text-center text-nowrap" width="7%"><%= t('.other_fees') %></th>
+            <th class="bg-blue-oleo bg-font-blue-oleo text-center text-nowrap" width="7%"><%= t('.unknown_3') %></th>
+            <th class="bg-blue-oleo bg-font-blue-oleo text-center text-nowrap" width="7%"><%= t('.unknown_4') %></th>
+            <th class="bg-yellow-mint bg-font-yellow-mint text-center text-nowrap" width="7%"><%= t('.price') %></th>
+            <th class="bg-yellow-mint bg-font-yellow-mint text-center text-nowrap" width="7%"><%= t('.unknown_4') %></th>
+        </tr>
+        <% @products.each_with_index do |product,index| %>
+            <tr>
+                <td class="text-left"><%= format_date(rand((Time.current - 10.week)..Time.current)) %></td>
+                <td class="text-left"><%= format_date(rand((Time.current - 10.week)..Time.current)) %></td>
+                <td class="text-left"><%= ['XK','XB','KG','XM','CK'].to_a.sample + '0817-00' %><%= (1..5).to_a.sample %></td>
+                <td class="text-left"><%= Erp::Contacts::Contact.where(is_customer: true).to_a.sample.name %></td>
+                <td class="text-left">#<%= product.code %></td>
+                <td class="text-left"></td>
+                <td class="text-left"><%= product.category_name %></td>
+                <td class="text-left"><%= product.name %></td>
+                <td class="text-center stock-num text-bold bg-warning"><%= (0..5).to_a.sample %></td>
+                <td class="text-left"><%= ['Lấy từ tên hàng hóa','Xuất bán'].to_a.sample %></td>
+                <td class="text-left"><%= ['Mới','Vỡ','Xước','Sau 1 năm'].to_a.sample %></td>
+                <td class="text-left"><%= ['ADV','SG','TN','KG'].to_a.sample %></td>
+                <td class="text-left"><%= ['cái','chai','hộp'].to_a.sample %></td>
+                <td class="text-right stock-num text-bold text-primary"><%= format_number((100..500).to_a.sample*1000) %></td>
+                <td class="text-right stock-num text-bold text-primary"><%= format_number((100..500).to_a.sample*1000) %></td>
+                <td class="text-left"><%= ['USD','VNĐ'].to_a.sample %></td>
+                <td class="text-center stock-num"></td>
+                <td class="text-center stock-num"></td>
+                <td class="text-right stock-num text-bold font-green-seagreen"><%= format_number((50..500).to_a.sample*1000) %></td>
+                <td class="text-right stock-num text-bold font-green-seagreen"><%= format_number((50..500).to_a.sample*1000) %></td>
+                <td class="text-right stock-num text-bold text-warning"><%= format_number((50..500).to_a.sample*1000) %></td>
+                <td class="text-right stock-num text-bold font-yellow-gold"><%= format_number((50..500).to_a.sample*1000) %></td>
+                <td class="text-center stock-num"></td>
+                <td class="text-right stock-num text-bold font-yellow-gold"><%= format_number((50..500).to_a.sample*1000) %></td>
+                <td class="text-center stock-num"></td>
+            </tr>
+        <% end %>
+    </table>
+</div>
+<%= erp_datalist_pagination(@products) %>
