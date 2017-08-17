@@ -73,10 +73,14 @@
                 placeholder: t('.central_quantity')
             }) %>
         </div>
-        <div class="col-md-6">
-            <label class="invisible">.</label><br>
-            <%= erp_component('button/primary', {
-                text: t('.create_purchase_order')
+        <div class="col-md-6 text-right">
+            <label style="display: block" class="invisible">.</label>
+            <a class="btn btn-primary global_filter_action" href="<%= erp_orders.new_type_backend_orders_path(type: Erp::Orders::Order::TYPE_PURCHASE_ORDER) %>">
+                <i class="fa fa-share-square"></i> <%= t('.create_purchase_order') %>
+            </a>
+
+            <%= erp_component('button/export', {
+                text: '<i class="fa fa-download"></i> ' + t('.export_sheet')
             }) %>
         </div>
     </div>

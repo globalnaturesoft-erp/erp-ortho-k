@@ -10,11 +10,20 @@
     <div class="row">
         <div class="col-md-3">
             <%= erp_form_control('date', {
+                label: t('.from_date'),
+                name: 'from_date',
+                placeholder: t('.select_from_date')
+            }) %>
+        </div>
+        <div class="col-md-3">
+            <%= erp_form_control('date', {
                 label: t('.to_date'),
                 name: 'to_date',
                 placeholder: t('.select_to_date')
             }) %>
         </div>
+    </div>
+    <div class="row">
         <div class="col-md-3">
             <%= erp_form_control("dataselect", {
                 name: 'category',
@@ -23,6 +32,19 @@
                 label: t('.category'),
                 placeholder: t('.choose_category'),
                 url: erp_products.dataselect_backend_categories_path(format: 'json'),
+                multiple: true
+            }) %>
+        </div>
+        <div class="col-md-3">
+            <% diameter = Erp::Products::Property.where(name: "Đường kính").first %>
+            <%= erp_form_control("dataselect", {
+                name: 'diameter',
+                value: '',
+                text: '',
+                label: Erp::Products::Property.where(name: "Đường kính").first().name,
+                placeholder: diameter.name,
+                url: erp_products.dataselect_backend_properties_values_path(format: 'json', property_id: diameter.id),
+                include_blank: t('.all_diameters'),
                 multiple: true
             }) %>
         </div>
@@ -58,6 +80,15 @@
                 label: t('.group_by_property'),
                 placeholder: t('.choose_group_by_property'),
                 url: erp_products.dataselect_backend_properties_path(format: 'json'),
+            }) %>
+        </div>
+        <div class="col-md-6 text-right">
+            <label style="display: block" class="invisible">.</label>
+            <%= erp_component('button/export', {
+                text: '<i class="fa fa-download"></i> ' + t('.export_sheet')
+            }) %>
+            <%= erp_component('button/export', {
+                text: '<i class="fa fa-download"></i> ' + t('.export_pdf')
             }) %>
         </div>
     </div>

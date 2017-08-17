@@ -1,0 +1,39 @@
+<div class="col-md-12">
+        <div class="portlet-title">
+            <div class="caption">
+                <i class="glyphicon glyphicon-transfer"></i>
+                <%= t('.transfer_details') %>:
+                <%= t('.from') + ' ' + @transfer.source_warehouse_name + ' ' +
+                + t('.to') + ' ' + @transfer.destination_warehouse_name %>
+            </div>
+        </div>
+        <div class="portlet-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped flip-content">
+                    <thead class="flip-content">
+                        <tr>
+                            <th width="10%" class="text-left"><%= t('.product_code') %></th>
+                            <th width="10%" class="numeric text-left"><%= t('.diameter') %></th>
+                            <th class="numeric text-left"><%= t('.category') %></th>
+                            <th class="numeric text-center"><%= t('.quantity') %></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% @transfer.transfer_details.each do |transfer_detail| %>
+                            <%
+                                from = rand(transfer_detail.quantity..9)
+                                to = rand(0..1)
+                            %>
+                            <tr>
+                                <td class="text-left"><strong><%= transfer_detail.product_code %></strong></td>
+                                <td class="numeric text-left"><%= transfer_detail.product.get_diameter %></td>
+                                <td class="numeric text-left"><%= transfer_detail.product.category_name %></td>
+                                <td class="numeric text-center"><%= format_number(transfer_detail.quantity) %></td>
+                            </tr>
+                        <% end %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+</div>

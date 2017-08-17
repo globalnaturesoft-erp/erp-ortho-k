@@ -43,14 +43,15 @@
         </div>
         <div class="col-md-3">
             <% diameter = Erp::Products::Property.where(name: "Đường kính").first %>
-            <%= erp_form_control("select", {
+            <%= erp_form_control("dataselect", {
                 name: 'diameter',
                 value: '',
                 text: '',
-                multiple: true,
                 label: Erp::Products::Property.where(name: "Đường kính").first().name,
-                options: (diameter.properties_values.map {|ppv| {value: ppv.id, text: ppv.value}}),
-                placeholder: t('.all_diameters'),
+                placeholder: diameter.name,
+                url: erp_products.dataselect_backend_properties_values_path(format: 'json', property_id: diameter.id),
+                include_blank: t('.all_diameters'),
+                multiple: true
             }) %>
         </div>
     </div>
@@ -89,11 +90,11 @@
                 required: true
             }) %>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-3 text-right">
             <label class="invisible">.</label><br>
-            <%= erp_component('button/primary', {
-                text: t('.create_stock_transfer')
-            }) %>
+            <a class="btn btn-primary global_filter_action" href="<%= erp_stock_transfers.new_backend_transfer_path %>">
+                <i class="fa fa-share-square"></i> <%= t('.create_stock_transfer') %>
+            </a>
         </div>
     </div>
 <% end %>
