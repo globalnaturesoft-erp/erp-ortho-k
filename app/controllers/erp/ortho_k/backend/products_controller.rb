@@ -9,27 +9,31 @@ module Erp
         def matrix_report_table
           global_filter = params.to_unsafe_hash[:global_filter]
           if global_filter.present? and global_filter[:column].present?
+            col = global_filter[:column].split('-').first
             @columns = Erp::Products::PropertiesValue.where(
-              property_id: global_filter[:column]
+              property_id: col
             )
 
             # sub columns
-            if global_filter[:column_sub].present?
+            if global_filter[:column].split('-').count == 2
+              sub = global_filter[:column].split('-').last
               @column_subs = Erp::Products::PropertiesValue.where(
-                property_id: global_filter[:column_sub]
+                property_id: sub
               )
             end
           end
 
           if global_filter.present? and global_filter[:row].present?
+            row = global_filter[:row].split('-').first
             @rows = Erp::Products::PropertiesValue.where(
                 property_id: global_filter[:row]
               )
 
             # sub rows
-            if global_filter[:row_sub].present?
+            if global_filter[:row].split('-').count == 2
+              sub = global_filter[:row].split('-').last
               @row_subs = Erp::Products::PropertiesValue.where(
-                property_id: global_filter[:row_sub]
+                property_id: sub
               )
             end
           end
@@ -95,8 +99,9 @@ module Erp
 
           ids = Erp::Products::Product.pluck(:id).sample(rand(90..250))
           @products = Erp::Products::Product.where(id: ids).order(:code)
-          @center_quantity = (global_filters.present? and global_filters[:center_quantity].present? ? global_filters[:center_quantity].to_i : 0)
-          @import_quantity = (global_filters.present? and global_filters[:import_quantity].present? ? global_filters[:import_quantity].to_i : 0)
+
+          @side_quantity = (global_filters.present? and global_filters[:side_quantity].present? ? global_filters[:side_quantity].to_i : 0)
+          @central_quantity = (global_filters.present? and global_filters[:central_quantity].present? ? global_filters[:central_quantity].to_i : 0)
 
           render layout: nil
         end

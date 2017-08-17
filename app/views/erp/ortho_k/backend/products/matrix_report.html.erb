@@ -10,38 +10,10 @@
     <div class="row">
         <div class="col-md-3">
             <%= erp_form_control("dataselect", {
-                name: 'category',
-                value: '',
-                text: '',
-                #label: t('.category'),
-                placeholder: t('.all_categories'),
-                url: erp_products.dataselect_backend_categories_path(format: 'json'),
-            }) %>
-            <% diameter = Erp::Products::Property.where(name: "Đường kính").first %>
-            <%= erp_form_control("select", {
-                name: 'diameter',
-                value: '',
-                text: '',
-                # label: Erp::Products::Property.where(name: "Đường kính").first().name,
-                placeholder: diameter.name,
-                options: (diameter.properties_values.map {|ppv| {value: ppv.id, text: ppv.value}}),
-                include_blank: t('.all_diameters'),
-            }) %>
-        </div>
-        <div class="col-md-3">
-            <%= erp_form_control("dataselect", {
                 name: 'column',
                 value: '',
                 text: '',
-                #label: t('.column'),
-                placeholder: t('.choose_column'),
-                url: erp_products.dataselect_backend_properties_path(format: 'json'),
-            }) %>
-            <%= erp_form_control("dataselect", {
-                name: 'column_sub',
-                value: '',
-                text: '',
-                #label: t('.column'),
+                label: t('.column'),
                 placeholder: t('.choose_column'),
                 url: erp_products.dataselect_backend_properties_path(format: 'json'),
             }) %>
@@ -51,17 +23,20 @@
                 name: 'row',
                 value: '',
                 text: '',
-                #label: t('.row'),
+                label: t('.row'),
                 placeholder: t('.choose_row'),
                 url: erp_products.dataselect_backend_properties_path(format: 'json'),
             }) %>
+        </div>
+        <div class="col-md-3">
             <%= erp_form_control("dataselect", {
-                name: 'row_sub',
+                name: 'category',
                 value: '',
                 text: '',
-                #label: t('.row'),
-                placeholder: t('.choose_row'),
-                url: erp_products.dataselect_backend_properties_path(format: 'json'),
+                label: t('.category'),
+                placeholder: t('.all_categories'),
+                url: erp_products.dataselect_backend_categories_path(format: 'json'),
+                multiple: true
             }) %>
         </div>
         <div class="col-md-3">
@@ -69,9 +44,10 @@
                 name: 'warehouse',
                 value: '',
                 text: '',
-                #label: t('.warehouse'),
+                label: t('.warehouse'),
                 placeholder: t('.all_warehouses'),
                 url: erp_warehouses.dataselect_backend_warehouses_path(format: 'json'),
+                multiple: true
             }) %>
         </div>
     </div>

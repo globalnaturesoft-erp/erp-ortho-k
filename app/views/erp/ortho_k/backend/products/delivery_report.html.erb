@@ -10,13 +10,6 @@
     <div class="row">
         <div class="col-md-3">
             <%= erp_form_control('date', {
-                label: t('.from_date'),
-                name: 'from_date',
-                placeholder: t('.select_from_date')
-            }) %>
-        </div>
-        <div class="col-md-3">
-            <%= erp_form_control('date', {
                 label: t('.to_date'),
                 name: 'to_date',
                 placeholder: t('.select_to_date')
@@ -30,6 +23,7 @@
                 label: t('.category'),
                 placeholder: t('.choose_category'),
                 url: erp_products.dataselect_backend_categories_path(format: 'json'),
+                multiple: true
             }) %>
         </div>
         <div class="col-md-3">
@@ -40,6 +34,7 @@
                 label: t('.warehouse'),
                 placeholder: t('.choose_warehouse'),
                 url: erp_warehouses.dataselect_backend_warehouses_path(format: 'json'),
+                multiple: true
             }) %>
         </div>
     </div>

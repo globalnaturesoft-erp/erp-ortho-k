@@ -1,7 +1,7 @@
 <% if @group_by_category.nil? and @group_by_property.nil? %>
     <table class="table table-bordered table-advance order-column" id="">
         <tr>
-            <td class="text-right" colspan="2"><%= t('.total_row') %></td>
+            <td class="text-right" colspan="3"><%= t('.total_row') %></td>
             <td class="text-center stock-num text-bold bg-warning"><%= (0..1000).to_a.sample %></td>
             <td class="text-center stock-num"><%= (50..1000).to_a.sample %></td>
             <td class="text-center stock-num"><%= (50..1000).to_a.sample %></td>
@@ -16,7 +16,8 @@
         </tr>
         <tr>
             <th class="bg-grey text-center" rowspan="2"><%= t('.code') %></th>
-            <th class="bg-grey text-center" rowspan="2"><%= t('.name') %></th>
+            <th class="bg-grey text-center" rowspan="2"><%= t('.diameter') %></th>
+            <th class="bg-grey text-center" rowspan="2"><%= t('.category') %></th>
             <th class="bg-grey text-center" rowspan="2" width="7%"><%= t('.begin') %></th>
             <th class="bg-grey text-center" colspan="4"><%= t('.import') %></th>
             <th class="bg-grey text-center text-center" colspan="4"><%= t('.export') %></th>
@@ -37,7 +38,8 @@
         <% @products.each_with_index do |product,index| %>
             <tr>
                 <td class="text-left">#<%= product.code %></td>
-                <td class="text-left"><%= product.name %></td>
+                <td class="text-left"><%= product.get_diameter %></td>
+                <td class="text-left"><%= product.category_name %></td>
                 <td class="text-center stock-num text-bold bg-warning"><%= (0..5).to_a.sample %></td>
                 <td class="text-center stock-num"><%= (0..5).to_a.sample %></td>
                 <td class="text-center stock-num"><%= (0..5).to_a.sample %></td>

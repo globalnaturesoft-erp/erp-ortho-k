@@ -16,18 +16,20 @@
                 label: t('.category'),
                 placeholder: t('.choose_category'),
                 url: erp_products.dataselect_backend_categories_path(format: 'json'),
+                multiple: true
             }) %>
         </div>
         <div class="col-md-3">
             <% diameter = Erp::Products::Property.where(name: "Đường kính").first %>
-            <%= erp_form_control("select", {
+            <%= erp_form_control("dataselect", {
                 name: 'diameter',
                 value: '',
                 text: '',
                 label: Erp::Products::Property.where(name: "Đường kính").first().name,
                 placeholder: diameter.name,
-                options: (diameter.properties_values.map {|ppv| {value: ppv.id, text: ppv.value}}),
+                url: erp_products.dataselect_backend_properties_values_path(format: 'json', property_id: diameter.id),
                 include_blank: t('.all_diameters'),
+                multiple: true
             }) %>
         </div>
         <div class="col-md-3">
@@ -38,26 +40,37 @@
                 label: t('.warehouse'),
                 placeholder: t('.all_warehouses'),
                 url: erp_warehouses.dataselect_backend_warehouses_path(format: 'json'),
+                multiple: true
+            }) %>
+        </div>
+        <div class="col-md-3">
+            <%= erp_form_control("dataselect", {
+                name: 'area',
+                value: '',
+                text: '',
+                label: t('.area'),
+                placeholder: t('.all_areas'),
+                url: erp_ortho_k.area_dataselect_backend_central_areas_path(format: 'json')
             }) %>
         </div>
     </div>
     <div class="row">
         <div class="col-md-3">
             <%= erp_form_control("text", {
-                name: 'import_quantity',
+                name: 'side_quantity',
                 value: '1',
                 text: '',
-                label: t('.import_quantity'),
-                placeholder: t('.import_quantity')
+                label: t('.side_quantity'),
+                placeholder: t('.side_quantity')
             }) %>
         </div>
         <div class="col-md-3">
             <%= erp_form_control("text", {
-                name: 'center_quantity',
+                name: 'central_quantity',
                 value: '1',
                 text: '',
-                label: t('.center_quantity'),
-                placeholder: t('.center_quantity')
+                label: t('.central_quantity'),
+                placeholder: t('.central_quantity')
             }) %>
         </div>
         <div class="col-md-6">
@@ -92,15 +105,6 @@
         },
         {
             text: t('.state_broken'), name: 'state_broken', value: true, checked: false
-        },
-        {
-            divider: true
-        },
-        {
-            text: t('.center_area'), name: 'center_area', value: true, checked: true
-        },
-        {
-            text: t('.import_area'), name: 'import_area', value: true, checked: true
         },
     ],
     columns: [

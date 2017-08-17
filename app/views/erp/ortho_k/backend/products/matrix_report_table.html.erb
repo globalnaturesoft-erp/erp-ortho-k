@@ -18,8 +18,8 @@
                 <% @columns.each do |column| %>
                     <% @column_subs.each do |column_sub| %>
                         <% if !Erp::Products::Product.joins(:products_values)
-                            .where("erp_products_products.cache_properties LIKE ?", "%[#{column.id}]%")
-                            .where("erp_products_products.cache_properties LIKE ?", "%[#{column_sub.id}]%")
+                            .where("erp_products_products.cache_properties LIKE ?", "%[\"#{column.id}\",%")
+                            .where("erp_products_products.cache_properties LIKE ?", "%[\"#{column_sub.id}\",%")
                             .empty?
                         %>
                             <th class="text-center bg-grey"><%= column_sub.value %></th>
@@ -35,8 +35,8 @@
                     <th class="text-center bg-grey" width="1%">
                         <% @row_subs.each do |row_sub| %>
                             <% if !Erp::Products::Product.joins(:products_values)
-                                .where("erp_products_products.cache_properties LIKE ?", "%[#{row.id}]%")
-                                .where("erp_products_products.cache_properties LIKE ?", "%[#{row_sub.id}]%")
+                                .where("erp_products_products.cache_properties LIKE ?", "%[\"#{row.id}\",%")
+                                .where("erp_products_products.cache_properties LIKE ?", "%[\"#{row_sub.id}\",%")
                                 .empty?
                             %>
                                 <%= row_sub.value %>
@@ -51,6 +51,31 @@
             </tr>
         <% end %>
     </table>
+    <h3 class="mt-20"><%= t('.summary') %></h3>
+    <div class="portlet m-grid m-grid-demo">
+        <div class="m-grid-row">
+            <div class="m-grid-col m-grid-col-middle m-grid-col-center">
+                <label><%= t('.total_stock') %></label><br/>
+                <strong><%= rand(1200..5000) %></strong>
+            </div>
+            <div class="m-grid-col m-grid-col-middle m-grid-col-center">
+                <label><%= t('.equal_1') %></label><br/>
+                <strong><%= rand(1200..5000) %></strong>
+            </div>
+            <div class="m-grid-col m-grid-col-middle m-grid-col-center">
+                <label><%= t('.equal_2') %></label><br/>
+                <strong><%= rand(1200..5000) %></strong>
+            </div>
+            <div class="m-grid-col m-grid-col-middle m-grid-col-center">
+                <label><%= t('.equal_3') %></label><br/>
+                <strong><%= rand(1200..5000) %></strong>
+            </div>
+            <div class="m-grid-col m-grid-col-middle m-grid-col-center">
+                <label><%= t('.from_4') %></label><br/>
+                <strong><%= rand(1200..5000) %></strong>
+            </div>
+        </div>
+    </div>
 <% else %>
     <div class="alert alert-warning"><%=raw t('.please_select_column_and_row_filter') %></div>
 <% end %>

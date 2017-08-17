@@ -21,6 +21,7 @@ Erp::OrthoK::Engine.routes.draw do
         collection do
 					post 'list'
 					get 'dataselect'
+					get 'area_dataselect'
 				end
 			end
       resources :property_values do
