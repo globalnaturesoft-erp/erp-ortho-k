@@ -126,6 +126,16 @@ module Erp
           render layout: nil
         end
         
+        # Import report
+        def import_report
+        end
+        
+        def import_report_table
+          @products = Erp::Products::Product.all.order("code").paginate(:page => params[:page], :per_page => 20)
+
+          render layout: nil
+        end
+        
         # Export report
         def export_report
         end
