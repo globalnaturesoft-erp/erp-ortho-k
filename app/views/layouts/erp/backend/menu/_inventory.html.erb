@@ -1,14 +1,16 @@
 <li class="nav-item <%= "active open" if ["erp/deliveries/backend/deliveries",
                                           "erp/gift_givens/backend/givens",
                                           "erp/products/backend/damage_records",
-                                          "erp/consignments/backend/consignments"].include?(params[:controller]) %>">
+                                          "erp/consignments/backend/consignments",
+                                          "erp/deliveries/backend/sales"].include?(params[:controller]) %>">
     <a href="javascript:;" class="nav-link nav-toggle">
         <i class="icon-drawer"></i>
         <span class="title"><%= t('.inventory') %></span>
         <% if ["erp/deliveries/backend/deliveries",
                "erp/gift_givens/backend/givens",
                "erp/products/backend/damage_records",
-               "erp/consignments/backend/consignments"].include?(params[:controller]) %>
+               "erp/consignments/backend/consignments",
+               "erp/deliveries/backend/sales"].include?(params[:controller]) %>
             <span class="selected"></span>
             <span class="arrow open"></span>
         <% else %>
@@ -16,9 +18,12 @@
         <% end %>
     </a>
     <ul class="sub-menu">
-        <li class="nav-item ">
-            <a href="" class="nav-link ">
+        <li class="nav-item <%= "active open" if ["erp/deliveries/backend/sales"].include?(params[:controller]) %>">
+            <a href="<%= erp_deliveries.backend_sales_orders_path %>" class="nav-link ">
                 <span class="title"><%= t('.sales_orders') %></span>
+                <% if ["erp/deliveries/backend/sales"].include?(params[:controller]) %>
+                <span class="selected"></span>
+                <% end %>
             </a>
         </li>
         <li class="nav-item ">
