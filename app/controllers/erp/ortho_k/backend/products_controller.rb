@@ -131,7 +131,7 @@ module Erp
         end
         
         def import_report_table
-          @products = Erp::Products::Product.all.order("code").paginate(:page => params[:page], :per_page => 20)
+          @rows = Erp::Products::Product.import_report(params)
 
           render layout: nil
         end
@@ -141,7 +141,7 @@ module Erp
         end
         
         def export_report_table
-          @products = Erp::Products::Product.all.order("code").paginate(:page => params[:page], :per_page => 20)
+          @rows = Erp::Products::Product.export_report(params)
 
           render layout: nil
         end

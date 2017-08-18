@@ -47,21 +47,21 @@
             <th class="bg-yellow-mint bg-font-yellow-mint text-center text-nowrap" width="7%"><%= t('.price') %></th>
             <th class="bg-yellow-mint bg-font-yellow-mint text-center text-nowrap" width="7%"><%= t('.unknown_4') %></th>
         </tr>
-        <% @products.each_with_index do |product,index| %>
+        <% @rows.each_with_index do |row,index| %>
             <tr>
-                <td class="text-left"><%= format_date(rand((Time.current - 10.week)..Time.current)) %></td>
-                <td class="text-left"><%= format_date(rand((Time.current - 10.week)..Time.current)) %></td>
-                <td class="text-left"><%= ['XK','XB','KG','XM','CK'].to_a.sample + '0817-00' %><%= (1..5).to_a.sample %></td>
-                <td class="text-left"><%= Erp::Contacts::Contact.where(is_customer: true).to_a.sample.name %></td>
-                <td class="text-left">#<%= product.code %></td>
-                <td class="text-left"></td>
-                <td class="text-left"><%= product.category_name %></td>
-                <td class="text-left"><%= product.name %></td>
-                <td class="text-center stock-num text-bold bg-warning"><%= (0..5).to_a.sample %></td>
-                <td class="text-left"><%= ['Lấy từ tên hàng hóa','Xuất bán'].to_a.sample %></td>
+                <td class="text-left"><%= format_date(row[:record_date]) %></td>
+                <td class="text-left"><%= format_date(row[:voucher_date]) %></td>
+                <td class="text-left"><%= row[:voucher_code] %></td>
+                <td class="text-left"><%= row[:customer_name] %></td>
+                <td class="text-left"><%= row[:product_code] %></td>
+                <td class="text-left"><%= row[:diameter] %></td>
+                <td class="text-left"><%= row[:category] %></td>
+                <td class="text-left"><%= row[:product_name] %></td>
+                <td class="text-center stock-num text-bold bg-warning"><%= row[:quantity] %></td>
+                <td class="text-left"><%= row[:description] %></td>
                 <td class="text-left"><%= ['Mới','Vỡ','Xước','Sau 1 năm'].to_a.sample %></td>
-                <td class="text-left"><%= ['ADV','SG','TN','KG'].to_a.sample %></td>
-                <td class="text-left"><%= ['cái','chai','hộp'].to_a.sample %></td>
+                <td class="text-left"><%= row[:warehouse] %></td>
+                <td class="text-left"><%= row[:unit] %></td>
                 <td class="text-right stock-num text-bold text-primary"><%= format_number((100..500).to_a.sample*1000) %></td>
                 <td class="text-right stock-num text-bold text-primary"><%= format_number((100..500).to_a.sample*1000) %></td>
                 <td class="text-left"><%= ['USD','VNĐ'].to_a.sample %></td>
@@ -78,4 +78,3 @@
         <% end %>
     </table>
 </div>
-<%= erp_datalist_pagination(@products) %>
