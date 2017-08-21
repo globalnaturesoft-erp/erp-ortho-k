@@ -1,0 +1,40 @@
+<td>
+    <%= erp_form_control("dataselect", {
+        name: 'options[central_conditions][' + uid + '][category]',
+        value: defined?(option) ? option[1]["category"] : '',
+        text: defined?(option) ? Erp::Products::Category.find(option[1]["category"].to_i).name : '',
+        placeholder: 'Chọn loại hàng',
+        url: erp_products.dataselect_backend_categories_path(format: 'json')
+    }) %>
+</td>
+<td>
+    <%
+        pv_id = defined?(option) ? (option[1]["letter"].reject { |c| c.empty? }) : [-1]
+        values = (Erp::Products::PropertiesValue.where(id: pv_id).map {|pv| {text: pv.value, value: pv.id}})
+    %>
+
+    <% diameter = Erp::Products::Property.where(name: Erp::Products::Property::NAME_CHU).first %>
+    <%= erp_form_control("dataselect", {
+        name: 'options[central_conditions][' + uid + '][letter][]',
+        values: values,
+        text: '',
+        placeholder: 'Chọn Chữ',
+        url: erp_products.dataselect_backend_properties_values_path(format: 'json', property_id: diameter.id),
+        multiple: true
+    }) %>
+</td>
+<td>
+    <%
+        pv_id = defined?(option) ? (option[1]["number"].reject { |c| c.empty? }) :  [-1]
+        values = (Erp::Products::PropertiesValue.where(id: pv_id).map {|pv| {text: pv.value, value: pv.id}})
+    %>
+    <% diameter = Erp::Products::Property.where(name: Erp::Products::Property::NAME_SO).first %>
+    <%= erp_form_control("dataselect", {
+        name: 'options[central_conditions][' + uid + '][number][]',
+        values: values,
+        text: '',
+        placeholder: 'Chọn Số',
+        url: erp_products.dataselect_backend_properties_values_path(format: 'json', property_id: diameter.id),
+        multiple: true
+    }) %>
+</td>

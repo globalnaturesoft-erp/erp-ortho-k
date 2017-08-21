@@ -1,0 +1,61 @@
+<% content_for :title do %>
+    Điều kiện đặt hàng - Vùng trung tâm
+<% end %>
+
+<% content_for :page_title do %>
+    <a href="<%= erp_ortho_k.backend_central_areas_path %>">
+        <i class="icon-target"></i> Điều kiện đặt hàng - Vùng trung tâm
+    </a>
+<% end %>
+
+<% content_for :page_toolbar do %>
+    <div class="btn-group">
+        <div class="clearfix">
+        </div>
+    </div>
+<% end %>
+
+<div class="row">
+    <div class="col-md-12">
+        <%= form_tag do |f| %>
+            <h3>Điều kiện đặt hàng</h3>
+            <div class="portlet light bordered">
+                <div class="portlet-body table-td-valign-top">
+                    <%= erp_form_control("addableform", {
+                        type: 'table',
+                        add_button: 'Thêm điều kiện',
+                        partial: 'erp/ortho_k/backend/setting/purchase_condition',
+                        partial_url: erp_ortho_k.backend_purchase_condition_path,
+                        items: @options["purchase_conditions"],
+                        item: :option,
+                        thead: "<th>Loại hàng</th>
+                                <th>Đường kính</th>
+                                <th>Chữ</th>
+                                <th>Số</th>"
+                    }) %>
+
+                </div>
+            </div>
+            <h3>Cấu hình vùng trung tâm</h3>
+            <div class="portlet light bordered">
+                <div class="portlet-body table-td-valign-top">
+                    <%= erp_form_control("addableform", {
+                        type: 'table',
+                        add_button: 'Thêm vùng',
+                        partial: 'erp/ortho_k/backend/setting/central_condition',
+                        partial_url: erp_ortho_k.backend_central_condition_path,
+                        items: @options["central_conditions"],
+                        item: :option,
+                        thead: "<th>Loại hàng</th>
+                                <th>Chữ</th>
+                                <th>Số</th>"
+                    }) %>
+
+                </div>
+            </div>
+            <%= erp_component('button/save', {
+                text: "Lưu cấu hình"
+            }) %>
+        <% end %>
+    </div>
+</div>

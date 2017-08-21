@@ -1,3 +1,19 @@
+<div class="portlet m-grid m-grid-demo">
+    <div class="m-grid-row">
+        <div class="m-grid-col m-grid-col-middle m-grid-col-center">
+            <label>Tổng nhập</label><br/>
+            <strong><%= rand(500..1200) %></strong>
+        </div>
+        <div class="m-grid-col m-grid-col-middle m-grid-col-center">
+            <label>Số lượng Vùng rìa</label><br/>
+            <strong><%= rand(100..400) %></strong>
+        </div>
+        <div class="m-grid-col m-grid-col-middle m-grid-col-center">
+            <label>Số lượng Vùng Trung Tâm</label><br/>
+            <strong><%= rand(400..800) %></strong>
+        </div>
+    </div>
+</div>
 <table class="table table-bordered table-advance order-column" id="">
     <tr>
         <th class="bg-grey text-center" width="1%"><%= t('.number') %></th>
@@ -22,3 +38,4 @@
         </tr>
     <% end %>
 </table>
+

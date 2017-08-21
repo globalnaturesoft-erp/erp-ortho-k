@@ -34,6 +34,11 @@ Erp::OrthoK::Engine.routes.draw do
 					get 'dataselect'
 				end
 			end
+
+      get 'setting', :to => "setting#index"
+      post 'setting', :to => "setting#index"
+      get 'purchase_condition', :to => "setting#purchase_condition", :as => 'purchase_condition'
+      get 'central_condition', :to => "setting#central_condition", :as => 'central_condition'
     end
 	end
 end

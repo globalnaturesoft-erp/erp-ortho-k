@@ -19,7 +19,7 @@
                 multiple: true
             }) %>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-6">
             <% diameter = Erp::Products::Property.where(name: "Đường kính").first %>
             <%= erp_form_control("dataselect", {
                 name: 'diameter',
@@ -32,7 +32,7 @@
                 multiple: true
             }) %>
         </div>
-        <div class="col-md-3">
+        <!--<div class="col-md-3">
             <%= erp_form_control("dataselect", {
                 name: 'warehouse',
                 value: '',
@@ -42,7 +42,7 @@
                 url: erp_warehouses.dataselect_backend_warehouses_path(format: 'json'),
                 multiple: true
             }) %>
-        </div>
+        </div>-->
         <div class="col-md-3">
             <%= erp_form_control("dataselect", {
                 name: 'area',

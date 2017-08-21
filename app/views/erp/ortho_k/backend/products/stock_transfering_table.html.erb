@@ -13,7 +13,7 @@
                 if @condition == 'from_redundant'
                     from = rand(@condition_value.to_i..(@condition_value.to_i+4))
                     to = rand(0..2)
-                    transfer = @transfer_quantity
+                    transfer = from - @condition_value.to_i
                 else
                     to = rand(0..@condition_value.to_i)
                     from = rand(1..6)
@@ -34,6 +34,23 @@
             </tr>
         <% end %>
     </table>
+    <h3 class="mt-20">Báo cáo chung</h3>
+    <div class="portlet m-grid m-grid-demo">
+        <div class="m-grid-row">
+            <div class="m-grid-col m-grid-col-middle m-grid-col-center">
+                <label>Tổng nhập</label><br/>
+                <strong><%= rand(1200..5000) %></strong>
+            </div>
+            <div class="m-grid-col m-grid-col-middle m-grid-col-center">
+                <label>Số lượng Vùng rìa</label><br/>
+                <strong><%= rand(600..2500) %></strong>
+            </div>
+            <div class="m-grid-col m-grid-col-middle m-grid-col-center">
+                <label>Số lượng Vùng Trung Tâm</label><br/>
+                <strong><%= rand(600..2500) %></strong>
+            </div>
+        </div>
+    </div>
 <% else %>
     <div class="alert alert-warning">
         <p>Vui lòng chọn các tham số bắt buộc:

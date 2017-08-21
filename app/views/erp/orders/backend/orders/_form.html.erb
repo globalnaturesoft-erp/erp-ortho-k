@@ -1,7 +1,7 @@
 <%= form_for([erp_orders, :backend, order], html: {multipart: true}) do |f| %>
-    <% if @type == Erp::Orders::Order::TYPE_SALES_ORDER %>
+    <% if order.sales? %>
         <% employee_name = 'sales_employee' %>
-    <% elsif @type == Erp::Orders::Order::TYPE_PURCHASE_ORDER %>
+    <% elsif order.purchase? %>
         <% employee_name = 'purchase_employee' %>
     <% else %>
         <% employee_name = 'employee' %>
@@ -28,7 +28,7 @@
                             errors: order.errors.full_messages_for(:order_date)
                         }) %>
                         <% if Erp::Core.available?("contacts") %>
-                            <% if @type == Erp::Orders::Order::TYPE_SALES_ORDER %>
+                            <% if order.sales? %>
                                 <input type="hidden" name="order[supplier_id]" value="<%= order.supplier_id %>" />
                                 <%= erp_form_control("dataselect", {
                                     name: 'order[customer_id]',
@@ -53,7 +53,7 @@
                                     errors: order.errors.full_messages_for(:customer_id)
                                 }) %>
                             <% end %>
-                            <% if @type == Erp::Orders::Order::TYPE_PURCHASE_ORDER %>
+                            <% if order.purchase? %>
                                 <input type="hidden" name="order[customer_id]" value="<%= order.customer_id %>" />
                                 <%= erp_form_control("dataselect", {
                                     name: 'order[supplier_id]',
@@ -180,7 +180,6 @@
                                         <th class='text-right'>#{t('.total_amount')}</th>
                                         <th class='text-right'>#{t('.discount')}</th>
                                         <th class='text-right'>#{t('.shopping_fee')}</th>
-                                        <th>#{t('.tax')}</th>
                                         <th class='text-right'>#{t('.total')}</th>
                                         <th class='text-right'>#{t('.description')}</th>
                                         <th class='text-right'>#{t('.action')}</th>"

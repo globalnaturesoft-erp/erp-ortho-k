@@ -1,0 +1,36 @@
+<div class="col-md-12">
+    <div class="portlet grey-cascade box">
+        <div class="portlet-title">
+            <div class="caption">
+                <i class="fa fa-cubes"></i>
+                <%= t('.return_details') %>
+            </div>
+        </div>
+        <div class="portlet-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped flip-content">
+                    <thead class="flip-content">
+                        <tr>
+                            <th width="20%" class="text-left">Mã</th>
+                            <th>Đường kính</th>
+                            <th>Loại</th>
+                            <th class="numeric text-right"><%= t('.quantity') %></th>
+                            <th class="text-right">Ghi chú</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% @cs_return.return_details.each do |return_detail| %>
+                        <tr>
+                            <td class="text-left"><%= return_detail.get_product_code %></td>
+                            <td class="text-left"><%= return_detail.consignment_detail.product.get_diameter %></td>
+                            <td class="text-left"><%= return_detail.consignment_detail.product.category_name %></td>
+                            <td class="numeric text-right"><%= return_detail.quantity %></td>
+                            <td class="text-right"><%= return_detail.get_product_unit %></td>
+                        </tr>
+                        <% end %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

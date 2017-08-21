@@ -31,14 +31,6 @@
                 <span class="title"><%= t('.purchase_orders') %></span>
             </a>
         </li>
-        <li class="nav-item <%= "active open" if ["erp/warehouses/backend/warehouses"].include?(params[:controller]) %>">
-            <a href="<%= erp_warehouses.backend_warehouses_path %>" class="nav-link ">
-                <span class="title"><%= t('.warehouses') %></span>
-                <% if ["erp/warehouses/backend/warehouses"].include?(params[:controller]) %>
-                <span class="selected"></span>
-                <% end %>
-            </a>
-        </li>
         <li class="nav-item <%= "active open" if ["erp/stock_transfers/backend/transfers"].include?(params[:controller]) %>">
             <a href="<%= erp_stock_transfers.backend_transfers_path %>" class="nav-link ">
                 <span class="title"><%= t('.stock_transfers') %></span>
@@ -102,6 +94,14 @@
         <li class="nav-item ">
             <a href="" class="nav-link ">
                 <span class="title"><%= t('.smashed_scratched_report') %></span>
+            </a>
+        </li>
+        <li class="nav-item <%= "active open" if ["erp/warehouses/backend/warehouses"].include?(params[:controller]) %>">
+            <a href="<%= erp_warehouses.backend_warehouses_path %>" class="nav-link ">
+                <span class="title"><%= t('.warehouses') %></span>
+                <% if ["erp/warehouses/backend/warehouses"].include?(params[:controller]) %>
+                <span class="selected"></span>
+                <% end %>
             </a>
         </li>
     </ul>

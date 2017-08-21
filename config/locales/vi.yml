@@ -96,6 +96,7 @@ vi:
             name: "Tên hàng"
             warehouse: "Kho"
             stock_importing: 'Nhập hàng'
+            category: 'Loại hàng'
             choose_category: 'Chọn loại mặt hàng'
             all_diameters: 'Tất cả đường kính'
             all_warehouses: "Tất cả kho"            
@@ -135,6 +136,7 @@ vi:
             to_warehouse: "Kho nhập"
             choose_from_warehouse: "Chọn kho xuất"
             choose_to_warehouse: "Chọn kho nhập"
+            category: 'Loại hàng'
             all_categories: "Tất cả loại hàng"
             choose_category: 'Chọn loại mặt hàng'
             all_diameters: 'Tất cả đường kính'
