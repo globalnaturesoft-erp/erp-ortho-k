@@ -1,8 +1,10 @@
 <%= form_for([erp_orders, :backend, order], html: {multipart: true}) do |f| %>
     <% if order.sales? %>
         <% employee_name = 'sales_employee' %>
+        <% scope = Erp::Taxes::Tax::TAX_SCOPE_SALES %>
     <% elsif order.purchase? %>
         <% employee_name = 'purchase_employee' %>
+        <% scope = Erp::Taxes::Tax::TAX_SCOPE_PURCHASES %>
     <% else %>
         <% employee_name = 'employee' %>
     <% end %>
@@ -11,22 +13,28 @@
             <div class="col-md-6">
                 <div class="portlet light bordered">
                     <div class="portlet-body form">
-                        <%= erp_form_control('text', {
-                            label: t('.code'),
-                            name: 'order[code]',
-                            value: order.code,
-                            help: t('.help_code'),
-                            placeholder: t('.placeholder_code'),
-                            errors: order.errors.full_messages_for(:code)
-                        }) %>
-                        <%= erp_form_control('date', {
-                            label: t('.order_date'),
-                            name: 'order[order_date]',
-                            value: order.order_date,
-                            placeholder: t('.choose_order_date'),
-                            required: true,
-                            errors: order.errors.full_messages_for(:order_date)
-                        }) %>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <%= erp_form_control('text', {
+                                    label: t('.code'),
+                                    name: 'order[code]',
+                                    value: order.code,
+                                    help: t('.help_code'),
+                                    placeholder: t('.placeholder_code'),
+                                    errors: order.errors.full_messages_for(:code)
+                                }) %>
+                            </div>
+                            <div class="col-md-6">
+                                <%= erp_form_control('date', {
+                                    label: t('.order_date'),
+                                    name: 'order[order_date]',
+                                    value: order.order_date,
+                                    placeholder: t('.choose_order_date'),
+                                    required: true,
+                                    errors: order.errors.full_messages_for(:order_date)
+                                }) %>
+                            </div>
+                        </div>
                         <% if Erp::Core.available?("contacts") %>
                             <% if order.sales? %>
                                 <input type="hidden" name="order[supplier_id]" value="<%= order.supplier_id %>" />
@@ -79,6 +87,14 @@
                                 }) %>
                             <% end %>
                         <% end %>
+                        <%= erp_form_control('textarea', {
+                            label: t('.note'),
+                            name: 'order[note]',
+                            value: order.note,
+                            placeholder: t('.placeholder_note'),
+                            rows: 1,
+                            errors: order.errors.full_messages_for(:note)
+                        }) %>
                     </div>
                 </div>
             </div>
@@ -116,13 +132,15 @@
                             required: true,
                             errors: order.errors.full_messages_for(:warehouse_id)
                         }) %>
-                        <%= erp_form_control('textarea', {
-                            label: t('.note'),
-                            name: 'order[note]',
-                            value: order.note,
-                            placeholder: t('.placeholder_note'),
-                            rows: 1,
-                            errors: order.errors.full_messages_for(:note)
+                        <%= erp_form_control("dataselect", {
+                            name: 'order[tax_id]',
+                            value: order.tax_id,
+                            text: order.tax_name,
+                            label: t('.tax'),
+                            placeholder: t('.add_tax'),
+                            url: erp_taxes.dataselect_backend_taxes_path(format: 'json', scope: scope),
+                            required: true,
+                            errors: order.errors.full_messages_for(:tax_id)
                         }) %>
                     </div>
                 </div>
@@ -172,7 +190,7 @@
                                         container_selector: '.edit_product',
                                     }
                                 }),
-                                thead: "<th>#{t('.code')}</th>
+                                thead: "<th>#{t('.product_code')}</th>
                                         <th>#{t('.diameter')}</th>
                                         <th>#{t('.category')}</th>
                                         <th class='text-right'>#{t('.quantity')}</th>

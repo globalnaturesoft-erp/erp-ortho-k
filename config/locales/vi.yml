@@ -314,6 +314,13 @@ vi:
             created_at: "Ngày tạo"
             save: "Lưu"
             cancel: "Hủy"
+    orders:
+      backend:
+        orders:
+          form:
+            product_code: "Mã SP"
+            diameter: "Đ.kính"
+            category: "Loại"
   layouts:
     erp:
       backend:
