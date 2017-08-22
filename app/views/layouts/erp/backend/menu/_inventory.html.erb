@@ -39,8 +39,6 @@
                 <% if ["erp/deliveries/backend/deliveries"].include?(params[:controller]) %>
                 <span class="selected"></span>
                 <% end %>
-                <span class="badge badge-success deliveries-delivered"><%= Erp::Deliveries::Delivery.count_deliveries_delivered %></span>
-                <span class="badge badge-danger"><%= Erp::Deliveries::Delivery.count_deliveries_pending %></span>
             </a>
         </li>
         <li class="nav-item <%= "active open" if ["erp/stock_transfers/backend/transfers"].include?(params[:controller]) %>">
