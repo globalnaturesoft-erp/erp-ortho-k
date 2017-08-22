@@ -1,12 +1,12 @@
 <% if @columns.present? and @rows.present? %>
-    <table class="table table-advance table-checkable order-column" id="">
+    <table class="table table-advance table-checkable order-column table-matrix" id="">
         <tr>
             <th class="bg-grey" width="6%"></th>
             <% if @row_subs.present? %>
                 <th class="bg-grey"></th>
             <% end %>
             <% @columns.each do |column| %>
-                <th class="text-center bg-grey" width="4%"><%= column.value %></th>
+                <th class="text-center bg-grey" width=""><%= column.value %></th>
             <% end %>
         </tr>
         <% if @column_subs.present? %>

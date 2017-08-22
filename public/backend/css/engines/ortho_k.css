@@ -2,3 +2,9 @@
     margin: 15px 14px 0 0;
     height: 18px;
 }
+.table-matrix {
+    width: 2000px;
+}
+.datalist-matrix .datalist-container {
+    overflow-x: auto;
+}

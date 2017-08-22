@@ -53,32 +53,34 @@
     </div>
 <% end %>
 
-<%= erp_datalist(
-    url: erp_ortho_k.matrix_report_table_backend_products_path,
-    sortable: true,
-    keywords: [
-        {
-            text: t('.name'), name: 'erp_products_products.name'
-        },
-    ],
-    filters: [
-        {
-            text: t('.show_virtual'), name: 'show_virtual', value: true, checked: false
-        },
-        {
-            divider: true
-        },
-        {
-            text: t('.state_normal'), name: 'state_normal', value: true, checked: true
-        },
-        {
-            text: t('.state_scratched'), name: 'state_scratched', value: true, checked: false
-        },
-        {
-            text: t('.state_broken'), name: 'state_broken', value: true, checked: false
-        },
-    ],
-    columns: [
-    ],
-    header: 'dddddd'
-) %>
+<div class="datalist-matrix">
+    <%= erp_datalist(
+        url: erp_ortho_k.matrix_report_table_backend_products_path,
+        sortable: true,
+        keywords: [
+            {
+                text: t('.name'), name: 'erp_products_products.name'
+            },
+        ],
+        filters: [
+            {
+                text: t('.show_virtual'), name: 'show_virtual', value: true, checked: false
+            },
+            {
+                divider: true
+            },
+            {
+                text: t('.state_normal'), name: 'state_normal', value: true, checked: true
+            },
+            {
+                text: t('.state_scratched'), name: 'state_scratched', value: true, checked: false
+            },
+            {
+                text: t('.state_broken'), name: 'state_broken', value: true, checked: false
+            },
+        ],
+        columns: [
+        ],
+        header: 'dddddd'
+    ) %>
+</div>
