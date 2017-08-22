@@ -27,7 +27,7 @@
                 name: 'category',
                 value: '',
                 text: '',
-                label: t('.category'),
+                label: t('.filter_category'),
                 placeholder: t('.choose_category'),
                 url: erp_products.dataselect_backend_categories_path(format: 'json'),
                 multiple: true
@@ -38,7 +38,7 @@
                 name: 'warehouse',
                 value: '',
                 text: '',
-                label: t('.warehouse'),
+                label: t('.filter_warehouse'),
                 placeholder: t('.choose_warehouse'),
                 url: erp_warehouses.dataselect_backend_warehouses_path(format: 'json'),
                 multiple: true
@@ -46,10 +46,10 @@
         </div>
         <div class="col-md-3">
             <%= erp_form_control('select', {
-                label: t('.currency'),
                 name: 'currency',
                 value: '',
                 text: '',
+                label: t('.filter_currency'),
                 options: [ {text: 'USD',value: ''}, {text: 'VNĐ',value: ''}, {text: 'Tất cả',value: ''} ]
             }) %>
         </div>
@@ -58,7 +58,7 @@
                 name: 'customer',
                 value: '',
                 text: '',
-                label: t('.customer'),
+                label: t('.filter_customer'),
                 placeholder: t('.chooose_customer'),
                 url: erp_contacts.dataselect_backend_contacts_path(format: 'json'),
             }) %>
@@ -68,7 +68,7 @@
                 name: 'supplier',
                 value: '',
                 text: '',
-                label: t('.supplier'),
+                label: t('.filter_supplier'),
                 placeholder: t('.chooose_supplier'),
                 url: erp_contacts.dataselect_backend_contacts_path(format: 'json'),
             }) %>
@@ -78,7 +78,7 @@
                 name: 'product',
                 value: '',
                 text: '',
-                label: t('.product'),
+                label: t('.filter_product'),
                 placeholder: t('.chooose_product'),
                 url: erp_products.dataselect_backend_products_path(format: 'json'),
             }) %>
@@ -106,6 +106,78 @@
         },
     ],
     columns: [
+        {
+            text: t('.record_date'), name: 'record_date', value: true, checked: true
+        },
+        {
+            text: t('.voucher_date'), name: 'voucher_date', value: true, checked: true
+        },
+        {
+            text: t('.voucher_code'), name: 'voucher_code', value: true, checked: true
+        },
+        {
+            text: t('.supplier'), name: 'supplier', value: true, checked: true
+        },
+        {
+            text: t('.customer'), name: 'customer', value: true, checked: true
+        },
+        {
+            text: t('.code'), name: 'code', value: true, checked: true
+        },
+        {
+            text: t('.diameter'), name: 'diameter', value: true, checked: true
+        },
+        {
+            text: t('.category'), name: 'category', value: true, checked: true
+        },
+        {
+            text: t('.product_name'), name: 'product_name', value: true, checked: true
+        },
+        {
+            text: t('.description'), name: 'description', value: true, checked: true
+        },
+        {
+            text: t('.status'), name: 'status', value: true, checked: true
+        },
+        {
+            text: t('.warehouse'), name: 'warehouse', value: true, checked: true
+        },
+        {
+            text: t('.unit'), name: 'unit', value: true, checked: true
+        },
+        {
+            text: t('.quantity'), name: 'quantity', value: true, checked: true
+        },
+        {
+            text: t('.currency'), name: 'currency', value: true, checked: true
+        },
+        {
+            text: t('.rate'), name: 'rate', value: true, checked: true
+        },
+        {
+            text: t('.p_price'), name: 'p_price', value: true, checked: true
+        },
+        {
+            text: t('.tax_amount'), name: 'tax_amount', value: true, checked: true
+        },
+        {
+            text: t('.other_fees'), name: 'other_fees', value: true, checked: true
+        },
+        {
+            text: t('.unknown_3'), name: 'unknown_3', value: true, checked: true
+        },
+        {
+            text: t('.unknown_4'), name: 'unknown_4', value: true, checked: true
+        },
+        {
+            text: t('.s_price'), name: 's_price', value: true, checked: true
+        },
+        {
+            text: t('.unknown_5'), name: 'unknown_5', value: true, checked: true
+        },
+        {
+            text: t('.note'), name: 'note', value: true, checked: true
+        },
     ],
     header: 'dddddd'
 ) %>
