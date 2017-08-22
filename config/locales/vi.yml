@@ -377,6 +377,7 @@ vi:
             commissions: "Cập nhật chiết khấu"
           inventory:
             inventory: "Quản lý kho"
+            deliveries: "Phiếu nhập - xuất"
             sales_orders: "Quản lý xuất nhập kho - Bán hàng"
             purchase_orders: "Quản lý xuất nhập kho - Mua hàng"            
             warehouses: "Danh sách kho hàng"

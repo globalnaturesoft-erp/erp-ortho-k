@@ -2,7 +2,8 @@
                                           "erp/gift_givens/backend/givens",
                                           "erp/products/backend/damage_records",
                                           "erp/consignments/backend/consignments",
-                                          "erp/deliveries/backend/sales"].include?(params[:controller]) %>">
+                                          "erp/deliveries/backend/sales",
+                                          "erp/deliveries/backend/deliveries"].include?(params[:controller]) %>">
     <a href="javascript:;" class="nav-link nav-toggle">
         <i class="icon-drawer"></i>
         <span class="title"><%= t('.inventory') %></span>
@@ -10,7 +11,8 @@
                "erp/gift_givens/backend/givens",
                "erp/products/backend/damage_records",
                "erp/consignments/backend/consignments",
-               "erp/deliveries/backend/sales"].include?(params[:controller]) %>
+               "erp/deliveries/backend/sales",
+               "erp/deliveries/backend/deliveries"].include?(params[:controller]) %>
             <span class="selected"></span>
             <span class="arrow open"></span>
         <% else %>
@@ -29,6 +31,16 @@
         <li class="nav-item ">
             <a href="" class="nav-link ">
                 <span class="title"><%= t('.purchase_orders') %></span>
+            </a>
+        </li>
+        <li class="nav-item <%= "active open" if ["erp/deliveries/backend/deliveries"].include?(params[:controller]) %>">
+            <a href="<%= erp_deliveries.backend_deliveries_path %>" class="nav-link ">
+                <span class="title"><%= t('.deliveries') %></span>
+                <% if ["erp/deliveries/backend/deliveries"].include?(params[:controller]) %>
+                <span class="selected"></span>
+                <% end %>
+                <span class="badge badge-success deliveries-delivered"><%= Erp::Deliveries::Delivery.count_deliveries_delivered %></span>
+                <span class="badge badge-danger"><%= Erp::Deliveries::Delivery.count_deliveries_pending %></span>
             </a>
         </li>
         <li class="nav-item <%= "active open" if ["erp/stock_transfers/backend/transfers"].include?(params[:controller]) %>">
