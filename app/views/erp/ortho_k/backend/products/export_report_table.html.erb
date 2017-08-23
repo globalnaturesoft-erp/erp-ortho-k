@@ -183,7 +183,7 @@ sales_price_colspan = (get_columns(params).include?("s_price") ? 1 : 0) +
                 <td class="text-left"><%= row[:product_name] %></td>
                 <% end %>
                 <% if get_columns(params).include?("quantity") %>
-                <td class="text-center stock-num text-bold bg-warning"><%= row[:quantity] %></td>
+                <td class="text-center stock-num bg-warning"><%= row[:quantity] %></td>
                 <% end %>
                 <% if get_columns(params).include?("description") %>
                 <td class="text-left"><%= row[:description] %></td>
