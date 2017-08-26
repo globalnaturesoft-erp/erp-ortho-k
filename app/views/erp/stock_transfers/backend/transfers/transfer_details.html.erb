@@ -12,13 +12,18 @@
                 <table class="table table-bordered table-striped flip-content">
                     <thead class="flip-content">
                         <tr>
-                            <th width="10%" class="text-left"><%= t('.product_code') %></th>
-                            <th width="10%" class="numeric text-left"><%= t('.diameter') %></th>
-                            <th class="numeric text-left"><%= t('.category') %></th>
-                            <th class="numeric text-center"><%= t('.quantity') %></th>
+                            <th class="bg-yellow bg-font-yellow text-nowrap text-left"><%= t('.product_code') %></th>
+                            <th class="bg-yellow bg-font-yellow text-nowrap text-left"><%= t('.diameter') %></th>
+                            <th class="bg-yellow bg-font-yellow text-nowrap text-left"><%= t('.category') %></th>
+                            <th class="bg-yellow bg-font-yellow text-nowrap text-left"><%= t('.unit') %></th>
+                            <th class="bg-yellow bg-font-yellow text-nowrap text-center"><%= t('.quantity') %></th>
                         </tr>
                     </thead>
                     <tbody>
+                         <tr>
+                            <td class="bg-green" colspan="4"><strong> TỔNG CỘNG </strong></td>
+                            <td class="bg-green text-center"><strong><%= @transfer.cache_products_count %></strong></td>
+                        </tr>
                         <% @transfer.transfer_details.each do |transfer_detail| %>
                             <%
                                 from = rand(transfer_detail.quantity..9)
@@ -26,9 +31,10 @@
                             %>
                             <tr>
                                 <td class="text-left"><strong><%= transfer_detail.product_code %></strong></td>
-                                <td class="numeric text-left"><%= transfer_detail.product.get_diameter %></td>
-                                <td class="numeric text-left"><%= transfer_detail.product.category_name %></td>
-                                <td class="numeric text-center"><%= format_number(transfer_detail.quantity) %></td>
+                                <td class="text-left"><%= transfer_detail.product.get_diameter %></td>
+                                <td class="text-left"><%= transfer_detail.product.category_name %></td>
+                                <td class="text-left"><%= transfer_detail.product.unit_name %></td>
+                                <td class="text-center"><%= format_number(transfer_detail.quantity) %></td>
                             </tr>
                         <% end %>
                     </tbody>
