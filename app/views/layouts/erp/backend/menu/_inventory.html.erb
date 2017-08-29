@@ -4,7 +4,9 @@
                                           "erp/consignments/backend/consignments",
                                           "erp/deliveries/backend/sales",
                                           "erp/deliveries/backend/deliveries",
-                                          "erp/qdeliveries/backend/deliveries"].include?(params[:controller]) %>">
+                                          "erp/qdeliveries/backend/deliveries",
+                                          "erp/qdeliveries/backend/sales",
+                                          "erp/qdeliveries/backend/purchases"].include?(params[:controller]) %>">
     <a href="javascript:;" class="nav-link nav-toggle">
         <i class="icon-drawer"></i>
         <span class="title"><%= t('.inventory') %></span>
@@ -14,7 +16,9 @@
                "erp/consignments/backend/consignments",
                "erp/deliveries/backend/sales",
                "erp/deliveries/backend/deliveries",
-               "erp/qdeliveries/backend/deliveries"].include?(params[:controller]) %>
+               "erp/qdeliveries/backend/deliveries",
+               "erp/qdeliveries/backend/sales",
+               "erp/qdeliveries/backend/purchases"].include?(params[:controller]) %>
             <span class="selected"></span>
             <span class="arrow open"></span>
         <% else %>
@@ -46,14 +50,20 @@
         </li>
         <% end %>
         <% if Erp::Core.available?("qdeliveries") %>
-        <li class="nav-item ">
-            <a href="" class="nav-link ">
+        <li class="nav-item <%= "active open" if ["erp/qdeliveries/backend/sales"].include?(params[:controller]) %>">
+            <a href="<%= erp_qdeliveries.backend_sales_orders_path %>" class="nav-link ">
                 <span class="title"><%= t('.sales_orders') %></span>
+                <% if ["erp/qdeliveries/backend/sales"].include?(params[:controller]) %>
+                <span class="selected"></span>
+                <% end %>
             </a>
         </li> 
-        <li class="nav-item ">
-            <a href="" class="nav-link ">
-                <span class="title"><%= t('.purchase_orders') %></span>
+        <li class="nav-item <%= "active open" if ["erp/qdeliveries/backend/purchases"].include?(params[:controller]) %>">
+            <a href="<%= erp_qdeliveries.backend_purchases_orders_path %>" class="nav-link ">
+                <span class="title"><%= t('.purchases_orders') %></span>
+                <% if ["erp/qdeliveries/backend/purchases"].include?(params[:controller]) %>
+                <span class="selected"></span>
+                <% end %>
             </a>
         </li>        
         <li class="nav-item <%= "active open" if ["erp/qdeliveries/backend/deliveries"].include?(params[:controller]) %>">

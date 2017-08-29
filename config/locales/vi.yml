@@ -407,8 +407,8 @@ vi:
           inventory:
             inventory: "Quản lý kho"
             deliveries: "Phiếu nhập - xuất"
-            sales_orders: "Quản lý xuất nhập kho - Bán hàng"
-            purchase_orders: "Quản lý xuất nhập kho - Mua hàng"            
+            sales_orders: "Kiểm tra xuất nhập kho - Bán hàng"
+            purchases_orders: "Kiểm tra xuất nhập kho - Mua hàng"            
             warehouses: "Danh sách kho hàng"
             stock_transfers: "Quản lý chuyển kho"
             stock_transfering: "Kiểm tra hàng chuyển kho"
