@@ -1,23 +1,25 @@
 Erp::Products::Product.class_eval do
   has_many :transfer_details, class_name: 'Erp::StockTransfers::TransferDetail'
-  
+
   # get diameter value
   def get_value(property)
     return nil if !property.present?
-    
-    cache = JSON.parse(self.cache_properties)
-    (cache[property.id.to_s].present? and cache[property.id.to_s][1].present?) ? cache[property.id.to_s][1] : nil
+
+    if self.cache_properties.present?
+      cache = JSON.parse(self.cache_properties)
+      return ((cache[property.id.to_s].present? and cache[property.id.to_s][1].present?) ? cache[property.id.to_s][1] : nil)
+    end
   end
 
   # get diameter
   def get_diameter
     self.get_value(Erp::Products::Property.getByName(Erp::Products::Property::NAME_DUONG_KINH))
   end
-  
+
   # get import report
   def self.import_report(params)
     result = []
-    
+
     Erp::StockTransfers::TransferDetail.joins(:transfer)
       .where(erp_stock_transfers_transfers: {status: Erp::StockTransfers::Transfer::STATUS_DELIVERED}).limit(10)
       .each do |td|
@@ -36,14 +38,14 @@ Erp::Products::Product.class_eval do
         unit: td.product.unit_name,
       }
     end
-    
+
     return result
   end
-  
+
   # get export report
   def self.export_report(params)
     result = []
-    
+
     Erp::StockTransfers::TransferDetail.joins(:transfer)
       .where(erp_stock_transfers_transfers: {status: Erp::StockTransfers::Transfer::STATUS_DELIVERED}).limit(10)
       .each do |td|
@@ -62,7 +64,7 @@ Erp::Products::Product.class_eval do
         unit: td.product.unit_name,
       }
     end
-    
+
     Erp::GiftGivens::GivenDetail.joins(:given)
       .where(erp_gift_givens_givens: {status: Erp::GiftGivens::Given::STATUS_DELIVERED}).limit(10)
       .each do |gv_detail|
@@ -82,7 +84,7 @@ Erp::Products::Product.class_eval do
         unit: gv_detail.product.unit_name,
       }
     end
-    
+
     return result
   end
 end
