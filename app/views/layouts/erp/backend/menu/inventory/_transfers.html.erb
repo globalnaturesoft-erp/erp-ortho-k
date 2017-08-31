@@ -1,0 +1,22 @@
+<li class="nav-item <%= "active open" if ["erp/stock_transfers/backend/transfers"].include?(params[:controller]) || (params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "stock_transfering") %>">
+    <a href="javascript:;" class="nav-link nav-toggle">
+        <i class="glyphicon glyphicon-transfer"></i>
+        <span class="title"><%= t('.transfers') %></span>
+        <% if ["erp/stock_transfers/backend/transfers"].include?(params[:controller]) || (params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "stock_transfering") %>
+            <span class="selected"></span>
+            <span class="arrow open"></span>
+        <% else %>
+            <span class="arrow"></span>
+        <% end %>
+    </a>
+    <ul class="sub-menu" <% if ["erp/stock_transfers/backend/transfers"].include?(params[:controller]) || (params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "stock_transfering") %>
+                            style="display: block;"
+                        <% else %>style="display: none;"<% end %>>
+        <li class="nav-item <%= "active" if ["erp/stock_transfers/backend/transfers"].include?(params[:controller]) %>">
+            <%= link_to t('.stock_transfers'), erp_stock_transfers.backend_transfers_path, class: "nav-link ", title: t('.stock_transfers') %>
+        </li>
+        <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "stock_transfering" %>">
+            <%= link_to t('.stock_transfering'), erp_ortho_k.stock_transfering_backend_products_path, class: "nav-link ", title: t('.stock_transfering') %>
+        </li>
+    </ul>
+</li>

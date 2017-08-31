@@ -1,0 +1,31 @@
+<li class="nav-item <%= "active open" if ["erp/qdeliveries/backend/deliveries",
+                                          "erp/qdeliveries/backend/sales",
+                                          "erp/qdeliveries/backend/purchases"].include?(params[:controller]) %>">
+    <a href="javascript:;" class="nav-link nav-toggle">
+        <i class="glyphicon glyphicon-sort"></i>
+        <span class="title"><%= t('.qdeliveries') %></span>
+        <% if ["erp/deliveries/backend/deliveries",
+               "erp/qdeliveries/backend/sales",
+               "erp/qdeliveries/backend/purchases"].include?(params[:controller]) %>
+            <span class="selected"></span>
+            <span class="arrow open"></span>
+        <% else %>
+            <span class="arrow"></span>
+        <% end %>
+    </a>
+    <ul class="sub-menu" <% if ["erp/qdeliveries/backend/deliveries",
+                            "erp/qdeliveries/backend/sales",
+                            "erp/qdeliveries/backend/purchases"].include?(params[:controller]) %>
+                            style="display: block;"
+                        <% else %>style="display: none;"<% end %>>
+        <li class="nav-item <%= "active" if ["erp/qdeliveries/backend/sales"].include?(params[:controller]) %>">
+            <%= link_to t('.sales_orders'), erp_qdeliveries.backend_sales_orders_path, class: "nav-link ", title: t('.sales_orders') %>
+        </li>
+        <li class="nav-item <%= "active" if ["erp/qdeliveries/backend/purchases"].include?(params[:controller]) %>">
+            <%= link_to t('.purchases_orders'), erp_qdeliveries.backend_purchases_orders_path, class: "nav-link ", title: t('.purchases_orders') %>
+        </li>
+        <li class="nav-item <%= "active" if ["erp/qdeliveries/backend/deliveries"].include?(params[:controller]) %>">
+            <%= link_to t('.deliveries'), erp_qdeliveries.backend_deliveries_path, class: "nav-link ", title: t('.deliveries') %>
+        </li>
+    </ul>
+</li>

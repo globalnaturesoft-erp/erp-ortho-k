@@ -10,7 +10,7 @@
         <% end %>
     </a>
     <ul class="sub-menu">
-        <li class="nav-item ">
+        <li class="nav-item <%= "active" if ["erp/sales/backend/sales"].include?(params[:controller]) %>">
             <a href="<%= erp_sales.backend_sales_orders_path %>" class="nav-link ">
                 <span class="title"><%= t('.sales_orders') %></span>
             </a>

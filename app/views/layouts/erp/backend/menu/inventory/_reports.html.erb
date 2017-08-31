@@ -1,0 +1,40 @@
+<li class="nav-item <%= "active open" if (params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "matrix_report") ||
+                                         (params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "delivery_report") ||
+                                         (params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "import_report") ||
+                                         (params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "export_report") %>">
+    <a href="javascript:;" class="nav-link nav-toggle">
+        <i class="glyphicon glyphicon-calendar"></i>
+        <span class="title"><%= t('.report') %></span>
+        <% if (params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "matrix_report") ||
+              (params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "delivery_report") ||
+              (params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "import_report") ||
+              (params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "export_report") %>
+            <span class="selected"></span>
+            <span class="arrow open"></span>
+        <% else %>
+            <span class="arrow"></span>
+        <% end %>
+    </a>
+    <ul class="sub-menu" <% if (params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "matrix_report") ||
+                               (params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "delivery_report") ||
+                               (params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "import_report") ||
+                               (params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "export_report") %>
+                            style="display: block;"
+                        <% else %>style="display: none;"<% end %>>
+        <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "matrix_report" %>">
+            <%= link_to t('.inventory_report'), erp_ortho_k.matrix_report_backend_products_path, class: "nav-link ", title: t('.inventory_report') %>
+        </li>
+        <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "delivery_report" %>">
+            <%= link_to t('.delivery_report'), erp_ortho_k.delivery_report_backend_products_path, class: "nav-link ", title: t('.delivery_report') %>
+        </li>
+        <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "import_report" %>">
+            <%= link_to t('.import_report'), erp_ortho_k.import_report_backend_products_path, class: "nav-link ", title: t('.import_report') %>
+        </li>
+        <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "export_report" %> ">
+            <%= link_to t('.export_report'), erp_ortho_k.export_report_backend_products_path, class: "nav-link ", title: t('.export_report') %>
+        </li>
+        <li class="nav-item ">
+            <%= link_to t('.smashed_scratched_report'), "", class: "nav-link ", title: t('.smashed_scratched_report') %>
+        </li>
+    </ul>
+</li> 
