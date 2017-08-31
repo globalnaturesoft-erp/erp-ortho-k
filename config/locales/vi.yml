@@ -381,8 +381,10 @@ vi:
       backend:
         transfers:
           form:
-            diameter: "Đ.kính"
+            diameter: "Đường kính"
             category: "Loại"
+            source_warehouse: "Kho nguồn/đi"
+            destination_warehouse: "Kho đích/đến"
             total_transfer: "Tổng số lượng chuyển"
             total_stock_source_before: "Tồn kho đi (trước chuyển)"
             total_stock_source_after: "Tồn kho đi (sau chuyển)"
