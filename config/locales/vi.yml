@@ -377,6 +377,17 @@ vi:
             product_code: "Mã SP"
             diameter: "Đ.kính"
             category: "Loại"
+    stock_transfers:
+      backend:
+        transfers:
+          form:
+            diameter: "Đ.kính"
+            category: "Loại"
+            total_transfer: "Tổng số lượng chuyển"
+            total_stock_source_before: "Tồn kho đi (trước chuyển)"
+            total_stock_source_after: "Tồn kho đi (sau chuyển)"
+            total_stock_destination_before: "Tồn kho đến (trước chuyển)"
+            total_stock_destination_after: "Tồn kho đến (sau chuyển)"
   layouts:
     erp:
       backend:

@@ -69,51 +69,67 @@
                     <div class="portlet-body form">
                         <div class="row">
                             <div class="col-md-12">
-                                <%= erp_form_control("addableform", {
-                                    type: 'table',
-                                    add_button: t('.add'),
-                                    partial: 'erp/stock_transfers/backend/transfer_details/transfer_line_form',
-                                    partial_url: erp_stock_transfers.transfer_line_form_backend_transfer_details_path,
-                                    items: @transfer.transfer_details,
-                                    item: :transfer_detail,
-                                    add_control_selector: "input[name='product_id']",
-                                    add_control: erp_form_control("dataselect", {
-                                        name: 'product_id',
-                                        placeholder: t('.choose_product'),
-                                        label: t('.product'),
-                                        help: t('.help_product'),
-                                        url: erp_products.dataselect_backend_products_path(format: 'json'),
-                                        create: {
-                                            url: erp_products.new_backend_product_path,
-                                            title: t('.create_product'),
-                                            container_selector: '.new_product',
-                                            input_selector: 'input[name="product[name]"]'
-                                        },
-                                        edit: {
-                                            url: erp_products.edit_backend_product_path(id: ':value'),
-                                            title: t('.edit_product'),
-                                            container_selector: '.edit_product',
-                                        }
-                                    }),
-                                    thead: "<th>#{t('.product_code')}</th>
-                                            <th>#{t('.diameter')}</th>
-                                            <th>#{t('.category')}</th>
-                                            <th class='text-right'>#{t('.quantity')}</th>
-                                            <th class='text-center'>#{t('.source_warehouse')}</th>
-                                            <th class='text-center'>#{t('.destination_warehouse')}</th>
-                                            <th class='text-right'>#{t('.action')}</th>"
-                                }) %>
-
-                                <table class="table">
-                                    <tr>
-                                        <td width="90%" class="text-right text-semibold"><%= t(".quantity_total") %>:</td>
-                                        <td class="text-right">
-                                            <h4>
-                                                <span class="quantity_total text-bold"></span>
-                                            </h4>
-                                        </td>
-                                    </tr>
-                                </table>
+                                <div class="transfer-details">
+                                    <%= erp_form_control("addableform", {
+                                        type: 'table',
+                                        add_button: t('.add'),
+                                        partial: 'erp/stock_transfers/backend/transfer_details/transfer_line_form',
+                                        partial_url: erp_stock_transfers.transfer_line_form_backend_transfer_details_path,
+                                        items: @transfer.transfer_details,
+                                        item: :transfer_detail,
+                                        add_control_selector: "input[name='product_id']",
+                                        add_control: erp_form_control("dataselect", {
+                                            name: 'product_id',
+                                            placeholder: t('.choose_product'),
+                                            label: t('.product'),
+                                            help: t('.help_product'),
+                                            url: erp_products.dataselect_backend_products_path(format: 'json'),
+                                            create: {
+                                                url: erp_products.new_backend_product_path,
+                                                title: t('.create_product'),
+                                                container_selector: '.new_product',
+                                                input_selector: 'input[name="product[name]"]'
+                                            },
+                                            edit: {
+                                                url: erp_products.edit_backend_product_path(id: ':value'),
+                                                title: t('.edit_product'),
+                                                container_selector: '.edit_product',
+                                            }
+                                        }),
+                                        thead: "<th>#{t('.product_code')}</th>
+                                                <th>#{t('.diameter')}</th>
+                                                <th>#{t('.category')}</th>
+                                                <th class='text-right'>#{t('.quantity')}</th>
+                                                <th class='text-center'>#{t('.source_warehouse')}</th>
+                                                <th class='text-center'>#{t('.destination_warehouse')}</th>
+                                                <th class='text-right'>#{t('.action')}</th>"
+                                    }) %>
+                                    
+                                    <div class="portlet m-grid m-grid-demo">
+                                        <div class="m-grid-row">
+                                            <div class="m-grid-col m-grid-col-middle m-grid-col-center">
+                                                <label><%= t('.total_transfer') %></label><br/>
+                                                <strong class="total_transfer"></strong>
+                                            </div>
+                                            <div class="m-grid-col m-grid-col-middle m-grid-col-center">
+                                                <label><%= t('.total_stock_source_before') %></label><br/>
+                                                <strong class="total_stock_source_before"></strong>
+                                            </div>
+                                            <div class="m-grid-col m-grid-col-middle m-grid-col-center">
+                                                <label><%= t('.total_stock_source_after') %></label><br/>
+                                                <strong class="total_stock_source_after"></strong>
+                                            </div>
+                                            <div class="m-grid-col m-grid-col-middle m-grid-col-center">
+                                                <label><%= t('.total_stock_destination_before') %></label><br/>
+                                                <strong class="total_stock_destination_before"></strong>
+                                            </div>
+                                            <div class="m-grid-col m-grid-col-middle m-grid-col-center">
+                                                <label><%= t('.total_stock_destination_after') %></label><br/>
+                                                <strong class="total_stock_destination_after"></strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

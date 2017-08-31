@@ -1,6 +1,6 @@
 <%
-    from = rand(transfer_detail.quantity..9)
-    to = rand(0..1)
+    from = transfer_detail.product.get_stock_by_warehouse(Erp::Warehouses::Warehouse.first)
+    to = transfer_detail.product.get_stock_by_warehouse(Erp::Warehouses::Warehouse.last)
 %>
 
 <input type="hidden" name="transfer[transfer_details_attributes][<%= uid %>][id]" value="<%= transfer_detail.id %>">
@@ -18,14 +18,14 @@
     }) %>
 </td>
 <td class="text-center">
-    <%= from %>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <span class="line_stock_source text-semibold"><%= from %></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <i class="fa fa-arrow-right"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <%= from - transfer_detail.quantity %>
+    <span class="line_stock_source_after text-semibold"></span>
 </td>
 <td class="text-center">
-    <%= to %>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <span class="line_stock_destination text-semibold"><%= to %></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <i class="fa fa-arrow-right"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <%= to + transfer_detail.quantity %>
+    <span class="line_stock_destination_after text-semibold"></span>
 </td>
 <td class="text-right">
     <%= erp_form_control("addableform_remove_button", {
