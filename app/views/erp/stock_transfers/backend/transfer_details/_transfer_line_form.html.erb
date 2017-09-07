@@ -27,6 +27,17 @@
     <i class="fa fa-arrow-right"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <span class="line_stock_destination_after text-semibold"></span>
 </td>
+<td width='20%'>
+    <%= erp_form_control("dataselect", {
+        name: 'transfer[transfer_details_attributes][' + uid + '][state_id]',
+        value: transfer_detail.state_id,
+        text: transfer_detail.state_name,
+        placeholder: t('.choose_state'),
+        url: erp_products.dataselect_backend_states_path(format: 'json'),
+        required: true,
+        errors: transfer_detail.errors.full_messages_for(:state_id)
+    }) %>
+</td>
 <td class="text-right">
     <%= erp_form_control("addableform_remove_button", {
         is_nested_form: true

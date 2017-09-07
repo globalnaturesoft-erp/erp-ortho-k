@@ -390,6 +390,8 @@ vi:
             total_stock_source_after: "Tồn kho đi (sau chuyển)"
             total_stock_destination_before: "Tồn kho đến (trước chuyển)"
             total_stock_destination_after: "Tồn kho đến (sau chuyển)"
+          transfer_details:
+            unit: "Đơn vị tính"
   layouts:
     erp:
       backend:

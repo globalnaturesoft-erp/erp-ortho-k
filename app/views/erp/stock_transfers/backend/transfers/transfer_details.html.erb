@@ -25,10 +25,6 @@
                             <td class="bg-green text-center"><strong><%= @transfer.cache_products_count %></strong></td>
                         </tr>
                         <% @transfer.transfer_details.each do |transfer_detail| %>
-                            <%
-                                from = rand(transfer_detail.quantity..9)
-                                to = rand(0..1)
-                            %>
                             <tr>
                                 <td class="text-left"><strong><%= transfer_detail.product_code %></strong></td>
                                 <td class="text-left"><%= transfer_detail.product.get_diameter %></td>
