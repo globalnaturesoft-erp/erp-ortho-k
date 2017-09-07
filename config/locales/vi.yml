@@ -430,8 +430,8 @@ vi:
             qdeliveries:
               qdeliveries: "Quản lý xuất nhập"
               deliveries: "Phiếu nhập - xuất"
-              sales_orders: "Kiểm tra xuất nhập kho - Bán hàng"
-              purchases_orders: "Kiểm tra xuất nhập kho - Mua hàng"
+              sales_orders: "Kiểm tra bán hàng"
+              purchases_orders: "Kiểm tra mua hàng"
             products:
               product: "Hàng hóa"
               products: "Quản lý sản phẩm"
