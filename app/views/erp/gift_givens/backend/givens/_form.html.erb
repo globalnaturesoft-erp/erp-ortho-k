@@ -1,0 +1,113 @@
+<%= form_for([erp_gift_givens, :backend, given], html: {multipart: true}) do |f| %>
+    <div class="form-body">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="portlet light bordered">
+                    <div class="portlet-body form">
+                        <%= erp_form_control("text", {
+                            name: 'given[code]',
+                            value: given.code,
+                            label: t('.code'),
+                            help: t('.help_given_code'),
+                            placeholder: t('.placeholder_given_code')
+                        }) %>
+                        <%= erp_form_control('date', {
+                            label: t('.given_date'),
+                            name: 'given[given_date]',
+                            value: given.given_date,
+                            placeholder: t('.choose_given_date'),
+                            required: true,
+                            errors: given.errors.full_messages_for(:given_date)
+                        }) %>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="portlet light bordered">
+                    <div class="portlet-body form">
+                        <%= erp_form_control("dataselect", {
+                            name: 'given[contact_id]',
+                            value: given.contact_id,
+                            text: given.contact_name,
+                            placeholder: t('.choose_contact'),
+                            label: t('.contact'),
+                            url: erp_contacts.dataselect_backend_contacts_path(format: 'json'),
+                            required: true,
+                            errors: given.errors.full_messages_for(:contact_id)
+                        }) %>
+                        <%= erp_form_control("textarea", {
+                            name: 'given[note]',
+                            value: given.note,
+                            placeholder: t('.enter_note'),
+                            rows: '2'
+                        }) %>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="portlet light bordered">
+                    <div class="portlet-body form">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <%= erp_form_control("addableform", {
+                                    type: 'table',
+                                    add_button: t('.add'),
+                                    partial: 'erp/gift_givens/backend/given_details/given_line_form',
+                                    partial_url: erp_gift_givens.given_line_form_backend_given_details_path,
+                                    items: @given.given_details.order('created_at asc'),
+                                    item: :given_detail,
+                                    add_control_selector: "input[name='product_id']",
+                                    add_control: erp_form_control("dataselect", {
+                                        name: 'product_id',
+                                        placeholder: t('.choose_product'),
+                                        label: t('.product'),
+                                        help: t('.help_product'),
+                                        url: erp_products.dataselect_backend_products_path(format: 'json'),
+                                        create: {
+                                            url: erp_products.new_backend_product_path,
+                                            title: t('.create_product'),
+                                            container_selector: '.new_product',
+                                            input_selector: 'input[name="product[name]"]'
+                                        },
+                                        edit: {
+                                            url: erp_products.edit_backend_product_path(id: ':value'),
+                                            title: t('.edit_product'),
+                                            container_selector: '.edit_product',
+                                        }
+                                    }),
+                                    thead: "<th>#{t('.product_code')}</th>
+                                            <th>#{t('.diameter')}</th>
+                                            <th>#{t('.category')}</th>
+                                            <th class='text-right'>#{t('.quantity')}</th>
+                                            <th class='text-right'>#{t('.warehouse')}</th>
+                                            <th>#{t('.state')}</th>
+                                            <th></th>"
+                                }) %>
+                                
+                                <table class="table">
+                                    <tr>
+                                        <td width="90%" class="text-right text-semibold"><%= t(".quantity_total") %>:</td>
+                                        <td class="text-right">
+                                            <h4>
+                                                <span class="quantity_total text-bold"></span>
+                                            </h4>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <%= erp_component('button/save', {
+        text: t('.submit')
+    }) %>
+    <%= erp_component('button/cancel', {
+        text: t('.cancel'),
+        href: erp_gift_givens.backend_givens_path
+    }) %>
+<% end %>

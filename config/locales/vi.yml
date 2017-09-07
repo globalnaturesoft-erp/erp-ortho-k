@@ -392,6 +392,17 @@ vi:
             total_stock_destination_after: "Tồn kho đến (sau chuyển)"
           transfer_details:
             unit: "Đơn vị tính"
+    gift_givens:
+      backend:
+        givens:
+          form:
+            product_code: "Mã hàng"
+            diameter: "Đường kính"
+            category: "Loại hàng"
+          given_details:
+            product_code: "Mã hàng"
+            diameter: "Đường kính"
+            category: "Loại hàng"
   layouts:
     erp:
       backend:

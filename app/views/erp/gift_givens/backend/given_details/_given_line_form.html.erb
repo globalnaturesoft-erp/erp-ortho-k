@@ -1,0 +1,39 @@
+<input type="hidden" name="given[given_details_attributes][<%= uid %>][id]" value="<%= given_detail.id %>">
+<input type="hidden" name="given[given_details_attributes][<%= uid %>][product_id]" value="<%= given_detail.product_id %>" class="product-id">
+<input type="hidden" name="given[given_details_attributes][<%= uid %>][_destroy]" value="">
+<td><%= given_detail.product_code %></td>
+<td><%= given_detail.product.get_diameter %></td>
+<td><%= given_detail.product.category_name %></td>
+<td width='10%'>
+    <%= erp_form_control("number", {
+        name: 'given[given_details_attributes][' + uid + '][quantity]',
+        value: given_detail.quantity,
+        text: given_detail.quantity,
+        class: "line_quantity inline"
+    }) %>
+</td>
+<td width='20%'>
+    <%= erp_form_control("dataselect", {
+        name: "given[given_details_attributes][#{uid}][warehouse_id]",
+        value: given_detail.warehouse_id,
+        text: given_detail.warehouse_name,
+        placeholder: t('.choose_warehouse'),
+        url: erp_warehouses.dataselect_backend_warehouses_path(format: 'json')
+    }) %>
+</td>
+<td width='20%'>
+    <%= erp_form_control("dataselect", {
+        name: "given[given_details_attributes][#{uid}][state_id]",
+        value: given_detail.state_id,
+        text: given_detail.state_name,
+        placeholder: t('.choose_state'),
+        url: erp_products.dataselect_backend_states_path(format: 'json'),
+        required: true,
+        errors: given_detail.errors.full_messages_for(:state_id)
+    }) %>
+</td>
+<td class="text-right">
+    <%= erp_form_control("addableform_remove_button", {
+        is_nested_form: true
+    }) %>
+</td>
