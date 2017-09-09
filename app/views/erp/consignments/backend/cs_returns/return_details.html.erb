@@ -1,36 +1,30 @@
-<div class="col-md-12">
-    <div class="portlet grey-cascade box">
-        <div class="portlet-title">
-            <div class="caption">
-                <i class="fa fa-cubes"></i>
-                <%= t('.return_details') %>
-            </div>
-        </div>
-        <div class="portlet-body">
-            <div class="table-responsive">
-                <table class="table table-bordered table-striped flip-content">
-                    <thead class="flip-content">
-                        <tr>
-                            <th width="20%" class="text-left">Mã</th>
-                            <th>Đường kính</th>
-                            <th>Loại</th>
-                            <th class="numeric text-right"><%= t('.quantity') %></th>
-                            <th class="text-right">Ghi chú</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <% @cs_return.return_details.each do |return_detail| %>
-                        <tr>
-                            <td class="text-left"><%= return_detail.get_product_code %></td>
-                            <td class="text-left"><%= return_detail.consignment_detail.product.get_diameter %></td>
-                            <td class="text-left"><%= return_detail.consignment_detail.product.category_name %></td>
-                            <td class="numeric text-right"><%= return_detail.quantity %></td>
-                            <td class="text-right"><%= return_detail.get_product_unit %></td>
-                        </tr>
-                        <% end %>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
+<table class="table table-bordered table-striped flip-content table-child-content">
+    <thead class="flip-content">
+        <tr>
+            <th width="20%" class="bg-yellow bg-font-yellow text-nowrap text-center">Mã</th>
+            <th class="bg-yellow bg-font-yellow text-nowrap text-left">Đường kính</th>
+            <th class="bg-yellow bg-font-yellow text-nowrap text-left">Loại</th>
+            <th class="bg-yellow bg-font-yellow text-nowrap numeric text-center"><%= t('.quantity') %></th>
+            <th class="bg-yellow bg-font-yellow text-nowrap text-left">Đơn vị tính</th>
+            <th class="bg-yellow bg-font-yellow text-nowrap text-left">Trạng thái sản phẩm</th>
+        </tr>        
+    </thead>
+    <tbody>
+        <tr>
+            <td colspan="3" class="bg-red-intense bg-font-red-intense text-nowrap text-center sbold">TỔNG CỘNG</td>
+            <td class="bg-red-intense bg-font-red-intense numeric text-center sbold"></td>
+            <td class="bg-red-intense bg-font-red-intense numeric text-center"></td>
+            <td class="bg-red-intense bg-font-red-intense numeric text-center"></td>
+        </tr>
+        <% @cs_return.return_details.each do |return_detail| %>
+        <tr>
+            <td class="text-center"><%= link_to return_detail.get_product_code, erp_products.edit_backend_product_path(return_detail.consignment_detail.product), target: "_blank", title: return_detail.get_product_code, class: "font-yellow-gold sbold" %></td>
+            <td class="text-left"><%= return_detail.consignment_detail.product.get_diameter %></td>
+            <td class="text-left"><%= return_detail.consignment_detail.product.category_name %></td>
+            <td class="numeric text-center"><strong><%= return_detail.quantity %></strong></td>
+            <td class="text-right"><%= return_detail.get_product_unit %></td>
+            <td class="text-right"><%=  %></td>
+        </tr>
+        <% end %>
+    </tbody>
+</table>
