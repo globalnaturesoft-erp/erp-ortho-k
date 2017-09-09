@@ -51,51 +51,53 @@
                     <div class="portlet-body form">
                         <div class="row">
                             <div class="col-md-12">
-                                <%= erp_form_control("addableform", {
-                                    type: 'table',
-                                    add_button: t('.add'),
-                                    partial: 'erp/gift_givens/backend/given_details/given_line_form',
-                                    partial_url: erp_gift_givens.given_line_form_backend_given_details_path,
-                                    items: @given.given_details.order('created_at asc'),
-                                    item: :given_detail,
-                                    add_control_selector: "input[name='product_id']",
-                                    add_control: erp_form_control("dataselect", {
-                                        name: 'product_id',
-                                        placeholder: t('.choose_product'),
-                                        label: t('.product'),
-                                        help: t('.help_product'),
-                                        url: erp_products.dataselect_backend_products_path(format: 'json'),
-                                        create: {
-                                            url: erp_products.new_backend_product_path,
-                                            title: t('.create_product'),
-                                            container_selector: '.new_product',
-                                            input_selector: 'input[name="product[name]"]'
-                                        },
-                                        edit: {
-                                            url: erp_products.edit_backend_product_path(id: ':value'),
-                                            title: t('.edit_product'),
-                                            container_selector: '.edit_product',
-                                        }
-                                    }),
-                                    thead: "<th>#{t('.product_code')}</th>
-                                            <th>#{t('.diameter')}</th>
-                                            <th>#{t('.category')}</th>
-                                            <th class='text-right'>#{t('.quantity')}</th>
-                                            <th class='text-right'>#{t('.warehouse')}</th>
-                                            <th>#{t('.state')}</th>
-                                            <th></th>"
-                                }) %>
-                                
-                                <table class="table">
-                                    <tr>
-                                        <td width="90%" class="text-right text-semibold"><%= t(".quantity_total") %>:</td>
-                                        <td class="text-right">
-                                            <h4>
-                                                <span class="quantity_total text-bold"></span>
-                                            </h4>
-                                        </td>
-                                    </tr>
-                                </table>
+                                <div class="add-items-line">
+                                    <%= erp_form_control("addableform", {
+                                        type: 'table',
+                                        add_button: t('.add'),
+                                        partial: 'erp/gift_givens/backend/given_details/given_line_form',
+                                        partial_url: erp_gift_givens.given_line_form_backend_given_details_path,
+                                        items: @given.given_details.order('created_at asc'),
+                                        item: :given_detail,
+                                        add_control_selector: "input[name='product_id']",
+                                        add_control: erp_form_control("dataselect", {
+                                            name: 'product_id',
+                                            placeholder: t('.choose_product'),
+                                            label: t('.product'),
+                                            help: t('.help_product'),
+                                            url: erp_products.dataselect_backend_products_path(format: 'json'),
+                                            create: {
+                                                url: erp_products.new_backend_product_path,
+                                                title: t('.create_product'),
+                                                container_selector: '.new_product',
+                                                input_selector: 'input[name="product[name]"]'
+                                            },
+                                            edit: {
+                                                url: erp_products.edit_backend_product_path(id: ':value'),
+                                                title: t('.edit_product'),
+                                                container_selector: '.edit_product',
+                                            }
+                                        }),
+                                        thead: "<th>#{t('.product_code')}</th>
+                                                <th>#{t('.diameter')}</th>
+                                                <th>#{t('.category')}</th>
+                                                <th class='text-right'>#{t('.quantity')}</th>
+                                                <th class='text-right'>#{t('.warehouse')}</th>
+                                                <th>#{t('.state')}</th>
+                                                <th></th>"
+                                    }) %>
+                                    
+                                    <table class="table">
+                                        <tr>
+                                            <td width="90%" class="text-right text-semibold"><%= t(".quantity_total") %>:</td>
+                                            <td class="text-right">
+                                                <h4>
+                                                    <span class="quantity_total text-bold"></span>
+                                                </h4>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
