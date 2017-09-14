@@ -46,7 +46,8 @@
                 <% end %>
                 <% @columns.each do |column| %>
                     <% stock = (0..5).to_a.sample %>
-                    <td class="text-center stock-num stock-num-<%= stock %>"><%= stock %></td>
+                    <% k1 = stock-1 %>
+                    <td class="text-center stock-num stock-num-<%= stock %>" title="<% if stock > 1 %>GỬI: <%= stock-1 %> | SG: <%= stock-k1 %><% end %>"><%= stock %></td>
                 <% end %>
             </tr>
         <% end %>
@@ -56,6 +57,10 @@
         <div class="m-grid-row">
             <div class="m-grid-col m-grid-col-middle m-grid-col-center">
                 <label><%= t('.total_stock') %></label><br/>
+                <strong><%= rand(1200..5000) %></strong>
+            </div>
+            <div class="m-grid-col m-grid-col-middle m-grid-col-center">
+                <label>Hết hàng</label><br/>
                 <strong><%= rand(1200..5000) %></strong>
             </div>
             <div class="m-grid-col m-grid-col-middle m-grid-col-center">

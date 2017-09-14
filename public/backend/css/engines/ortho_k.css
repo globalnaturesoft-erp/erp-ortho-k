@@ -3,8 +3,11 @@
     height: 18px;
 }
 .table-matrix {
-    width: 2000px;
+    /*width: 2000px;*/
 }
 .datalist-matrix .datalist-container {
     overflow-x: auto;
+}
+.table-matrix td:hover {
+    opacity: 0.8;
 }
