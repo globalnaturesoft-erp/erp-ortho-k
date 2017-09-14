@@ -430,7 +430,8 @@ vi:
             commissions: "Cập nhật chiết khấu"
           inventory:
             inventory: "Quản lý kho"                      
-            warehouses: "Danh sách kho hàng"                        
+            warehouses: "Danh sách kho hàng"
+            order_stock_checks: "Kiểm tra đơn hàng"
             givens: "Phiếu xuất tặng"
             damage_records: "Quản lý xuất hủy"
             consignments: "Ký gửi - Cho mượn"                      

@@ -14,6 +14,7 @@
                                           "erp/ortho_k/backend/setting",
                                           # end check params menu products
                                           
+                                          "erp/order_stock_checks/backend/schecks",
                                           "erp/gift_givens/backend/givens",
                                           "erp/products/backend/damage_records",
                                           "erp/consignments/backend/consignments",            
@@ -52,6 +53,7 @@
                 "erp/ortho_k/backend/setting",
                 # end check params menu products
                 
+                "erp/order_stock_checks/backend/schecks",
                 "erp/gift_givens/backend/givens",
                 "erp/products/backend/damage_records",
                 "erp/consignments/backend/consignments",            
@@ -83,6 +85,20 @@
         
         <% if Erp::Core.available?("stock_transfers") %>
             <%= render "layouts/erp/backend/menu/inventory/transfers" %>
+        <% end %>
+        
+        <% if Erp::Core.available?("order_stock_checks") %>
+            <li class="nav-item <%= "active open" if ["erp/order_stock_checks/backend/schecks"].include?(params[:controller]) %>">
+                <a href="<%= erp_order_stock_checks.backend_schecks_path %>" class="nav-link ">
+                    <span class="title">
+                        <i class="glyphicon glyphicon-check"></i>
+                        <%= t('.order_stock_checks') %>
+                    </span>
+                    <% if ["erp/order_stock_checks/backend/schecks"].include?(params[:controller]) %>
+                    <span class="selected"></span>
+                    <% end %>
+                </a>
+            </li>
         <% end %>
         
         <% if Erp::Core.available?("gift_givens") %>
