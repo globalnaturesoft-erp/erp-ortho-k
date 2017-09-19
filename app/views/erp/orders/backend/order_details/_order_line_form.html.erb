@@ -1,8 +1,8 @@
-<input type="hidden" name="order[order_details_attributes][<%= uid %>][id]" value="<%= order_detail.id %>">
-<input type="hidden" name="order[order_details_attributes][<%= uid %>][product_id]" value="<%= order_detail.product_id %>" class="product-id">
-<input type="hidden" name="order[order_details_attributes][<%= uid %>][_destroy]" value="">
-<tr>
+<tr class="addableform-line">
     <td>
+        <input type="hidden" name="order[order_details_attributes][<%= uid %>][id]" value="<%= order_detail.id %>">
+        <input type="hidden" name="order[order_details_attributes][<%= uid %>][product_id]" value="<%= order_detail.product_id %>" class="product-id">
+        <input type="hidden" name="order[order_details_attributes][<%= uid %>][_destroy]" value="">
         <strong><%= order_detail.product_name %></strong>
     </td>
     <td class="text-right">
@@ -56,4 +56,7 @@
             is_nested_form: true
         }) %>
     </td>
+</tr>
+<tr class="addableform-more">
+    <td colspan="9">Stock check infor here!</td>
 </tr>
