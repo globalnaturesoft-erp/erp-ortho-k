@@ -267,9 +267,15 @@
             </div>
         </div>
     </div>
-    <%= erp_component('button/save', {
-        text: t('.submit')
-    }) %>
+    <% if order.sales? %>
+        <input type='submit' class="btn green-seagreen" name="act_draft" value="<%= t('.save_and_draft') %>" />
+        <input type='submit' class="btn green-seagreen" name="act_stock_checking" value="<%= t('.save_and_stock_checking') %>" />
+    <% end %>
+    <% if order.purchase? %>
+        <%= erp_component('button/save', {
+            text: t('.submit')
+        }) %>
+    <% end %>
     <%= erp_component('button/cancel', {
         text: t('.cancel'),
         href: erp_orders.backend_orders_path
