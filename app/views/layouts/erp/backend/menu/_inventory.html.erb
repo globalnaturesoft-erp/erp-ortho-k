@@ -7,7 +7,6 @@
                                           # check params menu products
                                           "erp/products/backend/products",
                                           "erp/products/backend/states",
-                                          "erp/products/backend/state_checks",
                                           "erp/products/backend/properties",
                                           "erp/products/backend/categories",
                                           "erp/products/backend/brands",
@@ -15,6 +14,8 @@
                                           # end check params menu products
                                           
                                           "erp/order_stock_checks/backend/schecks",
+                                          "erp/products/backend/state_checks",
+                                          "erp/products/backend/stock_checks",
                                           "erp/gift_givens/backend/givens",
                                           "erp/products/backend/damage_records",
                                           "erp/consignments/backend/consignments",            
@@ -46,7 +47,6 @@
                 # check params menu products
                 "erp/products/backend/products",
                 "erp/products/backend/states",
-                "erp/products/backend/state_checks",
                 "erp/products/backend/properties",
                 "erp/products/backend/categories",
                 "erp/products/backend/brands",
@@ -54,6 +54,8 @@
                 # end check params menu products
                 
                 "erp/order_stock_checks/backend/schecks",
+                "erp/products/backend/state_checks",
+                "erp/products/backend/stock_checks",
                 "erp/gift_givens/backend/givens",
                 "erp/products/backend/damage_records",
                 "erp/consignments/backend/consignments",            
@@ -101,6 +103,31 @@
             </li>
         <% end %>
         
+        <% if Erp::Core.available?("products") %>
+            <li class="nav-item <%= "active open" if ["erp/products/backend/state_checks"].include?(params[:controller]) %>">
+                <a href="<%= erp_products.backend_state_checks_path %>" class="nav-link ">
+                    <span class="title">
+                        <i class="icon-emoticon-smile"></i>
+                        <%= t('.state_checks') %>
+                    </span>
+                    <% if ["erp/products/backend/state_checks"].include?(params[:controller]) %>
+                    <span class="selected"></span>
+                    <% end %>
+                </a>
+            </li>
+            <li class="nav-item <%= "active open" if ["erp/products/backend/stock_checks"].include?(params[:controller]) %>">
+                <a href="<%= erp_products.backend_stock_checks_path %>" class="nav-link ">
+                    <span class="title">
+                        <i class="icon-layers   "></i>
+                        <%= t('.stock_checks') %>
+                    </span>
+                    <% if ["erp/products/backend/stock_checks"].include?(params[:controller]) %>
+                    <span class="selected"></span>
+                    <% end %>
+                </a>
+            </li>
+        <% end %>
+        
         <% if Erp::Core.available?("gift_givens") %>
             <li class="nav-item <%= "active open" if ["erp/gift_givens/backend/givens"].include?(params[:controller]) %>">
                 <a href="<%= erp_gift_givens.backend_givens_path %>" class="nav-link ">
@@ -119,7 +146,7 @@
             <li class="nav-item <%= "active open" if ["erp/products/backend/damage_records"].include?(params[:controller]) %>">
                 <a href="<%= erp_products.backend_damage_records_path %>" class="nav-link ">
                     <span class="title">
-                        <i class="fa fa-file-text-o"></i>
+                        <i class="glyphicon glyphicon-floppy-remove"></i>
                         <%= t('.damage_records') %>
                     </span>
                     <% if ["erp/products/backend/damage_records"].include?(params[:controller]) %>

@@ -1,16 +1,14 @@
 <li class="nav-item <%= "active open" if [  "erp/products/backend/products",
                                             "erp/products/backend/states",
-                                            "erp/products/backend/state_checks",
                                             "erp/products/backend/properties",
                                             "erp/products/backend/categories",
                                             "erp/products/backend/brands",
                                             "erp/ortho_k/backend/setting"].include?(params[:controller]) %>"">
     <a href="javascript:;" class="nav-link nav-toggle">
-        <i class="fa fa-archive"></i>
+        <i class="glyphicon glyphicon-barcode"></i>
         <span class="title"><%= t('.product') %></span>
         <% if [ "erp/products/backend/products",
                 "erp/products/backend/states",
-                "erp/products/backend/state_checks",
                 "erp/products/backend/properties",
                 "erp/products/backend/categories",
                 "erp/products/backend/brands",
@@ -23,7 +21,6 @@
     </a>
     <ul class="sub-menu" <% if ["erp/products/backend/products",
                                 "erp/products/backend/states",
-                                "erp/products/backend/state_checks",
                                 "erp/products/backend/properties",
                                 "erp/products/backend/categories",
                                 "erp/products/backend/brands",
@@ -35,9 +32,6 @@
         </li>
         <li class="nav-item <%= "active" if ["erp/products/backend/states"].include?(params[:controller]) %>">
             <%= link_to t('.states'), erp_products.backend_states_path, class: "nav-link ", title: t('.states') %>
-        </li>
-        <li class="nav-item <%= "active" if ["erp/products/backend/state_checks"].include?(params[:controller]) %>">
-            <%= link_to t('.state_checks'), erp_products.backend_state_checks_path, class: "nav-link ", title: t('.state_checks') %>
         </li>
         <li class="nav-item <%= "active" if ["erp/products/backend/properties"].include?(params[:controller]) %>">
             <%= link_to t('.properties'), erp_products.backend_properties_path, class: "nav-link ", title: t('.properties') %>

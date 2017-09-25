@@ -434,7 +434,9 @@ vi:
             order_stock_checks: "Kiểm tra đơn hàng"
             givens: "Phiếu xuất tặng"
             damage_records: "Quản lý xuất hủy"
-            consignments: "Ký gửi - Cho mượn"                      
+            consignments: "Ký gửi - Cho mượn"
+            state_checks: "Kiểm tra trạng thái"
+            stock_checks: "Kiểm kho"
             transfers:
               transfers: "Chuyển kho"
               stock_transfers: "Quản lý chuyển kho"
@@ -452,7 +454,6 @@ vi:
               brands: "Thương hiệu sản phẩm"
               states: "Trạng thái sản phẩm"
               central_areas: "Phân vùng - Vùng T.tâm"
-              state_checks: "Phiếu kiểm tra sản phẩm"
             reports:
               report: "Báo cáo kho"
               inventory_report: "Báo cáo tồn kho (matrix)"
