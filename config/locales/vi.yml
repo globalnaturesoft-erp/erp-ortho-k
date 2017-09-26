@@ -423,7 +423,7 @@ vi:
             invoice_for_sales: "Hóa đơn bán hàng"
             purchase_invoice: "Hóa đơn nhập hàng"
             accounts: "Quản lý tài khoản"
-            cash_book: "Quản lý thu/chi"
+            cash_book: "Quản lý thu - chi"
             tracking_customer: "Theo dõi công nợ"
             sales_statistics: "Thống kê doanh thu"
             discounts: "Cập nhật hoa hồng"
