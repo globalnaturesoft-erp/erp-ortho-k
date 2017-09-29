@@ -428,6 +428,7 @@ vi:
             sales_statistics: "Thống kê doanh thu"
             discounts: "Cập nhật hoa hồng"
             commissions: "Cập nhật chiết khấu"
+            payment_type: "Quản lý loại phiếu"
           inventory:
             inventory: "Quản lý kho"                      
             warehouses: "Danh sách kho hàng"

@@ -1,7 +1,8 @@
 <li class="nav-item <%= "active open" if ["erp/accounting/backend/sales_orders",
                                           "erp/accounting/backend/purchase_orders",
                                           "erp/payments/backend/accounts",
-                                          "erp/payments/backend/payment_records"
+                                          "erp/payments/backend/payment_records",
+                                          "erp/payments/backend/payment_types"
                                           ].include?(params[:controller]) %>">
   <a href="javascript:;" class="nav-link nav-toggle">
       <i class="icon-calendar"></i>
@@ -42,6 +43,14 @@
           <a href="<%= erp_payments.backend_payment_records_path %>" class="nav-link ">
               <span class="title"><%= t('.cash_book') %></span>
               <% if ["erp/payments/backend/payment_records"].include?(params[:controller]) %>
+              <span class="selected"></span>
+              <% end %>
+          </a>
+      </li>
+      <li class="nav-item <%= "active open" if ["erp/payments/backend/payment_types"].include?(params[:controller]) %>">
+          <a href="<%= erp_payments.backend_payment_types_path %>" class="nav-link ">
+              <span class="title"><%= t('.payment_type') %></span>
+              <% if ["erp/payments/backend/payment_types"].include?(params[:controller]) %>
               <span class="selected"></span>
               <% end %>
           </a>
