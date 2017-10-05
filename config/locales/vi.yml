@@ -426,8 +426,8 @@ vi:
             cash_book: "Quản lý thu - chi"
             tracking_customer: "Theo dõi công nợ"
             sales_statistics: "Thống kê doanh thu"
-            discounts: "Cập nhật hoa hồng"
-            commissions: "Cập nhật chiết khấu"
+            commissions: "Hoa hồng nhân viên"
+            discounts: "Cập nhật chiết khấu"
             payment_type: "Quản lý loại phiếu"
           inventory:
             inventory: "Quản lý kho"                      
