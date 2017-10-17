@@ -1,4 +1,7 @@
-<li class="nav-item <%= "active open" if ["erp/backend/users"].include?(params[:controller]) %>">
+<li class="nav-item <%= "active open" if ["erp/backend/users",
+                                          "erp/targets/backend/targets",
+                                          "erp/targets/backend/company_targets",
+                                          "erp/periods/backend/periods"].include?(params[:controller]) %>">
     <a href="javascript:;" class="nav-link nav-toggle">
         <i class="fa fa-cogs"></i>
         <span class="title"><%= t('.system') %></span>
@@ -14,6 +17,17 @@
             <a href="<%= erp.backend_users_path %>" class="nav-link ">
                 <span class="title"><%= t('.users') %></span>
                 <% if ["erp/backend/contacts"].include?(params[:controller]) %>
+                <span class="selected"></span>
+                <% end %>
+            </a>
+        </li>
+        <% if Erp::Core.available?("targets") %>
+            <%= render "layouts/erp/backend/menu/targets/targets" %>
+        <% end %>
+        <li class="nav-item <%= "active open" if ["erp/periods/backend/periods"].include?(params[:controller]) %>">
+            <a href="<%= erp_periods.backend_periods_path %>" class="nav-link ">
+                <span class="title"><%= t('.period') %></span>
+                <% if ["erp/periods/backend/periods"].include?(params[:controller]) %>
                 <span class="selected"></span>
                 <% end %>
             </a>

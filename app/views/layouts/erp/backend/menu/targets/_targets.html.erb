@@ -1,0 +1,22 @@
+<li class="nav-item <%= "active open" if ["erp/targets/backend/targets",
+                                          "erp/targets/backend/company_targets"].include?(params[:controller]) %>">
+    <a href="javascript:;" class="nav-link nav-toggle">
+        <span class="title"><%= t('.targets') %></span>
+        <% if ["erp/targets/backend/targets", "erp/targets/backend/company_targets"].include?(params[:controller]) %>
+            <span class="selected"></span>
+            <span class="arrow open"></span>
+        <% else %>
+            <span class="arrow"></span>
+        <% end %>
+    </a>
+    <ul class="sub-menu" <% if ["erp/targets/backend/targets", "erp/targets/backend/company_targets"].include?(params[:controller]) %>
+                            style="display: block;"
+                        <% else %>style="display: none;"<% end %>>
+        <li class="nav-item <%= "active" if ["erp/targets/backend/targets"].include?(params[:controller]) %>">
+            <%= link_to t('.user_targets'), erp_targets.backend_targets_path, class: "nav-link ", title: t('.user_targets') %>
+        </li>
+        <li class="nav-item <%= "active" if ["erp/targets/backend/company_targets"].include?(params[:controller]) %>">
+            <%= link_to t('.company_targets'), erp_targets.backend_company_targets_path, class: "nav-link ", title: t('.company_targets') %>
+        </li>
+    </ul>
+</li>

@@ -424,9 +424,11 @@ vi:
             purchase_invoice: "Hóa đơn nhập hàng"
             accounts: "Quản lý tài khoản"
             cash_book: "Quản lý thu - chi"
-            tracking_customer: "Theo dõi công nợ"
+            customer_liabilities_tracking: "Theo dõi công nợ (bán)"
+            supplier_liabilities_tracking: "Theo dõi công nợ (mua)"
             sales_statistics: "Thống kê doanh thu"
             commissions: "Hoa hồng nhân viên"
+            customer_commissions: "Chiết khấu khách hàng"
             discounts: "Cập nhật chiết khấu"
             payment_type: "Quản lý loại phiếu"
           inventory:
@@ -461,10 +463,16 @@ vi:
               delivery_report: "Báo cáo xuất-nhập-tồn"
               import_report: "Sổ chi tiết nhập kho"
               export_report: "Sổ chi tiết xuất kho"
-              smashed_scratched_report: "Thống kê len xước - vỡ"  
+              smashed_scratched_report: "Thống kê len xước - vỡ"
+          targets:
+            targets:
+              targets: "Cấu hình target"
+              user_targets: "Target cho nhân viên"
+              company_targets: "Target cho doanh nghiệp"
           system:
             system: "Hệ thống"
             users: "Quản lý thành viên"
+            period: "Cài đặt mốc thời gian"
             user_permission: "Phân quyền thành viên"
             system_configuration: "Cấu hình hệ thống"
             storage_and_recovery: "Lưu trữ & Phục hồi"
