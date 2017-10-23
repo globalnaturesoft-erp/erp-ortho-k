@@ -1,0 +1,45 @@
+<% if @contact.contact_group == Erp::Contacts::ContactGroup.get_patient %>
+    <% if @contact.parent.present? %>
+        <%= erp_form_control("dataselect", {
+            name: 'order[hospital_id]',
+            value: @contact.parent.id,
+            text: @contact.parent.name,
+            label: 'Bác sĩ',
+            placeholder: 'Chọn Bác sĩ',
+            url: erp_contacts.dataselect_backend_contacts_path(format: 'json', is_customer: true, group_id: Erp::Contacts::ContactGroup::GROUP_HOSPITAL),
+            required: true,
+        }) %>
+    <% end %>
+ <% end %>
+ <% if @contact.contact_group == Erp::Contacts::ContactGroup.get_doctor %>
+    <% if @contact.contacts.present? %>
+        <%= erp_form_control("select", {
+            name: 'order[patient_id]',
+            value: '',
+            text: '',
+            label: 'Bệnh nhân',
+            options: @contact.contacts.map {|c| {value: c.id, text: c.name}},
+            include_blank: 'Chọn Bệnh nhân',
+            required: true,
+        }) %>
+    <% end %>
+ <% end %>
+ <% if @contact.contact_group == Erp::Contacts::ContactGroup.get_hospital %>
+    <% if @contact.contacts.present? %>
+        <%= erp_form_control("select", {
+            name: 'order[doctor_id]',
+            value: '',
+            text: '',
+            label: 'Bác sĩ',
+            options: @contact.contacts.map {|c| {value: c.id, text: c.name}},
+            include_blank: 'Chọn Bác sĩ',
+            required: true,
+        }) %>
+        <div class="ajax-box"
+            data-url='<%= erp_orders.related_contact_form_backend_orders_path %>'
+            data-control='select[name="order[doctor_id]"]'
+            >
+
+        </div>
+    <% end %>
+ <% end %>
