@@ -10,7 +10,7 @@
     <div class="row">
         <div class="col-md-3">
             <%= erp_form_control("dataselect", {
-                name: 'category',
+                name: 'categories[]',
                 value: '',
                 text: '',
                 label: t('.category'),
@@ -22,7 +22,7 @@
         <div class="col-md-6">
             <% diameter = Erp::Products::Property.where(name: "Đường kính").first %>
             <%= erp_form_control("dataselect", {
-                name: 'diameter',
+                name: 'diameters[]',
                 value: '',
                 text: '',
                 label: Erp::Products::Property.where(name: "Đường kính").first().name,
@@ -67,7 +67,7 @@
         <div class="col-md-3">
             <%= erp_form_control("text", {
                 name: 'central_quantity',
-                value: '1',
+                value: '2',
                 text: '',
                 label: t('.central_quantity'),
                 placeholder: t('.central_quantity')
@@ -94,23 +94,23 @@
             text: t('.name'), name: 'erp_products_products.name'
         },
     ],
-    filters: [
-        {
-            text: t('.show_virtual'), name: 'show_virtual', value: true, checked: false
-        },
-        {
-            divider: true
-        },
-        {
-            text: t('.state_normal'), name: 'state_normal', value: true, checked: true
-        },
-        {
-            text: t('.state_scratched'), name: 'state_scratched', value: true, checked: false
-        },
-        {
-            text: t('.state_broken'), name: 'state_broken', value: true, checked: false
-        },
-    ],
+    #filters: [
+    #    {
+    #        text: t('.show_virtual'), name: 'show_virtual', value: true, checked: false
+    #    },
+    #    {
+    #        divider: true
+    #    },
+    #    {
+    #        text: t('.state_normal'), name: 'state_normal', value: true, checked: true
+    #    },
+    #    {
+    #        text: t('.state_scratched'), name: 'state_scratched', value: true, checked: false
+    #    },
+    #    {
+    #        text: t('.state_broken'), name: 'state_broken', value: true, checked: false
+    #    },
+    #],
     columns: [
     ],
     header: 'dddddd'

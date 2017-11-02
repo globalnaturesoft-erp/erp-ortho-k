@@ -9,5 +9,6 @@
     overflow-x: auto;
 }
 .table-matrix td:hover {
-    opacity: 0.8;
+    /*opacity: 0.8;*/
+    font-weight: 600;
 }

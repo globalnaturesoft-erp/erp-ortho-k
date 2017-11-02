@@ -8,7 +8,7 @@
     }) %>
 </td>
 <td>
-    <% diameter = Erp::Products::Property.where(name: Erp::Products::Property::NAME_DUONG_KINH).first %>
+    <% diameter = Erp::Products::Property.get_diameter %>
     <%= erp_form_control("dataselect", {
         name: 'options[purchase_conditions][' + uid + '][diameter]',
         value: defined?(option) ? option[1]["diameter"] : '',
@@ -23,7 +23,7 @@
         values = (Erp::Products::PropertiesValue.where(id: pv_id).map {|pv| {text: pv.value, value: pv.id}})
     %>
 
-    <% diameter = Erp::Products::Property.where(name: Erp::Products::Property::NAME_CHU).first %>
+    <% diameter = Erp::Products::Property.get_letter %>
     <%= erp_form_control("dataselect", {
         name: 'options[purchase_conditions][' + uid + '][letter][]',
         values: values,
@@ -38,7 +38,7 @@
         pv_id = defined?(option) ? (option[1]["number"].reject { |c| c.empty? }) : [-1]
         values = (Erp::Products::PropertiesValue.where(id: pv_id).map {|pv| {text: pv.value, value: pv.id}})
     %>
-    <% diameter = Erp::Products::Property.where(name: Erp::Products::Property::NAME_SO).first %>
+    <% diameter = Erp::Products::Property.get_number %>
     <%= erp_form_control("dataselect", {
         name: 'options[purchase_conditions][' + uid + '][number][]',
         values: values,

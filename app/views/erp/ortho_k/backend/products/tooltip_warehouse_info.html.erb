@@ -1,0 +1,16 @@
+<% Erp::Warehouses::Warehouse.all.each do |warehouse| %>
+    <div class="row">
+        <div class="col-md-6">
+            <%= warehouse.short_name %>
+        </div>
+        <div class="col-md-6">
+            <%= Erp::Products::Product.get_stock(
+                properties_value_ids: params[:properties_value_ids],
+                categories: params[:categories],
+                warehouses: warehouse.id,
+                states: params[:states],
+                diameters: params[:diameters],
+            ) %>
+        </div>
+    </div>
+<% end %>

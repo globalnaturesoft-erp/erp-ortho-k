@@ -8,29 +8,29 @@
 
 <% content_for :global_filter do %>
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-2">
             <%= erp_form_control("dataselect", {
                 name: 'column',
                 value: '',
                 text: '',
                 label: t('.column'),
-                placeholder: t('.choose_column'),
+                placeholder: 'Hàng ngang',
                 url: erp_products.dataselect_backend_properties_path(format: 'json'),
             }) %>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
             <%= erp_form_control("dataselect", {
                 name: 'row',
                 value: '',
                 text: '',
                 label: t('.row'),
-                placeholder: t('.choose_row'),
+                placeholder: 'Hàng dọc',
                 url: erp_products.dataselect_backend_properties_path(format: 'json'),
             }) %>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
             <%= erp_form_control("dataselect", {
-                name: 'category',
+                name: 'categories',
                 value: '',
                 text: '',
                 label: t('.category'),
@@ -39,14 +39,38 @@
                 multiple: true
             }) %>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
+            <% diameter = Erp::Products::Property.where(name: "Đường kính").first %>
             <%= erp_form_control("dataselect", {
-                name: 'warehouse',
+                name: 'diameters',
+                value: '',
+                text: '',
+                label: Erp::Products::Property.where(name: "Đường kính").first().name,
+                placeholder: diameter.name,
+                url: erp_products.dataselect_backend_properties_values_path(format: 'json', property_id: diameter.id),
+                include_blank: t('.all_diameters'),
+                multiple: true
+            }) %>
+        </div>
+        <div class="col-md-2">
+            <%= erp_form_control("dataselect", {
+                name: 'warehouses',
                 value: '',
                 text: '',
                 label: t('.warehouse'),
                 placeholder: t('.all_warehouses'),
                 url: erp_warehouses.dataselect_backend_warehouses_path(format: 'json'),
+                multiple: true
+            }) %>
+        </div>
+        <div class="col-md-2">
+            <%= erp_form_control("dataselect", {
+                name: 'states',
+                value: '',
+                text: '',
+                label: 'Trạng thái',
+                placeholder: 'Tất cả trạng thái',
+                url: erp_products.dataselect_backend_states_path(format: 'json'),
                 multiple: true
             }) %>
         </div>
@@ -65,18 +89,6 @@
         filters: [
             {
                 text: t('.show_virtual'), name: 'show_virtual', value: true, checked: false
-            },
-            {
-                divider: true
-            },
-            {
-                text: t('.state_normal'), name: 'state_normal', value: true, checked: true
-            },
-            {
-                text: t('.state_scratched'), name: 'state_scratched', value: true, checked: false
-            },
-            {
-                text: t('.state_broken'), name: 'state_broken', value: true, checked: false
             },
         ],
         columns: [

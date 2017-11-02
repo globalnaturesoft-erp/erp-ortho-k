@@ -1,41 +1,46 @@
-<div class="portlet m-grid m-grid-demo">
-    <div class="m-grid-row">
-        <div class="m-grid-col m-grid-col-middle m-grid-col-center">
-            <label>Tổng nhập</label><br/>
-            <strong><%= rand(500..1200) %></strong>
-        </div>
-        <div class="m-grid-col m-grid-col-middle m-grid-col-center">
-            <label>Số lượng Vùng rìa</label><br/>
-            <strong><%= rand(100..400) %></strong>
-        </div>
-        <div class="m-grid-col m-grid-col-middle m-grid-col-center">
-            <label>Số lượng Vùng Trung Tâm</label><br/>
-            <strong><%= rand(400..800) %></strong>
-        </div>
-    </div>
-</div>
 <table class="table table-bordered table-advance order-column" id="">
     <tr>
-        <th class="bg-grey text-center" width="1%"><%= t('.number') %></th>
+        <!--<th class="bg-grey text-center" width="1%"><%= t('.number') %></th>-->
         <th class="bg-grey"><%= t('.code') %></th>
         <th class="bg-grey"><%= t('.diameter') %></th>
         <th class="bg-grey"><%= t('.category') %></th>
         <th class="bg-grey"><%= t('.area_type') %></th>
         <th class="bg-grey text-center"><%= t('.import_quantity') %></th>
     </tr>
+    <%
+        central_count = 0
+    %>
     <% @products.each_with_index do |product,index| %>
         <%
-            area_type = params[:global_filter][:area].present? ? params[:global_filter][:area] : ['area_side','area_central'].sample
-            total_quantity = area_type == 'area_central' ? @central_quantity : @side_quantity;
+            area_type = product.is_in_central_area ? 'area_central' : 'area_side'
+            total_quantity = area_type == 'area_central' ? @central_quantity : @side_quantity
+            central_count += 1 if area_type == 'area_central'
         %>
-        <tr>
-            <td class="text-center"><%= index+1 %></td>
-            <td class=""><%= product.code %></td>
-            <td class=""><%= product.get_diameter %></td>
-            <td class=""><%= product.category_name %></td>
-            <td class=""><%= t('.' + area_type) %></td>
-            <td class="bg-warning text-center"><strong><%= total_quantity %></strong></td>
-        </tr>
+        <% if !@area.present? or (@area == area_type) %>
+            <tr>
+                <!--<td class="text-center"><%= index+1 %></td>-->
+                <td class=""><%= product.code %></td>
+                <td class=""><%= product.get_diameter %></td>
+                <td class=""><%= product.category_name %></td>
+                <td class=""><%= t('.' + area_type) %></td>
+                <td class="bg-warning text-center"><strong><%= total_quantity %></strong></td>
+            </tr>
+        <% end %>
     <% end %>
 </table>
-
+<div class="portlet m-grid m-grid-demo">
+    <div class="m-grid-row">
+        <div class="m-grid-col m-grid-col-middle m-grid-col-center">
+            <label>Tổng nhập</label><br/>
+            <strong><%= @products.count %></strong>
+        </div>
+        <div class="m-grid-col m-grid-col-middle m-grid-col-center">
+            <label>Số lượng Vùng rìa</label><br/>
+            <strong><%= @products.count - central_count %></strong>
+        </div>
+        <div class="m-grid-col m-grid-col-middle m-grid-col-center">
+            <label>Số lượng Vùng Trung Tâm</label><br/>
+            <strong><%= central_count %></strong>
+        </div>
+    </div>
+</div>

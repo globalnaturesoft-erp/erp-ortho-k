@@ -1,0 +1,14 @@
+<% if @contact.present? %>
+<% if !params[:order_id].present? %>
+    <p>Bệnh nhân có <%= @orders.count %> đơn hàng <%= "(gần nhất vào #{format_date(@orders.last.order_date)})" if @orders.count > 0 %></p>
+<% end %>
+<%= erp_form_control('checkbox', {
+    name: 'order[is_new_patient]',
+    id: 'is_new_patient',
+    value: (params[:order_id].present? ? (Erp::Orders::Order.find(params[:order_id]).is_new_patient ? 'true' : 'false') : (@orders.count == 0 ? 'true' : 'false')),
+    not_selected_value: 'false',
+    options: [{value: 'true', text: 'Bệnh nhân mới'}]
+}) %>
+
+
+<% end %>

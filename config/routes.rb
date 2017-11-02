@@ -7,6 +7,7 @@ Erp::OrthoK::Engine.routes.draw do
         collection do
           get 'matrix_report'
           post 'matrix_report_table'
+          get 'tooltip_warehouse_info'
           get 'delivery_report'
           post 'delivery_report_table'
           get 'warehouses_report'
@@ -32,6 +33,11 @@ Erp::OrthoK::Engine.routes.draw do
         collection do
 					post 'list'
 					get 'dataselect'
+				end
+			end
+      resources :orders do
+        collection do
+					get 'patient_info'
 				end
 			end
 

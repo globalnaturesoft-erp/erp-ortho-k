@@ -38,6 +38,12 @@ module Erp
             end
           end
 
+          @global_filter = global_filter
+          render layout: nil
+        end
+
+        def tooltip_warehouse_info
+
           render layout: nil
         end
 
@@ -97,11 +103,11 @@ module Erp
         def stock_importing_table
           global_filters = params.to_unsafe_hash[:global_filter]
 
-          ids = Erp::Products::Product.pluck(:id).sample(rand(90..250))
-          @products = Erp::Products::Product.where(id: ids).order(:code)
+          @products = Erp::Products::Product.get_stock_importing_product(filters: global_filters).order(:code)
 
           @side_quantity = (global_filters.present? and global_filters[:side_quantity].present? ? global_filters[:side_quantity].to_i : 0)
           @central_quantity = (global_filters.present? and global_filters[:central_quantity].present? ? global_filters[:central_quantity].to_i : 0)
+          @area = (global_filters.present? and global_filters[:area].present? ? global_filters[:area] : nil)
 
           render layout: nil
         end
@@ -125,21 +131,21 @@ module Erp
 
           render layout: nil
         end
-        
+
         # Import report
         def import_report
         end
-        
+
         def import_report_table
           @rows = Erp::Products::Product.import_report(params)
 
           render layout: nil
         end
-        
+
         # Export report
         def export_report
         end
-        
+
         def export_report_table
           @rows = Erp::Products::Product.export_report(params)
 

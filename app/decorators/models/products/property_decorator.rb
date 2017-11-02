@@ -31,4 +31,19 @@ Erp::Products::Property.class_eval do
 
     return options
   end
+
+  # get diameter property
+  def self.get_diameter
+    self.where(name: self::NAME_DUONG_KINH).first
+  end
+
+  # get diameter property
+  def self.get_number
+    self.where(name: self::NAME_SO).first
+  end
+
+  # get diameter property
+  def self.get_letter
+    self.where(name: self::NAME_CHU).first
+  end
 end

@@ -45,9 +45,24 @@
                     </th>
                 <% end %>
                 <% @columns.each do |column| %>
-                    <% stock = (0..5).to_a.sample %>
-                    <% k1 = stock-1 %>
-                    <td class="text-center stock-num stock-num-<%= stock %>" title="<% if stock > 1 %>GỬI: <%= stock-1 %> | SG: <%= stock-k1 %><% end %>"><%= stock %></td>
+                    <% stock = Erp::Products::Product.get_stock(
+                                    properties_value_ids: [column.id,row.id],
+                                    categories: @global_filter[:categories],
+                                    warehouses: @global_filter[:warehouses],
+                                    states: @global_filter[:states],
+                                    diameters: @global_filter[:diameters])
+                    %>
+
+                    <td class="text-center stock-num stock-num-<%= stock %>"
+                        data-tooltip-url="<%= erp_ortho_k.tooltip_warehouse_info_backend_products_path(
+                                                    properties_value_ids: [column.id,row.id],
+                                                    categories: @global_filter[:categories],
+                                                    warehouses: @global_filter[:warehouses],
+                                                    states: @global_filter[:states],
+                                                    diameters: @global_filter[:diameters]) %>"
+                    >
+                        <%= stock %>
+                    </td>
                 <% end %>
             </tr>
         <% end %>
@@ -57,27 +72,76 @@
         <div class="m-grid-row">
             <div class="m-grid-col m-grid-col-middle m-grid-col-center">
                 <label><%= t('.total_stock') %></label><br/>
-                <strong><%= rand(1200..5000) %></strong>
+                <strong>
+                    <%= Erp::Products::Product.get_stock(
+                        categories: @global_filter[:categories],
+                        warehouses: @global_filter[:warehouses],
+                        states: @global_filter[:states],
+                        diameters: @global_filter[:diameters])
+                    %>
+                </strong>
             </div>
             <div class="m-grid-col m-grid-col-middle m-grid-col-center">
                 <label>Hết hàng</label><br/>
-                <strong><%= rand(1200..5000) %></strong>
+                <strong>
+                <%
+                    total = Erp::Products::Product.count_stock(
+                        stock_operator: '<= 0',
+                        categories: @global_filter[:categories],
+                        warehouses: @global_filter[:warehouses],
+                        states: @global_filter[:states],
+                        diameters: @global_filter[:diameters])
+                %>
+                <%= total %>
+                </strong>
             </div>
             <div class="m-grid-col m-grid-col-middle m-grid-col-center">
                 <label><%= t('.equal_1') %></label><br/>
-                <strong><%= rand(1200..5000) %></strong>
+                <strong>
+                    <%= Erp::Products::Product.count_stock(
+                        stock_operator: '= 1',
+                        categories: @global_filter[:categories],
+                        warehouses: @global_filter[:warehouses],
+                        states: @global_filter[:states],
+                        diameters: @global_filter[:diameters])
+                    %>
+                </strong>
             </div>
             <div class="m-grid-col m-grid-col-middle m-grid-col-center">
                 <label><%= t('.equal_2') %></label><br/>
-                <strong><%= rand(1200..5000) %></strong>
+                <strong>
+                    <%= Erp::Products::Product.count_stock(
+                        stock_operator: '= 2',
+                        categories: @global_filter[:categories],
+                        warehouses: @global_filter[:warehouses],
+                        states: @global_filter[:states],
+                        diameters: @global_filter[:diameters])
+                    %>
+                </strong>
             </div>
             <div class="m-grid-col m-grid-col-middle m-grid-col-center">
                 <label><%= t('.equal_3') %></label><br/>
-                <strong><%= rand(1200..5000) %></strong>
+                <strong>
+                    <%= Erp::Products::Product.count_stock(
+                        stock_operator: '= 3',
+                        categories: @global_filter[:categories],
+                        warehouses: @global_filter[:warehouses],
+                        states: @global_filter[:states],
+                        diameters: @global_filter[:diameters])
+                    %>
+                </strong>
             </div>
             <div class="m-grid-col m-grid-col-middle m-grid-col-center">
                 <label><%= t('.from_4') %></label><br/>
-                <strong><%= rand(1200..5000) %></strong>
+                <strong>
+                    <%= Erp::Products::Product.count_stock(
+                        stock_operator: '>= 4',
+                        categories: @global_filter[:categories],
+                        warehouses: @global_filter[:warehouses],
+                        states: @global_filter[:states],
+                        diameters: @global_filter[:diameters])
+                    %>
+                </strong>
             </div>
         </div>
     </div>

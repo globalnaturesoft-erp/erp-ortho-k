@@ -4,7 +4,7 @@
                                           "erp/products/backend/brands",
                                           "erp/products/backend/states",
                                           "erp/products/backend/state_checks",
-                                          "erp/orthok/backend/products/central_areas"].include?(params[:controller]) %>">
+                                          "erp/orthok/backend/products"].include?(params[:controller]) %>">
     <a href="javascript:;" class="nav-link nav-toggle">
         <i class="fa fa-archive"></i>
         <span class="title"><%= t('.product') %></span>
@@ -73,8 +73,8 @@
         <li class="nav-item <%= "active open" if ["erp/orthok/backend/products/central_areas"].include?(params[:controller]) %>">
             <a href="<%= erp_ortho_k.backend_setting_path %>" class="nav-link ">
                 <span class="title"><%= t('.central_areas') %></span>
-                <% if ["erp/orthok/backend/setting/index"].include?(params[:controller]) %>
-                <span class="selected"></span>
+                <% if ["erp/orthok/backend/products/central_areas"].include?(params[:controller]) %>
+                    <span class="selected"></span>
                 <% end %>
             </a>
         </li>

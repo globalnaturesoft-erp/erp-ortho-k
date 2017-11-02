@@ -22,6 +22,12 @@
             include_blank: 'Chọn Bệnh nhân',
             required: true,
         }) %>
+        <div class="ajax-box"
+            data-url='<%= erp_ortho_k.patient_info_backend_orders_path(patient_id: @order.patient_id, order_id: @order.id) %>'
+            data-control='select[name="order[patient_id]"]'
+            >
+
+        </div>
     <% end %>
  <% end %>
  <% if @contact.contact_group == Erp::Contacts::ContactGroup.get_hospital %>

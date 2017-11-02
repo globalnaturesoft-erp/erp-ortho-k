@@ -418,7 +418,7 @@ vi:
           purchases:
             purchases: "Nhập hàng"            
             purchase_orders: "Đơn nhập hàng"
-            requirement_estimated_import: "Yêu cầu - Dự toán nhập hàng"
+            requirement_estimated_import: "Dự toán nhập hàng"
           accountant:
             accountant: "Kế toán"
             invoice_for_sales: "Hóa đơn bán hàng"
