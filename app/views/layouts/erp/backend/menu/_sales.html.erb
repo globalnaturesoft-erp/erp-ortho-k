@@ -1,4 +1,6 @@
-<li class="nav-item <%= "active open" if ["erp/sales/backend/sales"].include?(params[:controller]) %>">
+<li class="nav-item <%= "active open" if ["erp/sales/backend/sales"].include?(params[:controller]) ||
+                                        (params[:controller] == "erp/prices/backend/customer_prices" && (params[:action] == "index" || params[:action] == "update_contact")) ||
+                                        (params[:controller] == "erp/prices/backend/customer_prices" && (params[:action] == "general" || params[:action] == "general_update")) %>">
     <a href="javascript:;" class="nav-link nav-toggle">
         <i class="icon-pie-chart"></i>
         <span class="title"><%= t('.sales') %></span>
@@ -15,6 +17,9 @@
                 <span class="title"><%= t('.sales_orders') %></span>
             </a>
         </li>
+        <% if Erp::Core.available?("prices") %>
+            <%= render "layouts/erp/backend/menu/prices/customer_prices" %>
+        <% end %>
         <li class="nav-item ">
             <a href="javascript:;" class="nav-link">
                 <span class="title"><%= t('.sales_report') %></span>

@@ -482,3 +482,12 @@ vi:
             support: "Liên hệ & Hỗ trợ"
             documents: "Tài liệu hướng dẫn"
             contact: "Thông tin liên hệ"
+          prices:
+            customer_prices:
+              sales_prices: "Bảng giá bán hàng"
+              customer_prices: "Bảng giá khách hàng"
+              general_prices: "Bảng giá chung"
+            supplier_prices:
+              purchase_prices: "Bảng giá nhập hàng"
+              supplier_prices: "Bảng giá từ NCC"
+              general_prices: "Bảng giá chung"
