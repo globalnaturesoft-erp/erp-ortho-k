@@ -100,6 +100,7 @@ Erp::Products::Product.class_eval do
     query = self.where(cache_stock: 0)
 
     if params[:filters].present?
+
       filters = params[:filters]
 
       # category
@@ -128,6 +129,7 @@ Erp::Products::Product.class_eval do
     # need to purchase: @options["purchase_conditions"]
     ors = []
     @options["purchase_conditions"].each do |option|
+
       ands = []
       ands << "erp_products_products.category_id = #{option[1]["category"]}"
       ands << "erp_products_products.cache_properties LIKE '%[\"#{option[1]["diameter"]}\",%'"
@@ -139,13 +141,13 @@ Erp::Products::Product.class_eval do
       letter_pv_ids.each do |x|
         qs << "(erp_products_products.cache_properties LIKE '%[\"#{x}\",%')"
       end
-      ands << "(#{qs.join(" OR ")})"
+      ands << "(#{qs.join(" OR ")})" if !qs.empty?
 
       qs = []
       number_pv_ids.each do |x|
         qs << "(erp_products_products.cache_properties LIKE '%[\"#{x}\",%')"
       end
-      ands << "(#{qs.join(" OR ")})"
+      ands << "(#{qs.join(" OR ")})" if !qs.empty?
 
       ors << "(#{ands.join(" AND ")})"
     end
