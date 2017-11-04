@@ -11,9 +11,24 @@ Erp::Products::Product.class_eval do
     end
   end
 
+  # get diameter value
+  def get_properties_value(property)
+    return nil if !property.present?
+
+    if self.cache_properties.present?
+      cache = JSON.parse(self.cache_properties)
+      return ((cache[property.id.to_s].present? and cache[property.id.to_s][1].present?) ? cache[property.id.to_s][0] : nil)
+    end
+  end
+
   # get diameter
   def get_diameter
     self.get_value(Erp::Products::Property.getByName(Erp::Products::Property::NAME_DUONG_KINH))
+  end
+
+  # get diameter
+  def get_diameter_properties_value
+    self.get_properties_value(Erp::Products::Property.getByName(Erp::Products::Property::NAME_DUONG_KINH))
   end
 
   # get import report
