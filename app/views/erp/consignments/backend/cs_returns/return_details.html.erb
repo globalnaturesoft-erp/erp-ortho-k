@@ -22,8 +22,8 @@
             <td class="text-left"><%= return_detail.consignment_detail.product.get_diameter %></td>
             <td class="text-left"><%= return_detail.consignment_detail.product.category_name %></td>
             <td class="numeric text-center"><strong><%= return_detail.quantity %></strong></td>
-            <td class="text-right"><%= return_detail.get_product_unit %></td>
-            <td class="text-right"><%=  %></td>
+            <td class="text-left"><%= return_detail.get_product_unit %></td>
+            <td class="text-left"><%= return_detail.state_name %></td>
         </tr>
         <% end %>
     </tbody>
