@@ -137,12 +137,13 @@ module Erp
           render layout: nil
         end
 
-        # Import report
-        def import_report
+        # Import - export report
+        def import_export_report
         end
 
-        def import_report_table
-          @rows = Erp::Products::Product.import_report(params)
+        def import_export_report_table
+          @rows = Erp::Products::Product.import_export_report(params)[:data]
+          @totals = Erp::Products::Product.import_export_report(params)[:total]
 
           render layout: nil
         end

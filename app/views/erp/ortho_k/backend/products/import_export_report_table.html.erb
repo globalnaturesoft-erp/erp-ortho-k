@@ -2,8 +2,10 @@
 total_colspan_1 = (get_columns(params).include?("record_date") ? 1 : 0) +
         (get_columns(params).include?("voucher_date") ? 1 : 0) +
         (get_columns(params).include?("voucher_code") ? 1 : 0) +
-        (get_columns(params).include?("supplier") ? 1 : 0) +
-        (get_columns(params).include?("customer") ? 1 : 0) +
+        (get_columns(params).include?("supplier_code") ? 1 : 0) +
+        (get_columns(params).include?("supplier_name") ? 1 : 0) +
+        (get_columns(params).include?("customer_code") ? 1 : 0) +
+        (get_columns(params).include?("customer_name") ? 1 : 0) +
         (get_columns(params).include?("code") ? 1 : 0) +
         (get_columns(params).include?("diameter") ? 1 : 0) +
         (get_columns(params).include?("category") ? 1 : 0) +
@@ -16,6 +18,10 @@ total_colspan_2 = (get_columns(params).include?("currency") ? 1 : 0) +
         (get_columns(params).include?("rate") ? 1 : 0) +
         (get_columns(params).include?("p_price") ? 1 : 0)
 
+supplier_colspan = (get_columns(params).include?("supplier_code") ? 1 : 0) +
+        (get_columns(params).include?("supplier_name") ? 1 : 0)
+customer_colspan = (get_columns(params).include?("customer_code") ? 1 : 0) +
+        (get_columns(params).include?("customer_name") ? 1 : 0)
 product_code_colspan = (get_columns(params).include?("code") ? 1 : 0) +
         (get_columns(params).include?("diameter") ? 1 : 0) +
         (get_columns(params).include?("category") ? 1 : 0)
@@ -34,8 +40,14 @@ sales_price_colspan = (get_columns(params).include?("s_price") ? 1 : 0) +
     <table class="table table-bordered table-advance order-column" id="">
         <tr>
             <%= "<td colspan='#{total_colspan_1}'></td>".html_safe if total_colspan_1 > 0 %>
+            <% if get_columns(params).include?("unknown_1") %>
+            <td class="text-right stock-num text-bold text-primary"><%= format_number((400..999).to_a.sample*1000) %></td>
+            <% end %>
+            <% if get_columns(params).include?("unknown_2") %>
+            <td class="text-right stock-num text-bold text-primary"><%= format_number((400..999).to_a.sample*1000) %></td>
+            <% end %>
             <% if get_columns(params).include?("quantity") %>
-            <td class="text-center stock-num text-bold bg-warning"><%= (0..1000).to_a.sample %></td>
+            <td class="text-center stock-num text-bold bg-warning"><%= @totals[:quantity] %></td>
             <% end %>
             <%= "<td colspan='#{total_colspan_2}'></td>".html_safe if total_colspan_2 > 0 %>
             <% if get_columns(params).include?("tax_amount") %>
@@ -70,11 +82,11 @@ sales_price_colspan = (get_columns(params).include?("s_price") ? 1 : 0) +
             <% if get_columns(params).include?("voucher_code") %>
                 <th class="bg-grey text-center text-nowrap" rowspan="2"><%= t('.voucher_code') %></th>
             <% end %>
-            <% if get_columns(params).include?("supplier") %>
-                <th class="bg-grey text-center text-nowrap" rowspan="2"><%= t('.supplier') %></th>
+            <% if get_columns(params).include?("supplier_code") or get_columns(params).include?("supplier_name") %>
+                <th class="bg-grey-silver bg-font-grey-silver text-center text-nowrap" colspan="<%= supplier_colspan %>"><%= t('.supplier') %></th>
             <% end %>
-            <% if get_columns(params).include?("customer") %>
-                <th class="bg-grey text-center text-nowrap" rowspan="2"><%= t('.customer') %></th>
+            <% if get_columns(params).include?("customer_code") or get_columns(params).include?("customer_name") %>
+                <th class="bg-grey-silver bg-font-grey-silver text-center text-nowrap" colspan="<%= customer_colspan %>"><%= t('.customer') %></th>
             <% end %>
             <% if get_columns(params).include?("code") or get_columns(params).include?("diameter") or get_columns(params).include?("category") %>
                 <th class="bg-green-sharp bg-font-green-sharp text-center text-nowrap" colspan="<%= product_code_colspan %>"><%= t('.product_code') %></th>
@@ -94,6 +106,12 @@ sales_price_colspan = (get_columns(params).include?("s_price") ? 1 : 0) +
             <% if get_columns(params).include?("unit") %>
                 <th class="bg-grey text-center text-nowrap" rowspan="2" width="7%"><%= t('.unit') %></th>
             <% end %>
+            <% if get_columns(params).include?("unknown_1") %>
+                <th class="bg-grey text-center text-nowrap" rowspan="2" width="7%"><%= t('.unknown_1') %></th>
+            <% end %>
+            <% if get_columns(params).include?("unknown_2") %>
+                <th class="bg-grey text-center text-nowrap" rowspan="2" width="7%"><%= t('.unknown_2') %></th>
+            <% end %>
             <% if get_columns(params).include?("quantity") %>
                 <th class="bg-grey text-center text-nowrap" rowspan="2" width="7%"><%= t('.quantity') %></th>
             <% end %>
@@ -109,6 +127,18 @@ sales_price_colspan = (get_columns(params).include?("s_price") ? 1 : 0) +
             <% end %>
         </tr>
         <tr>
+            <% if get_columns(params).include?("supplier_code") %>
+            <th class="bg-grey-silver bg-font-grey-silver text-center text-nowrap" width="7%"><%= t('.supplier_code') %></th>
+            <% end %>
+            <% if get_columns(params).include?("supplier_name") %>
+            <th class="bg-grey-silver bg-font-grey-silver text-center text-nowrap" width="7%"><%= t('.supplier_name') %></th>
+            <% end %>
+            <% if get_columns(params).include?("customer_code") %>
+            <th class="bg-grey-silver bg-font-grey-silver text-center text-nowrap" width="7%"><%= t('.customer_code') %></th>
+            <% end %>
+            <% if get_columns(params).include?("customer_name") %>
+            <th class="bg-grey-silver bg-font-grey-silver text-center text-nowrap" width="7%"><%= t('.customer_name') %></th>
+            <% end %>
             <% if get_columns(params).include?("code") %>
             <th class="bg-green-sharp bg-font-green-sharp text-center text-nowrap" width="7%"><%= t('.code') %></th>
             <% end %>
@@ -157,10 +187,16 @@ sales_price_colspan = (get_columns(params).include?("s_price") ? 1 : 0) +
                 <% if get_columns(params).include?("voucher_code") %>
                 <td class="text-left"><%= row[:voucher_code] %></td>
                 <% end %>
-                <% if get_columns(params).include?("supplier") %>
+                <% if get_columns(params).include?("supplier_code") %>
+                <td class="text-left"><%= row[:supplier_code] %></td>
+                <% end %>
+                <% if get_columns(params).include?("supplier_name") %>
                 <td class="text-left"><%= row[:supplier_name] %></td>
                 <% end %>
-                <% if get_columns(params).include?("customer") %>
+                <% if get_columns(params).include?("customer_code") %>
+                <td class="text-left"><%= row[:customer_code] %></td>
+                <% end %>
+                <% if get_columns(params).include?("customer_name") %>
                 <td class="text-left"><%= row[:customer_name] %></td>
                 <% end %>
                 <% if get_columns(params).include?("code") %>
@@ -179,7 +215,7 @@ sales_price_colspan = (get_columns(params).include?("s_price") ? 1 : 0) +
                 <td class="text-left"><%= row[:description] %></td>
                 <% end %>
                 <% if get_columns(params).include?("status") %>
-                <td class="text-left"><%= ['Mới','Vỡ','Xước','Sau 1 năm'].to_a.sample %></td>
+                <td class="text-left"><%= row[:state] %></td>
                 <% end %>
                 <% if get_columns(params).include?("warehouse") %>
                 <td class="text-left"><%= row[:warehouse] %></td>
@@ -187,23 +223,29 @@ sales_price_colspan = (get_columns(params).include?("s_price") ? 1 : 0) +
                 <% if get_columns(params).include?("unit") %>
                 <td class="text-left"><%= row[:unit] %></td>
                 <% end %>
+                <% if get_columns(params).include?("unknown_1") %>
+                <td class="text-right stock-num text-primary"><%= format_number((100..500).to_a.sample*1000) %></td>
+                <% end %>
+                <% if get_columns(params).include?("unknown_2") %>
+                <td class="text-right stock-num text-primary"><%= format_number((100..500).to_a.sample*1000) %></td>
+                <% end %>
                 <% if get_columns(params).include?("quantity") %>
                 <td class="text-center stock-num bg-warning"><%= row[:quantity] %></td>
                 <% end %>
                 <% if get_columns(params).include?("currency") %>
-                <td class="text-left"><%= ['USD','VNĐ'].to_a.sample %></td>
+                <td class="text-left"><%= ['VNĐ'].to_a.sample %></td>
                 <% end %>
                 <% if get_columns(params).include?("rate") %>
                 <td class="text-center stock-num"></td>
                 <% end %>
                 <% if get_columns(params).include?("p_price") %>
-                <td class="text-right stock-num text-primary"><%= format_number((50..100).to_a.sample*1000) %></td>
+                <td class="text-right stock-num text-primary"><%= row[:purchase_price].present? ? format_number(row[:purchase_price]) : '--' %></td>
                 <% end %>
                 <% if get_columns(params).include?("tax_amount") %>
-                <td class="text-right stock-num font-green-seagreen"><%= format_number((50..500).to_a.sample*1000) %></td>
+                <td class="text-right stock-num font-green-seagreen"><%= row[:tax_amount].present? ? format_number(row[:tax_amount]) : '--' %></td>
                 <% end %>
                 <% if get_columns(params).include?("other_fees") %>
-                <td class="text-right stock-num font-green-seagreen"><%= format_number((50..500).to_a.sample*1000) %></td>
+                <td class="text-right stock-num font-green-seagreen"><%= row[:other_fees].present? ? format_number(row[:other_fees]) : '--' %></td>
                 <% end %>
                 <% if get_columns(params).include?("unknown_3") %>
                 <td class="text-right stock-num text-warning"><%= format_number((50..500).to_a.sample*1000) %></td>
@@ -212,7 +254,7 @@ sales_price_colspan = (get_columns(params).include?("s_price") ? 1 : 0) +
                 <td class="text-right stock-num font-yellow-gold"><%= format_number((50..500).to_a.sample*1000) %></td>
                 <% end %>
                 <% if get_columns(params).include?("s_price") %>
-                <td class="text-right stock-num text-primary"><%= format_number((50..100).to_a.sample*1000) %></td>
+                <td class="text-right stock-num text-primary"><%= row[:sales_price].present? ? format_number(row[:sales_price]) : '--' %></td>
                 <% end %>
                 <% if get_columns(params).include?("unknown_5") %>
                 <td class="text-right stock-num font-yellow-gold"><%= format_number((50..500).to_a.sample*1000) %></td>

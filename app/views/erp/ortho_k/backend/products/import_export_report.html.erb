@@ -1,9 +1,9 @@
 <% content_for :title do %>
-    <%= t('.import_report') %>
+    <%= t('.import_export_report') %>
 <% end %>
 
 <% content_for :page_title do %>
-    <i class="fa fa-archive"></i> <%= t('.import_report') %>
+    <i class="fa fa-archive"></i> <%= t('.import_export_report') %>
 <% end %>
 
 <% content_for :global_filter do %>
@@ -60,7 +60,7 @@
                 text: '',
                 label: t('.filter_customer'),
                 placeholder: t('.chooose_customer'),
-                url: erp_contacts.dataselect_backend_contacts_path(format: 'json'),
+                url: erp_contacts.dataselect_backend_contacts_path(format: 'json', is_customer: true),
             }) %>
         </div>
         <div class="col-md-3">
@@ -70,7 +70,7 @@
                 text: '',
                 label: t('.filter_supplier'),
                 placeholder: t('.chooose_supplier'),
-                url: erp_contacts.dataselect_backend_contacts_path(format: 'json'),
+                url: erp_contacts.dataselect_backend_contacts_path(format: 'json', is_supplier: true),
             }) %>
         </div>
         <div class="col-md-3">
@@ -87,7 +87,7 @@
 <% end %>
 
 <%= erp_datalist(
-    url: erp_ortho_k.import_report_table_backend_products_path,
+    url: erp_ortho_k.import_export_report_table_backend_products_path,
     sortable: true,
     keywords: [
         {
@@ -131,10 +131,16 @@
             text: t('.voucher_code'), name: 'voucher_code', value: true, checked: true
         },
         {
-            text: t('.supplier'), name: 'supplier', value: true, checked: true
+            text: t('.supplier_code'), name: 'supplier_code', value: true, checked: true
         },
         {
-            text: t('.customer'), name: 'customer', value: true, checked: true
+            text: t('.supplier_name'), name: 'supplier_name', value: true, checked: true
+        },
+        {
+            text: t('.customer_code'), name: 'customer_code', value: true, checked: true
+        },
+        {
+            text: t('.customer_name'), name: 'customer_name', value: true, checked: true
         },
         {
             text: t('.code'), name: 'code', value: true, checked: true
@@ -159,6 +165,12 @@
         },
         {
             text: t('.unit'), name: 'unit', value: true, checked: true
+        },
+        {
+            text: t('.unknown_1'), name: 'unknown_1', value: true, checked: true
+        },
+        {
+            text: t('.unknown_2'), name: 'unknown_2', value: true, checked: true
         },
         {
             text: t('.quantity'), name: 'quantity', value: true, checked: true
