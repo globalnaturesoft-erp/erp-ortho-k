@@ -103,16 +103,8 @@ Erp::Products::Product.class_eval do
     return result
   end
 
-  def self.get_stock_importing_product(params={})
-    # open central settings
-    setting_file = 'setting_ortho_k.conf'
-    if File.file?(setting_file)
-      @options = YAML.load(File.read(setting_file))
-    else
-      return []
-    end
-
-    query = self.where(cache_stock: 0)
+  def self.orthok_filters(params={})
+    query = self.all
 
     if params[:filters].present?
 
@@ -120,8 +112,8 @@ Erp::Products::Product.class_eval do
 
       # category
       if filters[:categories].present?
-        categories = defined?(option) ? (filters[:categories].reject { |c| c.empty? }) : []
-        query = query.where(category_id: filters[:categories]) if !categories.empty?
+        categories = (filters[:categories].is_a?(Array) ? (filters[:categories].reject { |c| c.empty? }) : [filters[:categories]])
+        query = query.where(category_id: categories) if !categories.empty?
       end
 
       # diameter
@@ -141,33 +133,51 @@ Erp::Products::Product.class_eval do
       end
     end
 
-    # need to purchase: @options["purchase_conditions"]
-    ors = []
-    @options["purchase_conditions"].each do |option|
+    return query
+  end
 
-      ands = []
-      ands << "erp_products_products.category_id = #{option[1]["category"]}"
-      ands << "erp_products_products.cache_properties LIKE '%[\"#{option[1]["diameter"]}\",%'"
-
-      letter_pv_ids = defined?(option) ? (option[1]["letter"].reject { |c| c.empty? }) : [-1]
-      number_pv_ids = defined?(option) ? (option[1]["number"].reject { |c| c.empty? }) : [-1]
-
-      qs = []
-      letter_pv_ids.each do |x|
-        qs << "(erp_products_products.cache_properties LIKE '%[\"#{x}\",%')"
-      end
-      ands << "(#{qs.join(" OR ")})" if !qs.empty?
-
-      qs = []
-      number_pv_ids.each do |x|
-        qs << "(erp_products_products.cache_properties LIKE '%[\"#{x}\",%')"
-      end
-      ands << "(#{qs.join(" OR ")})" if !qs.empty?
-
-      ors << "(#{ands.join(" AND ")})"
+  def self.get_stock_importing_product(params={})
+    # open central settings
+    setting_file = 'setting_ortho_k.conf'
+    if File.file?(setting_file)
+      @options = YAML.load(File.read(setting_file))
+    else
+      return []
     end
 
-    query = query.where(ors.join(" OR "))
+    # filter from frontend
+    query = self.orthok_filters(params)
+
+    # only in-stock products
+    # query = query.where(cache_stock: 0)
+
+    ## need to purchase: @options["purchase_conditions"]
+    #ors = []
+    #@options["purchase_conditions"].each do |option|
+    #
+    #  ands = []
+    #  ands << "erp_products_products.category_id = #{option[1]["category"]}"
+    #  ands << "erp_products_products.cache_properties LIKE '%[\"#{option[1]["diameter"]}\",%'"
+    #
+    #  letter_pv_ids = defined?(option) ? (option[1]["letter"].reject { |c| c.empty? }) : [-1]
+    #  number_pv_ids = defined?(option) ? (option[1]["number"].reject { |c| c.empty? }) : [-1]
+    #
+    #  qs = []
+    #  letter_pv_ids.each do |x|
+    #    qs << "(erp_products_products.cache_properties LIKE '%[\"#{x}\",%')"
+    #  end
+    #  ands << "(#{qs.join(" OR ")})" if !qs.empty?
+    #
+    #  qs = []
+    #  number_pv_ids.each do |x|
+    #    qs << "(erp_products_products.cache_properties LIKE '%[\"#{x}\",%')"
+    #  end
+    #  ands << "(#{qs.join(" OR ")})" if !qs.empty?
+    #
+    #  ors << "(#{ands.join(" AND ")})"
+    #end
+
+    query = self.all.limit(20)#where(ors.join(" OR "))
 
     return query
   end
@@ -272,4 +282,12 @@ Erp::Products::Product.class_eval do
 
     return query.distinct.count(:product_id)
   end
+
+  def self.delivery_report(params={})
+    # filter from frontend
+    query = self.orthok_filters(params)
+
+    return query
+  end
+
 end

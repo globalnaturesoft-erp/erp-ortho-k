@@ -16,22 +16,13 @@
     "erp/order_stock_checks/backend/schecks",
     "erp/products/backend/state_checks",
     "erp/products/backend/stock_checks",
-    "erp/gift_givens/backend/givens",
     "erp/products/backend/damage_records",
-    "erp/consignments/backend/consignments",
     "erp/warehouses/backend/warehouses",
 
     # check params menu transfers
     "erp/stock_transfers/backend/transfers"].include?(params[:controller]) ||
-    (params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "stock_transfering") ||
+    (params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "stock_transfering")
     # end check params menu transfers
-
-    # check params menu reports
-    (params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "matrix_report") ||
-    (params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "delivery_report") ||
-    (params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "import_report") ||
-    (params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "export_report")
-    # end check params menu reports
 
 %>">
     <a href="javascript:;" class="nav-link nav-toggle">
@@ -56,22 +47,14 @@
             "erp/order_stock_checks/backend/schecks",
             "erp/products/backend/state_checks",
             "erp/products/backend/stock_checks",
-            "erp/gift_givens/backend/givens",
+
             "erp/products/backend/damage_records",
-            "erp/consignments/backend/consignments",
+
             "erp/warehouses/backend/warehouses",
 
             # check params menu transfers
             "erp/stock_transfers/backend/transfers"].include?(params[:controller]) ||
-            (params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "stock_transfering") ||
-            # end check params menu transfers
-
-            # check params menu reports
-            (params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "matrix_report") ||
-            (params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "delivery_report") ||
-            (params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "import_report") ||
-            (params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "export_report")
-            # end check params menu reports
+            (params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "stock_transfering")
         %>
             <span class="selected"></span>
             <span class="arrow open"></span>
@@ -128,20 +111,6 @@
             </li>
         <% end %>
 
-        <% if Erp::Core.available?("gift_givens") %>
-            <li class="nav-item <%= "active open" if ["erp/gift_givens/backend/givens"].include?(params[:controller]) %>">
-                <a href="<%= erp_gift_givens.backend_givens_path %>" class="nav-link ">
-                    <span class="title">
-                        <i class="glyphicon glyphicon-gift"></i>
-                        <%= t('.givens') %>
-                    </span>
-                    <% if ["erp/gift_givens/backend/givens"].include?(params[:controller]) %>
-                    <span class="selected"></span>
-                    <% end %>
-                </a>
-            </li>
-        <% end %>
-
         <% if Erp::Core.available?("products") %>
             <li class="nav-item <%= "active open" if ["erp/products/backend/damage_records"].include?(params[:controller]) %>">
                 <a href="<%= erp_products.backend_damage_records_path %>" class="nav-link ">
@@ -150,20 +119,6 @@
                         <%= t('.damage_records') %>
                     </span>
                     <% if ["erp/products/backend/damage_records"].include?(params[:controller]) %>
-                    <span class="selected"></span>
-                    <% end %>
-                </a>
-            </li>
-        <% end %>
-
-        <% if Erp::Core.available?("consignments") %>
-            <li class="nav-item <%= "active open" if ["erp/consignments/backend/consignments"].include?(params[:controller]) %>">
-                <a href="<%= erp_consignments.backend_consignments_path %>" class="nav-link ">
-                    <span class="title">
-                        <i class="fa fa-cubes"></i>
-                        <%= t('.consignments') %>
-                    </span>
-                    <% if ["erp/consignments/backend/consignments"].include?(params[:controller]) %>
                     <span class="selected"></span>
                     <% end %>
                 </a>
@@ -187,7 +142,5 @@
         <% if Erp::Core.available?("products") %>
             <%= render "layouts/erp/backend/menu/inventory/products" %>
         <% end %>
-
-        <%= render "layouts/erp/backend/menu/inventory/reports" %>
     </ul>
 </li>

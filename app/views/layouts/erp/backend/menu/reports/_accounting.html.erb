@@ -1,0 +1,37 @@
+<li class="nav-item">
+    <a href="javascript:;" class="nav-link nav-toggle">
+        <span class="title">Kế toán</span>
+        <% if false %>
+            <span class="selected"></span>
+            <span class="arrow open"></span>
+        <% else %>
+            <span class="arrow"></span>
+        <% end %>
+    </a>
+    <ul class="sub-menu">
+        <li class="nav-item <%= "active" if params[:controller] == "" && params[:action] == "" %>">
+            <%= link_to "Báo cáo thu/chi", '', class: "nav-link ", title: 'Báo cáo thu/chi theo thời gian' %>
+        </li>
+        <li class="nav-item <%= "active" if params[:controller] == "" && params[:action] == "" %>">
+            <%= link_to "Tổng hợp thu/chi", '', class: "nav-link ", title: 'Thông kê tổng hợp thu/chi theo loại thu chi' %>
+        </li>
+        <li class="nav-item <%= "active" if params[:controller] == "" && params[:action] == "" %>">
+            <%= link_to "Kết quả bán hàng", '', class: "nav-link ", title: 'Kết quả bán hàng, trả lại hàng thực tế theo thời gian' %>
+        </li>
+        <li class="nav-item <%= "active" if params[:controller] == "" && params[:action] == "" %>">
+            <%= link_to "Kết quả kinh doanh", '', class: "nav-link ", title: 'Báo cáo kết quả kinh doanh, biểu đồ doanh số' %>
+        </li>
+        <li class="nav-item <%= "active" if params[:controller] == "" && params[:action] == "" %>">
+            <%= link_to "Dòng tiền còn lại", '', class: "nav-link ", title: 'Báo cáo dòng tiền còn lại (theo tài khoản tiền mặt/ngân hàng)' %>
+        </li>
+        <li class="nav-item <%= "active" if params[:controller] == "" && params[:action] == "" %>">
+            <%= link_to "Báo cáo công nợ (KH)", '', class: "nav-link ", title: 'Báo cáo công nợ của khách hàng' %>
+        </li>
+        <li class="nav-item <%= "active" if params[:controller] == "" && params[:action] == "" %>">
+            <%= link_to "Báo cáo công nợ (NCC)", '', class: "nav-link ", title: 'Báo cáo công nợ từ NCC' %>
+        </li>
+        <li class="nav-item <%= "active" if params[:controller] == "" && params[:action] == "" %>">
+            <%= link_to "Thống kê công nợ (KH)", '', class: "nav-link ", title: 'Báo cáo khách hàng còn nợ + NV kinh doanh' %>
+        </li>
+    </ul>
+</li>

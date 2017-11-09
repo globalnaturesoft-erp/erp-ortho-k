@@ -3,8 +3,7 @@
                                          (params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "import_report") ||
                                          (params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "export_report") %>">
     <a href="javascript:;" class="nav-link nav-toggle">
-        <i class="glyphicon glyphicon-calendar"></i>
-        <span class="title"><%= t('.report') %></span>
+        <span class="title">Kho</span>
         <% if (params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "matrix_report") ||
               (params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "delivery_report") ||
               (params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "import_report") ||
@@ -32,6 +31,15 @@
         </li>
         <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "export_report" %> ">
             <%= link_to t('.export_report'), erp_ortho_k.export_report_backend_products_path, class: "nav-link ", title: t('.export_report') %>
+        </li>
+        <li class="nav-item <%= "active" if params[:controller] == "" && params[:action] == "" %>">
+            <%= link_to "Thống kê tồn kho", '', class: "nav-link ", title: 'Thống kê tồn kho theo loại len + đường kính' %>
+        </li>
+        <li class="nav-item <%= "active" if params[:controller] == "" && params[:action] == "" %>">
+            <%= link_to "Thống kê theo kho", '', class: "nav-link ", title: 'Thống kê theo kho' %>
+        </li>
+        <li class="nav-item <%= "active" if params[:controller] == "" && params[:action] == "" %>">
+            <%= link_to "Len ngoài vùng", '', class: "nav-link ", title: 'Thống kê len ngoài vùng' %>
         </li>
     </ul>
 </li>

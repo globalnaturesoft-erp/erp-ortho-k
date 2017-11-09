@@ -49,14 +49,17 @@ module Erp
 
         # Delivery report
         def delivery_report
+          # default from to date
+          @from_date = Time.now.beginning_of_month
+          @to_date = Time.now.end_of_day
         end
 
         def delivery_report_table
           # group bys
-          global_filters = params.to_unsafe_hash[:global_filter]
+          @global_filters = params.to_unsafe_hash[:global_filter]
 
-          @group_by_category = (global_filters.present? and global_filters[:group_by_category].present?) ? global_filters[:group_by_category] : nil
-          @group_by_property = (global_filters.present? and global_filters[:group_by_property].present?) ? global_filters[:group_by_property] : nil
+          @group_by_category = (@global_filters.present? and @global_filters[:group_by_category].present?) ? @global_filters[:group_by_category] : nil
+          @group_by_property = (@global_filters.present? and @global_filters[:group_by_property].present?) ? @global_filters[:group_by_property] : nil
 
           if @group_by_category.present?
             @categories = @group_by_category == 'all' ? Erp::Products::Category.order('name') : Erp::Products::Category.where(id: @group_by_category)
@@ -66,7 +69,9 @@ module Erp
             @properties_values = Erp::Products::PropertiesValue.where(property_id: @group_by_property).order('value')
           end
 
-          @products = Erp::Products::Product.all.order("code").paginate(:page => params[:page], :per_page => 50)
+          @products_query = Erp::Products::Product.delivery_report(filters: @global_filters)
+
+          @products = @products_query.order("code").paginate(:page => params[:page], :per_page => 50)
 
           render layout: nil
         end

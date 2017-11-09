@@ -1,0 +1,22 @@
+<li class="nav-item">
+    <a href="javascript:;" class="nav-link nav-toggle">
+        <span class="title">Bán hàng</span>
+        <% if false %>
+            <span class="selected"></span>
+            <span class="arrow open"></span>
+        <% else %>
+            <span class="arrow"></span>
+        <% end %>
+    </a>
+    <ul class="sub-menu">
+        <li class="nav-item <%= "active" if params[:controller] == "" && params[:action] == "" %>">
+            <%= link_to "Báo cáo bán hàng", '', class: "nav-link ", title: 'Báo cáo bán hàng, trả hàng (theo ngày, tuần, quý, năm,...)' %>
+        </li>
+         <li class="nav-item <%= "active" if params[:controller] == "" && params[:action] == "" %>">
+            <%= link_to "Báo cáo trả hàng", '', class: "nav-link ", title: 'Báo cáo khách hàng trả hàng (theo ngày, tuần, quý, năm,...)' %>
+        </li>
+        <li class="nav-item <%= "active" if params[:controller] == "" && params[:action] == "" %>">
+            <%= link_to "BN/PK mới", '', class: "nav-link ", title: 'Danh sách và số lượng bệnh nhân/Phòng khám mới' %>
+        </li>
+    </ul>
+</li>

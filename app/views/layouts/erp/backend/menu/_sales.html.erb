@@ -1,4 +1,8 @@
-<li class="nav-item <%= "active open" if ["erp/sales/backend/sales"].include?(params[:controller]) ||
+<li class="nav-item <%= "active open" if [
+                                          "erp/sales/backend/sales",
+                                          "erp/gift_givens/backend/givens",
+                                          "erp/consignments/backend/consignments",
+                                        ].include?(params[:controller]) ||
                                         (params[:controller] == "erp/prices/backend/customer_prices" && (params[:action] == "index" || params[:action] == "update_contact")) ||
                                         (params[:controller] == "erp/prices/backend/customer_prices" && (params[:action] == "general" || params[:action] == "general_update")) %>">
     <a href="javascript:;" class="nav-link nav-toggle">
@@ -17,6 +21,31 @@
                 <span class="title"><%= t('.sales_orders') %></span>
             </a>
         </li>
+        <% if Erp::Core.available?("gift_givens") %>
+            <li class="nav-item <%= "active open" if ["erp/gift_givens/backend/givens"].include?(params[:controller]) %>">
+                <a href="<%= erp_gift_givens.backend_givens_path %>" class="nav-link ">
+                    <span class="title">
+                        Quà tặng
+                        <i class="glyphicon glyphicon-gift"></i>
+                    </span>
+                    <% if ["erp/gift_givens/backend/givens"].include?(params[:controller]) %>
+                    <span class="selected"></span>
+                    <% end %>
+                </a>
+            </li>
+        <% end %>
+        <% if Erp::Core.available?("consignments") %>
+            <li class="nav-item <%= "active open" if ["erp/consignments/backend/consignments"].include?(params[:controller]) %>">
+                <a href="<%= erp_consignments.backend_consignments_path %>" class="nav-link ">
+                    <span class="title">
+                        Ký gửi/Cho mượn
+                    </span>
+                    <% if ["erp/consignments/backend/consignments"].include?(params[:controller]) %>
+                    <span class="selected"></span>
+                    <% end %>
+                </a>
+            </li>
+        <% end %>
         <% if Erp::Core.available?("prices") %>
             <%= render "layouts/erp/backend/menu/prices/customer_prices" %>
         <% end %>
