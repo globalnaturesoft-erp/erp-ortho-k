@@ -436,6 +436,7 @@ vi:
             accountant: "Kế toán"
             invoice_for_sales: "Hóa đơn bán hàng"
             purchase_invoice: "Hóa đơn nhập hàng"
+            product_returns: "Hàng bán bị trả lại"
             accounts: "Quản lý tài khoản"
             cash_book: "Quản lý thu - chi"
             customer_liabilities_tracking: "Theo dõi công nợ (bán)"

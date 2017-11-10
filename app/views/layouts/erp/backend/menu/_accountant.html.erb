@@ -1,5 +1,6 @@
 <li class="nav-item <%= "active open" if ["erp/accounting/backend/sales_orders",
                                           "erp/accounting/backend/purchase_orders",
+                                          "erp/accounting/backend/product_returns",
                                           "erp/payments/backend/accounts",
                                           "erp/payments/backend/payment_records",
                                           "erp/payments/backend/payment_types"].include?(params[:controller]) ||
@@ -12,6 +13,7 @@
         <span class="title"><%= t('.accountant') %></span>
         <% if ["erp/accounting/backend/sales_orders",
               "erp/accounting/backend/purchase_orders",
+              "erp/accounting/backend/product_returns",
               "erp/payments/backend/accounts",
               "erp/payments/backend/payment_records",
               "erp/payments/backend/payment_types"].include?(params[:controller]) ||
@@ -38,6 +40,14 @@
             <a href="<%= erp_accounting.backend_purchase_orders_path %>" class="nav-link ">
                 <span class="title"><%= t('.purchase_invoice') %></span>
                 <% if ["erp/accounting/backend/purchase_orders"].include?(params[:controller]) %>
+                <span class="selected"></span>
+                <% end %>
+            </a>
+        </li>
+        <li class="nav-item <%= "active open" if ["erp/accounting/backend/product_returns"].include?(params[:controller]) %>">
+            <a href="<%= erp_accounting.backend_product_returns_path %>" class="nav-link ">
+                <span class="title"><%= t('.product_returns') %></span>
+                <% if ["erp/accounting/backend/product_returns"].include?(params[:controller]) %>
                 <span class="selected"></span>
                 <% end %>
             </a>
