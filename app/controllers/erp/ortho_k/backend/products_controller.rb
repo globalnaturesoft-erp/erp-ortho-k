@@ -61,15 +61,20 @@ module Erp
           @group_by_category = (@global_filters.present? and @global_filters[:group_by_category].present?) ? @global_filters[:group_by_category] : nil
           @group_by_property = (@global_filters.present? and @global_filters[:group_by_property].present?) ? @global_filters[:group_by_property] : nil
 
-          if @group_by_category.present?
-            @categories = @group_by_category == 'all' ? Erp::Products::Category.order('name') : Erp::Products::Category.where(id: @group_by_category)
-          end
-
           if @group_by_property.present?
             @properties_values = Erp::Products::PropertiesValue.where(property_id: @group_by_property).order('value')
           end
 
           @products_query = Erp::Products::Product.delivery_report(filters: @global_filters)
+
+          if @group_by_category.present?
+            @categories = @group_by_category == 'all' ? Erp::Products::Category.order('name') : Erp::Products::Category.where(id: @group_by_category)
+
+            # IF GROUP BY CATEGORY
+            if @group_by_category != 'all'
+              @products_query = @products_query.where(category_id: @group_by_category)
+            end
+          end
 
           @products = @products_query.order("code").paginate(:page => params[:page], :per_page => 50)
 

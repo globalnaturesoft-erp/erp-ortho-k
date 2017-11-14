@@ -1,0 +1,436 @@
+<table class="table table-bordered table-advance order-column" id="">
+    <tr>
+        <td class="text-right text-nowrap" colspan="2">Tổng cộng</td>
+        <td class="text-center stock-num text-bold bg-warning">
+            <%
+                begin_params = @global_filters.clone
+                begin_params[:to_date] = @global_filters[:from_date]
+                begin_params[:from_date] = nil
+                begin_params[:product_id] = @products_query.select('id')
+            %>
+            <%= Erp::Products::Product.get_stock_real(begin_params) %>
+        </td>
+        <% total_import = 0 %>
+        <td class="text-center stock-num">
+            <%
+                count = Erp::Products::Product.get_qdelivery_import(@global_filters.merge({
+                    product_id: @products_query.select('id'),
+                    delivery_type: Erp::Qdeliveries::Delivery::TYPE_WAREHOUSE_IMPORT
+                }))
+                total_import += count
+            %>
+            <%= count %>
+        </td>
+        <td class="text-center stock-num">
+            <%
+                count = Erp::Products::Product.get_qdelivery_import(@global_filters.merge({
+                    product_id: @products_query.select('id'),
+                    delivery_type: Erp::Qdeliveries::Delivery::TYPE_CUSTOMER_IMPORT
+                }))
+                total_import += count
+            %>
+            <%= count %>
+        </td>
+        <td class="text-center stock-num">
+            <%
+                count = Erp::Products::Product.get_transfer_import(@global_filters.merge({
+                    product_id: @products_query.select('id'),
+                }))
+                total_import += count
+            %>
+            <%= count %>
+        </td>
+        <td class="text-center stock-num">
+            --
+        </td>
+        <td class="text-center stock-num">
+            <%
+                count = Erp::Products::Product.get_stock_check_import(@global_filters.merge({
+                    product_id: @products_query.select('id'),
+                }))
+                total_import += count
+            %>
+            <%= count %>
+        </td>
+        <td class="text-center stock-num text-bold text-warning">
+            <%= total_import %>
+        </td>
+        <% total_export = 0 %>
+        <td class="text-center stock-num">
+            <%
+                count = Erp::Products::Product.get_qdelivery_export(@global_filters.merge({
+                    product_id: @products_query.select('id'),
+                    delivery_type: Erp::Qdeliveries::Delivery::TYPE_WAREHOUSE_EXPORT
+                }))
+                total_export += count
+            %>
+            <%= count %>
+        </td>
+        <td class="text-center stock-num">
+            <%
+                count = Erp::Products::Product.get_qdelivery_export(@global_filters.merge({
+                    product_id: @products_query.select('id'),
+                    delivery_type: Erp::Qdeliveries::Delivery::TYPE_MANUFACTURER_EXPORT
+                }))
+                total_export += count
+            %>
+            <%= count %>
+        </td>
+        <td class="text-center stock-num">
+            <%
+                count = Erp::Products::Product.get_transfer_export(@global_filters.merge({
+                    product_id: @products_query.select('id'),
+                }))
+                total_export += count
+            %>
+            <%= count %>
+        </td>
+        <td class="text-center stock-num">
+            <%
+                count = Erp::Products::Product.get_gift_given_export(@global_filters.merge({
+                    product_id: @products_query.select('id'),
+                }))
+                total_export += count
+            %>
+            <%= count %>
+        </td>
+        <td class="text-center stock-num">
+            <%
+                count = Erp::Products::Product.get_damage_record_export(@global_filters.merge({
+                    product_id: @products_query.select('id'),
+                }))
+                total_export += count
+            %>
+            <%= count %>
+        </td>
+        <td class="text-center stock-num">
+            <%
+                count = Erp::Products::Product.get_stock_check_export(@global_filters.merge({
+                    product_id: @products_query.select('id'),
+                }))
+                total_export += count
+            %>
+            <%= count %>
+        </td>
+        <td class="text-center stock-num text-bold text-primary">
+            <%= total_export %>
+        </td>
+
+
+
+        <td class="text-center stock-num text-bold bg-info">
+            <%
+                end_params = @global_filters.clone
+                end_params[:from_date] = nil
+                end_params[:product_id] = @products_query.select('id')
+            %>
+            <%= Erp::Products::Product.get_stock_real(end_params) %>
+        </td>
+    </tr>
+    <tr>
+        <th class="bg-grey text-center" rowspan="2">Loại</th>
+        <th class="bg-grey text-center" rowspan="2">Đường kính</th>
+        <th class="bg-grey text-center" rowspan="2" width="7%">Đầu kỳ</th>
+        <th class="bg-grey text-center" colspan="6">Nhập</th>
+        <th class="bg-grey text-center text-center" colspan="7">Xuất</th>
+        <th class="bg-grey text-center" rowspan="2">Cuối kỳ</th>
+    </tr>
+    <tr>
+        <th class="bg-grey text-center" width="7%" title="Nhập kho"><%= t('.import_purchase') %></th>
+        <th class="bg-grey text-center" width="7%" title="Hoàn kho (Khách hàng)"><%= t('.import_return') %></th>
+        <th class="bg-grey text-center" width="7%" title="Chuyển kho">CK</th>
+        <th class="bg-grey text-center" width="7%" title="Ký gởi/Cho mượn">KG</th>
+        <th class="bg-grey text-center" width="7%" title="Kiểm kho">KK</th>
+        <th class="bg-grey text-center" width="7%" title="Tổng cộng">Tổng</th>
+        <th class="bg-grey text-center" width="7%" title="Xuất kho bán">XK</th>
+        <th class="bg-grey text-center" width="7%" title="Trả nhà CC">TNCC</th>
+        <th class="bg-grey text-center" width="7%" title="Chuyển kho">CK</th>
+        <th class="bg-grey text-center" width="7%" title="Tặng quà">TQ</th>
+        <th class="bg-grey text-center" width="7%" title="Hủy kho">HuyK</th>
+        <th class="bg-grey text-center" width="7%" title="Kiểm kho">KK</th>
+        <th class="bg-grey text-center" width="7%">TX</th>
+    </tr>
+    <% @categories.each_with_index do |category,index| %>
+        <% rowspan = @properties_values.count %>
+        <% rowspan += 1 if @group_by_category == 'all' %>
+        <% @properties_values.each_with_index do |property_value,index| %>
+            <% product_ids = ([-1] + Erp::Products::Product.select('id')
+                .where("erp_products_products.cache_properties LIKE '%[\"#{property_value.id}\",%'")
+                .where(category_id: category.id)
+            ) %>
+            <tr>
+                <% if index == 0 %>
+                    <td class="text-left text-bold" rowspan="<%= rowspan %>"><%= category.name %></td>
+                <% end %>
+                <td class="text-left"><%= property_value.value %></td>
+
+                <td class="text-center stock-num text-bold bg-warning">
+                    <%
+                        begin_params = @global_filters.clone
+                        begin_params[:to_date] = @global_filters[:from_date]
+                        begin_params[:from_date] = nil
+                        begin_params[:product_id] = product_ids
+                    %>
+                    <%= Erp::Products::Product.get_stock_real(begin_params) %>
+                </td>
+
+                <% total_import = 0 %>
+                <td class="text-center stock-num">
+                    <%
+                        filters = @global_filters.clone
+                        count = Erp::Products::Product.get_qdelivery_import(filters.merge({
+                            product_id: product_ids,
+                            delivery_type: Erp::Qdeliveries::Delivery::TYPE_WAREHOUSE_IMPORT
+                        }))
+                        total_import += count
+                    %>
+                    <%= count %>
+                </td>
+                <td class="text-center stock-num">
+                    <%
+                        filters = @global_filters.clone
+                        count = Erp::Products::Product.get_qdelivery_import(filters.merge({
+                            product_id: product_ids,
+                            delivery_type: Erp::Qdeliveries::Delivery::TYPE_CUSTOMER_IMPORT
+                        }))
+                        total_import += count
+                    %>
+                    <%= count %>
+                </td>
+                <td class="text-center stock-num">
+                    <%
+                        count = Erp::Products::Product.get_transfer_import(@global_filters.merge({
+                            product_id: product_ids,
+                        }))
+                        total_import += count
+                    %>
+                    <%= count %>
+                </td>
+                <td class="text-center stock-num">
+                    --
+                </td>
+                <td class="text-center stock-num">
+                    <%
+                        count = Erp::Products::Product.get_stock_check_import(@global_filters.merge({
+                            product_id: product_ids,
+                        }))
+                        total_import += count
+                    %>
+                    <%= count %>
+                </td>
+                <td class="text-center stock-num text-bold text-warning">
+                    <%= total_import %>
+                </td>
+
+                <% total_export = 0 %>
+                <td class="text-center stock-num">
+                    <%
+                        count = Erp::Products::Product.get_qdelivery_export(@global_filters.merge({
+                            product_id: product_ids,
+                            delivery_type: Erp::Qdeliveries::Delivery::TYPE_WAREHOUSE_EXPORT
+                        }))
+                        total_export += count
+                    %>
+                    <%= count %>
+                </td>
+                <td class="text-center stock-num">
+                    <%
+                        count = Erp::Products::Product.get_qdelivery_export(@global_filters.merge({
+                            product_id: product_ids,
+                            delivery_type: Erp::Qdeliveries::Delivery::TYPE_MANUFACTURER_EXPORT
+                        }))
+                        total_export += count
+                    %>
+                    <%= count %>
+                </td>
+                <td class="text-center stock-num">
+                    <%
+                        count = Erp::Products::Product.get_transfer_export(@global_filters.merge({
+                            product_id: product_ids,
+                        }))
+                        total_export += count
+                    %>
+                    <%= count %>
+                </td>
+                <td class="text-center stock-num">
+                    <%
+                        count = Erp::Products::Product.get_gift_given_export(@global_filters.merge({
+                            product_id: product_ids,
+                        }))
+                        total_export += count
+                    %>
+                    <%= count %>
+                </td>
+                <td class="text-center stock-num">
+                    <%
+                        count = Erp::Products::Product.get_damage_record_export(@global_filters.merge({
+                            product_id: product_ids,
+                        }))
+                        total_export += count
+                    %>
+                    <%= count %>
+                </td>
+                <td class="text-center stock-num">
+                    <%
+                        count = Erp::Products::Product.get_stock_check_export(@global_filters.merge({
+                            product_id: product_ids,
+                        }))
+                        total_export += count
+                    %>
+                    <%= count %>
+                </td>
+                <td class="text-center stock-num text-bold text-primary">
+                    <%= total_export %>
+                </td>
+
+
+                <td class="text-center stock-num text-bold bg-info">
+                    <%
+                        end_params = @global_filters.clone
+                        end_params[:from_date] = nil
+                        end_params[:product_id] = product_ids
+                    %>
+                    <%= Erp::Products::Product.get_stock_real(end_params) %>
+                </td>
+            </tr>
+        <% end %>
+        <% product_ids = ([-1] + Erp::Products::Product.select('id')
+            .where(category_id: category.id)
+        ) %>
+
+        <% if @group_by_category == 'all' %>
+            <tr>
+                <th class="text-left text-bold text-right bg-grey" colspan="1">TC</th>
+
+                <th class="text-center stock-num text-bold bg-grey">
+                    <%
+                        begin_params = @global_filters.clone
+                        begin_params[:to_date] = @global_filters[:from_date]
+                        begin_params[:from_date] = nil
+                        begin_params[:product_id] = product_ids
+                    %>
+                    <%= Erp::Products::Product.get_stock_real(begin_params) %>
+                </th>
+
+                <% total_import = 0 %>
+                <th class="text-center stock-num bg-grey">
+                    <%
+                        filters = @global_filters.clone
+                        count = Erp::Products::Product.get_qdelivery_import(filters.merge({
+                            product_id: product_ids,
+                            delivery_type: Erp::Qdeliveries::Delivery::TYPE_WAREHOUSE_IMPORT
+                        }))
+                        total_import += count
+                    %>
+                    <%= count %>
+                </th>
+                <th class="text-center stock-num bg-grey">
+                    <%
+                        filters = @global_filters.clone
+                        count = Erp::Products::Product.get_qdelivery_import(filters.merge({
+                            product_id: product_ids,
+                            delivery_type: Erp::Qdeliveries::Delivery::TYPE_CUSTOMER_IMPORT
+                        }))
+                        total_import += count
+                    %>
+                    <%= count %>
+                </th>
+                <th class="text-center stock-num bg-grey">
+                    <%
+                        count = Erp::Products::Product.get_transfer_import(@global_filters.merge({
+                            product_id: product_ids,
+                        }))
+                        total_import += count
+                    %>
+                    <%= count %>
+                </th>
+                <th class="text-center stock-num bg-grey">
+                    --
+                </th>
+                <th class="text-center stock-num bg-grey">
+                    <%
+                        count = Erp::Products::Product.get_stock_check_import(@global_filters.merge({
+                            product_id: product_ids,
+                        }))
+                        total_import += count
+                    %>
+                    <%= count %>
+                </th>
+                <th class="text-center stock-num text-bold bg-grey">
+                    <%= total_import %>
+                </th>
+
+                <% total_export = 0 %>
+                <th class="text-center stock-num bg-grey">
+                    <%
+                        count = Erp::Products::Product.get_qdelivery_export(@global_filters.merge({
+                            product_id: product_ids,
+                            delivery_type: Erp::Qdeliveries::Delivery::TYPE_WAREHOUSE_EXPORT
+                        }))
+                        total_export += count
+                    %>
+                    <%= count %>
+                </th>
+                <th class="text-center stock-num bg-grey">
+                    <%
+                        count = Erp::Products::Product.get_qdelivery_export(@global_filters.merge({
+                            product_id: product_ids,
+                            delivery_type: Erp::Qdeliveries::Delivery::TYPE_MANUFACTURER_EXPORT
+                        }))
+                        total_export += count
+                    %>
+                    <%= count %>
+                </th>
+                <th class="text-center stock-num bg-grey">
+                    <%
+                        count = Erp::Products::Product.get_transfer_export(@global_filters.merge({
+                            product_id: product_ids,
+                        }))
+                        total_export += count
+                    %>
+                    <%= count %>
+                </th>
+                <th class="text-center stock-num bg-grey">
+                    <%
+                        count = Erp::Products::Product.get_gift_given_export(@global_filters.merge({
+                            product_id: product_ids,
+                        }))
+                        total_export += count
+                    %>
+                    <%= count %>
+                </th>
+                <th class="text-center stock-num bg-grey">
+                    <%
+                        count = Erp::Products::Product.get_damage_record_export(@global_filters.merge({
+                            product_id: product_ids,
+                        }))
+                        total_export += count
+                    %>
+                    <%= count %>
+                </th>
+                <th class="text-center stock-num bg-grey">
+                    <%
+                        count = Erp::Products::Product.get_stock_check_export(@global_filters.merge({
+                            product_id: product_ids,
+                        }))
+                        total_export += count
+                    %>
+                    <%= count %>
+                </th>
+                <th class="text-center stock-num text-bold bg-grey">
+                    <%= total_export %>
+                </th>
+
+
+                <th class="text-center stock-num text-bold bg-grey">
+                    <%
+                        end_params = @global_filters.clone
+                        end_params[:from_date] = nil
+                        end_params[:product_id] = product_ids
+                    %>
+                    <%= Erp::Products::Product.get_stock_real(end_params) %>
+                </th>
+            </tr>
+        <% end %>
+    <% end %>
+</table>

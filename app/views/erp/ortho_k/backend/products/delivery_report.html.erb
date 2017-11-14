@@ -47,19 +47,6 @@
             }) %>
         </div>
         <div class="col-md-3">
-            <% diameter = Erp::Products::Property.where(name: "Đường kính").first %>
-            <%= erp_form_control("dataselect", {
-                name: 'diameters',
-                value: '',
-                text: '',
-                label: Erp::Products::Property.where(name: "Đường kính").first().name,
-                placeholder: diameter.name,
-                url: erp_products.dataselect_backend_properties_values_path(format: 'json', property_id: diameter.id),
-                include_blank: t('.all_diameters'),
-                multiple: true
-            }) %>
-        </div>
-        <div class="col-md-3">
             <%= erp_form_control("dataselect", {
                 name: 'warehouse_ids',
                 value: '',

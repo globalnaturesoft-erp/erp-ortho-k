@@ -1,11 +1,10 @@
 <% if params[:global_filter][:from_date].present? and params[:global_filter][:to_date].present? %>
     <% if @group_by_category.nil? and @group_by_property.nil? %>
+        <%= render 'erp/ortho_k/backend/products/delivery_report_table/default' %>
+    <% elsif @group_by_property.nil? %>
         <table class="table table-bordered table-advance order-column" id="">
             <tr>
-                <td class="text-right" colspan="3"><%= t('.total_row') %></td>
-
-
-
+                <td class="text-right text-nowrap">Tổng cộng</td>
                 <td class="text-center stock-num text-bold bg-warning">
                     <%
                         begin_params = @global_filters.clone
@@ -15,7 +14,6 @@
                     %>
                     <%= Erp::Products::Product.get_stock_real(begin_params) %>
                 </td>
-
                 <% total_import = 0 %>
                 <td class="text-center stock-num">
                     <%
@@ -61,10 +59,6 @@
                 <td class="text-center stock-num text-bold text-warning">
                     <%= total_import %>
                 </td>
-
-
-
-
                 <% total_export = 0 %>
                 <td class="text-center stock-num">
                     <%
@@ -138,8 +132,6 @@
                 </td>
             </tr>
             <tr>
-                <th class="bg-grey text-center" rowspan="2"><%= t('.product') %></th>
-                <th class="bg-grey text-center" rowspan="2"><%= t('.diameter') %></th>
                 <th class="bg-grey text-center" rowspan="2"><%= t('.category') %></th>
                 <th class="bg-grey text-center" rowspan="2" width="7%"><%= t('.begin') %></th>
                 <th class="bg-grey text-center" colspan="6"><%= t('.import') %></th>
@@ -162,26 +154,27 @@
                 <th class="bg-grey text-center" width="7%"><%= t('.export_total') %></th>
                 <th class="bg-grey text-center" width="7%"><%= t('.end_total') %></th>
             </tr>
-            <% @products.each_with_index do |product,index| %>
+            <% @categories.each_with_index do |category,index| %>
+            <% product_ids = ([-1] + Erp::Products::Product.select('id').where("erp_products_products.category_id = ?", category.id)) %>
                 <tr>
-                    <td class="text-left"><%= product.code %></td>
-                    <td class="text-left"><%= product.get_diameter %></td>
-                    <td class="text-left"><%= product.category_name %></td>
+                    <td class="text-left"><%= category.name %></td>
+
                     <td class="text-center stock-num text-bold bg-warning">
                         <%
                             begin_params = @global_filters.clone
                             begin_params[:to_date] = @global_filters[:from_date]
                             begin_params[:from_date] = nil
+                            begin_params[:product_id] = product_ids
                         %>
-                        <%= product.get_stock(begin_params) %>
+                        <%= Erp::Products::Product.get_stock_real(begin_params) %>
                     </td>
-
 
                     <% total_import = 0 %>
                     <td class="text-center stock-num">
                         <%
-                            count = Erp::Products::Product.get_qdelivery_import(@global_filters.merge({
-                                product_id: product.id,
+                            filters = @global_filters.clone
+                            count = Erp::Products::Product.get_qdelivery_import(filters.merge({
+                                product_id: product_ids,
                                 delivery_type: Erp::Qdeliveries::Delivery::TYPE_WAREHOUSE_IMPORT
                             }))
                             total_import += count
@@ -190,8 +183,9 @@
                     </td>
                     <td class="text-center stock-num">
                         <%
-                            count = Erp::Products::Product.get_qdelivery_import(@global_filters.merge({
-                                product_id: product.id,
+                            filters = @global_filters.clone
+                            count = Erp::Products::Product.get_qdelivery_import(filters.merge({
+                                product_id: product_ids,
                                 delivery_type: Erp::Qdeliveries::Delivery::TYPE_CUSTOMER_IMPORT
                             }))
                             total_import += count
@@ -201,7 +195,7 @@
                     <td class="text-center stock-num">
                         <%
                             count = Erp::Products::Product.get_transfer_import(@global_filters.merge({
-                                product_id: product.id,
+                                product_id: product_ids,
                             }))
                             total_import += count
                         %>
@@ -213,7 +207,7 @@
                     <td class="text-center stock-num">
                         <%
                             count = Erp::Products::Product.get_stock_check_import(@global_filters.merge({
-                                product_id: product.id,
+                                product_id: product_ids,
                             }))
                             total_import += count
                         %>
@@ -223,13 +217,11 @@
                         <%= total_import %>
                     </td>
 
-
-
                     <% total_export = 0 %>
                     <td class="text-center stock-num">
                         <%
                             count = Erp::Products::Product.get_qdelivery_export(@global_filters.merge({
-                                product_id: product.id,
+                                product_id: product_ids,
                                 delivery_type: Erp::Qdeliveries::Delivery::TYPE_WAREHOUSE_EXPORT
                             }))
                             total_export += count
@@ -239,7 +231,7 @@
                     <td class="text-center stock-num">
                         <%
                             count = Erp::Products::Product.get_qdelivery_export(@global_filters.merge({
-                                product_id: product.id,
+                                product_id: product_ids,
                                 delivery_type: Erp::Qdeliveries::Delivery::TYPE_MANUFACTURER_EXPORT
                             }))
                             total_export += count
@@ -249,7 +241,7 @@
                     <td class="text-center stock-num">
                         <%
                             count = Erp::Products::Product.get_transfer_export(@global_filters.merge({
-                                product_id: product.id,
+                                product_id: product_ids,
                             }))
                             total_export += count
                         %>
@@ -258,7 +250,7 @@
                     <td class="text-center stock-num">
                         <%
                             count = Erp::Products::Product.get_gift_given_export(@global_filters.merge({
-                                product_id: product.id,
+                                product_id: product_ids,
                             }))
                             total_export += count
                         %>
@@ -267,7 +259,7 @@
                     <td class="text-center stock-num">
                         <%
                             count = Erp::Products::Product.get_damage_record_export(@global_filters.merge({
-                                product_id: product.id,
+                                product_id: product_ids,
                             }))
                             total_export += count
                         %>
@@ -276,7 +268,7 @@
                     <td class="text-center stock-num">
                         <%
                             count = Erp::Products::Product.get_stock_check_export(@global_filters.merge({
-                                product_id: product.id,
+                                product_id: product_ids,
                             }))
                             total_export += count
                         %>
@@ -291,176 +283,17 @@
                         <%
                             end_params = @global_filters.clone
                             end_params[:from_date] = nil
+                            end_params[:product_id] = product_ids
                         %>
-                        <%= product.get_stock(end_params) %>
+                        <%= Erp::Products::Product.get_stock_real(end_params) %>
                     </td>
                 </tr>
             <% end %>
         </table>
-        <%= erp_datalist_pagination(@products) %>
-    <% elsif @group_by_property.nil? %>
-        <table class="table table-bordered table-advance order-column" id="">
-            <tr>
-                <td class="text-right"><%= t('.total_row') %></td>
-                <td class="text-center stock-num text-bold bg-warning"><%= (0..1000).to_a.sample %></td>
-                <td class="text-center stock-num"><%= (50..1000).to_a.sample %></td>
-                <td class="text-center stock-num"><%= (50..1000).to_a.sample %></td>
-                <td class="text-center stock-num"><%= (50..1000).to_a.sample %></td>
-                <td class="text-center stock-num text-bold text-warning"><%= (0..1000).to_a.sample %></td>
-                <td class="text-center stock-num"><%= (50..1000).to_a.sample %></td>
-                <td class="text-center stock-num"><%= (50..1000).to_a.sample %></td>
-                <td class="text-center stock-num"><%= (50..1000).to_a.sample %></td>
-                <td class="text-center stock-num text-bold text-primary"><%= (0..1000).to_a.sample %></td>
-                <td class="text-center stock-num"><%= (50..1000).to_a.sample %></td>
-                <td class="text-center stock-num text-bold bg-info"><%= (0..1000).to_a.sample %></td>
-            </tr>
-            <tr>
-                <th class="bg-grey text-center" rowspan="2"><%= t('.category') %></th>
-                <th class="bg-grey text-center" rowspan="2" width="7%"><%= t('.begin') %></th>
-                <th class="bg-grey text-center" colspan="4"><%= t('.import') %></th>
-                <th class="bg-grey text-center text-center" colspan="4"><%= t('.export') %></th>
-                <th class="bg-grey text-center" colspan="2"><%= t('.end') %></th>
-            </tr>
-            <tr>
-                <th class="bg-grey text-center" width="7%"><%= t('.import_purchase') %></th>
-                <th class="bg-grey text-center" width="7%"><%= t('.import_return') %></th>
-                <th class="bg-grey text-center" width="7%"><%= t('.import_others') %></th>
-                <th class="bg-grey text-center" width="7%"><%= t('.import_total') %></th>
-                <th class="bg-grey text-center" width="7%"><%= t('.export_sales') %></th>
-                <th class="bg-grey text-center" width="7%"><%= t('.export_consigment') %></th>
-                <th class="bg-grey text-center" width="7%"><%= t('.export_others') %></th>
-                <th class="bg-grey text-center" width="7%"><%= t('.export_total') %></th>
-                <th class="bg-grey text-center" width="7%"><%= t('.end_consigment') %></th>
-                <th class="bg-grey text-center" width="7%"><%= t('.end_total') %></th>
-            </tr>
-            <% @categories.each_with_index do |category,index| %>
-                <tr>
-                    <td class="text-left"><%= category.name %></td>
-                    <td class="text-center stock-num text-bold bg-warning"><%= (0..5).to_a.sample %></td>
-                    <td class="text-center stock-num"><%= (0..5).to_a.sample %></td>
-                    <td class="text-center stock-num"><%= (0..5).to_a.sample %></td>
-                    <td class="text-center stock-num"><%= (0..5).to_a.sample %></td>
-                    <td class="text-center stock-num text-bold text-warning"><%= (0..5).to_a.sample %></td>
-                    <td class="text-center stock-num"><%= (0..5).to_a.sample %></td>
-                    <td class="text-center stock-num"><%= (0..5).to_a.sample %></td>
-                    <td class="text-center stock-num"><%= (0..5).to_a.sample %></td>
-                    <td class="text-center stock-num text-bold text-primary"><%= (0..5).to_a.sample %></td>
-                    <td class="text-center stock-num"><%= (0..5).to_a.sample %></td>
-                    <td class="text-center stock-num text-bold bg-info"><%= (0..5).to_a.sample %></td>
-                </tr>
-            <% end %>
-        </table>
     <% elsif !@group_by_category.nil? %>
-        <table class="table table-bordered table-advance order-column" id="">
-            <tr>
-                <td class="text-right" colspan="2"><%= t('.total_row') %></td>
-                <td class="text-center stock-num text-bold bg-warning"><%= (0..1000).to_a.sample %></td>
-                <td class="text-center stock-num"><%= (50..1000).to_a.sample %></td>
-                <td class="text-center stock-num"><%= (50..1000).to_a.sample %></td>
-                <td class="text-center stock-num"><%= (50..1000).to_a.sample %></td>
-                <td class="text-center stock-num text-bold text-warning"><%= (0..1000).to_a.sample %></td>
-                <td class="text-center stock-num"><%= (50..1000).to_a.sample %></td>
-                <td class="text-center stock-num"><%= (50..1000).to_a.sample %></td>
-                <td class="text-center stock-num"><%= (50..1000).to_a.sample %></td>
-                <td class="text-center stock-num text-bold text-primary"><%= (0..1000).to_a.sample %></td>
-                <td class="text-center stock-num"><%= (50..1000).to_a.sample %></td>
-                <td class="text-center stock-num text-bold bg-info"><%= (0..1000).to_a.sample %></td>
-            </tr>
-            <tr>
-                <th class="bg-grey text-center" rowspan="2"><%= t('.category') %></th>
-                <th class="bg-grey text-center" rowspan="2"><%= t('.property') %></th>
-                <th class="bg-grey text-center" rowspan="2" width="7%"><%= t('.begin') %></th>
-                <th class="bg-grey text-center" colspan="4"><%= t('.import') %></th>
-                <th class="bg-grey text-center text-center" colspan="4"><%= t('.export') %></th>
-                <th class="bg-grey text-center" colspan="2"><%= t('.end') %></th>
-            </tr>
-            <tr>
-                <th class="bg-grey text-center" width="7%"><%= t('.import_purchase') %></th>
-                <th class="bg-grey text-center" width="7%"><%= t('.import_return') %></th>
-                <th class="bg-grey text-center" width="7%"><%= t('.import_others') %></th>
-                <th class="bg-grey text-center" width="7%"><%= t('.import_total') %></th>
-                <th class="bg-grey text-center" width="7%"><%= t('.export_sales') %></th>
-                <th class="bg-grey text-center" width="7%"><%= t('.export_consigment') %></th>
-                <th class="bg-grey text-center" width="7%"><%= t('.export_others') %></th>
-                <th class="bg-grey text-center" width="7%"><%= t('.export_total') %></th>
-                <th class="bg-grey text-center" width="7%"><%= t('.end_consigment') %></th>
-                <th class="bg-grey text-center" width="7%"><%= t('.end_total') %></th>
-            </tr>
-            <% @categories.each_with_index do |category,index| %>
-                <% rowspan = @properties_values.count %>
-                <% @properties_values.each_with_index do |property_value,index| %>
-                    <tr>
-                        <% if index == 0 %>
-                            <td class="text-left text-bold" rowspan="<%= rowspan %>"><%= category.name %></td>
-                        <% end %>
-                        <td class="text-left"><%= property_value.value %></td>
-                        <td class="text-center stock-num text-bold bg-warning"><%= (0..5).to_a.sample %></td>
-                        <td class="text-center stock-num"><%= (0..5).to_a.sample %></td>
-                        <td class="text-center stock-num"><%= (0..5).to_a.sample %></td>
-                        <td class="text-center stock-num"><%= (0..5).to_a.sample %></td>
-                        <td class="text-center stock-num text-bold text-warning"><%= (0..5).to_a.sample %></td>
-                        <td class="text-center stock-num"><%= (0..5).to_a.sample %></td>
-                        <td class="text-center stock-num"><%= (0..5).to_a.sample %></td>
-                        <td class="text-center stock-num"><%= (0..5).to_a.sample %></td>
-                        <td class="text-center stock-num text-bold text-primary"><%= (0..5).to_a.sample %></td>
-                        <td class="text-center stock-num"><%= (0..5).to_a.sample %></td>
-                        <td class="text-center stock-num text-bold bg-info"><%= (0..5).to_a.sample %></td>
-                    </tr>
-                <% end %>
-            <% end %>
-        </table>
+        <%= render 'erp/ortho_k/backend/products/delivery_report_table/by_category_property' %>
     <% else %>
-        <table class="table table-bordered table-advance order-column" id="">
-            <tr>
-                <td class="text-right"><%= t('.total_row') %></td>
-                <td class="text-center stock-num text-bold bg-warning"><%= (0..1000).to_a.sample %></td>
-                <td class="text-center stock-num"><%= (50..1000).to_a.sample %></td>
-                <td class="text-center stock-num"><%= (50..1000).to_a.sample %></td>
-                <td class="text-center stock-num"><%= (50..1000).to_a.sample %></td>
-                <td class="text-center stock-num text-bold text-warning"><%= (0..1000).to_a.sample %></td>
-                <td class="text-center stock-num"><%= (50..1000).to_a.sample %></td>
-                <td class="text-center stock-num"><%= (50..1000).to_a.sample %></td>
-                <td class="text-center stock-num"><%= (50..1000).to_a.sample %></td>
-                <td class="text-center stock-num text-bold text-primary"><%= (0..1000).to_a.sample %></td>
-                <td class="text-center stock-num"><%= (50..1000).to_a.sample %></td>
-                <td class="text-center stock-num text-bold bg-info"><%= (0..1000).to_a.sample %></td>
-            </tr>
-            <tr>
-                <th class="bg-grey text-center" rowspan="2"><%= t('.property') %></th>
-                <th class="bg-grey text-center" rowspan="2" width="7%"><%= t('.begin') %></th>
-                <th class="bg-grey text-center" colspan="4"><%= t('.import') %></th>
-                <th class="bg-grey text-center text-center" colspan="4"><%= t('.export') %></th>
-                <th class="bg-grey text-center" colspan="2"><%= t('.end') %></th>
-            </tr>
-            <tr>
-                <th class="bg-grey text-center" width="7%"><%= t('.import_purchase') %></th>
-                <th class="bg-grey text-center" width="7%"><%= t('.import_return') %></th>
-                <th class="bg-grey text-center" width="7%"><%= t('.import_others') %></th>
-                <th class="bg-grey text-center" width="7%"><%= t('.import_total') %></th>
-                <th class="bg-grey text-center" width="7%"><%= t('.export_sales') %></th>
-                <th class="bg-grey text-center" width="7%"><%= t('.export_consigment') %></th>
-                <th class="bg-grey text-center" width="7%"><%= t('.export_others') %></th>
-                <th class="bg-grey text-center" width="7%"><%= t('.export_total') %></th>
-                <th class="bg-grey text-center" width="7%"><%= t('.end_consigment') %></th>
-                <th class="bg-grey text-center" width="7%"><%= t('.end_total') %></th>
-            </tr>
-            <% @properties_values.each_with_index do |properties_value,index| %>
-                <tr>
-                    <td class="text-left"><%= properties_value.value %></td>
-                    <td class="text-center stock-num text-bold bg-warning"><%= (0..5).to_a.sample %></td>
-                    <td class="text-center stock-num"><%= (0..5).to_a.sample %></td>
-                    <td class="text-center stock-num"><%= (0..5).to_a.sample %></td>
-                    <td class="text-center stock-num"><%= (0..5).to_a.sample %></td>
-                    <td class="text-center stock-num text-bold text-warning"><%= (0..5).to_a.sample %></td>
-                    <td class="text-center stock-num"><%= (0..5).to_a.sample %></td>
-                    <td class="text-center stock-num"><%= (0..5).to_a.sample %></td>
-                    <td class="text-center stock-num"><%= (0..5).to_a.sample %></td>
-                    <td class="text-center stock-num text-bold text-primary"><%= (0..5).to_a.sample %></td>
-                    <td class="text-center stock-num"><%= (0..5).to_a.sample %></td>
-                    <td class="text-center stock-num text-bold bg-info"><%= (0..5).to_a.sample %></td>
-                </tr>
-            <% end %>
-        </table>
+        <%= render 'erp/ortho_k/backend/products/delivery_report_table/by_property' %>
     <% end %>
 <% else %>
     <div class="alert alert-warning">
