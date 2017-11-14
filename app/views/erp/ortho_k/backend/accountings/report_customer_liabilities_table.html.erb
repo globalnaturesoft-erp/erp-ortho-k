@@ -1,0 +1,57 @@
+<% if params.to_unsafe_hash[:global_filter][:from_date].present? ||
+      params.to_unsafe_hash[:global_filter][:to_date].present? ||
+      params.to_unsafe_hash[:global_filter][:period].present? %>
+    
+    <div class="custom-show text-center">
+        <h4 class="font-blue-madison bold uppercase mb-15">
+            Danh sách khách hàng còn nợ trong năm 2016
+        </h4>
+    </div>
+    
+    <table class="table table-bordered order-column">
+        <thead class="flip-content">
+            <tr>
+                <th width="5%"  class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">STT</th>
+                <th width="30%"  class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Tên khách hàng</th>
+                <th width="10%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Nợ đầu kỳ</th>
+                <th width="10%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Nợ trong kỳ</th>
+                <th width="10%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Đã thanh toán</th>
+                <th width="10%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Nợ cuối kỳ</th>
+                <th width="20%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">NV Sell</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% @customers.each_with_index do |customer, index| %>
+                <tr>
+                    <td class="text-center"><%= index+1 %></td>
+                    <td class="text-left"><%= customer.name %></td>
+                    <td class="text-center font-yellow-gold">
+                        <%= format_number(customer.sales_debt_amount(to_date: (@from - 1.day))) %>
+                    </td>
+                    <td class="text-center font-yellow-gold">
+                        <%= format_number(customer.sales_total_amount(from_date: @from, to_date: @to)) %>
+                    </td>
+                    <td class="text-center font-yellow-gold">
+                        <%= format_number(customer.sales_paid_amount(from_date: @from, to_date: @to)) %>
+                    </td>
+                    <td class="text-center font-yellow-gold">
+                        <%= format_number(customer.sales_debt_amount(to_date: @to)) %>
+                    </td>
+                    <td class="text-center">
+                        <%= !customer.salesperson.nil? ? customer.salesperson_name : 'Xem lại acc của sell nào' %>
+                    </td>
+                </tr>
+            <% end %>
+            <tr>
+                <td class="bg-green-jungle bg-font-green-jungle border-green-jungle text-center bold" colspan="2">TỔNG CỘNG</td>
+                <td class="bg-green-jungle bg-font-green-jungle border-green-jungle text-center bold"><%= format_number(@total_begin_period) %></td>
+                <td class="bg-green-jungle bg-font-green-jungle border-green-jungle text-center bold"><%= format_number(@total_period) %></td>
+                <td class="bg-green-jungle bg-font-green-jungle border-green-jungle text-center bold"><%= format_number(@total_paid_period) %></td>
+                <td class="bg-green-jungle bg-font-green-jungle border-green-jungle text-center bold"><%= format_number(@total_end_period) %></td>
+                <td class="bg-green-jungle bg-font-green-jungle border-green-jungle text-center bold"></td>
+            </tr>
+        </tbody>
+    </table>
+<% else %>
+    <div class="alert alert-warning"><%= t('.please_select_filter') %></div>
+<% end %>

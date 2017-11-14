@@ -1,0 +1,72 @@
+<% total_colspan = 1 + (get_columns(params).include?("voucher_date") ? 1 : 0) +
+                (get_columns(params).include?("pay_receive") ? 1 : 0) +
+                (get_columns(params).include?("description") ? 1 : 0) +
+                ((get_filters(params)['pay_receive'].present? and get_filters(params)['pay_receive'].include?(Erp::Payments::PaymentRecord::TYPE_RECEIVE)) ? 1 : 0) +
+                ((get_filters(params)['pay_receive'].present? and get_filters(params)['pay_receive'].include?(Erp::Payments::PaymentRecord::TYPE_PAY)) ? 1 : 0)
+%>
+<% if get_filters(params)['pay_receive'].present? %>
+    <table class="table table-bordered order-column">
+        <thead class="flip-content">
+            <tr>
+                <th width="2%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">STT</th>
+                <% if get_filters(params)['pay_receive'].present? and get_filters(params)['pay_receive'].include?(Erp::Payments::PaymentRecord::TYPE_RECEIVE) %>
+                    <th class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Tên khách hàng</th>
+                <% end %>
+                <% if get_filters(params)['pay_receive'].present? and get_filters(params)['pay_receive'].include?(Erp::Payments::PaymentRecord::TYPE_PAY) %>
+                    <th class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Nhà cung cấp</th>
+                <% end %>
+                <% if get_columns(params).include?("voucher_date") %>
+                    <th width="10%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Ngày thanh toán</th>
+                <% end %>
+                <% if get_columns(params).include?("pay_receive") %>
+                    <th width="5%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Hình thức</th>
+                <% end %>
+                <% if get_columns(params).include?("description") %>
+                    <th width="25%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Diễn giải</th>
+                <% end %>
+                <% if get_columns(params).include?("amount") %>
+                    <th class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Số tiền</th>
+                <% end %>
+            </tr>
+        </thead>
+        <tbody>
+            <% if @payment_records.empty? %>
+                <tr>
+                    <td class="bg-green-jungle bg-font-green-jungle text-center" colspan="<%= total_colspan+1 %>"><%= t('.no_matching_records_found') %></td>
+                </tr>
+            <% else %>
+                <% if get_columns(params).include?("amount") %>
+                    <tr>
+                        <td class="bg-green-jungle bg-font-green-jungle text-center" colspan="<%= total_colspan %>"><strong> TỔNG CỘNG </strong></td>
+                        <td class="bg-green-jungle bg-font-green-jungle text-right"><strong><%= format_number(12322*1000) %></strong></td>
+                    </tr>
+                <% end %>
+            <% end %>
+            <% @payment_records.each_with_index do |payment_record, index| %>
+                <tr>
+                    <td class="text-center"><%= index+1 %></td>
+                    <% if get_filters(params)['pay_receive'].present? and get_filters(params)['pay_receive'].include?(Erp::Payments::PaymentRecord::TYPE_RECEIVE) %>
+                        <td class="text-left"><%= payment_record.customer_name if payment_record.customer != Erp::Contacts::Contact.get_main_contact %></td>
+                    <% end %>
+                    <% if get_filters(params)['pay_receive'].present? and get_filters(params)['pay_receive'].include?(Erp::Payments::PaymentRecord::TYPE_PAY) %>
+                        <td class="text-left"><%= payment_record.supplier_name if payment_record.supplier != Erp::Contacts::Contact.get_main_contact %></td>
+                    <% end %>
+                    <% if get_columns(params).include?("voucher_date") %>
+                        <td class="text-left"><%= format_date(payment_record.payment_date) %></td>
+                    <% end %>
+                    <% if get_columns(params).include?("pay_receive") %>
+                        <td class="text-left"><%= t(".#{payment_record.pay_receive}") %></td>
+                    <% end %>
+                    <% if get_columns(params).include?("description") %>
+                        <td class="text-left"><%= payment_record.description.html_safe %></td>
+                    <% end %>
+                    <% if get_columns(params).include?("amount") %>
+                        <td class="text-right font-yellow-gold"><%= format_number(payment_record.amount) %></td>
+                    <% end %>
+                </tr>
+            <% end %>
+        </tbody>
+    </table>
+<% else %>
+    <div class="alert alert-warning"><%= t('.please_select_filter') %></div>
+<% end %>

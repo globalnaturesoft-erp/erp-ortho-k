@@ -1,0 +1,52 @@
+<% if params.to_unsafe_hash[:global_filter][:from_date].present? ||
+      params.to_unsafe_hash[:global_filter][:to_date].present? ||
+      params.to_unsafe_hash[:global_filter][:period].present? %>
+    
+    <div class="custom-show text-center">
+        <h4 class="font-blue-madison bold uppercase mb-15">
+            Danh sách công nợ nhà cung cấp đến tháng 6/2017
+        </h4>
+    </div>
+    
+    <table class="table table-bordered order-column">
+        <thead class="flip-content">
+            <tr>
+                <th width="5%"  class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">STT</th>
+                <th width="20%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Tên nhà cung cấp</th>
+                <th width="20%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap" title="Tổng số tiền còn nợ tính đến thời điểm ngày đầu kỳ">Tổng nợ đầu kỳ</th>
+                <th width="20%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap" title="Khoản nợ phát sinh trong kỳ">Nợ trong kỳ</th>
+                <th width="20%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap" title="Số tiền đã thanh toán trong kỳ">Đã thanh toán</th>
+                <th width="20%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap" title="Số tiền còn nợ">Nợ cuối kỳ</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% @suppliers.each_with_index do |supplier, index| %>
+                <tr>
+                    <td class="text-center"><%= index+1 %></td>
+                    <td class="text-left"><%= supplier.name %></td>
+                    <td class="text-center font-yellow-gold">
+                        <%= format_number(supplier.purchase_debt_amount(to_date: (@from - 1.day))) %>
+                    </td>
+                    <td class="text-center font-yellow-gold">
+                        <%= format_number(supplier.purchase_total_amount(from_date: @from, to_date: @to)) %>
+                    </td>
+                    <td class="text-center font-yellow-gold">
+                        <%= format_number(supplier.purchase_paid_amount(from_date: @from, to_date: @to)) %>
+                    </td>
+                    <td class="text-center font-yellow-gold">
+                        <%= format_number(supplier.purchase_debt_amount(to_date: @to)) %>
+                    </td>
+                </tr>
+            <% end %>
+            <tr>
+                <td class="bg-green-jungle bg-font-green-jungle border-green-jungle text-center bold" colspan="2">TỔNG CỘNG</td>
+                <td class="bg-green-jungle bg-font-green-jungle border-green-jungle text-center bold"><%= format_number(12322*1000) %></td>
+                <td class="bg-green-jungle bg-font-green-jungle border-green-jungle text-center bold"><%= format_number(12322*1000) %></td>
+                <td class="bg-green-jungle bg-font-green-jungle border-green-jungle text-center bold"><%= format_number(12322*1000) %></td>
+                <td class="bg-green-jungle bg-font-green-jungle border-green-jungle text-center bold"><%= format_number(12322*1000) %></td>
+            </tr>
+        </tbody>
+    </table>
+<% else %>
+    <div class="alert alert-warning"><%= t('.please_select_filter') %></div>
+<% end %>

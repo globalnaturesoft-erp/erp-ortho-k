@@ -1,0 +1,33 @@
+<div class="custom-show text-center">
+    <h4 class="font-blue-madison bold uppercase mb-15">
+        Tổng công nợ khách hàng 2016 và 2017
+    </h4>
+</div>
+
+<table class="table table-bordered order-column">
+    <thead class="flip-content">
+        <tr>
+            <th width="40%"  class="text-center bg-yellow bg-font-yellow text-nowrap">Danh mục</th>
+            <th width="20%" class="text-center bg-yellow bg-font-yellow text-nowrap">Tổng nợ</th>
+            <th width="20%" class="text-center bg-yellow bg-font-yellow text-nowrap">Tổng thu</th>
+            <th width="20%" class="text-center bg-yellow bg-font-yellow text-nowrap">Còn lại</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% (1..10).each_with_index do |total, index| %>
+            <tr>
+                <td class="text-center">Nợ tháng <%= index+1 %>/2017</td>
+                <td class="text-center font-yellow-gold"><%= format_number(312*1000) %></td>
+                <td class="text-center font-yellow-gold"><%= format_number(312*1000) %></td>
+                <td class="text-center font-yellow-gold"><%= format_number(312*1000) %></td>
+            </tr>
+        <% end %>
+        <tr>
+            <td class="text-center bold">TỔNG CỘNG</td>
+            <td class="text-center bold"><%= format_number(12322*1000) %></td>
+            <td class="text-center bold"><%= format_number(12322*1000) %></td>
+            <td class="text-center bold"><%= format_number(12322*1000) %></td>
+        </tr>
+        
+    </tbody>
+</table>

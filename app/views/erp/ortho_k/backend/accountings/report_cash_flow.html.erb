@@ -1,0 +1,50 @@
+<% content_for :title do %>
+    <%= t('.report_cash_flow') %>
+<% end %>
+
+<% content_for :page_title do %>
+    <i class="fa fa-archive"></i> <%= t('.report_cash_flow') %>
+<% end %>
+
+<% content_for :global_filter do %>
+    <div class="row">
+        <div class="col-md-3">
+            <%= erp_form_control('date', {
+                label: t('.from_date'),
+                name: 'from_date',
+                placeholder: t('.select_from_date')
+            }) %>
+        </div>
+        <div class="col-md-3">
+            <%= erp_form_control('date', {
+                label: t('.to_date'),
+                name: 'to_date',
+                placeholder: t('.select_to_date')
+            }) %>
+        </div>
+        <div class="col-md-3">
+            <%= erp_form_control("dataselect", {
+                name: 'period',
+                value: '',
+                text: '',
+                label: t('.filter_period'),
+                placeholder: t('.choose_period'),
+                url: erp_periods.dataselect_backend_periods_path(format: 'json')
+            }) %>
+        </div>
+        <div class="col-md-3">
+            <%= erp_form_control("dataselect", {
+                name: 'account',
+                value: '',
+                text: '',
+                label: t('.filter_account'),
+                placeholder: t('.choose_account'),
+                url: erp_payments.dataselect_backend_accounts_path(format: 'json')
+            }) %>
+        </div>
+    </div>
+<% end %>
+
+<%= erp_datalist(
+    url: erp_ortho_k.report_cash_flow_table_backend_accountings_path
+) %>

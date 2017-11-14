@@ -1,0 +1,59 @@
+<% if params.to_unsafe_hash[:global_filter][:from_date].present? ||
+      params.to_unsafe_hash[:global_filter][:to_date].present? ||
+      params.to_unsafe_hash[:global_filter][:period].present? %>
+      
+    <div class="custom-show text-center">
+        <h4 class="font-blue-madison bold uppercase mb-15">
+            Tổng hợp thu chi tháng 6/2017
+        </h4>
+    </div>
+    
+    <table class="table table-bordered order-column">
+        <thead class="flip-content">
+            <tr>
+                <th width="25%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Từ <%= format_date(Time.now-1.week) %> đến <%= format_date(Time.now) %></th>
+                <th class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Diễn giải</th>
+                <th width="15%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Số tiền</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% @receivables.each_with_index do |receive, index| %>
+                <tr>
+                    <% if index == 0 %>
+                        <td class="text-center bold" rowspan="<%= @receivables.count %>">PHẦN THU</td>
+                    <% end %>
+                    <% if index+1 < @receivables.count %>
+                        <td class="text-left"><%= receive.name %></td>
+                        <td class="text-right font-yellow-gold"><%= format_number(312*1000) %></td>
+                    <% end %>
+                    <% if index+1 == @receivables.count %>
+                        <td class="text-left bold">TỔNG THU</td>
+                        <td class="text-right"><strong><%= format_number(12322*1000) %></strong></td>
+                    <% end %>
+                </tr>
+            <% end %>
+            <% @payables.each_with_index do |pay, index| %>
+                <tr>
+                    <% if index == 0 %>
+                        <td class="text-center bold" rowspan="<%= @payables.count %>">PHẦN CHI</td>
+                    <% end %>
+                    <% if index+1 < @payables.count %>
+                        <td class="text-left"><%= pay.name %></td>
+                        <td class="text-right font-yellow-gold"><%= format_number(312*1000) %></td>
+                    <% end %>
+                    <% if index+1 == @payables.count %>
+                        <td class="text-left bold">TỔNG CHI</td>
+                        <td class="text-right"><strong><%= format_number(12322*1000) %></strong></td>
+                    <% end %>
+                </tr>
+            <% end %>
+            <tr>
+                <td class="bg-green-jungle bg-font-green-jungle border-green-jungle text-center" colspan="2"><h4 class="bold">KẾT TOÁN</h4></td>
+                <td class="bg-green-jungle bg-font-green-jungle border-green-jungle text-right"><h4 class="bold"><%= format_number(12322*1000) %></h4></td>
+            </tr>
+            
+        </tbody>
+    </table>
+<% else %>
+    <div class="alert alert-warning"><%= t('.please_select_filter') %></div>
+<% end %>

@@ -1,0 +1,21 @@
+<table class="table table-bordered order-column">
+    <thead class="flip-content">
+        <tr>
+            <th width="60%"  class="text-center bg-yellow bg-font-yellow text-nowrap">Danh mục</th>
+            <th width="40%" class="text-center bg-yellow bg-font-yellow text-nowrap">Số tiền</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% @accounts.each do |account| %>
+            <tr>
+                <td class="text-center"><%= account.name %></td>
+                <td class="text-center font-yellow-gold"><%= format_number(312*1000) %></td>
+            </tr>
+        <% end %>
+        <tr>
+            <td class="text-center bold">TỔNG CỘNG</td>
+            <td class="text-center bold"><%= format_number(12322*1000) %></td>
+        </tr>
+        
+    </tbody>
+</table>

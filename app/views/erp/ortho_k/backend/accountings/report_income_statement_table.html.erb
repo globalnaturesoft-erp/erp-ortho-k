@@ -1,0 +1,69 @@
+<% if params.to_unsafe_hash[:global_filter][:from_date].present? ||
+      params.to_unsafe_hash[:global_filter][:to_date].present? ||
+      params.to_unsafe_hash[:global_filter][:period].present? %>
+    
+    <div class="custom-show text-center">
+        <h4 class="font-blue-madison bold uppercase mb-15">
+            Báo cáo kết quả kinh doanh tháng 11/2017
+        </h4>
+    </div>
+    
+    <table class="table table-bordered order-column">
+        <thead class="flip-content">
+            <tr>
+                <th width="5%"  class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">STT</th>
+                <th width="70%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Chỉ tiêu kinh doanh</th>
+                <th width="25%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Số tiền</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="text-center"><%= 1 %></td>
+                <td class="text-left font-yellow-gold"><%= 'Doanh thu bán hàng' %></td>
+                <td class="text-center font-yellow-gold"><%= format_number(312*1000) %></td>
+            </tr>
+            <tr>
+                <td class="text-center"><%= 2 %></td>
+                <td class="text-left font-yellow-gold"><%= 'Hàng bán bị trả lại' %></td>
+                <td class="text-center font-yellow-gold"><%= format_number(312*1000) %></td>
+            </tr>
+            <tr>
+                <td class="text-center"><%= 3 %></td>
+                <td class="text-left font-yellow-gold"><%= 'Doanh thu sau khi đã trừ hàng bị trả lại' %> <sup>( 3 = 1 - 2 )</sup></td>
+                <td class="text-center font-yellow-gold"><%= format_number(312*1000) %></td>
+            </tr>
+            <tr>
+                <td class="text-center"><%= 4 %></td>
+                <td class="text-left font-yellow-gold"><%= 'Giá vốn hàng bán' %></td>
+                <td class="text-center font-yellow-gold"><%= format_number(312*1000) %></td>
+            </tr>
+            <tr>
+                <td class="text-center"><%= 5 %></td>
+                <td class="text-left font-yellow-gold"><%= 'Lợi nhuận gộp về bán hàng' %> <sup>( 5 = 3 - 4 )</sup></td>
+                <td class="text-center font-yellow-gold"><%= format_number(312*1000) %></td>
+            </tr>
+            <tr>
+                <td class="text-center"><%= 6 %></td>
+                <td class="text-left font-yellow-gold"><%= 'Doanh thu hoạt động tài chính' %></td>
+                <td class="text-center font-yellow-gold"><%= format_number(312*1000) %></td>
+            </tr>
+            <tr>
+                <td class="text-center"><%= 7 %></td>
+                <td class="text-left font-yellow-gold"><%= 'Chi phí tài chính' %></td>
+                <td class="text-center font-yellow-gold"><%= format_number(312*1000) %></td>
+            </tr>
+            <tr>
+                <td class="text-center"><%= 8 %></td>
+                <td class="text-left font-yellow-gold"><%= 'Chi phí quản lý doanh nghiệp' %></td>
+                <td class="text-center font-yellow-gold"><%= format_number(312*1000) %></td>
+            </tr>
+            <tr>
+                <td class="bg-green-jungle bg-font-green-jungle text-center"><%= 9 %></td>
+                <td class="bg-green-jungle bg-font-green-jungle text-left"><%= 'Lợi nhuận thuần từ hoạt động kinh doanh' %> <sup>( 9 = ( 5 + 6 ) - ( 7 + 8 ) )</sup></td>
+                <td class="bg-green-jungle bg-font-green-jungle text-center bold"><%= format_number(312*1000) %></td>
+            </tr>
+        </tbody>
+    </table>
+<% else %>
+    <div class="alert alert-warning"><%= t('.please_select_filter') %></div>
+<% end %>

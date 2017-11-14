@@ -1,14 +1,30 @@
 <li class="nav-item  <%= "active open" if (params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "matrix_report") ||
                                          (params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "delivery_report") ||
                                          (params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "import_report") ||
-                                         (params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "export_report") %>">
+                                         (params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "export_report") ||
+                                         (params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_pay_receive") ||
+                                         (params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_synthesis_pay_receive") ||
+                                         (params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_sales_results") ||
+                                         (params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_income_statement") ||
+                                         (params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_cash_flow") ||
+                                         (params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_customer_liabilities") ||
+                                         (params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_supplier_liabilities") ||
+                                         (params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_statistics_liabilities") %>">
     <a href="javascript:;" class="nav-link nav-toggle">
         <i class="glyphicon glyphicon-calendar"></i>
         <span class="title">Thống kê - Báo cáo</span>
         <% if (params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "matrix_report") ||
               (params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "delivery_report") ||
               (params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "import_report") ||
-              (params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "export_report") %>
+              (params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "export_report") ||
+              (params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_pay_receive") ||
+              (params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_synthesis_pay_receive") ||
+              (params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_sales_results") ||
+              (params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_income_statement") ||
+              (params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_cash_flow") ||
+              (params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_customer_liabilities") ||
+              (params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_supplier_liabilities") ||
+              (params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_statistics_liabilities") %>
             <span class="selected"></span>
             <span class="arrow open"></span>
         <% else %>

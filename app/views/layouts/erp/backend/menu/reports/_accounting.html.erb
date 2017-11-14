@@ -1,4 +1,11 @@
-<li class="nav-item">
+<li class="nav-item <%= "active open" if (params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_pay_receive") ||
+                                         (params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_synthesis_pay_receive") ||
+                                         (params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_sales_results") ||
+                                         (params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_income_statement") ||
+                                         (params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_cash_flow") ||
+                                         (params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_customer_liabilities") ||
+                                         (params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_supplier_liabilities") ||
+                                         (params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_statistics_liabilities") %>">
     <a href="javascript:;" class="nav-link nav-toggle">
         <span class="title">Kế toán</span>
         <% if false %>
@@ -9,29 +16,29 @@
         <% end %>
     </a>
     <ul class="sub-menu">
-        <li class="nav-item <%= "active" if params[:controller] == "" && params[:action] == "" %>">
-            <%= link_to "Báo cáo thu/chi", '', class: "nav-link ", title: 'Báo cáo thu/chi theo thời gian' %>
+        <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_pay_receive" %>">
+            <%= link_to "Báo cáo thu/chi", erp_ortho_k.report_pay_receive_backend_accountings_path, class: "nav-link ", title: 'Báo cáo thu/chi theo thời gian' %>
         </li>
-        <li class="nav-item <%= "active" if params[:controller] == "" && params[:action] == "" %>">
-            <%= link_to "Tổng hợp thu/chi", '', class: "nav-link ", title: 'Thông kê tổng hợp thu/chi theo loại thu chi' %>
+        <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_synthesis_pay_receive" %>">
+            <%= link_to "Tổng hợp thu/chi", erp_ortho_k.report_synthesis_pay_receive_backend_accountings_path, class: "nav-link ", title: 'Thông kê tổng hợp thu/chi theo loại thu chi' %>
         </li>
-        <li class="nav-item <%= "active" if params[:controller] == "" && params[:action] == "" %>">
-            <%= link_to "Kết quả bán hàng", '', class: "nav-link ", title: 'Kết quả bán hàng, trả lại hàng thực tế theo thời gian' %>
+        <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_sales_results" %>">
+            <%= link_to "Kết quả bán hàng", erp_ortho_k.report_sales_results_backend_accountings_path, class: "nav-link ", title: 'Kết quả bán hàng, trả lại hàng thực tế theo thời gian' %>
         </li>
-        <li class="nav-item <%= "active" if params[:controller] == "" && params[:action] == "" %>">
-            <%= link_to "Kết quả kinh doanh", '', class: "nav-link ", title: 'Báo cáo kết quả kinh doanh, biểu đồ doanh số' %>
+        <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_income_statement" %>">
+            <%= link_to "Kết quả kinh doanh", erp_ortho_k.report_income_statement_backend_accountings_path, class: "nav-link ", title: 'Báo cáo kết quả kinh doanh, biểu đồ doanh số' %>
         </li>
-        <li class="nav-item <%= "active" if params[:controller] == "" && params[:action] == "" %>">
-            <%= link_to "Dòng tiền còn lại", '', class: "nav-link ", title: 'Báo cáo dòng tiền còn lại (theo tài khoản tiền mặt/ngân hàng)' %>
+        <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_cash_flow" %>">
+            <%= link_to "Dòng tiền còn lại", erp_ortho_k.report_cash_flow_backend_accountings_path, class: "nav-link ", title: 'Báo cáo dòng tiền còn lại (theo tài khoản tiền mặt/ngân hàng)' %>
         </li>
-        <li class="nav-item <%= "active" if params[:controller] == "" && params[:action] == "" %>">
-            <%= link_to "Báo cáo công nợ (KH)", '', class: "nav-link ", title: 'Báo cáo công nợ của khách hàng' %>
+        <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_customer_liabilities" %>">
+            <%= link_to "Báo cáo công nợ (KH)", erp_ortho_k.report_customer_liabilities_backend_accountings_path, class: "nav-link ", title: 'Báo cáo công nợ của khách hàng' %>
         </li>
-        <li class="nav-item <%= "active" if params[:controller] == "" && params[:action] == "" %>">
-            <%= link_to "Báo cáo công nợ (NCC)", '', class: "nav-link ", title: 'Báo cáo công nợ từ NCC' %>
+        <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_supplier_liabilities" %>">
+            <%= link_to "Báo cáo công nợ (NCC)", erp_ortho_k.report_supplier_liabilities_backend_accountings_path, class: "nav-link ", title: 'Báo cáo công nợ từ NCC' %>
         </li>
-        <li class="nav-item <%= "active" if params[:controller] == "" && params[:action] == "" %>">
-            <%= link_to "Thống kê công nợ (KH)", '', class: "nav-link ", title: 'Báo cáo khách hàng còn nợ + NV kinh doanh' %>
+        <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_statistics_liabilities" %>">
+            <%= link_to "Thống kê công nợ (KH)", erp_ortho_k.report_statistics_liabilities_backend_accountings_path, class: "nav-link ", title: 'Báo cáo khách hàng còn nợ + NV kinh doanh' %>
         </li>
     </ul>
 </li>
