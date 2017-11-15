@@ -14,16 +14,16 @@
         </tr>
     </thead>
     <tbody>
-        <% (1..10).each_with_index do |total, index| %>
+        <% @periods.each do |period| %>
             <tr>
-                <td class="text-center">Nợ tháng <%= index+1 %>/2017</td>
-                <td class="text-center font-yellow-gold"><%= format_number(312*1000) %></td>
-                <td class="text-center font-yellow-gold"><%= format_number(312*1000) %></td>
-                <td class="text-center font-yellow-gold"><%= format_number(312*1000) %></td>
+                <td class="text-center uppercase"><%= period[:name] %></td>
+                <td class="text-center font-yellow-gold uppercase"><%= format_number(312*1000) %></td>
+                <td class="text-center font-yellow-gold uppercase"><%= format_number(312*1000) %></td>
+                <td class="text-center font-yellow-gold uppercase"><%= format_number(312*1000) %></td>
             </tr>
         <% end %>
         <tr>
-            <td class="text-center bold">TỔNG CỘNG</td>
+            <td class="text-center bold uppercase">Tổng cộng</td>
             <td class="text-center bold"><%= format_number(12322*1000) %></td>
             <td class="text-center bold"><%= format_number(12322*1000) %></td>
             <td class="text-center bold"><%= format_number(12322*1000) %></td>

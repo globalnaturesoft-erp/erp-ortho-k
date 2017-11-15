@@ -85,6 +85,11 @@ module Erp
                                               .where(is_supplier: true)
           end
         end
+        
+        # Thong ke tong cong no khach hang
+        def report_statistics_liabilities_table
+          @periods = Erp::Periods::Period.get_time_array
+        end
       end
     end
   end
