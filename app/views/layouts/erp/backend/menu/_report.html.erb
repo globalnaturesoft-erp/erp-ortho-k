@@ -1,5 +1,7 @@
 <li class="nav-item  <%= "active open" if (params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "matrix_report") ||
                                          (params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "delivery_report") ||
+                                         (params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "delivery_report_by_cate_diameter") ||
+                                         (params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "warehouses_report") ||
                                          (params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "import_report") ||
                                          (params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "export_report") ||
                                          (params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_pay_receive") ||
@@ -15,6 +17,8 @@
         <span class="title">Thống kê - Báo cáo</span>
         <% if (params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "matrix_report") ||
               (params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "delivery_report") ||
+              (params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "delivery_report_by_cate_diameter") ||
+              (params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "warehouses_report") ||
               (params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "import_report") ||
               (params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "export_report") ||
               (params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_pay_receive") ||
@@ -37,6 +41,3 @@
         <%= render "layouts/erp/backend/menu/reports/accounting" %>
     </ul>
 </li>
-
-
-

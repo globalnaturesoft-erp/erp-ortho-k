@@ -1,12 +1,45 @@
 <% content_for :title do %>
-    <%= t('.warehouses_report') %>
+    <%= t('.delivery_report') %>
 <% end %>
 
 <% content_for :page_title do %>
-    <i class="fa fa-archive"></i> <%= t('.warehouses_report') %>
+    <i class="fa fa-archive"></i> <%= t('.delivery_report') %>
 <% end %>
 
 <% content_for :global_filter do %>
+  <div class="row">
+        <div class="col-md-3">
+            <%= erp_form_control("dataselect", {
+                name: 'group_by_category',
+                value: 'all',
+                text: t('.all_category'),
+                label: t('.group_by_category'),
+                placeholder: t('.choose_group_by_category'),
+                url: erp_products.dataselect_backend_categories_path(format: 'json'),
+                include_all: {text: t('.all_category'), value: 'all'},
+            }) %>
+        </div>
+        <div class="col-md-3">
+            <% diameter = Erp::Products::Property.where(name: "Đường kính").first %>
+            <%= erp_form_control("dataselect", {
+                name: 'group_by_property',
+                value: diameter.id,
+                text: diameter.name,
+                label: t('.group_by_property'),
+                placeholder: t('.choose_group_by_property'),
+                url: erp_products.dataselect_backend_properties_path(format: 'json'),
+            }) %>
+        </div>
+        <div class="col-md-6 text-right">
+            <label style="display: block" class="invisible">.</label>
+            <%= erp_component('button/export', {
+                text: '<i class="fa fa-download"></i> ' + t('.export_sheet')
+            }) %>
+            <%= erp_component('button/export', {
+                text: '<i class="fa fa-download"></i> ' + t('.export_pdf')
+            }) %>
+        </div>
+    </div>
     <div class="row">
         <div class="col-md-3">
             <%= erp_form_control('date', {
@@ -69,42 +102,10 @@
             }) %>
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-3">
-            <%= erp_form_control("dataselect", {
-                name: 'group_by_category',
-                value: '',
-                text: '',
-                label: t('.group_by_category'),
-                placeholder: t('.choose_group_by_category'),
-                url: erp_products.dataselect_backend_categories_path(format: 'json'),
-                include_all: {text: t('.all_category'), value: 'all'},
-            }) %>
-        </div>
-        <div class="col-md-3">
-            <%= erp_form_control("dataselect", {
-                name: 'group_by_property',
-                value: '',
-                text: '',
-                label: t('.group_by_property'),
-                placeholder: t('.choose_group_by_property'),
-                url: erp_products.dataselect_backend_properties_path(format: 'json'),
-            }) %>
-        </div>
-        <div class="col-md-6 text-right">
-            <label style="display: block" class="invisible">.</label>
-            <%= erp_component('button/export', {
-                text: '<i class="fa fa-download"></i> ' + t('.export_sheet')
-            }) %>
-            <%= erp_component('button/export', {
-                text: '<i class="fa fa-download"></i> ' + t('.export_pdf')
-            }) %>
-        </div>
-    </div>
 <% end %>
 
 <%= erp_datalist(
-    url: erp_ortho_k.warehouses_report_table_backend_products_path,
+    url: erp_ortho_k.delivery_report_table_backend_products_path,
     sortable: true,
     keywords: [
         {

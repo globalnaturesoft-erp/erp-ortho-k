@@ -54,6 +54,13 @@ module Erp
           @to_date = Time.now.end_of_day
         end
 
+        # Delivery report
+        def delivery_report_by_cate_diameter
+          # default from to date
+          @from_date = Time.now.beginning_of_month
+          @to_date = Time.now.end_of_day
+        end
+
         def delivery_report_table
           # group bys
           @global_filters = params.to_unsafe_hash[:global_filter]
