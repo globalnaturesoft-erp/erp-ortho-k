@@ -60,3 +60,7 @@ Erp::Warehouses::Engine.load_seed
 # Default products
 puts "Create default products"
 Erp::Products::Engine.load_seed
+
+# Default products
+puts "Create default payments"
+Erp::Payments::Engine.load_seed

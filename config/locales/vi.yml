@@ -1,4 +1,213 @@
 vi:
+  permission:
+    group_inventory: 'Quản lý kho'
+    group_sales: 'Bán hàng'
+    group_purchase: 'Mua hàng'
+    group_accounting: 'Kế toán'
+    group_contacts: 'Liên hệ'
+    group_options: 'Cài đặt dữ liệu'
+    group_system: 'Hệ thống'
+    group_report: 'Báo cáo & Thống kê'
+    inventory:
+      engine_order_stock_checks: 'Kiểm tra đơn hàng'      
+      order_stock_checks:
+        controller_schecks: 'Kiểm tra kho (cho đơn bán hàng)'
+        schecks:
+          check: 'Kiểm tra kho'
+          approve_order: 'Duyệt đơn hàng'
+      qdeliveries:
+        controller_deliveries: 'Quản lý xuất/nhập'
+        deliveries:
+          index: 'Xem danh sách'
+          create: 'Tạo phiếu'
+          update: 'Cập nhật phiếu'
+          sales_orders: 'Theo dõi đơn bán hàng'
+          purchase_orders: 'Theo dõi đơn mua hàng'
+      stock_transfers:
+        controller_transfers: 'Quản lý chuyển kho'
+        transfers:
+          index: 'Xem danh sách'
+          create: 'Tạo phiếu'
+          update: 'Cập nhật phiếu'
+          check_transfer: 'Kiểm tra chuyển kho'
+      products:
+        controller_warehouse_checks: 'Kiểm tra kho'
+        controller_products: 'Sản phẩm (hàng hóa)'
+        controller_warehouses: 'Kho hàng'
+        controller_categories: 'Chuyên mục'
+        controller_properties: 'Thuộc tính'
+        controller_manufacturers: 'Thương hiệu'
+        controller_states: 'Trạng thái'
+        warehouse_checks:
+          state_check: 'Tình trạng'
+          stock_check: 'Số lượng'
+          damage_check: 'Hủy hàng'
+        products:
+          index: 'Xem danh sách'
+          create: 'Thêm'
+          update: 'Sửa'
+        warehouses:
+          index: 'Xem danh sách'
+          create: 'Thêm'
+          update: 'Sửa'
+        categories:
+          index: 'Xem danh sách'
+          create: 'Thêm'
+          update: 'Sửa'
+        manufacturers:
+          index: 'Xem danh sách'
+          create: 'Thêm'
+          update: 'Sửa'
+        states:
+          index: 'Xem danh sách'
+          create: 'Thêm'
+          update: 'Sửa'
+    sales:
+      engine_sales: 'Bán hàng'
+      sales:
+        controller_sales_orders: 'Đơn bán hàng'
+        sales_orders:
+          index: 'Xem đơn hàng'
+          create: 'Tạo mới'
+          update: 'Cập nhật'
+      gift_givens:
+        controller_gift_givens: 'Tặng quà'
+        gift_givens:
+          index: 'Xem danh sách quà'
+          create: 'Tạo phiếu'
+          update: 'Cập nhật phiếu'
+      consignments:
+        controller_consignments: 'Ký gửi/Cho mượn'
+        consignments:
+          index: 'Xem danh sách'
+          create: 'Tạo phiếu'
+          update: 'Cập nhật phiếu'
+          return: 'Trả hàng ký gửi'
+      prices:
+        controller_customer_prices: 'Cập nhật bảng giá'
+        customer_prices:
+          update: 'Bảng giá khách hàng'
+          update_general: 'Bảng giá chung'
+    purchase:
+      purchase:
+        controller_orders: 'Đơn mua hàng'
+        orders:
+          index: 'Xem đơn hàng'
+          create: 'Tạo mới'
+          update: 'Cập nhật'
+      prices:
+        controller_supplier_prices: 'Cập nhật bảng giá'
+        supplier_prices:
+          update: 'Bảng giá theo NCC'
+          update_general: 'Bảng giá chung'
+      products:
+        controller_stock_import: 'Dự toán nhập hàng'
+        controller_areas: 'Phân vùng/Vùng TT'
+        stock_import:
+          view: 'Xem bảng dự toán'
+        areas:
+          side: 'Phân vùng'
+          central: 'Vùng trung tâm'
+    accounting:
+      payments:
+        controller_payment_records: 'Quản lý phiếu thu/chi'
+        controller_accounts: 'Tài khoản (Ngân hàng, tiền mặt,...)'
+        controller_payment_types: 'Quản lý loại thu/chi'
+        payment_records:
+          index: 'Xem lịch sử'
+          create: 'Tạo phiếu'
+          update: 'Cập nhật phiếu'
+        accounts:
+          index: 'Xem danh sách'
+          create: 'Tạo mới'
+          update: 'Cập nhật'
+        payment_types:
+          index: 'Xem danh sách'
+          create: 'Tạo mới'
+          update: 'Cập nhật'
+      chase:
+        controller_chase: 'Theo dõi thanh toán'
+        controller_customer_commision: 'Quản lý công nợ'
+        controller_commision: 'Quản lý hoa hồng'
+        chase:
+          sales: 'Bán hàng'
+          purchase: 'Mua hàng'
+          return: 'Trả lại hàng'
+        customer_commision:
+          customer: 'Khách hàng'
+          supplier: 'Nhà cung cấp'
+        commision:
+          customer: 'Khách hàng'
+          employee: 'Nhân viên'
+    contacts:
+      contacts:
+        controller_contacts: 'Sổ địa chỉ'
+        contacts:
+          index: 'Xem danh sách'
+          create: 'Tạo mới'
+          update: 'Cập nhật'
+    options:
+      users:
+        controller_users: 'Người dùng'
+        controller_user_groups: 'Nhóm & Phân quyền'
+        users:
+          index: 'Xem danh sách'
+          create: 'Tạo mới'
+          update: 'Cập nhật'
+        user_groups:
+          index: 'Danh sách nhóm'
+          create: 'Tạo mới'
+          update: 'Cập nhật'
+      targets:
+        controller_targets: 'Target nhân viên'
+        controller_company_targets: 'Target công ty'
+        users:
+          index: 'Xem danh sách'
+          create: 'Tạo mới'
+          update: 'Cập nhật'
+        user_groups:
+          index: 'Danh sách nhóm'
+          create: 'Tạo mới'
+          update: 'Cập nhật'
+      periods:
+        controller_periods: 'Mốc thời gian (tháng, quý, năm,...)'
+        periods:
+          index: 'Xem danh sách'
+          create: 'Tạo mới'
+          update: 'Cập nhật'
+    system:
+      system:
+        controller_system: 'Cấu hình hệ thống'
+        system:
+          settings: 'Cấu hình'
+          backup: 'Sao lưu'
+          restore: 'Phục hồi'
+    report:
+      report:
+        controller_inventory: 'Báo cáo Kho'
+        controller_sales: 'Bán hàng'
+        controller_accounting: 'Kế toán'
+        inventory:
+          matrix: 'Báo cáo tồn kho (matrix)'
+          delivery: 'Báo cáo xuất-nhập-tồn'
+          delivery_detail: 'Sổ chi tiết xuất - nhập kho'
+          delivery_by_category_diameter: 'Thống kê tồn kho'
+          warehouse: 'Thống kê theo kho'
+          other_products: 'Len ngoài vùng'
+        sales:
+          sales: 'Báo cáo bán hàng'
+          sales_details: 'Sổ chi tiết bán hàng'
+          returning: 'Báo cáo trả hàng'
+          new_patient: 'Bệnh nhân mới'
+        accounting:
+          pay_receive_details: 'Báo cáo thu/chi'
+          payment_types: 'Tổng hợp thu/chi'
+          sales: 'Kết quả bán hàng'
+          revenue_report: 'Kết quả kinh doanh'
+          accounts: 'Dòng tiền còn lại'
+          customer_liabilities: 'Công nợ (KH)'
+          supplier_liabilities: 'Công nợ (NCC)'
+          period_liabilities: 'Thống kê công nợ (KH)'
   or: "và"
   erp:
     ortho_k:

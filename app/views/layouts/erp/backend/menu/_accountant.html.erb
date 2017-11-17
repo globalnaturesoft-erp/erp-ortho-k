@@ -28,38 +28,6 @@
         <% end %>
     </a>
     <ul class="sub-menu">
-        <li class="nav-item <%= "active open" if ["erp/accounting/backend/sales_orders"].include?(params[:controller]) %>">
-            <a href="<%= erp_accounting.backend_sales_orders_path %>" class="nav-link ">
-                <span class="title"><%= t('.invoice_for_sales') %></span>
-                <% if ["erp/accounting/backend/sales_orders"].include?(params[:controller]) %>
-                <span class="selected"></span>
-                <% end %>
-            </a>
-        </li>
-        <li class="nav-item <%= "active open" if ["erp/accounting/backend/purchase_orders"].include?(params[:controller]) %>">
-            <a href="<%= erp_accounting.backend_purchase_orders_path %>" class="nav-link ">
-                <span class="title"><%= t('.purchase_invoice') %></span>
-                <% if ["erp/accounting/backend/purchase_orders"].include?(params[:controller]) %>
-                <span class="selected"></span>
-                <% end %>
-            </a>
-        </li>
-        <li class="nav-item <%= "active open" if ["erp/accounting/backend/product_returns"].include?(params[:controller]) %>">
-            <a href="<%= erp_accounting.backend_product_returns_path %>" class="nav-link ">
-                <span class="title"><%= t('.product_returns') %></span>
-                <% if ["erp/accounting/backend/product_returns"].include?(params[:controller]) %>
-                <span class="selected"></span>
-                <% end %>
-            </a>
-        </li>
-        <li class="nav-item <%= "active open" if ["erp/payments/backend/accounts"].include?(params[:controller]) %>">
-            <a href="<%= erp_payments.backend_accounts_path %>" class="nav-link ">
-                <span class="title"><%= t('.accounts') %></span>
-                <% if ["erp/payments/backend/accounts"].include?(params[:controller]) %>
-                <span class="selected"></span>
-                <% end %>
-            </a>
-        </li>
         <li class="nav-item <%= "active open" if ["erp/payments/backend/payment_records"].include?(params[:controller]) %>">
             <a href="<%= erp_payments.backend_payment_records_path %>" class="nav-link ">
                 <span class="title"><%= t('.cash_book') %></span>
@@ -68,43 +36,14 @@
                 <% end %>
             </a>
         </li>
-        <li class="nav-item <%= "active open" if ["erp/payments/backend/payment_types"].include?(params[:controller]) %>">
-            <a href="<%= erp_payments.backend_payment_types_path %>" class="nav-link ">
-                <span class="title"><%= t('.payment_type') %></span>
-                <% if ["erp/payments/backend/payment_types"].include?(params[:controller]) %>
-                <span class="selected"></span>
-                <% end %>
-            </a>
-        </li>
-        <li class="nav-item <%= "active open" if (params[:controller] == "erp/payments/backend/payment_records" && params[:action] == "liabilities_tracking") %>">
-            <a href="<%= erp_payments.liabilities_tracking_backend_payment_records_path %>" class="nav-link ">
-                <span class="title"><%= t('.customer_liabilities_tracking') %></span>
-            </a>
-        </li>
-        <li class="nav-item <%= "active open" if (params[:controller] == "erp/payments/backend/payment_records" && params[:action] == "supplier_liabilities_tracking") %>">
-            <a href="<%= erp_payments.supplier_liabilities_tracking_backend_payment_records_path %>" class="nav-link ">
-                <span class="title"><%= t('.supplier_liabilities_tracking') %></span>
-            </a>
-        </li>
-        <li class="nav-item  <%= "active open" if (params[:controller] == "erp/payments/backend/payment_records" && params[:action] == "commission") %>">
-            <a href="<%= erp_payments.commission_backend_payment_records_path %>" class="nav-link ">
-                <span class="title"><%= t('.commissions') %></span>
-            </a>
-        </li>
-        <li class="nav-item  <%= "active open" if (params[:controller] == "erp/payments/backend/payment_records" && params[:action] == "customer_commission") %>">
-            <a href="<%= erp_payments.customer_commission_backend_payment_records_path %>" class="nav-link ">
-                <span class="title"><%= t('.customer_commissions') %></span>
-            </a>
-        </li>
-        <!--<li class="nav-item ">
-            <a href="javascript:;" class="nav-link ">
-                <span class="title"><%= t('.discounts') %></span>
-            </a>
-        </li>-->
-        <li class="nav-item ">
-            <a href="javascript:;" class="nav-link ">
-                <span class="title"><%= t('.sales_statistics') %></span>
-            </a>
-        </li>
+
+        <%= render "layouts/erp/backend/menu/accounting/payment_chase" %>
+
+        <%= render "layouts/erp/backend/menu/accounting/liabilities" %>
+
+        <%= render "layouts/erp/backend/menu/accounting/commission" %>
+
+        <%= render "layouts/erp/backend/menu/accounting/option" %>
+        
     </ul>
 </li>

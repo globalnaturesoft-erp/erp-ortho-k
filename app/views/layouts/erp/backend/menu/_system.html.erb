@@ -1,11 +1,8 @@
-<li class="nav-item <%= "active open" if ["erp/backend/users",
-                                          "erp/targets/backend/targets",
-                                          "erp/targets/backend/company_targets",
-                                          "erp/periods/backend/periods"].include?(params[:controller]) %>">
+<li class="nav-item <%= "active open" if [].include?(params[:controller]) %>">
     <a href="javascript:;" class="nav-link nav-toggle">
         <i class="fa fa-cogs"></i>
         <span class="title"><%= t('.system') %></span>
-        <% if ["erp/backend/users"].include?(params[:controller]) %>
+        <% if [].include?(params[:controller]) %>
             <span class="selected"></span>
             <span class="arrow open"></span>
         <% else %>
@@ -13,25 +10,6 @@
         <% end %>
     </a>
     <ul class="sub-menu">
-        <li class="nav-item <%= "active open" if ["erp/backend/users"].include?(params[:controller]) %>">
-            <a href="<%= erp.backend_users_path %>" class="nav-link ">
-                <span class="title"><%= t('.users') %></span>
-                <% if ["erp/backend/contacts"].include?(params[:controller]) %>
-                <span class="selected"></span>
-                <% end %>
-            </a>
-        </li>
-        <% if Erp::Core.available?("targets") %>
-            <%= render "layouts/erp/backend/menu/targets/targets" %>
-        <% end %>
-        <li class="nav-item <%= "active open" if ["erp/periods/backend/periods"].include?(params[:controller]) %>">
-            <a href="<%= erp_periods.backend_periods_path %>" class="nav-link ">
-                <span class="title"><%= t('.period') %></span>
-                <% if ["erp/periods/backend/periods"].include?(params[:controller]) %>
-                <span class="selected"></span>
-                <% end %>
-            </a>
-        </li>
         <li class="nav-item ">
             <a href="" class="nav-link ">
                 <span class="title"><%= t('.system_configuration') %></span>
@@ -40,16 +18,6 @@
         <li class="nav-item ">
             <a href="" class="nav-link ">
                 <span class="title"><%= t('.storage_and_recovery') %></span>
-            </a>
-        </li>
-        <li class="nav-item ">
-            <a href="" class="nav-link ">
-                <span class="title"><%= t('.user_activity_statistics') %></span>
-            </a>
-        </li>
-        <li class="nav-item ">
-            <a href="" class="nav-link ">
-                <span class="title"><%= t('.user_permission') %></span>
             </a>
         </li>
     </ul>

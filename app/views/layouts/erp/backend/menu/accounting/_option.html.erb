@@ -1,0 +1,40 @@
+<li class="nav-item <%= "active open" if
+  (params[:controller] == "erp/payments/backend/accounts") ||
+  (params[:controller] == "erp/payments/backend/payment_types")
+%>">
+    <a href="javascript:;" class="nav-link nav-toggle">
+        <span class="title">Cài đặt dữ liệu</span>
+        <% if
+          (params[:controller] == "erp/payments/backend/accounts") ||
+          (params[:controller] == "erp/payments/backend/payment_types")
+        %>
+            <span class="selected"></span>
+            <span class="arrow open"></span>
+        <% else %>
+            <span class="arrow"></span>
+        <% end %>
+    </a>
+    <ul class="sub-menu" <% if
+        (params[:controller] == "erp/payments/backend/accounts") ||
+        (params[:controller] == "erp/payments/backend/payment_types")
+    %>
+      style="display: block;"
+    <% else %>style="display: none;"<% end %>>
+        <li class="nav-item <%= "active open" if ["erp/payments/backend/accounts"].include?(params[:controller]) %>">
+            <a href="<%= erp_payments.backend_accounts_path %>" class="nav-link ">
+                <span class="title">Tài khoản</span>
+                <% if ["erp/payments/backend/accounts"].include?(params[:controller]) %>
+                <span class="selected"></span>
+                <% end %>
+            </a>
+        </li>
+        <li class="nav-item <%= "active open" if ["erp/payments/backend/payment_types"].include?(params[:controller]) %>">
+            <a href="<%= erp_payments.backend_payment_types_path %>" class="nav-link ">
+                <span class="title">Loại thanh toán</span>
+                <% if ["erp/payments/backend/payment_types"].include?(params[:controller]) %>
+                <span class="selected"></span>
+                <% end %>
+            </a>
+        </li>
+    </ul>
+</li>

@@ -1,0 +1,51 @@
+<li class="nav-item <%= "active open" if
+  ["erp/accounting/backend/sales_orders"].include?(params[:controller]) ||
+  ["erp/accounting/backend/purchase_orders"].include?(params[:controller]) ||
+  ["erp/accounting/backend/product_returns"].include?(params[:controller])
+%>">
+    <a href="javascript:;" class="nav-link nav-toggle">
+        <span class="title">Theo dõi thanh toán</span>
+        <% if
+          ["erp/accounting/backend/sales_orders"].include?(params[:controller]) ||
+          ["erp/accounting/backend/purchase_orders"].include?(params[:controller]) ||
+          ["erp/accounting/backend/product_returns"].include?(params[:controller])
+        %>
+            <span class="selected"></span>
+            <span class="arrow open"></span>
+        <% else %>
+            <span class="arrow"></span>
+        <% end %>
+    </a>
+    <ul class="sub-menu" <% if
+        ["erp/accounting/backend/sales_orders"].include?(params[:controller]) ||
+        ["erp/accounting/backend/purchase_orders"].include?(params[:controller]) ||
+        ["erp/accounting/backend/product_returns"].include?(params[:controller])
+    %>
+      style="display: block;"
+    <% else %>style="display: none;"<% end %>>
+        <li class="nav-item <%= "active open" if ["erp/accounting/backend/sales_orders"].include?(params[:controller]) %>">
+            <a href="<%= erp_accounting.backend_sales_orders_path %>" class="nav-link ">
+                <span class="title">Đơn bán hàng</span>
+                <% if ["erp/accounting/backend/sales_orders"].include?(params[:controller]) %>
+                <span class="selected"></span>
+                <% end %>
+            </a>
+        </li>
+        <li class="nav-item <%= "active open" if ["erp/accounting/backend/purchase_orders"].include?(params[:controller]) %>">
+            <a href="<%= erp_accounting.backend_purchase_orders_path %>" class="nav-link ">
+                <span class="title">Đơn mua hàng</span>
+                <% if ["erp/accounting/backend/purchase_orders"].include?(params[:controller]) %>
+                <span class="selected"></span>
+                <% end %>
+            </a>
+        </li>
+        <li class="nav-item <%= "active open" if ["erp/accounting/backend/product_returns"].include?(params[:controller]) %>">
+            <a href="<%= erp_accounting.backend_product_returns_path %>" class="nav-link ">
+                <span class="title">Trả lại hàng</span>
+                <% if ["erp/accounting/backend/product_returns"].include?(params[:controller]) %>
+                <span class="selected"></span>
+                <% end %>
+            </a>
+        </li>
+    </ul>
+</li>

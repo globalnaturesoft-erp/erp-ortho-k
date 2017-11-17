@@ -1,9 +1,11 @@
-<li class="nav-item <%= "active open" if [  "erp/products/backend/products",
-                                            "erp/products/backend/states",
-                                            "erp/products/backend/properties",
-                                            "erp/products/backend/categories",
-                                            "erp/products/backend/brands",
-                                            "erp/ortho_k/backend/setting"].include?(params[:controller]) %>"">
+<li class="nav-item <%= "active open" if
+    ["erp/products/backend/products",
+       "erp/products/backend/states",
+       "erp/products/backend/properties",
+       "erp/products/backend/categories",
+       "erp/warehouses/backend/warehouses",
+       "erp/products/backend/brands"].include?(params[:controller])
+%>"">
     <a href="javascript:;" class="nav-link nav-toggle">
         <i class="glyphicon glyphicon-barcode"></i>
         <span class="title"><%= t('.product') %></span>
@@ -11,8 +13,8 @@
                 "erp/products/backend/states",
                 "erp/products/backend/properties",
                 "erp/products/backend/categories",
-                "erp/products/backend/brands",
-                "erp/ortho_k/backend/setting"].include?(params[:controller]) %>
+                "erp/warehouses/backend/warehouses",
+                "erp/products/backend/brands"].include?(params[:controller]) %>
             <span class="selected"></span>
             <span class="arrow open"></span>
         <% else %>
@@ -23,8 +25,8 @@
                                 "erp/products/backend/states",
                                 "erp/products/backend/properties",
                                 "erp/products/backend/categories",
-                                "erp/products/backend/brands",
-                                "erp/ortho_k/backend/setting"].include?(params[:controller]) %>
+                                "erp/warehouses/backend/warehouses",
+                                "erp/products/backend/brands"].include?(params[:controller]) %>
                             style="display: block;"
                         <% else %>style="display: none;"<% end %>>
         <li class="nav-item <%= "active" if ["erp/products/backend/products"].include?(params[:controller]) %>">
@@ -42,8 +44,17 @@
         <li class="nav-item <%= "active" if ["erp/products/backend/brands"].include?(params[:controller]) %>">
             <%= link_to t('.brands'), erp_products.backend_brands_path, class: "nav-link ", title: t('.brands') %>
         </li>
-        <li class="nav-item <%= "active" if ["erp/ortho_k/backend/setting"].include?(params[:controller]) %>">
-            <%= link_to t('.central_areas'), erp_ortho_k.backend_setting_path, class: "nav-link ", title: t('.central_areas') %>
-        </li>
+        <% if Erp::Core.available?("warehouses") %>
+            <li class="nav-item <%= "active open" if ["erp/warehouses/backend/warehouses"].include?(params[:controller]) %>">
+                <a href="<%= erp_warehouses.backend_warehouses_path %>" class="nav-link ">
+                    <span class="title">
+                        Kho hàng
+                    </span>
+                    <% if ["erp/warehouses/backend/warehouses"].include?(params[:controller]) %>
+                        <span class="selected"></span>
+                    <% end %>
+                </a>
+            </li>
+        <% end %>
     </ul>
 </li>
