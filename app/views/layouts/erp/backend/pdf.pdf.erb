@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset='utf-8' />
+    <%= stylesheet_link_tag wicked_pdf_asset_base64("pdf") %>
+  </head>
+  <body onload='number_pages'>
+    <div class="header">
+        <div class="left">
+            <div class="line-1">
+                CÔNG TY TNHH ORTHO-K VIỆT NAM
+            </div>
+            <div class="line-2">
+                535 An Dương Vương, Phường 8, Quận 5
+            </div>
+        </div>
+        <div class="right">
+            <div class="line-1">
+                Thời điểm in: <%= Time.now.strftime('%d/%m/%Y, %H:%m') %>
+            </div>
+            <div class="line-1">
+                Mẫu số:
+            </div>
+        </div>
+    </div>
+    <div class="title">
+        <div class="center">
+            <div class="line-1">
+                <%= yield(:title_line_1) %>
+            </div>
+            <div class="line-2">
+                <%= yield(:title_line_2) %>
+            </div>
+            <div class="line-3">
+                <%= yield(:title_line_3) %>
+            </div>
+        </div>
+    </div>
+    <div id="content">
+      <div class="main_info">
+        <div class="col-1">
+          <%= yield(:main_info_col_1) %>
+        </div>
+        <div class="col-2">
+          <%= yield(:main_info_col_2) %>
+        </div>
+        <div class="col-3">
+          <%= yield(:main_info_col_3) %>
+        </div>
+      </div>
+      <%= yield %>
+    </div>
+    <div class="footer">
+      <%= yield(:footer) %>
+    </div>
+  </body>
+</html>

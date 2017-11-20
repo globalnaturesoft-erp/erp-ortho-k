@@ -19,7 +19,7 @@
 .dashboard-menu>li {
     float: left;
     list-style: none;
-    width: 290px;
+    width: 320px;
     height: 280px;
     background: #fff;
     margin-right: 15px;
@@ -33,7 +33,7 @@
     display: none;
     /* display: block !important; */
     position: absolute;
-    left: 170px;
+    left: 150px;
     width: 262px;
     background: #fff;
     z-index: 100;
@@ -88,4 +88,22 @@
     right: 10px;
     font-size: 100px;
     opacity: 0.2;
+}
+.dashboard-menu li .arrow {
+    font-family: Simple-Line-Icons;
+    speak: none;
+    font-style: normal;
+    font-weight: 400;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    font-size: 13px;
+    -webkit-font-smoothing: antialiased;
+    margin-left: 10px;
+}
+.dashboard-menu li .arrow:before {
+    content: "\e079";
+}
+.dashboard-menu>li>a>span.arrow {
+    display: none;
 }
