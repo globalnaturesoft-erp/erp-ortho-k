@@ -88,6 +88,10 @@
                     <% if ["erp/order_stock_checks/backend/schecks"].include?(params[:controller]) %>
                     <span class="selected"></span>
                     <% end %>
+
+                    <% if Erp::Orders::Order.stock_check_orders_count > 0 %>
+                        <span class="badge badge-danger pull-right"><%= Erp::Orders::Order.stock_check_orders_count %></span>
+                    <% end %>
                 </a>
             </li>
         <% end %>

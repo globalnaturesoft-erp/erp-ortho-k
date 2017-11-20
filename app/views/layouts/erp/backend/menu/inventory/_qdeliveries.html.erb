@@ -12,6 +12,9 @@
         <% else %>
             <span class="arrow"></span>
         <% end %>
+        <% if Erp::Orders::Order.get_wait_for_delivery_sales_orders.count + Erp::Orders::Order.get_wait_for_delivery_purchase_orders.count > 0 %>
+            <span class="badge badge-danger"><%= Erp::Orders::Order.get_wait_for_delivery_sales_orders.count + Erp::Orders::Order.get_wait_for_delivery_purchase_orders.count %></span>
+        <% end %>
     </a>
     <ul class="sub-menu" <% if ["erp/qdeliveries/backend/deliveries",
                             "erp/qdeliveries/backend/sales",
@@ -22,10 +25,20 @@
             <%= link_to t('.deliveries'), erp_qdeliveries.backend_deliveries_path, class: "nav-link ", title: t('.deliveries') %>
         </li>
         <li class="nav-item <%= "active" if ["erp/qdeliveries/backend/sales"].include?(params[:controller]) %>">
-            <%= link_to 'Theo dõi đơn bán hàng', erp_qdeliveries.backend_sales_orders_path, class: "nav-link ", title: t('.sales_orders') %>
+            <a class="nav-link" href="<%= erp_qdeliveries.backend_sales_orders_path %>">
+                Xuất/Nhập bán hàng
+                <% if Erp::Orders::Order.get_wait_for_delivery_sales_orders.count > 0 %>
+                    <span class="badge badge-danger"><%= Erp::Orders::Order.get_wait_for_delivery_sales_orders.count %></span>
+                <% end %>
+            </a>
         </li>
         <li class="nav-item <%= "active" if ["erp/qdeliveries/backend/purchases"].include?(params[:controller]) %>">
-            <%= link_to 'Theo dõi đơn mua hàng', erp_qdeliveries.backend_purchases_orders_path, class: "nav-link ", title: t('.purchases_orders') %>
+            <a class="nav-link" href="<%= erp_qdeliveries.backend_purchases_orders_path %>">
+                Xuất/Nhập mua hàng
+                <% if Erp::Orders::Order.get_wait_for_delivery_purchase_orders.count > 0 %>
+                    <span class="badge badge-danger"><%= Erp::Orders::Order.get_wait_for_delivery_sales_orders.count %></span>
+                <% end %>
+            </a>
         </li>
     </ul>
 </li>
