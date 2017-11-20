@@ -1,10 +1,14 @@
-<% if params.to_unsafe_hash[:global_filter][:from_date].present? ||
-      params.to_unsafe_hash[:global_filter][:to_date].present? ||
+<% if (params.to_unsafe_hash[:global_filter][:from_date].present? && params.to_unsafe_hash[:global_filter][:to_date].present?) ||
       params.to_unsafe_hash[:global_filter][:period].present? %>
     
     <div class="custom-show text-center">
         <h4 class="font-blue-madison bold uppercase mb-15">
-            Danh sách công nợ nhà cung cấp đến tháng 6/2017
+            Danh sách công nợ nhà cung cấp
+            <% if @period_name.nil? %>
+                <%= 'Từ ' + @from.strftime('%d/%m/%Y') if !@from.nil? %> <%= ' Đến ' + @to.strftime('%d/%m/%Y') if !@to.nil? %>
+            <% else %>
+                <%= 'Trong ' + @period_name %>
+            <% end %>
         </h4>
     </div>
     
@@ -25,7 +29,7 @@
                     <td class="text-center"><%= index+1 %></td>
                     <td class="text-left"><%= supplier.name %></td>
                     <td class="text-center font-yellow-gold">
-                        <%= format_number(supplier.purchase_debt_amount(to_date: (@from - 1.day))) %>
+                        <%= format_number(supplier.purchase_debt_amount(to_date: (!@from.nil? ? (@from-1.day) : @from))) %>
                     </td>
                     <td class="text-center font-yellow-gold">
                         <%= format_number(supplier.purchase_total_amount(from_date: @from, to_date: @to)) %>
@@ -40,10 +44,10 @@
             <% end %>
             <tr>
                 <td class="bg-green-jungle bg-font-green-jungle border-green-jungle text-center bold" colspan="2">TỔNG CỘNG</td>
-                <td class="bg-green-jungle bg-font-green-jungle border-green-jungle text-center bold"><%= format_number(12322*1000) %></td>
-                <td class="bg-green-jungle bg-font-green-jungle border-green-jungle text-center bold"><%= format_number(12322*1000) %></td>
-                <td class="bg-green-jungle bg-font-green-jungle border-green-jungle text-center bold"><%= format_number(12322*1000) %></td>
-                <td class="bg-green-jungle bg-font-green-jungle border-green-jungle text-center bold"><%= format_number(12322*1000) %></td>
+                <td class="bg-green-jungle bg-font-green-jungle border-green-jungle text-center bold"><%= format_number(@suppliers.purchase_debt_amount(to_date: (!@from.nil? ? (@from-1.day) : @from))) %></td>
+                <td class="bg-green-jungle bg-font-green-jungle border-green-jungle text-center bold"><%= format_number(@suppliers.purchase_total_amount(from_date: @from, to_date: @to)) %></td>
+                <td class="bg-green-jungle bg-font-green-jungle border-green-jungle text-center bold"><%= format_number(@suppliers.purchase_paid_amount(from_date: @from, to_date: @to)) %></td>
+                <td class="bg-green-jungle bg-font-green-jungle border-green-jungle text-center bold"><%= format_number(@suppliers.purchase_debt_amount(to_date: @to)) %></td>
             </tr>
         </tbody>
     </table>

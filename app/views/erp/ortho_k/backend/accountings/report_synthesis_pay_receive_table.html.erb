@@ -4,7 +4,12 @@
       
     <div class="custom-show text-center">
         <h4 class="font-blue-madison bold uppercase mb-15">
-            Tổng hợp thu chi tháng 6/2017
+            Tổng hợp thu chi
+            <% if @period_name.nil? %>
+                <%= 'Từ ' + @from.strftime('%d/%m/%Y') if !@from.nil? %> <%= ' Đến ' + @to.strftime('%d/%m/%Y') if !@to.nil? %>
+            <% else %>
+                <%= @period_name %>
+            <% end %>
         </h4>
     </div>
     
@@ -23,12 +28,14 @@
                         <td class="text-center bold" rowspan="<%= @receivables.count %>">PHẦN THU</td>
                     <% end %>
                     <% if index+1 < @receivables.count %>
-                        <td class="text-left"><%= receive.name %></td>
-                        <td class="text-right font-yellow-gold"><%= format_number(312*1000) %></td>
+                        <% if receive.receive_amount_by_payment_type(from_date: @from, to_date: @to) > 0 %>
+                            <td class="text-left"><%= receive.name %></td>
+                            <td class="text-right font-yellow-gold"><%= format_number(receive.receive_amount_by_payment_type(from_date: @from, to_date: @to)) %></td>
+                        <% end %>
                     <% end %>
                     <% if index+1 == @receivables.count %>
                         <td class="text-left bold">TỔNG THU</td>
-                        <td class="text-right"><strong><%= format_number(12322*1000) %></strong></td>
+                        <td class="text-right"><strong><%= format_number(@receivables.receive_amount_by_payment_type(from_date: @from, to_date: @to)) %></strong></td>
                     <% end %>
                 </tr>
             <% end %>
@@ -38,18 +45,20 @@
                         <td class="text-center bold" rowspan="<%= @payables.count %>">PHẦN CHI</td>
                     <% end %>
                     <% if index+1 < @payables.count %>
-                        <td class="text-left"><%= pay.name %></td>
-                        <td class="text-right font-yellow-gold"><%= format_number(312*1000) %></td>
+                        <% if pay.paid_amount_by_payment_type(from_date: @from, to_date: @to) > 0 %>
+                            <td class="text-left"><%= pay.name %></td>
+                            <td class="text-right font-yellow-gold"><%= format_number(pay.paid_amount_by_payment_type(from_date: @from, to_date: @to)) %></td>
+                        <% end %>
                     <% end %>
                     <% if index+1 == @payables.count %>
                         <td class="text-left bold">TỔNG CHI</td>
-                        <td class="text-right"><strong><%= format_number(12322*1000) %></strong></td>
+                        <td class="text-right"><strong><%= format_number(@payables.paid_amount_by_payment_type(from_date: @from, to_date: @to)) %></strong></td>
                     <% end %>
                 </tr>
             <% end %>
             <tr>
                 <td class="bg-green-jungle bg-font-green-jungle border-green-jungle text-center" colspan="2"><h4 class="bold">KẾT TOÁN</h4></td>
-                <td class="bg-green-jungle bg-font-green-jungle border-green-jungle text-right"><h4 class="bold"><%= format_number(12322*1000) %></h4></td>
+                <td class="bg-green-jungle bg-font-green-jungle border-green-jungle text-right"><h4 class="bold"><%= format_number(@payment_types.remain_amount_by_payment_type(from_date: @from, to_date: @to)) %></h4></td>
             </tr>
             
         </tbody>

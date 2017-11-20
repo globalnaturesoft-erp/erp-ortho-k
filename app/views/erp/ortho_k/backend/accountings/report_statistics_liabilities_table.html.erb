@@ -1,6 +1,6 @@
 <div class="custom-show text-center">
     <h4 class="font-blue-madison bold uppercase mb-15">
-        Tổng công nợ khách hàng 2016 và 2017
+        Tổng công nợ khách hàng <%= @periods.first[:from].year %> và <%= @periods.last[:to].year %>
     </h4>
 </div>
 
@@ -17,16 +17,16 @@
         <% @periods.each do |period| %>
             <tr>
                 <td class="text-center uppercase"><%= period[:name] %></td>
-                <td class="text-center font-yellow-gold uppercase"><%= format_number(312*1000) %></td>
-                <td class="text-center font-yellow-gold uppercase"><%= format_number(312*1000) %></td>
-                <td class="text-center font-yellow-gold uppercase"><%= format_number(312*1000) %></td>
+                <td class="text-center font-yellow-gold uppercase"><%= format_number(@customers.sales_total_amount(from_date: period[:from], to_date: period[:to])) %></td>
+                <td class="text-center font-yellow-gold uppercase"><%= format_number(@customers.sales_paid_amount(from_date: period[:from], to_date: period[:to])) %></td>
+                <td class="text-center font-yellow-gold uppercase"><%= format_number(@customers.sales_debt_amount(from_date: period[:from], to_date: period[:to])) %></td>
             </tr>
         <% end %>
         <tr>
-            <td class="text-center bold uppercase">Tổng cộng</td>
-            <td class="text-center bold"><%= format_number(12322*1000) %></td>
-            <td class="text-center bold"><%= format_number(12322*1000) %></td>
-            <td class="text-center bold"><%= format_number(12322*1000) %></td>
+            <td class="bg-green-jungle bg-font-green-jungle border-green-jungle text-center bold uppercase">Tổng cộng</td>
+            <td class="bg-green-jungle bg-font-green-jungle border-green-jungle text-center bold"><%= format_number(@customers.sales_total_amount(from_date: @periods.first[:from], to_date: @periods.last[:to])) %></td>
+            <td class="bg-green-jungle bg-font-green-jungle border-green-jungle text-center bold"><%= format_number(@customers.sales_paid_amount(from_date: @periods.first[:from], to_date: @periods.last[:to])) %></td>
+            <td class="bg-green-jungle bg-font-green-jungle border-green-jungle text-center bold"><%= format_number(@customers.sales_debt_amount(from_date: @periods.first[:from], to_date: @periods.last[:to])) %></td>
         </tr>
         
     </tbody>

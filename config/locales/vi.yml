@@ -631,8 +631,8 @@ vi:
             filter_supplier: "Nhà cung cấp"
             choose_supplier: "Chọn lọc theo nhà cung cấp"
             voucher_date: "Ngày thanh toán"
-            pay_receive: "Hình thức (thu/chi)"
-            description: "Diễn giải"
+            pay_receive: "Diễn giải"
+            description: "Ghi chú"
             amount: "Số tiền"
             options: "Tùy chọn"
             export_pdf: "Xuất ra PDF"
@@ -641,7 +641,11 @@ vi:
           report_pay_receive_table:
             pay: "Phiếu chi"
             receive: "Phiếu thu"
-            please_select_filter: "Vui lòng chọn loại phiếu trên bộ lọc"
+            receive_customer: "Thu tiền công nợ"
+            pay_customer: "Hoàn tiền công nợ"
+            receive_sales_order: "Thu tiền bán lẻ"
+            pay_sales_order: "Hoàn tiền bán lẻ"
+            please_select_filter: "Vui lòng chọn LOẠI PHIẾU và MỐC THỜI GIAN để xem nội dung báo cáo"
             no_matching_records_found: "Nội dung báo cáo không được tìm thấy. Vui lòng chọn các điều kiện khác để xem."
           report_synthesis_pay_receive:
             report_synthesis_pay_receive: "Báo cáo - Tổng hợp thu/chi"
@@ -666,8 +670,12 @@ vi:
             select_to_date: "Chọn lọc theo ngày cuối kỳ"
             filter_period: "Thời gian cố định"
             choose_period: "Chọn lọc theo thời gian cố định"
+            options: "Tùy chọn"
+            export_pdf: "Xuất ra PDF"
+            export_excel: "Xuất ra Excel"
+            print: "In ấn / Print"
           report_sales_results_table:
-            please_select_filter: "Vui lòng chọn thời gian trên bộ lọc"
+            please_select_filter: "Vui lòng chọn MỐC THỜI GIAN để xem nội dung báo cáo"
             no_matching_records_found: "Nội dung báo cáo không được tìm thấy. Vui lòng chọn các điều kiện khác để xem."
           report_income_statement:
             report_income_statement: "Báo cáo - Kết quả kinh doanh trong kỳ"
@@ -682,7 +690,7 @@ vi:
             export_excel: "Xuất ra Excel"
             print: "In ấn / Print"
           report_income_statement_table:
-            please_select_filter: "Vui lòng chọn thời gian trên bộ lọc"
+            please_select_filter: "Vui lòng chọn MỐC THỜI GIAN để xem nội dung báo cáo"
             no_matching_records_found: "Nội dung báo cáo không được tìm thấy. Vui lòng chọn các điều kiện khác để xem."
           report_cash_flow:
             report_cash_flow: "Báo cáo - Dòng tiền còn lại cuối kỳ"
@@ -698,6 +706,8 @@ vi:
             export_pdf: "Xuất ra PDF"
             export_excel: "Xuất ra Excel"
             print: "In ấn / Print"
+          report_cash_flow_table:
+            please_select_filter: "Vui lòng chọn MỐC THỜI GIAN để xem nội dung báo cáo"
           report_customer_liabilities:
             report_customer_liabilities: "Báo cáo - Công nợ khách hàng trong kỳ"
             from_date: "Từ ngày"
@@ -713,7 +723,7 @@ vi:
             export_excel: "Xuất ra Excel"
             print: "In ấn / Print"
           report_customer_liabilities_table:
-            please_select_filter: "Vui lòng chọn thời gian trên bộ lọc"
+            please_select_filter: "Vui lòng chọn TỪ NGÀY - ĐẾN NGÀY hoặc THỜI GIAN CỐ ĐỊNH để xem nội dung báo cáo"
             no_matching_records_found: "Nội dung báo cáo không được tìm thấy. Vui lòng chọn các điều kiện khác để xem."
           report_supplier_liabilities:
             report_supplier_liabilities: "Báo cáo - Công nợ nhà cung cấp trong kỳ"
@@ -730,12 +740,34 @@ vi:
             export_excel: "Xuất ra Excel"
             print: "In ấn / Print"
           report_supplier_liabilities_table:
-            please_select_filter: "Vui lòng chọn thời gian trên bộ lọc"
+            please_select_filter: "Vui lòng chọn TỪ NGÀY - ĐẾN NGÀY hoặc THỜI GIAN CỐ ĐỊNH để xem nội dung báo cáo"
             no_matching_records_found: "Nội dung báo cáo không được tìm thấy. Vui lòng chọn các điều kiện khác để xem."
           report_statistics_liabilities:
             report_statistics_liabilities: "Thống kê - Tổng công nợ khách hàng"
+            to_date: "Tháng cuối kỳ"
+            select_to_date: "Chọn tháng cuối kỳ để lọc"
+            options: "Tùy chọn"
+            export_pdf: "Xuất ra PDF"
+            export_excel: "Xuất ra Excel"
+            print: "In ấn / Print"
+        sales:
+          report_new_patient:
+            report_new_patient: "Báo cáo - Số lượng bệnh nhân mới"
+            from_date: "Từ ngày"
+            to_date: "Đến ngày"
+            select_from_date: "Chọn lọc theo ngày đầu kỳ"
+            select_to_date: "Chọn lọc theo ngày cuối kỳ"
             filter_period: "Thời gian cố định"
             choose_period: "Chọn lọc theo thời gian cố định"
+            filter_supplier: "Nhà cung cấp"
+            choose_supplier: "Chọn lọc theo nhà cung cấp"
+            options: "Tùy chọn"
+            export_pdf: "Xuất ra PDF"
+            export_excel: "Xuất ra Excel"
+            print: "In ấn / Print"
+          report_new_patient_table:
+            please_select_filter: "Vui lòng chọn thời gian trên bộ lọc"
+            no_matching_records_found: "Nội dung báo cáo không được tìm thấy. Vui lòng chọn các điều kiện khác để xem."
     orders:
       backend:
         orders:

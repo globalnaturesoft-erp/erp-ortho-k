@@ -31,13 +31,10 @@
 <% content_for :global_filter do %>
     <div class="row">
         <div class="col-md-3">
-            <%= erp_form_control("dataselect", {
-                name: 'period',
-                value: '',
-                text: '',
-                label: t('.filter_period'),
-                placeholder: t('.choose_period'),
-                url: erp_periods.dataselect_backend_periods_path(format: 'json')
+            <%= erp_form_control('date', {
+                label: t('.to_date'),
+                name: 'to_date',
+                placeholder: t('.select_to_date')
             }) %>
         </div>
     </div>

@@ -46,38 +46,24 @@
         </div>
         <div class="col-md-3">
             <%= erp_form_control("dataselect", {
-                name: 'customer',
-                value: '',
-                text: '',
-                label: t('.filter_customer'),
-                placeholder: t('.choose_customer'),
-                url: erp_contacts.dataselect_backend_contacts_path(format: 'json',
-                                                                   is_customer: true,
-                                                                   contact_id: Erp::Contacts::Contact.get_main_contact.id),
-            }) %>
-        </div>
-        <div class="col-md-3">
-            <%= erp_form_control("dataselect", {
-                name: 'supplier',
-                value: '',
-                text: '',
-                label: t('.filter_supplier'),
-                placeholder: t('.choose_supplier'),
-                url: erp_contacts.dataselect_backend_contacts_path(format: 'json',
-                                                                   is_supplier: true,
-                                                                   contact_id: Erp::Contacts::Contact.get_main_contact.id),
-            }) %>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-3">
-            <%= erp_form_control("dataselect", {
                 name: 'period',
                 value: '',
                 text: '',
                 label: t('.filter_period'),
                 placeholder: t('.choose_period'),
                 url: erp_periods.dataselect_backend_periods_path(format: 'json')
+            }) %>
+        </div>
+        <div class="col-md-3">
+            <%= erp_form_control("dataselect", {
+                name: 'customer',
+                value: '',
+                text: '',
+                label: t('.filter_customer'),
+                placeholder: t('.choose_customer'),
+                url: erp_contacts.dataselect_backend_contacts_path(format: 'json',
+                    is_customer: true,
+                    contact_id: Erp::Contacts::Contact.get_main_contact.id),
             }) %>
         </div>
     </div>
@@ -102,7 +88,7 @@
             text: t('.pay_receive'), name: 'pay_receive', value: true, checked: true
         },
         {
-            text: t('.description'), name: 'description', value: true, checked: true
+            text: t('.description'), name: 'description', value: true, checked: false
         },
         {
             text: t('.amount'), name: 'amount', value: true, checked: true
