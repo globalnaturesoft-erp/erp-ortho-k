@@ -1,6 +1,6 @@
 <table class="table table-bordered table-advance order-column" id="">
     <tr>
-        <td class="text-right" colspan="3"><%= t('.total_row') %></td>
+        <td class="text-right" colspan="3">Tổng cộng</td>
         <td class="text-center stock-num text-bold bg-warning">
             <%
                 begin_params = @global_filters.clone
@@ -128,17 +128,17 @@
         </td>
     </tr>
     <tr>
-        <th class="bg-grey text-center" rowspan="2"><%= t('.product') %></th>
-        <th class="bg-grey text-center" rowspan="2"><%= t('.diameter') %></th>
-        <th class="bg-grey text-center" rowspan="2"><%= t('.category') %></th>
-        <th class="bg-grey text-center" rowspan="2" width="7%"><%= t('.begin') %></th>
-        <th class="bg-grey text-center" colspan="6"><%= t('.import') %></th>
-        <th class="bg-grey text-center text-center" colspan="7"><%= t('.export') %></th>
-        <th class="bg-grey text-center"><%= t('.end') %></th>
+        <th class="bg-grey text-center" rowspan="2">Tên</th>
+        <th class="bg-grey text-center" rowspan="2">Đường kính</th>
+        <th class="bg-grey text-center" rowspan="2">Loại</th>
+        <th class="bg-grey text-center" rowspan="2" width="7%">Đầu kỳ</th>
+        <th class="bg-grey text-center" colspan="6">Nhập kho</th>
+        <th class="bg-grey text-center text-center" colspan="7">Xuất kho</th>
+        <th class="bg-grey text-center" rowspan="2">Cuối kỳ</th>
     </tr>
     <tr>
-        <th class="bg-grey text-center" width="7%" title="Nhập kho"><%= t('.import_purchase') %></th>
-        <th class="bg-grey text-center" width="7%" title="Hoàn kho (Khách hàng)"><%= t('.import_return') %></th>
+        <th class="bg-grey text-center" width="7%" title="Xuất kho">XK</th>
+        <th class="bg-grey text-center" width="7%" title="Hoàn kho (Khách hàng)">TH</th>
         <th class="bg-grey text-center" width="7%" title="Chuyển kho">CK</th>
         <th class="bg-grey text-center" width="7%" title="Ký gởi/Cho mượn">KG</th>
         <th class="bg-grey text-center" width="7%" title="Kiểm kho">KK</th>
@@ -149,8 +149,7 @@
         <th class="bg-grey text-center" width="7%" title="Tặng quà">TQ</th>
         <th class="bg-grey text-center" width="7%" title="Hủy kho">HuyK</th>
         <th class="bg-grey text-center" width="7%" title="Kiểm kho">KK</th>
-        <th class="bg-grey text-center" width="7%"><%= t('.export_total') %></th>
-        <th class="bg-grey text-center" width="7%"><%= t('.end_total') %></th>
+        <th class="bg-grey text-center" width="7%">Tổng</th>
     </tr>
     <% @products.each_with_index do |product,index| %>
         <tr>

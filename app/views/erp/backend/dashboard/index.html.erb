@@ -1,0 +1,17 @@
+<% content_for :title do %>
+    <%= t('.dashboard') %>
+<% end %>
+<div class="note note-info">
+    <p> HỆ THỐNG QUẢN TRỊ - DASHBOARD HỆ THỐNG (ĐANG TRONG GIAI ĐOẠN PHÁT TRIỂN)</p>
+</div>
+
+<ul class="dashboard-menu">
+    <%= render "layouts/erp/backend/menu/sales" %>
+    <%= render "layouts/erp/backend/menu/inventory" %>
+    <%= render "layouts/erp/backend/menu/accountant" %>
+    <%= render "layouts/erp/backend/menu/report" %>
+    <%= render "layouts/erp/backend/menu/contact" %>
+    <%= render "layouts/erp/backend/menu/option" %>
+    <%= render "layouts/erp/backend/menu/system" %>
+    <%= render "layouts/erp/backend/menu/support" %>
+</ul>

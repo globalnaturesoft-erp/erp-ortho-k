@@ -2,13 +2,20 @@
 <% if @group_by_category.nil? and @group_by_property.nil? %>
     <table class="table table-bordered table-advance order-column" id="">
         <tr>
-            <td class="text-right text-bold" colspan="2"><%= t('.total_row') %></td>
+            <td class="text-right text-bold"><%= t('.total_row') %></td>
             <% @warehouses.each_with_index do |warehouse,index| %>
-                <td class="text-center stock-num text-bold"><%= (50..1000).to_a.sample %></td>
+                <%
+                    count = Erp::Products::Product.get_qdelivery_import(@global_filters.merge({
+                        product_id: [-1] + @products.select('id'),
+                        warehouse: warehouse,
+                    }))
+                %>
+                <td class="text-center stock-num text-bold text-num-<%= count %>">
+                    <%= count %>
+                </td>
             <% end %>
         </tr>
         <tr>
-            <th class="bg-grey text-center"><%= t('.code') %></th>
             <th class="bg-grey text-center"><%= t('.name') %></th>
             <% @warehouses.each_with_index do |warehouse,index| %>
                 <th class="bg-grey text-center" width="<%= col_width %>%"><%= warehouse.name %></th>
@@ -16,21 +23,38 @@
         </tr>
         <% @products.each_with_index do |product,index| %>
             <tr>
-                <td class="text-left">#<%= product.code %></td>
                 <td class="text-left"><%= product.name %></td>
                 <% @warehouses.each_with_index do |warehouse,index| %>
-                    <td class="text-center stock-num"><%= (0..5).to_a.sample %></td>
+                    <%
+                        count = Erp::Products::Product.get_qdelivery_import(@global_filters.merge({
+                            product_id: product.id,
+                            warehouse: warehouse,
+                        }))
+                    %>
+                    <td class="text-center stock-num text-num-<%= count %>">
+                        <%= count %>
+                    </td>
                 <% end %>
             </tr>
         <% end %>
     </table>
     <%= erp_datalist_pagination(@products) %>
+
+<!-- Group by category  -->
 <% elsif @group_by_property.nil? %>
     <table class="table table-bordered table-advance order-column" id="">
         <tr>
             <td class="text-right text-bold"><%= t('.total_row') %></td>
             <% @warehouses.each_with_index do |warehouse,index| %>
-                <td class="text-center stock-num text-bold"><%= (50..1000).to_a.sample %></td>
+                <%
+                    count = Erp::Products::Product.get_stock_real(@global_filters.merge({
+                        product_id: [-1] + @products.select('id').where(category_id: @group_by_category),
+                        warehouse: warehouse,
+                    }))
+                %>
+                <td class="text-center stock-num text-bold text-num-<%= count %>">
+                    <%= count %>
+                </td>
             <% end %>
         </tr>
         <tr>
@@ -43,17 +67,35 @@
             <tr>
                 <td class="text-left"><%= category.name %></td>
                 <% @warehouses.each_with_index do |warehouse,index| %>
-                    <td class="text-center stock-num"><%= (0..5).to_a.sample %></td>
+                    <%
+                        count = Erp::Products::Product.get_stock_real(@global_filters.merge({
+                            product_id: [-1] + @products.select('id').where(category_id: category.id),
+                            warehouse: warehouse,
+                        }))
+                    %>
+                    <td class="text-center stock-num text-num-<%= count %>">
+                        <%= count %>
+                    </td>
                 <% end %>
             </tr>
         <% end %>
     </table>
+
+<!-- Group by category + property  -->
 <% elsif !@group_by_category.nil? %>
     <table class="table table-bordered table-advance order-column" id="">
         <tr>
             <td class="text-right text-bold" colspan="2"><%= t('.total_row') %></td>
             <% @warehouses.each_with_index do |warehouse,index| %>
-                <td class="text-center stock-num text-bold"><%= (50..1000).to_a.sample %></td>
+                <%
+                    count = Erp::Products::Product.get_stock_real(@global_filters.merge({
+                        product_id: [-1] + @products.select('id').where(category_id: @group_by_category),
+                        warehouse: warehouse,
+                    }))
+                %>
+                <td class="text-center stock-num text-bold text-num-<%= count %>">
+                    <%= count %>
+                </td>
             <% end %>
         </tr>
         <tr>
@@ -72,18 +114,38 @@
                     <% end %>
                     <td class="text-left"><%= property_value.value %></td>
                     <% @warehouses.each_with_index do |warehouse,index| %>
-                        <td class="text-center stock-num"><%= (0..5).to_a.sample %></td>
+                        <%
+                            count = Erp::Products::Product.get_stock_real(@global_filters.merge({
+                                product_id: [-1] + @products.select('id')
+                                    .where(category_id: category.id)
+                                    .where("erp_products_products.cache_properties LIKE '%[\"#{property_value.id}\",%'"),
+                                warehouse: warehouse,
+                            }))
+                        %>
+                        <td class="text-center stock-num text-num-<%= count %>">
+                            <%= count %>
+                        </td>
                     <% end %>
                 </tr>
             <% end %>
         <% end %>
     </table>
+
+<!-- Group by property  -->
 <% else %>
     <table class="table table-bordered table-advance order-column" id="">
         <tr>
             <td class="text-right text-bold"><%= t('.total_row') %></td>
             <% @warehouses.each_with_index do |warehouse,index| %>
-                <td class="text-center stock-num text-bold"><%= (50..1000).to_a.sample %></td>
+                <%
+                    count = Erp::Products::Product.get_stock_real(@global_filters.merge({
+                        product_id: [-1] + @products.select('id'),
+                        warehouse: warehouse,
+                    }))
+                %>
+                <td class="text-center stock-num text-bold text-num-<%= count %>">
+                    <%= count %>
+                </td>
             <% end %>
         </tr>
         <tr>
@@ -96,11 +158,18 @@
             <tr>
                 <td class="text-left"><%= properties_value.value %></td>
                 <% @warehouses.each_with_index do |warehouse,index| %>
-                    <td class="text-center stock-num"><%= (0..5).to_a.sample %></td>
+                    <%
+                        count = Erp::Products::Product.get_stock_real(@global_filters.merge({
+                            product_id: [-1] + @products.select('id')
+                                .where("erp_products_products.cache_properties LIKE '%[\"#{properties_value.id}\",%'"),
+                            warehouse: warehouse,
+                        }))
+                    %>
+                    <td class="text-center stock-num text-num-<%= count %>">
+                        <%= count %>
+                    </td>
                 <% end %>
             </tr>
         <% end %>
     </table>
 <% end %>
-
-
