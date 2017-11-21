@@ -16,9 +16,9 @@
             <% end %>
         </tr>
         <tr>
-            <th class="bg-grey text-center"><%= t('.name') %></th>
+            <th class="bg-primary text-center"><%= t('.name') %></th>
             <% @warehouses.each_with_index do |warehouse,index| %>
-                <th class="bg-grey text-center" width="<%= col_width %>%"><%= warehouse.name %></th>
+                <th class="bg-primary text-center" width="<%= col_width %>%"><%= warehouse.name %></th>
             <% end %>
         </tr>
         <% @products.each_with_index do |product,index| %>
@@ -58,9 +58,9 @@
             <% end %>
         </tr>
         <tr>
-            <th class="bg-grey text-center"><%= t('.category') %></th>
+            <th class="bg-primary text-center">Loại</th>
             <% @warehouses.each_with_index do |warehouse,index| %>
-                <th class="bg-grey text-center" width="<%= col_width %>%"><%= warehouse.name %></th>
+                <th class="bg-primary text-center" width="<%= col_width %>%"><%= warehouse.name %></th>
             <% end %>
         </tr>
         <% @categories.each_with_index do |category,index| %>
@@ -99,10 +99,10 @@
             <% end %>
         </tr>
         <tr>
-            <th class="bg-grey text-center"><%= t('.category') %></th>
-            <th class="bg-grey text-center"><%= t('.property') %></th>
+            <th class="bg-primary text-center">Loại</th>
+            <th class="bg-primary text-center">Thuộc tính</th>
             <% @warehouses.each_with_index do |warehouse,index| %>
-                <th class="bg-grey text-center" width="<%= col_width %>%"><%= warehouse.name %></th>
+                <th class="bg-primary text-center" width="<%= col_width %>%"><%= warehouse.name %></th>
             <% end %>
         </tr>
         <% @categories.each_with_index do |category,index| %>
@@ -149,9 +149,9 @@
             <% end %>
         </tr>
         <tr>
-            <th class="bg-grey text-center"><%= t('.property') %></th>
+            <th class="bg-primary text-center"><%= t('.property') %></th>
             <% @warehouses.each_with_index do |warehouse,index| %>
-                <th class="bg-grey text-center" width="<%= col_width %>%"><%= warehouse.name %></th>
+                <th class="bg-primary text-center" width="<%= col_width %>%"><%= warehouse.name %></th>
             <% end %>
         </tr>
         <% @properties_values.each_with_index do |properties_value,index| %>

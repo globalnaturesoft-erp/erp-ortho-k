@@ -1,14 +1,22 @@
+# Default user group
+puts "Create default user group"
+Erp::UserGroup.destroy_all
+user_group = Erp::UserGroup.create(
+  name: "Admin"
+)
+
 # Default user
 puts "Create default admin user"
 Erp::User.destroy_all
 user = Erp::User.create(
+  user_group_id: user_group.id,
   email: "admin@orthok.com",
   password: "aA456321@",
   name: "Super Admin",
   backend_access: true,
   confirmed_at: Time.now-1.day,
   active: true
-) if Erp::User.where(email: "admin@orthok.com").empty?
+)
 
 
 

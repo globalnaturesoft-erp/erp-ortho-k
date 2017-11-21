@@ -32,9 +32,9 @@
         <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "import_export_report" %>">
             <%= link_to t('.import_export_report'), erp_ortho_k.import_export_report_backend_products_path, class: "nav-link ", title: t('.import_export_report') %>
         </li>
-        <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "delivery_report_by_cate_diameter" %>">
+        <!--<li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "delivery_report_by_cate_diameter" %>">
             <%= link_to "Thống kê tồn kho", erp_ortho_k.delivery_report_by_cate_diameter_backend_products_path, class: "nav-link ", title: 'Thống kê tồn kho theo loại len + đường kính' %>
-        </li>
+        </li>-->
         <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "warehouses_report" %>">
             <%= link_to "Thống kê theo kho", erp_ortho_k.warehouses_report_backend_products_path, class: "nav-link ", title: 'Thống kê theo kho' %>
         </li>
