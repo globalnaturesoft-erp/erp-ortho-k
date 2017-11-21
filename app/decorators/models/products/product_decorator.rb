@@ -34,43 +34,43 @@ Erp::Products::Product.class_eval do
   # get import report
   def self.import_export_report(params={})
     result = []
-    
+
     total = {
       quantity: 0
     }
-    
+
     # Qdelivery: Có Chứng Từ
     query = Erp::Qdeliveries::DeliveryDetail.joins(:delivery, :order_detail => :product)
             .where.not(order_detail_id: nil)
             .where(erp_qdeliveries_deliveries: {status: Erp::Qdeliveries::Delivery::STATUS_DELIVERED})
-    
+
     if params[:from_date].present?
       query = query.where(erp_qdeliveries_deliveries: {'date >= ?': params[:from_date].to_date.beginning_of_day})
     end
-    
+
     if params[:to_date].present?
       query = query.where(erp_qdeliveries_deliveries: {'date <= ?': params[:to_date].to_date.end_of_day})
     end
-    
+
     if params[:category_id].present?
       query = query.where(erp_products_products: {category_id: params[:category_id]})
     end
-    
+
     if params[:warehouse_id].present?
       query = query.where(warehouse_id: params[:warehouse_id])
     end
-    
+
     if params[:state_id].present?
       query = query.where(state_id: params[:state_id])
     end
-    
+
     query.limit(5).each do |delivery_detail|
       if [Erp::Qdeliveries::Delivery::TYPE_WAREHOUSE_EXPORT, Erp::Qdeliveries::Delivery::TYPE_MANUFACTURER_EXPORT].include?(delivery_detail.delivery.delivery_type)
         qty = -delivery_detail.quantity
       else
         qty = +delivery_detail.quantity
       end
-      
+
       result << {
         record_date: delivery_detail.delivery.created_at,
         voucher_date: delivery_detail.delivery.date,
@@ -91,39 +91,39 @@ Erp::Products::Product.class_eval do
       }
       total[:quantity] += qty
     end
-    
+
     # Qdelivery: Không Chứng Từ
     query = Erp::Qdeliveries::DeliveryDetail.joins(:delivery, :product)
             .where(order_detail_id: nil)
             .where(erp_qdeliveries_deliveries: {status: Erp::Qdeliveries::Delivery::STATUS_DELIVERED})
-    
+
     if params[:from_date].present?
       query = query.where(erp_qdeliveries_deliveries: {'date >= ?': params[:from_date].to_date.beginning_of_day})
     end
-    
+
     if params[:to_date].present?
       query = query.where(erp_qdeliveries_deliveries: {'date <= ?': params[:to_date].to_date.end_of_day})
     end
-    
+
     if params[:category_id].present?
       query = query.where(erp_products_products: {category_id: params[:category_id]})
     end
-    
+
     if params[:warehouse_id].present?
       query = query.where(warehouse_id: params[:warehouse_id])
     end
-    
+
     if params[:state_id].present?
       query = query.where(state_id: params[:state_id])
     end
-    
+
     query.limit(5).each do |delivery_detail|
       if [Erp::Qdeliveries::Delivery::TYPE_WAREHOUSE_EXPORT, Erp::Qdeliveries::Delivery::TYPE_MANUFACTURER_EXPORT].include?(delivery_detail.delivery.delivery_type)
         qty = -delivery_detail.quantity
       else
         qty = +delivery_detail.quantity
       end
-      
+
       result << {
         record_date: delivery_detail.delivery.created_at,
         voucher_date: delivery_detail.delivery.date,
@@ -144,7 +144,7 @@ Erp::Products::Product.class_eval do
       }
       total[:quantity] += qty
     end
-    
+
     # Transfer: Kho Chuyển Đến /Kho Đích
     Erp::StockTransfers::TransferDetail.joins(:transfer)
     .where(erp_stock_transfers_transfers: {status: Erp::StockTransfers::Transfer::STATUS_DELIVERED}).limit(2)
@@ -166,7 +166,7 @@ Erp::Products::Product.class_eval do
       }
       total[:quantity] += qty
     end
-      
+
     # Transfer: Kho Chuyển Đi /Kho Nguồn
     Erp::StockTransfers::TransferDetail.joins(:transfer)
     .where(erp_stock_transfers_transfers: {status: Erp::StockTransfers::Transfer::STATUS_DELIVERED}).limit(2)
@@ -188,7 +188,7 @@ Erp::Products::Product.class_eval do
       }
       total[:quantity] += qty
     end
-    
+
     # Gift Given /Tặng Quà
     Erp::GiftGivens::GivenDetail.joins(:given)
     .where(erp_gift_givens_givens: {status: Erp::GiftGivens::Given::STATUS_DELIVERED}).limit(5)
@@ -212,7 +212,7 @@ Erp::Products::Product.class_eval do
       }
       total[:quantity] += qty
     end
-    
+
     # Consignment: Hàng ký gửi cho mượn
     Erp::Consignments::ConsignmentDetail.joins(:consignment)
     .where(erp_consignments_consignments: {status: Erp::Consignments::Consignment::CONSIGNMENT_STATUS_DELIVERED}).limit(2)
@@ -236,7 +236,7 @@ Erp::Products::Product.class_eval do
       }
       total[:quantity] += qty
     end
-    
+
     # Consignment: Hàng ký gửi trả lại
     Erp::Consignments::ReturnDetail.joins(:cs_return)
     .where(erp_consignments_cs_returns: {status: Erp::Consignments::CsReturn::CS_RETURN_STATUS_DELIVERED}).limit(5)
@@ -260,7 +260,7 @@ Erp::Products::Product.class_eval do
       }
       total[:quantity] += qty
     end
-    
+
     # Damage Record: Hàng xuất hủy
     Erp::Products::DamageRecordDetail.joins(:damage_record)
     .where(erp_products_damage_records: {status: Erp::Products::DamageRecord::STATUS_DONE}).limit(2)
@@ -282,7 +282,7 @@ Erp::Products::Product.class_eval do
       }
       total[:quantity] += qty
     end
-    
+
     # Stock check
     Erp::Products::StockCheckDetail.joins(:stock_check)
     .where(erp_products_stock_checks: {status: Erp::Products::StockCheck::STOCK_CHECK_STATUS_DONE}).limit(2)
@@ -322,6 +322,16 @@ Erp::Products::Product.class_eval do
       if filters[:categories].present?
         categories = (filters[:categories].is_a?(Array) ? (filters[:categories].reject { |c| c.empty? }) : [filters[:categories]])
         query = query.where(category_id: categories) if !categories.empty?
+      end
+
+      # properties_values ORS
+      if filters[:properties_values].present?
+        properties_values = (filters[:properties_values].is_a?(Array) ? (filters[:properties_values].reject { |c| c.empty? }) : [filters[:properties_values]])
+        ors = []
+        properties_values.each do |pv_id|
+          ors << "erp_products_products.cache_properties LIKE '%[\"#{pv_id}\",%'"
+        end
+        query = query.where(ors.join(' OR ')) if !ors.empty?
       end
 
       # diameter

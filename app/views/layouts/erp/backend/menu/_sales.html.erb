@@ -14,11 +14,17 @@
         <% else %>
             <span class="arrow"></span>
         <% end %>
+        <% if Erp::Orders::Order.get_waiting_sales_orders.count > 0 %>
+            <span class="badge badge-danger"><%= Erp::Orders::Order.get_waiting_sales_orders.count %></span>
+        <% end %>
     </a>
     <ul class="sub-menu">
         <li class="nav-item <%= "active" if ["erp/sales/backend/sales"].include?(params[:controller]) %>">
             <a href="<%= erp_sales.backend_sales_orders_path %>" class="nav-link ">
                 <span class="title"><%= t('.sales_orders') %></span>
+                <% if Erp::Orders::Order.get_waiting_sales_orders.count > 0 %>
+                    <span class="badge badge-danger"><%= Erp::Orders::Order.get_waiting_sales_orders.count %></span>
+                <% end %>
             </a>
         </li>
         <% if Erp::Core.available?("gift_givens") %>

@@ -1,6 +1,8 @@
-Erp::OrthoK::Engine.routes.draw do
-	root to: "frontend/home#index"
+Erp::Core::Engine.routes.draw do
+	root to: "backend/dashboard#index"
+end
 
+Erp::OrthoK::Engine.routes.draw do
   scope "(:locale)", locale: /en|vi/ do
 		namespace :backend, module: "backend", path: "orthok/backend/products" do
       resources :products do

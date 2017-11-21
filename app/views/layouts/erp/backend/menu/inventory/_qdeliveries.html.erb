@@ -36,7 +36,7 @@
             <a class="nav-link" href="<%= erp_qdeliveries.backend_purchases_orders_path %>">
                 Xuất/Nhập mua hàng
                 <% if Erp::Orders::Order.get_wait_for_delivery_purchase_orders.count > 0 %>
-                    <span class="badge badge-danger"><%= Erp::Orders::Order.get_wait_for_delivery_sales_orders.count %></span>
+                    <span class="badge badge-danger"><%= Erp::Orders::Order.get_wait_for_delivery_purchase_orders.count %></span>
                 <% end %>
             </a>
         </li>

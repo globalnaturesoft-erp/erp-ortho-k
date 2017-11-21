@@ -68,8 +68,13 @@ module Erp
           @group_by_category = (@global_filters.present? and @global_filters[:group_by_category].present?) ? @global_filters[:group_by_category] : nil
           @group_by_property = (@global_filters.present? and @global_filters[:group_by_property].present?) ? @global_filters[:group_by_property] : nil
 
+          @properties_value_ids = (@global_filters.present? and @global_filters[:properties_values].present?) ? @global_filters[:properties_values] : nil
+
           if @group_by_property.present?
             @properties_values = Erp::Products::PropertiesValue.where(property_id: @group_by_property).order('value')
+            if @properties_value_ids.present?
+              @properties_values = @properties_values.where(id: @properties_value_ids)
+            end
           end
 
           @products_query = Erp::Products::Product.delivery_report(filters: @global_filters)

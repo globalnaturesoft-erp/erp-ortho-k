@@ -78,10 +78,11 @@
                 label: t('.group_by_category'),
                 placeholder: t('.choose_group_by_category'),
                 url: erp_products.dataselect_backend_categories_path(format: 'json'),
-                include_all: {text: t('.all_category'), value: 'all'},
+                multiple: true
             }) %>
         </div>
         <div class="col-md-3">
+            <% diameter = Erp::Products::Property.where(name: "Đường kính").first %>
             <%= erp_form_control("dataselect", {
                 name: 'group_by_property',
                 value: '',
@@ -91,13 +92,15 @@
                 url: erp_products.dataselect_backend_properties_path(format: 'json'),
             }) %>
         </div>
-        <div class="col-md-6 text-right">
-            <label style="display: block" class="invisible">.</label>
-            <%= erp_component('button/export', {
-                text: '<i class="fa fa-download"></i> ' + t('.export_sheet')
-            }) %>
-            <%= erp_component('button/export', {
-                text: '<i class="fa fa-download"></i> ' + t('.export_pdf')
+        <div class="col-md-3">
+            <%= erp_form_control("dataselect", {
+                name: 'properties_values',
+                value: '',
+                text: '',
+                label: 'Chọn giá trị thuộc tính',
+                placeholder: 'Tất cả giá trị',
+                url: erp_products.dataselect_backend_properties_values_path(format: 'json'),
+                multiple: true
             }) %>
         </div>
     </div>
@@ -114,18 +117,6 @@
     filters: [
         {
             text: t('.show_virtual'), name: 'show_virtual', value: true, checked: false
-        },
-        {
-            divider: true
-        },
-        {
-            text: t('.state_normal'), name: 'state_normal', value: true, checked: true
-        },
-        {
-            text: t('.state_scratched'), name: 'state_scratched', value: true, checked: false
-        },
-        {
-            text: t('.state_broken'), name: 'state_broken', value: true, checked: false
         },
     ],
     columns: [
