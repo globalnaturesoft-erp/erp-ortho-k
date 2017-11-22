@@ -366,36 +366,159 @@ Erp::Products::Product.class_eval do
     # filter from frontend
     query = self.orthok_filters(params)
 
-    # only in-stock products
-    # query = query.where(cache_stock: 0)
+    # only not-in-stock products
+    query = query.where(cache_stock: 0)
 
-    ## need to purchase: @options["purchase_conditions"]
-    #ors = []
-    #@options["purchase_conditions"].each do |option|
-    #
-    #  ands = []
-    #  ands << "erp_products_products.category_id = #{option[1]["category"]}"
-    #  ands << "erp_products_products.cache_properties LIKE '%[\"#{option[1]["diameter"]}\",%'"
-    #
-    #  letter_pv_ids = defined?(option) ? (option[1]["letter"].reject { |c| c.empty? }) : [-1]
-    #  number_pv_ids = defined?(option) ? (option[1]["number"].reject { |c| c.empty? }) : [-1]
-    #
-    #  qs = []
-    #  letter_pv_ids.each do |x|
-    #    qs << "(erp_products_products.cache_properties LIKE '%[\"#{x}\",%')"
-    #  end
-    #  ands << "(#{qs.join(" OR ")})" if !qs.empty?
-    #
-    #  qs = []
-    #  number_pv_ids.each do |x|
-    #    qs << "(erp_products_products.cache_properties LIKE '%[\"#{x}\",%')"
-    #  end
-    #  ands << "(#{qs.join(" OR ")})" if !qs.empty?
-    #
-    #  ors << "(#{ands.join(" AND ")})"
-    #end
+    # need to purchase: @options["purchase_conditions"]
+    ors = []
+    @options["purchase_conditions"].each do |option|
 
-    query = self.all.limit(20)#where(ors.join(" OR "))
+      ands = []
+      ands << "erp_products_products.category_id = #{option[1]["category"]}"
+      ands << "erp_products_products.cache_properties LIKE '%[\"#{option[1]["diameter"]}\",%'"
+
+      letter_pv_ids = defined?(option) ? (option[1]["letter"].reject { |c| c.empty? }) : [-1]
+      number_pv_ids = defined?(option) ? (option[1]["number"].reject { |c| c.empty? }) : [-1]
+
+      qs = []
+      letter_pv_ids.each do |x|
+        qs << "(erp_products_products.cache_properties LIKE '%[\"#{x}\",%')"
+      end
+      ands << "(#{qs.join(" OR ")})" if !qs.empty?
+
+      qs = []
+      number_pv_ids.each do |x|
+        qs << "(erp_products_products.cache_properties LIKE '%[\"#{x}\",%')"
+      end
+      ands << "(#{qs.join(" OR ")})" if !qs.empty?
+
+      ors << "(#{ands.join(" AND ")})"
+    end
+
+    query = self.where(ors.join(" OR "))
+
+    return query
+  end
+
+  def self.get_in_central_area
+    # open central settings
+    setting_file = 'setting_ortho_k.conf'
+    if File.file?(setting_file)
+      @options = YAML.load(File.read(setting_file))
+    else
+      return []
+    end
+
+    # need to purchase: @options["purchase_conditions"]
+    ors = []
+    @options["central_conditions"].each do |option|
+
+      ands = []
+      ands << "erp_products_products.category_id = #{option[1]["category"]}"
+
+      letter_pv_ids = defined?(option) ? (option[1]["letter"].reject { |c| c.empty? }) : [-1]
+      number_pv_ids = defined?(option) ? (option[1]["number"].reject { |c| c.empty? }) : [-1]
+
+      qs = []
+      letter_pv_ids.each do |x|
+        qs << "(erp_products_products.cache_properties LIKE '%[\"#{x}\",%')"
+      end
+      ands << "(#{qs.join(" OR ")})" if !qs.empty?
+
+      qs = []
+      number_pv_ids.each do |x|
+        qs << "(erp_products_products.cache_properties LIKE '%[\"#{x}\",%')"
+      end
+      ands << "(#{qs.join(" OR ")})" if !qs.empty?
+
+      ors << "(#{ands.join(" AND ")})"
+    end
+
+    query = self.where(ors.join(" OR "))
+
+    return query
+  end
+
+  def self.get_not_in_central_area
+    # open central settings
+    setting_file = 'setting_ortho_k.conf'
+    if File.file?(setting_file)
+      @options = YAML.load(File.read(setting_file))
+    else
+      return []
+    end
+
+    # need to purchase: @options["purchase_conditions"]
+    ors = []
+    @options["central_conditions"].each do |option|
+
+      ands = []
+      ands << "erp_products_products.category_id = #{option[1]["category"]}"
+
+      letter_pv_ids = defined?(option) ? (option[1]["letter"].reject { |c| c.empty? }) : [-1]
+      number_pv_ids = defined?(option) ? (option[1]["number"].reject { |c| c.empty? }) : [-1]
+
+      qs = []
+      letter_pv_ids.each do |x|
+        qs << "(erp_products_products.cache_properties LIKE '%[\"#{x}\",%')"
+      end
+      ands << "(#{qs.join(" OR ")})" if !qs.empty?
+
+      qs = []
+      number_pv_ids.each do |x|
+        qs << "(erp_products_products.cache_properties LIKE '%[\"#{x}\",%')"
+      end
+      ands << "(#{qs.join(" OR ")})" if !qs.empty?
+
+      ors << "(#{ands.join(" AND ")})"
+    end
+
+    query = self.where.not(ors.join(" OR "))
+
+    return query
+  end
+
+  def self.get_central_area_products(params={})
+    # open central settings
+    setting_file = 'setting_ortho_k.conf'
+    if File.file?(setting_file)
+      @options = YAML.load(File.read(setting_file))
+    else
+      return []
+    end
+
+    # filter from frontend
+    query = self.orthok_filters(params)
+
+    # only not-in-stock products
+    query = query.where(cache_stock: 0)
+
+    # need to purchase: @options["purchase_conditions"]
+    ors = []
+    @options["central_conditions"].each do |option|
+
+      ands = []
+      ands << "erp_products_products.category_id = #{option[1]["category"]}"
+
+      letter_pv_ids = defined?(option) ? (option[1]["letter"].reject { |c| c.empty? }) : [-1]
+      number_pv_ids = defined?(option) ? (option[1]["number"].reject { |c| c.empty? }) : [-1]
+
+      qs = []
+      letter_pv_ids.each do |x|
+        qs << "(erp_products_products.cache_properties LIKE '%[\"#{x}\",%')"
+      end
+      ands << "(#{qs.join(" OR ")})" if !qs.empty?
+
+      qs = []
+      number_pv_ids.each do |x|
+        qs << "(erp_products_products.cache_properties LIKE '%[\"#{x}\",%')"
+      end
+      ands << "(#{qs.join(" OR ")})" if !qs.empty?
+
+      ors << "(#{ands.join(" AND ")})"
+    end
+
+    query = self.where(ors.join(" OR "))
 
     return query
   end

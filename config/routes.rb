@@ -66,6 +66,28 @@ Erp::OrthoK::Engine.routes.draw do
 				end
 			end
 
+			resources :inventory do
+				collection do
+					get 'report_category_diameter'
+					post 'report_category_diameter_table'
+
+					get 'report_product'
+					post 'report_product_table'
+
+					get 'report_central_area'
+					post 'report_central_area_table'
+
+					get 'report_warehouse'
+					post 'report_warehouse_table'
+
+					get 'report_custom_area'
+					post 'report_custom_area_table'
+
+					get 'report_outside_product'
+					post 'report_outside_product_table'
+				end
+			end
+
 			get 'setting', :to => "setting#index"
 			post 'setting', :to => "setting#index"
 			get 'purchase_condition', :to => "setting#purchase_condition", :as => 'purchase_condition'

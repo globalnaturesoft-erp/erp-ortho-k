@@ -2,6 +2,7 @@
                                          (params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "delivery_report") ||
                                          (params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "delivery_report_by_cate_diameter") ||
                                          (params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "warehouses_report") ||
+                                         (params[:controller] == "erp/ortho_k/backend/inventory") ||
                                          (params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "import_export_report") %>">
     <a href="javascript:;" class="nav-link nav-toggle">
         <span class="title">Kho</span>
@@ -9,6 +10,7 @@
               (params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "delivery_report") ||
               (params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "delivery_report_by_cate_diameter") ||
               (params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "warehouses_report") ||
+              (params[:controller] == "erp/ortho_k/backend/inventory") ||
               (params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "import_export_report") %>
             <span class="selected"></span>
             <span class="arrow open"></span>
@@ -20,6 +22,7 @@
                                (params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "delivery_report") ||
                                (params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "delivery_report_by_cate_diameter") ||
                                (params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "warehouses_report") ||
+                               (params[:controller] == "erp/ortho_k/backend/inventory") ||
                                (params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "import_export_report") %>
                             style="display: block;"
                         <% else %>style="display: none;"<% end %>>
@@ -27,19 +30,47 @@
             <%= link_to t('.inventory_report'), erp_ortho_k.matrix_report_backend_products_path, class: "nav-link ", title: t('.inventory_report') %>
         </li>
         <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "delivery_report" %>">
-            <%= link_to t('.delivery_report'), erp_ortho_k.delivery_report_backend_products_path, class: "nav-link ", title: t('.delivery_report') %>
+            <%= link_to 'Báo cáo xuất/nhập/tồn', erp_ortho_k.delivery_report_backend_products_path, class: "nav-link ", title: t('.delivery_report') %>
         </li>
         <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "import_export_report" %>">
-            <%= link_to t('.import_export_report'), erp_ortho_k.import_export_report_backend_products_path, class: "nav-link ", title: t('.import_export_report') %>
+            <%= link_to 'Chi tiết xuất/nhập', erp_ortho_k.import_export_report_backend_products_path, class: "nav-link ", title: t('.import_export_report') %>
         </li>
-        <!--<li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "delivery_report_by_cate_diameter" %>">
-            <%= link_to "Thống kê tồn kho", erp_ortho_k.delivery_report_by_cate_diameter_backend_products_path, class: "nav-link ", title: 'Thống kê tồn kho theo loại len + đường kính' %>
-        </li>-->
-        <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "warehouses_report" %>">
-            <%= link_to "Thống kê theo kho", erp_ortho_k.warehouses_report_backend_products_path, class: "nav-link ", title: 'Thống kê theo kho' %>
+
+        <li class="divider"><a><hr></a></li>
+
+        <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/inventory" && params[:action] == "report_category_diameter" %>">
+            <%= link_to "Tồn theo loại/đ.Kính", erp_ortho_k.report_category_diameter_backend_inventory_index_path, class: "nav-link ", title: 'Thống kê tồn kho theo Len-Đường kính' %>
         </li>
-        <li class="nav-item <%= "active" if params[:controller] == "" && params[:action] == "" %>">
-            <%= link_to "Len ngoài vùng", '', class: "nav-link ", title: 'Thống kê len ngoài vùng' %>
+        <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/inventory" && params[:action] == "report_product" %>">
+            <%= link_to "Tồn theo sản phẩm",
+                erp_ortho_k.report_product_backend_inventory_index_path,
+                class: "nav-link ",
+                title: 'Thống kê tồn kho theo sản phẩm'
+            %>
+        </li>
+        <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/inventory" && params[:action] == "report_central_area" %>">
+            <%= link_to "Tồn vùng T.Tâm",
+                erp_ortho_k.report_central_area_backend_inventory_index_path,
+                class: "nav-link ",
+                title: 'Thống kê tồn kho theo vùng trung tâm'
+            %>
+        </li>
+        <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/inventory" && params[:action] == "report_custom_area" %>">
+            <%= link_to "Thống kê theo vùng",
+                erp_ortho_k.report_custom_area_backend_inventory_index_path,
+                class: "nav-link ",
+                title: 'Thống kê tồn tùy chọn theo vùng'
+            %>
+        </li>
+        <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/inventory" && params[:action] == "report_outside_product" %>">
+            <%= link_to "Len ngoài bảng", erp_ortho_k.report_outside_product_backend_inventory_index_path, class: "nav-link ", title: 'Thống kê len bảng' %>
+        </li>
+        <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/inventory" && params[:action] == "report_warehouse" %>">
+            <%= link_to "Thống kê theo kho",
+                erp_ortho_k.report_warehouse_backend_inventory_index_path,
+                class: "nav-link ",
+                title: 'Thống kê tồn theo kho / loại sản phẩm'
+            %>
         </li>
     </ul>
 </li>

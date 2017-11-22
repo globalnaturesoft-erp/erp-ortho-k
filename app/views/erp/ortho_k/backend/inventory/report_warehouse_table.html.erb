@@ -1,0 +1,49 @@
+  <h3 class="text-bold text-primary"><div>
+      <% if @warehouses.count > 0 %>
+        <%= @warehouses.map(&:name).join(' + ').html_safe %>
+      <% else %>
+        Tất cả kho
+      <% end %>
+    </div></h3>
+  <h5 class="mb-10">
+    <% if @period.present? %>
+      <strong><%= @period.name %></strong>
+    <% end %>
+    từ <strong><%= format_date(@from_date) %></strong>
+    đến <strong><%= format_date(@to_date) %></strong>
+  </h5>
+  <table class="table table-bordered table-advance order-column">
+    <tr>
+      <th class="text-left bg-primary">Loại hàng</th>
+      <% Erp::Products::State.all.each do |state| %>
+        <th class="text-center bg-primary" width="10%"><%= state.name %></th>
+      <% end %>
+      <th class="text-center bg-primary">Tổng tồn kho</th>
+    </tr>
+    <% @categories.each do |category| %>
+      <tr>
+        <td class="text-left text-nowrap"><%= category.name %></td>
+        <% Erp::Products::State.all.each do |state| %>
+          <% product_ids = ([-1] + @product_query.select('id').where(category_id: category.id)) %>
+          <% filters = @global_filters.clone.merge(product_id: product_ids, state: state) %>
+          <th class="text-center text-nowrap">
+            <%
+              end_params = filters.clone
+              end_params[:from_date] = nil
+            %>
+            <%= Erp::Products::Product.get_stock_real(end_params) %>
+          </th>
+        <% end %>
+
+        <% product_ids = ([-1] + @product_query.select('id').where(category_id: category.id)) %>
+        <% filters = @global_filters.clone.merge(product_id: product_ids) %>
+        <td class="text-center text-bold text-nowrap">
+          <%
+            end_params = filters.clone
+            end_params[:from_date] = nil
+          %>
+          <%= Erp::Products::Product.get_stock_real(end_params) %>
+        </td>
+      </tr>
+    <% end %>
+  </table>
