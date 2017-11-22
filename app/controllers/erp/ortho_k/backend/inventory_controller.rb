@@ -14,7 +14,7 @@ module Erp
           @global_filters = params.to_unsafe_hash[:global_filter]
 
           # if has period
-          if @global_filters[:period]
+          if @global_filters[:period].present?
             @period = Erp::Periods::Period.find(@global_filters[:period])
             @global_filters[:from_date] = @period.from_date
             @global_filters[:to_date] = @period.to_date
@@ -61,7 +61,7 @@ module Erp
           @global_filters = params.to_unsafe_hash[:global_filter]
 
           # if has period
-          if @global_filters[:period]
+          if @global_filters[:period].present?
             @period = Erp::Periods::Period.find(@global_filters[:period])
             @global_filters[:from_date] = @period.from_date
             @global_filters[:to_date] = @period.to_date
@@ -78,7 +78,7 @@ module Erp
           @product_query = Erp::Products::Product.where(category_id: category_ids)
 
           # products
-          @products = @product_query.paginate(:page => params[:page], :per_page => 50)
+          @products = @product_query.paginate(:page => params[:page], :per_page => 25)
         end
 
 
@@ -96,7 +96,7 @@ module Erp
           @global_filters = params.to_unsafe_hash[:global_filter]
 
           # if has period
-          if @global_filters[:period]
+          if @global_filters[:period].present?
             @period = Erp::Periods::Period.find(@global_filters[:period])
             @global_filters[:from_date] = @period.from_date
             @global_filters[:to_date] = @period.to_date
@@ -151,7 +151,7 @@ module Erp
           @global_filters = params.to_unsafe_hash[:global_filter]
 
           # if has period
-          if @global_filters[:period]
+          if @global_filters[:period].present?
             @period = Erp::Periods::Period.find(@global_filters[:period])
             @global_filters[:from_date] = @period.from_date
             @global_filters[:to_date] = @period.to_date
@@ -186,7 +186,7 @@ module Erp
           @global_filters = params.to_unsafe_hash[:global_filter]
 
           # if has period
-          if @global_filters[:period]
+          if @global_filters[:period].present?
             @period = Erp::Periods::Period.find(@global_filters[:period])
             @global_filters[:from_date] = @period.from_date
             @global_filters[:to_date] = @period.to_date
@@ -263,7 +263,7 @@ module Erp
           @global_filters = params.to_unsafe_hash[:global_filter]
 
           # if has period
-          if @global_filters[:period]
+          if @global_filters[:period].present?
             @period = Erp::Periods::Period.find(@global_filters[:period])
             @global_filters[:from_date] = @period.from_date
             @global_filters[:to_date] = @period.to_date

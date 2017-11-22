@@ -1,3 +1,11 @@
+<% if @categories.empty? or @diameters.empty? %>
+  <div class="alert alert-warning">
+      <p>Vui lòng chọn các tham số bắt buộc:
+          <br>- <strong>Loại hàng</strong>
+          <br>- <strong>Đường kính</strong>
+      </p>
+  </div>
+<% else %>
   <h4 class="mb-10">
     Báo cáo tồn kho
     <% if @period.present? %>
@@ -192,4 +200,4 @@
     <% end %>
 
   </table>
-
+<% end %>

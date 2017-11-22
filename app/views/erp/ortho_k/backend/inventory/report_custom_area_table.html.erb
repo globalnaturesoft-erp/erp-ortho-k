@@ -1,3 +1,10 @@
+<% if @letter_array.empty? %>
+  <div class="alert alert-warning">
+      <p>Vui lòng chọn các tham số bắt buộc:
+          <br>- <strong>Vùng len</strong>
+      </p>
+  </div>
+<% else %>
   <h4 class="mb-10">
     Báo cáo tồn kho
     <% if @period.present? %>
@@ -97,3 +104,4 @@
 
     <% end %>
   </table>
+<% end %>

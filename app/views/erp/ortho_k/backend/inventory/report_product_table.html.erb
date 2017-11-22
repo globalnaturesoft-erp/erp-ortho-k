@@ -1,3 +1,10 @@
+<% if @categories.empty? %>
+  <div class="alert alert-warning">
+      <p>Vui lòng chọn các tham số bắt buộc:
+          <br>- <strong>Loại hàng</strong>
+      </p>
+  </div>
+<% else %>
   <h4 class="mb-10">
     Báo cáo tồn kho
     <% if @period.present? %>
@@ -154,4 +161,5 @@
   </table>
 
   <%= erp_datalist_pagination(@products) %>
+<% end %>
 

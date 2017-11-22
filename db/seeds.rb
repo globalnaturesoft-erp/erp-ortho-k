@@ -2,7 +2,7 @@
 puts "Create default user group"
 Erp::UserGroup.destroy_all
 user_group = Erp::UserGroup.create(
-  name: "Admin"
+  name: "Quản trị"
 )
 
 # Default user
@@ -12,7 +12,7 @@ user = Erp::User.create(
   user_group_id: user_group.id,
   email: "admin@orthok.com",
   password: "aA456321@",
-  name: "Super Admin",
+  name: "Quản trị",
   backend_access: true,
   confirmed_at: Time.now-1.day,
   active: true
@@ -72,3 +72,7 @@ Erp::Products::Engine.load_seed
 # Default products
 puts "Create default payments"
 Erp::Payments::Engine.load_seed
+
+# Default periods
+puts "Create default periods 2017"
+Erp::Periods::Period.create_year_periods(2017)
