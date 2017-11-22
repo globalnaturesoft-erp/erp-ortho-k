@@ -13,6 +13,34 @@
     đến <strong><%= format_date(@to_date) %></strong>
   </h5>
   <table class="table table-bordered table-advance order-column">
+    
+    <tr>
+      <td class="text-right bg-grey text-nowrap">Tổng cộng</td>
+      <% Erp::Products::State.all.each do |state| %>
+        <% product_ids = @product_query.select('id') %>
+        <% product_ids = nil if product_ids.count == 0 %>
+        <% filters = @global_filters.clone.merge(product_id: product_ids, state: state) %>
+        <td class="text-center bg-grey text-bold text-nowrap">
+          <%
+            end_params = filters.clone
+            end_params[:from_date] = nil
+          %>
+          <%= Erp::Products::Product.get_stock_real(end_params) %>
+        </td>
+      <% end %>
+
+      <% product_ids = @product_query.select('id') %>
+      <% product_ids = nil if product_ids.count == 0 %>
+      <% filters = @global_filters.clone.merge(product_id: product_ids) %>
+      <td class="text-center bg-grey text-bold text-nowrap">
+        <%
+          end_params = filters.clone
+          end_params[:from_date] = nil
+        %>
+        <%= Erp::Products::Product.get_stock_real(end_params) %>
+      </td>
+    </tr>
+    
     <tr>
       <th class="text-left bg-primary">Loại hàng</th>
       <% Erp::Products::State.all.each do |state| %>
@@ -24,7 +52,8 @@
       <tr>
         <td class="text-left text-nowrap"><%= category.name %></td>
         <% Erp::Products::State.all.each do |state| %>
-          <% product_ids = ([-1] + @product_query.select('id').where(category_id: category.id)) %>
+          <% product_ids = @product_query.select('id').where(category_id: category.id) %>
+          <% product_ids = nil if product_ids.count == 0 %>
           <% filters = @global_filters.clone.merge(product_id: product_ids, state: state) %>
           <th class="text-center text-nowrap">
             <%
@@ -35,7 +64,8 @@
           </th>
         <% end %>
 
-        <% product_ids = ([-1] + @product_query.select('id').where(category_id: category.id)) %>
+        <% product_ids = @product_query.select('id').where(category_id: category.id) %>
+        <% product_ids = nil if product_ids.count == 0 %>
         <% filters = @global_filters.clone.merge(product_id: product_ids) %>
         <td class="text-center text-bold text-nowrap">
           <%

@@ -1,5 +1,6 @@
 <table class="table table-bordered table-advance order-column" id="">
-    <% product_ids = ([-1] + @products_query.select('id')) %>
+    <% product_ids = @products_query.select('id') %>
+    <% product_ids = nil if product_ids.count == 0 %>
     <tr>
         <td class="text-right text-nowrap" colspan="2">Tổng cộng</td>
         <td class="text-center stock-num text-bold bg-warning">
@@ -177,10 +178,11 @@
         <% rowspan = @properties_values.count %>
         <% rowspan += 1 if @group_by_category == 'all' %>
         <% @properties_values.each_with_index do |property_value,index| %>
-            <% product_ids = ([-1] + Erp::Products::Product.select('id')
+            <% product_ids = Erp::Products::Product.select('id')
                 .where("erp_products_products.cache_properties LIKE '%[\"#{property_value.id}\",%'")
                 .where(category_id: category.id)
-            ) %>
+            %>
+            <% product_ids = nil if product_ids.count == 0 %>
             <tr>
                 <% if index == 0 %>
                     <td class="text-left text-bold" rowspan="<%= rowspan %>"><%= category.name %></td>
@@ -338,9 +340,10 @@
                 </td>
             </tr>
         <% end %>
-        <% product_ids = ([-1] + Erp::Products::Product.select('id')
+        <% product_ids = Erp::Products::Product.select('id')
             .where(category_id: category.id)
-        ) %>
+        %>
+        <% product_ids = nil if product_ids.count == 0 %>
 
         <% if @properties_values.count > 1 %>
             <tr>

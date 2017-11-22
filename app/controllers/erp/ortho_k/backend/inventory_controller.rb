@@ -165,8 +165,8 @@ module Erp
           @categories = (category_ids.empty? ? Erp::Products::Category.all : Erp::Products::Category.where(id: category_ids))
 
           # product query
-          @product_query = Erp::Products::Product.all
-
+          @product_query = Erp::Products::Product.where(category_id: category_ids)
+          
           # warehouses
           @warehouses = Erp::Warehouses::Warehouse.where(id: @global_filters["warehouse_ids"])
         end

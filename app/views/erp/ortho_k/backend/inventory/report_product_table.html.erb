@@ -14,7 +14,8 @@
     đến <strong><%= format_date(@to_date) %></strong>
   </h4>
   <table class="table table-bordered table-advance order-column">
-    <% product_ids = ([-1] + @product_query.select('id')) %>
+    <% product_ids = @product_query.select('id') %>
+    <% product_ids = nil if product_ids.count == 0 %>
     <% filters = @global_filters.clone.merge({product_id: product_ids}) %>
     <tr>
       <th colspan="2" class="text-right bg-grey">Tổng cộng</th>

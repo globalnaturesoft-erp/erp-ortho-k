@@ -50,8 +50,9 @@
               end
             end
           end
-          product_ids = ([-1] + query.select('id'))
+          product_ids = query.select('id')
         %>
+        <% product_ids = nil if product_ids.count == 0 %>
         <% filters = @global_filters.clone.merge({product_id: product_ids}) %>
 
         <% if index == 0 %>

@@ -3,7 +3,8 @@
         <%= render 'erp/ortho_k/backend/products/delivery_report_table/default' %>
     <% elsif @group_by_property.nil? %>
         <table class="table table-bordered table-advance order-column" id="">
-            <% product_ids = ([-1] + @products_query.select('id')) %>
+            <% product_ids = @products_query.select('id') %>
+            <% product_ids = nil if product_ids.count == 0 %>
             <tr>
                 <td class="text-right text-nowrap">Tổng cộng</td>
                 <td class="text-center stock-num text-bold bg-warning">
@@ -177,7 +178,8 @@
                 <th class="bg-primary text-center" width="7%">Tổng</th>
             </tr>
             <% @categories.each_with_index do |category,index| %>
-                <% product_ids = ([-1] + Erp::Products::Product.select('id').where("erp_products_products.category_id = ?", category.id)) %>
+                <% product_ids = Erp::Products::Product.select('id').where("erp_products_products.category_id = ?", category.id) %>
+                <% product_ids = nil if product_ids.count == 0 %>
                 <tr>
                     <td class="text-left"><%= category.name %></td>
 
