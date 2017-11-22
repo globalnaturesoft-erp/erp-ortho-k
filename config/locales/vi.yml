@@ -65,8 +65,8 @@ vi:
     sales:
       engine_sales: 'Bán hàng'
       sales:
-        controller_sales_orders: 'Đơn bán hàng'
-        sales_orders:
+        controller_orders: 'Đơn bán hàng'
+        orders:
           index: 'Xem đơn hàng'
           create: 'Tạo mới'
           update: 'Cập nhật'
@@ -190,10 +190,12 @@ vi:
         inventory:
           matrix: 'Báo cáo tồn kho (matrix)'
           delivery: 'Báo cáo xuất-nhập-tồn'
-          delivery_detail: 'Sổ chi tiết xuất - nhập kho'
-          delivery_by_category_diameter: 'Thống kê tồn kho'
+          delivery_detail: 'Chi tiết xuất/nhập'
+          category_diameter: 'Tồn theo loại/đường kính'
+          product: 'Tồn theo sản phẩm'
+          central_area: 'Tồn vùng trung tâm'
+          outside_product: 'Len ngoài bảng'
           warehouse: 'Thống kê theo kho'
-          other_products: 'Len ngoài vùng'
         sales:
           sales: 'Báo cáo bán hàng'
           sales_details: 'Sổ chi tiết bán hàng'

@@ -23,13 +23,25 @@
                         <span class="title">Trang chính</span>
                     </a>
                 </li>
-                <%= render "layouts/erp/backend/menu/sales" %>
-                <%= render "layouts/erp/backend/menu/inventory" %>
-                <%= render "layouts/erp/backend/menu/accountant" %>
+                <% if can? :menu_sales, nil %>
+                    <%= render "layouts/erp/backend/menu/sales" %>
+                <% end %>
+                <% if can? :menu_inventory, nil %>
+                    <%= render "layouts/erp/backend/menu/inventory" %>
+                <% end %>
+                <% if can? :menu_accounting, nil %>
+                    <%= render "layouts/erp/backend/menu/accountant" %>
+                <% end %>
+                <% if can? :menu_contact, nil %>
+                    <%= render "layouts/erp/backend/menu/contact" %>
+                <% end %>
                 <%= render "layouts/erp/backend/menu/report" %>
-                <%= render "layouts/erp/backend/menu/contact" %>
-                <%= render "layouts/erp/backend/menu/option" %>
-                <%= render "layouts/erp/backend/menu/system" %>
+                <% if can? :menu_option, nil %>
+                    <%= render "layouts/erp/backend/menu/option" %>
+                <% end %>
+                <% if can? :menu_system, nil %>
+                    <%= render "layouts/erp/backend/menu/system" %>
+                <% end %>
                 <%= render "layouts/erp/backend/menu/support" %>
             </ul>
             <!-- END RESPONSIVE MENU FOR HORIZONTAL & SIDEBAR MENU -->
