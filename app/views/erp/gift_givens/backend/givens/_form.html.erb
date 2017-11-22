@@ -9,7 +9,9 @@
                             value: given.code,
                             label: t('.code'),
                             help: t('.help_given_code'),
-                            placeholder: t('.placeholder_given_code')
+                            placeholder: t('.placeholder_given_code'),
+                            required: !given.id.nil?,
+                            errors: given.errors.full_messages_for(:code)
                         }) %>
                         <%= erp_form_control('date', {
                             label: t('.given_date'),
@@ -78,9 +80,7 @@
                                                 container_selector: '.edit_product',
                                             }
                                         }),
-                                        thead: "<th>#{t('.product_code')}</th>
-                                                <th>#{t('.diameter')}</th>
-                                                <th>#{t('.category')}</th>
+                                        thead: "<th>#{t('.product_name')}</th>
                                                 <th class='text-right'>#{t('.quantity')}</th>
                                                 <th class='text-right'>#{t('.warehouse')}</th>
                                                 <th>#{t('.state')}</th>
