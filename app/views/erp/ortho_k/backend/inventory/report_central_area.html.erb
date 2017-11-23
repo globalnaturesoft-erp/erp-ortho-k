@@ -6,6 +6,13 @@
     <i class="fa fa-archive"></i> Thống kê Vùng trung tâm
 <% end %>
 
+<% content_for :page_toolbar do %>
+    <%= erp_component('button/create', {
+        text: 'Cấu hình phân vùng',
+        href: erp_ortho_k.backend_setting_path
+    }) %>
+<% end %>
+
 <% content_for :global_filter do %>
     <div class="row">
         <div class="col-md-3">
