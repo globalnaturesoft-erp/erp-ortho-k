@@ -87,6 +87,19 @@ Erp::OrthoK::Engine.routes.draw do
 					post 'report_outside_product_table'
 				end
 			end
+			
+			resources :sales do
+				collection do
+					get 'report_sell_and_return'
+					post 'report_sell_and_return_table'
+					get 'report_sales_details'
+					post 'report_sales_details_table'
+					get 'report_product_return'
+					post 'report_product_return_table'
+					get 'report_new_patient'
+					post 'report_new_patient_table'
+				end
+			end
 
 			get 'setting', :to => "setting#index"
 			post 'setting', :to => "setting#index"

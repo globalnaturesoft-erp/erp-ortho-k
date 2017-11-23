@@ -1,0 +1,47 @@
+<% if params.to_unsafe_hash[:global_filter][:from_date].present? ||
+      params.to_unsafe_hash[:global_filter][:to_date].present? ||
+      params.to_unsafe_hash[:global_filter][:period].present? %>
+    
+    <div class="custom-show text-center">
+        <h4 class="font-blue-madison bold uppercase mb-15">
+            Danh sách khách hàng trả hàng <br>
+            <span class="font-sm">(từ 01/11/2017 đến 30/11/2017)</span>
+        </h4>
+    </div>
+    
+    <table class="table table-bordered order-column">
+        <tr>
+            <th width="5%" rowspan="2" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">STT</th>
+            <th rowspan="2" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Khách hàng</th>
+            <th colspan="3" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap uppercase">Len</th>
+            <th rowspan="2" width="10%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Hộp gỗ</th>
+            <th rowspan="2" width="20%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Ghi chú</th>
+        </tr>
+        <tr>
+            <th width="10%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Trả + Đổi</th>
+            <th width="10%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Vỡ</th>
+            <th width="10%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Sau 1 năm</th>
+        </tr>
+        <tr>
+            <td class="bg-green-jungle bg-font-green-jungle text-center uppercase bold" colspan="2"><%= 'Tổng cộng' %></td>
+            <td class="bg-green-jungle bg-font-green-jungle text-center bold"><%= rand(0..10) %></td>
+            <td class="bg-green-jungle bg-font-green-jungle text-center bold"><%= rand(0..10) %></td>
+            <td class="bg-green-jungle bg-font-green-jungle text-center bold"><%= rand(0..10) %></td>
+            <td class="bg-green-jungle bg-font-green-jungle text-center bold"><%= rand(0..10) %></td>
+            <td class="bg-green-jungle bg-font-green-jungle"></td>
+        </tr>
+        <% @customers.each_with_index do |customer,index| %>
+            <tr>
+                <td class="text-center text-center"><%= index+1 %></td>
+                <td class="text-left bold"><%= customer.contact_name %></td>
+                <td class="text-center font-yellow-gold"><%= rand(0..10) %></td>
+                <td class="text-center font-yellow-gold"><%= rand(0..10) %></td>
+                <td class="text-center font-yellow-gold"><%= rand(1..10) %></td>
+                <td class="text-center font-yellow-gold"><%= rand(0..10) %></td>
+                <td class="text-justify"><%= '' %></td>
+            </tr>
+        <% end %>
+    </table>
+<% else %>
+    <div class="alert alert-warning"><%= t('.please_select_filter') %></div>
+<% end %>
