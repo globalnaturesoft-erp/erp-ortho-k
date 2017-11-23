@@ -24,37 +24,29 @@
                             <table class="table table-bordered table-striped flip-content">
                                 <thead class="flip-content">
                                     <tr>
-                                        <th width="20%"  class="bg-green-jungle bg-font-green-jungle text-center">Mã</th>
-                                        <th class="bg-green-jungle bg-font-green-jungle text-nowrap">Đường kính</th>
-                                        <th class="bg-green-jungle bg-font-green-jungle text-nowrap">Loại</th>
-                                        <th class="bg-green-jungle bg-font-green-jungle numeric text-center"><%= t('.quantity') %></th>
-                                        <th class="bg-green-jungle bg-font-green-jungle numeric text-center">Đã trả</th>
-                                        <th class="bg-green-jungle bg-font-green-jungle numeric text-center">Còn lại</th>
-                                        <th class="bg-green-jungle bg-font-green-jungle text-left">Đơn vị tính</th>
-                                        <th class="bg-green-jungle bg-font-green-jungle text-left">Trạng thái sản phẩm</th>
+                                        <th width="35%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Tên sản phẩm</th>
+                                        <th width="10%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Đơn vị tính</th>
+                                        <th width="20%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Trạng thái sản phẩm</th>
+                                        <th class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap"><%= t('.quantity') %></th>
+                                        <th class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Đã trả</th>
+                                        <th class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Còn lại</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td colspan="3" class="bg-red-intense bg-font-red-intense text-nowrap text-center sbold">TỔNG CỘNG</td>
-                                        <td class="bg-red-intense bg-font-red-intense numeric text-center sbold"><%= @consignment.total_quantity %></td>
-                                        <td class="bg-red-intense bg-font-red-intense numeric text-center sbold"><%= @consignment.total_returned_quantity %></td>
-                                        <td class="bg-red-intense bg-font-red-intense numeric text-center sbold"><%= @consignment.total_remain_quantity %></td>
-                                        <td class="bg-red-intense bg-font-red-intense numeric text-center"></td>
-                                        <td class="bg-red-intense bg-font-red-intense numeric text-center"></td>
+                                        <td colspan="3" class="bg-green-jungle bg-font-green-jungle text-center bold">TỔNG CỘNG</td>
+                                        <td class="bg-green-jungle bg-font-green-jungle text-center bold"><%= @consignment.total_quantity %></td>
+                                        <td class="bg-green-jungle bg-font-green-jungle text-center bold"><%= @consignment.total_returned_quantity %></td>
+                                        <td class="bg-green-jungle bg-font-green-jungle text-center bold"><%= @consignment.total_remain_quantity %></td>
                                     </tr>
                                     <% @consignment.consignment_details.each do |consignment_detail| %>
                                     <tr>
-                                        <td class="text-center">
-                                            <strong><%= link_to consignment_detail.get_product_code, erp_products.edit_backend_product_path(consignment_detail.product), target: '_blank', title: consignment_detail.get_product_code, class: "font-yellow-gold sbold" %></strong>
-                                        </td>
-                                        <td class="text-left"><%= consignment_detail.product.get_diameter %></td>
-                                        <td class="text-left"><%= consignment_detail.product.category_name %></td>
-                                        <td class="numeric text-center"><strong><%= consignment_detail.quantity %></strong></td>
-                                        <td class="numeric text-center"><strong><%= consignment_detail.returned_quantity %></strong></td>
-                                        <td class="numeric text-center"><strong><%= consignment_detail.remain_quantity %></strong></td>
+                                        <td class="text-left bold"><%= consignment_detail.get_product_name %></td>
                                         <td class="text-left"><%= consignment_detail.get_product_unit %></td>
                                         <td class="text-left"><%= consignment_detail.state_name %></td>
+                                        <td class="text-center font-yellow-gold"><%= consignment_detail.quantity %></td>
+                                        <td class="text-center font-yellow-gold"><%= consignment_detail.returned_quantity %></td>
+                                        <td class="text-center font-yellow-gold"><%= consignment_detail.remain_quantity %></td>
                                     </tr>
                                     <% end %>
                                 </tbody>
@@ -67,33 +59,48 @@
             <div class="tab-pane" id="tab_5_2">
                 <div class="portlet grey-cascade box">
                     <div class="portlet-body">
-                        <% @consignment.cs_returns.each do |cs_return| %>
                         <div class="table-responsive">
                             <table class="table table-bordered table-striped flip-content">
                                 <thead class="flip-content">
                                     <tr>
-                                        <th width="20%" class="bg-green-jungle bg-font-green-jungle text-center"><%= t('.return_code') %></th>
-                                        <th class="bg-green-jungle bg-font-green-jungle text-nowrap"><%= t('.contact_return') %></th>
-                                        <th class="bg-green-jungle bg-font-green-jungle text-nowrap"><%= t('.date_return') %></th>
-                                        <th class="bg-green-jungle bg-font-green-jungle text-center"><%= t('.quantity') %></th>
-                                        <th width="30%" class="bg-green-jungle bg-font-green-jungle text-left"><%= t('.note') %></th>
+                                        <th width="20%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap"><%= t('.return_code') %></th>
+                                        <th class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap"><%= t('.contact_return') %></th>
+                                        <th class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap"><%= t('.date_return') %></th>
+                                        <th class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap"><%= t('.quantity') %></th>
+                                        <th width="20%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap"><%= t('.note') %></th>
+                                        <th width="10%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap"><%= t('.actions') %></th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr  class="odd gradeX has-child-table" data-url="<%= erp_consignments.return_details_backend_cs_returns_path(id: cs_return.id) %>">
-                                        <td width="15%" class="text-center">
-                                            <i class="fa fa-plus expand tr-expand-button child-tr-expand-button"></i>
-                                            <strong><%= link_to '#' + cs_return.code, "", target: '_blank', title: cs_return.code, class: "font-red-thunderbird sbold" %></strong>
-                                        </td>
-                                        <td class="text-left"><%= cs_return.contact_name %></td>
-                                        <td class="text-left"><%= format_date(cs_return.return_date) %></td>
-                                        <td class="text-cetner"><strong><%= cs_return.total_quantity %></strong></td>
-                                        <td class="text-left"><%= cs_return.note.html_safe if cs_return.note.present? %></td>
-                                    </tr>
+                                    <% @consignment.cs_returns.each do |cs_return| %>
+                                        <tr class="odd gradeX has-child-table" data-url="<%= erp_consignments.return_details_backend_cs_returns_path(id: cs_return.id) %>">
+                                            <td width="15%" class="text-center">
+                                                <i class="fa fa-plus expand tr-expand-button child-tr-expand-button"></i>
+                                                <strong class="font-green-jungle sbold"><%= cs_return.code %></strong>
+                                            </td>
+                                            <td class="text-left"><%= cs_return.contact_name %></td>
+                                            <td class="text-left"><%= format_date(cs_return.return_date) %></td>
+                                            <td class="text-cetner"><strong><%= cs_return.total_quantity %></strong></td>
+                                            <td class="text-left"><%= cs_return.note.html_safe if cs_return.note.present? %></td>
+                                            <td>
+                                                <%= erp_component('button/edit', {
+                                                    href: erp_consignments.edit_backend_cs_return_path(cs_return),
+                                                    class: 'btn-sm btn-noborder',
+                                                    help: 'Chỉnh sửa'
+                                                }) %>
+                                                <%= erp_component('button/view', {
+                                                    href: erp_consignments.backend_cs_return_path(cs_return),
+                                                    help: 'Xem và In',
+                                                    class: 'btn-sm btn-noborder',
+                                                    icon: 'fa fa-print',
+                                                    target: '_blank'
+                                                }) %>
+                                            </td>
+                                        </tr>
+                                    <% end %>
                                 </tbody>
                             </table>
                         </div>
-                        <% end %>
                     </div>
                 </div>
             </div>

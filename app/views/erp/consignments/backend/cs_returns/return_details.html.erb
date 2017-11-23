@@ -1,29 +1,23 @@
 <table class="table table-bordered table-striped flip-content table-child-content">
     <thead class="flip-content">
         <tr>
-            <th width="20%" class="bg-yellow bg-font-yellow text-nowrap text-center">Mã</th>
-            <th class="bg-yellow bg-font-yellow text-nowrap text-left">Đường kính</th>
-            <th class="bg-yellow bg-font-yellow text-nowrap text-left">Loại</th>
-            <th class="bg-yellow bg-font-yellow text-nowrap numeric text-center"><%= t('.quantity') %></th>
-            <th class="bg-yellow bg-font-yellow text-nowrap text-left">Đơn vị tính</th>
-            <th class="bg-yellow bg-font-yellow text-nowrap text-left">Trạng thái sản phẩm</th>
+            <th width="30%" class="bg-green-dark bg-font-yellow text-nowrap text-center">Tên sản phẩm</th>
+            <th class="bg-green-dark bg-font-yellow text-nowrap text-center">Đơn vị tính</th>
+            <th width="20%" class="bg-green-dark bg-font-yellow text-nowrap text-center">Trạng thái sản phẩm</th>
+            <th class="bg-green-dark bg-font-yellow text-nowrap numeric text-center"><%= t('.quantity') %></th>
         </tr>        
     </thead>
     <tbody>
         <tr>
-            <td colspan="3" class="bg-red-intense bg-font-red-intense text-nowrap text-center sbold">TỔNG CỘNG</td>
-            <td class="bg-red-intense bg-font-red-intense numeric text-center sbold"></td>
-            <td class="bg-red-intense bg-font-red-intense numeric text-center"></td>
-            <td class="bg-red-intense bg-font-red-intense numeric text-center"></td>
+            <td colspan="3" class="bg-grey-steel bg-font-grey-steel text-nowrap text-center sbold">TỔNG CỘNG</td>
+            <td class="bg-grey-steel bg-font-grey-steel numeric text-center sbold"><%= @cs_return.total_quantity %></td>
         </tr>
         <% @cs_return.return_details.each do |return_detail| %>
         <tr>
-            <td class="text-center"><%= link_to return_detail.get_product_code, erp_products.edit_backend_product_path(return_detail.consignment_detail.product), target: "_blank", title: return_detail.get_product_code, class: "font-yellow-gold sbold" %></td>
-            <td class="text-left"><%= return_detail.consignment_detail.product.get_diameter %></td>
-            <td class="text-left"><%= return_detail.consignment_detail.product.category_name %></td>
-            <td class="numeric text-center"><strong><%= return_detail.quantity %></strong></td>
+            <td class="text-left"><%= return_detail.consignment_detail.get_product_name %></td>
             <td class="text-left"><%= return_detail.get_product_unit %></td>
             <td class="text-left"><%= return_detail.state_name %></td>
+            <td class="text-center"><%= return_detail.quantity %></td>
         </tr>
         <% end %>
     </tbody>

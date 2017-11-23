@@ -215,7 +215,7 @@ Erp::Products::Product.class_eval do
 
     # Consignment: Hàng ký gửi cho mượn
     Erp::Consignments::ConsignmentDetail.joins(:consignment)
-    .where(erp_consignments_consignments: {status: Erp::Consignments::Consignment::CONSIGNMENT_STATUS_DELIVERED}).limit(2)
+    .where(erp_consignments_consignments: {status: Erp::Consignments::Consignment::STATUS_DELIVERED}).limit(2)
     .each do |csm_detail|
       qty = -csm_detail.quantity
       result << {
@@ -239,7 +239,7 @@ Erp::Products::Product.class_eval do
 
     # Consignment: Hàng ký gửi trả lại
     Erp::Consignments::ReturnDetail.joins(:cs_return)
-    .where(erp_consignments_cs_returns: {status: Erp::Consignments::CsReturn::CS_RETURN_STATUS_DELIVERED}).limit(5)
+    .where(erp_consignments_cs_returns: {status: Erp::Consignments::CsReturn::STATUS_DELIVERED}).limit(5)
     .each do |return_detail|
       qty = +return_detail.quantity
       result << {
