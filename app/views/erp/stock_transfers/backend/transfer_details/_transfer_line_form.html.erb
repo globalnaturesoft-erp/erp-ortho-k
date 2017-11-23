@@ -17,16 +17,7 @@
         class: "line_quantity inline"
     }) %>
 </td>
-<td class="text-center">
-    <span class="line_stock_source text-semibold"><%= from %></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <i class="fa fa-arrow-right"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <span class="line_stock_source_after text-semibold"></span>
-</td>
-<td class="text-center">
-    <span class="line_stock_destination text-semibold"><%= to %></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <i class="fa fa-arrow-right"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <span class="line_stock_destination_after text-semibold"></span>
-</td>
+
 <td width='20%'>
     <%= erp_form_control("dataselect", {
         name: 'transfer[transfer_details_attributes][' + uid + '][state_id]',

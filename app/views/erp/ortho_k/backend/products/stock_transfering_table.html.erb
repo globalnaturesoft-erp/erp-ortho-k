@@ -1,4 +1,8 @@
-<% if @from_warehouse.present? and @to_warehouse.present? and @transfer_quantity.present? and @condition_value.present? %>
+<% if @products.count == 0 %>
+    <div class="alert alert-warning">
+        <p>Không tìm thấy hàng cần chuyển kho</p>
+    </div>
+<% elsif @from_warehouse.present? and @to_warehouse.present? and @transfer_quantity.present? and @condition_value.present? and @state.present? %>
     <table class="table table-bordered table-advance order-column" id="">
         <tr>
             <th class="bg-grey text-center" width="1%"><%= t('.number') %></th>
@@ -11,12 +15,20 @@
         <% @products.each_with_index do |product,index| %>
             <%
                 if @condition == 'from_redundant'
-                    from = rand(@condition_value.to_i..(@condition_value.to_i+4))
-                    to = rand(0..2)
+                    from = Erp::Products::CacheStock.where(product_id: product.id)
+                        .where(warehouse_id: @from_warehouse.id)
+                        .where(state_id: @state.id).first.stock
+                    to = Erp::Products::CacheStock.where(product_id: product.id)
+                        .where(warehouse_id: @to_warehouse.id)
+                        .where(state_id: @state.id).first.stock
                     transfer = from - @condition_value.to_i
                 else
-                    to = rand(0..@condition_value.to_i)
-                    from = rand(1..6)
+                    to = Erp::Products::CacheStock.where(product_id: product.id)
+                        .where(warehouse_id: @to_warehouse.id)
+                        .where(state_id: @state.id).first.stock
+                    from = Erp::Products::CacheStock.where(product_id: product.id)
+                        .where(warehouse_id: @from_warehouse.id)
+                        .where(state_id: @state.id).first.stock
                     transfer = from > @transfer_quantity.to_i ? @transfer_quantity.to_i : from
                 end
             %>
@@ -34,28 +46,12 @@
             </tr>
         <% end %>
     </table>
-    <h3 class="mt-20">Báo cáo chung</h3>
-    <div class="portlet m-grid m-grid-demo">
-        <div class="m-grid-row">
-            <div class="m-grid-col m-grid-col-middle m-grid-col-center">
-                <label>Tổng nhập</label><br/>
-                <strong><%= rand(1200..5000) %></strong>
-            </div>
-            <div class="m-grid-col m-grid-col-middle m-grid-col-center">
-                <label>Số lượng Vùng rìa</label><br/>
-                <strong><%= rand(600..2500) %></strong>
-            </div>
-            <div class="m-grid-col m-grid-col-middle m-grid-col-center">
-                <label>Số lượng Vùng Trung Tâm</label><br/>
-                <strong><%= rand(600..2500) %></strong>
-            </div>
-        </div>
-    </div>
 <% else %>
     <div class="alert alert-warning">
         <p>Vui lòng chọn các tham số bắt buộc:
             <br>- <strong>Kho xuất</strong>
             <br>- <strong>Kho nhập</strong>
+            <br>- <strong>Trạng thái</strong>
             <br>- <strong>Điều kiện, tham số chuyển kho</strong>
             <br>- <strong>Số lượng chyuển</strong>
         </p>

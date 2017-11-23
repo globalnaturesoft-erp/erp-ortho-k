@@ -32,7 +32,20 @@
         </div>
         <div class="col-md-3">
             <%= erp_form_control("dataselect", {
-                name: 'category',
+                name: 'state',
+                value: '',
+                text: '',
+                label: 'Tình trạng',
+                placeholder: 'Tất cả tình trạng',
+                url: erp_products.dataselect_backend_states_path(format: 'json'),
+                required: true
+            }) %>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <%= erp_form_control("dataselect", {
+                name: 'categories',
                 value: '',
                 text: '',
                 multiple: true,
@@ -44,7 +57,7 @@
         <div class="col-md-3">
             <% diameter = Erp::Products::Property.where(name: "Đường kính").first %>
             <%= erp_form_control("dataselect", {
-                name: 'diameter',
+                name: 'diameters',
                 value: '',
                 text: '',
                 label: Erp::Products::Property.where(name: "Đường kính").first().name,
@@ -54,9 +67,35 @@
                 multiple: true
             }) %>
         </div>
+        <div class="col-md-3">
+            <% letter = Erp::Products::Property.where(name: "Chữ").first %>
+            <%= erp_form_control("dataselect", {
+                name: 'letters',
+                value: '',
+                text: '',
+                label: 'Chữ',
+                placeholder: letter.name,
+                url: erp_products.dataselect_backend_properties_values_path(format: 'json', property_id: letter.id),
+                include_blank: 'Tất cả chữ',
+                multiple: true
+            }) %>
+        </div>
+        <div class="col-md-3">
+            <% number = Erp::Products::Property.where(name: "Số").first %>
+            <%= erp_form_control("dataselect", {
+                name: 'numbers',
+                value: '',
+                text: '',
+                label: 'Số',
+                placeholder: number.name,
+                url: erp_products.dataselect_backend_properties_values_path(format: 'json', property_id: number.id),
+                include_blank: 'Tất cả số',
+                multiple: true
+            }) %>
+        </div>
     </div>
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-3 transfer-condition">
             <%= erp_form_control("select", {
                 name: 'condition',
                 value: '1',
@@ -64,13 +103,13 @@
                 label: t('.condition'),
                 placeholder: t('.choose_condition'),
                 options: [
-                    {text: 'Kho xuất dư hàng', value: 'from_redundant'},
                     {text: 'Kho nhập thiếu hàng', value: 'to_required'},
+                    {text: 'Kho xuất dư hàng', value: 'from_redundant'},
                 ],
                 required: true
             }) %>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-3 transfer-condition-value">
             <%= erp_form_control("text", {
                 name: 'condition_value',
                 value: '1',
@@ -80,7 +119,7 @@
                 required: true
             }) %>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-3 transfer-quantity">
             <%= erp_form_control("text", {
                 name: 'transfer_quantity',
                 value: '1',
@@ -102,22 +141,6 @@
 <%= erp_datalist(
     url: erp_ortho_k.stock_transfering_table_backend_products_path,
     sortable: true,
-    keywords: [
-        {
-            text: t('.name'), name: 'erp_products_products.name'
-        },
-    ],
-    filters: [
-        {
-            text: t('.state_normal'), name: 'state_normal', value: true, checked: true
-        },
-        {
-            text: t('.state_scratched'), name: 'state_scratched', value: true, checked: false
-        },
-        {
-            text: t('.state_broken'), name: 'state_broken', value: true, checked: false
-        },
-    ],
     columns: [
     ],
     header: 'dddddd'
