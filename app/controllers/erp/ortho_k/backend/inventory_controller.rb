@@ -74,8 +74,66 @@ module Erp
           category_ids = @global_filters[:categories].present? ? @global_filters[:categories] : nil
           @categories = Erp::Products::Category.where(id: category_ids)
 
+          # get diameters
+          diameter_ids = @global_filters[:diameters].present? ? @global_filters[:diameters] : nil
+          @diameters = Erp::Products::PropertiesValue.where(id: diameter_ids)
+
+          # get diameters
+          letter_ids = @global_filters[:letters].present? ? @global_filters[:letters] : nil
+          @letters = Erp::Products::PropertiesValue.where(id: letter_ids)
+
+          # get numbers
+          number_ids = @global_filters[:numbers].present? ? @global_filters[:numbers] : nil
+          @numbers = Erp::Products::PropertiesValue.where(id: number_ids)
+
+
           # product query
           @product_query = Erp::Products::Product.where(category_id: category_ids)
+          # filter by diameters
+          if diameter_ids.present?
+            if !diameter_ids.kind_of?(Array)
+              @product_query = @product_query.where("erp_products_products.cache_properties LIKE '%[\"#{diameter_ids}\",%'")
+            else
+              diameter_ids = (diameter_ids.reject { |c| c.empty? })
+              if !diameter_ids.empty?
+                qs = []
+                diameter_ids.each do |x|
+                  qs << "(erp_products_products.cache_properties LIKE '%[\"#{x}\",%')"
+                end
+                @product_query = @product_query.where("(#{qs.join(" OR ")})")
+              end
+            end
+          end
+          # filter by letters
+          if letter_ids.present?
+            if !letter_ids.kind_of?(Array)
+              @product_query = @product_query.where("erp_products_products.cache_properties LIKE '%[\"#{letter_ids}\",%'")
+            else
+              letter_ids = (letter_ids.reject { |c| c.empty? })
+              if !letter_ids.empty?
+                qs = []
+                letter_ids.each do |x|
+                  qs << "(erp_products_products.cache_properties LIKE '%[\"#{x}\",%')"
+                end
+                @product_query = @product_query.where("(#{qs.join(" OR ")})")
+              end
+            end
+          end
+          # filter by numbers
+          if number_ids.present?
+            if !number_ids.kind_of?(Array)
+              @product_query = @product_query.where("erp_products_products.cache_properties LIKE '%[\"#{number_ids}\",%'")
+            else
+              number_ids = (number_ids.reject { |c| c.empty? })
+              if !number_ids.empty?
+                qs = []
+                number_ids.each do |x|
+                  qs << "(erp_products_products.cache_properties LIKE '%[\"#{x}\",%')"
+                end
+                @product_query = @product_query.where("(#{qs.join(" OR ")})")
+              end
+            end
+          end
 
           # products
           @products = @product_query.paginate(:page => params[:page], :per_page => 25)
@@ -166,7 +224,7 @@ module Erp
 
           # product query
           @product_query = Erp::Products::Product.where(category_id: category_ids)
-          
+
           # warehouses
           @warehouses = Erp::Warehouses::Warehouse.where(id: @global_filters["warehouse_ids"])
         end

@@ -9,10 +9,10 @@
 <% end %>
 
 <% content_for :page_toolbar do %>
-    <div class="btn-group">
-        <div class="clearfix">
-        </div>
-    </div>
+    <%= erp_component('button/create', {
+        text: 'Dự toán nhập hàng',
+        href: erp_ortho_k.stock_importing_backend_products_path
+    }) %>
 <% end %>
 
 <div class="row">

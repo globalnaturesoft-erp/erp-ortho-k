@@ -6,5 +6,6 @@ Erp::Ability.class_eval do
     can :menu_accounting, :all if user.get_permission(:accounting, :payments, :payment_records, :index) == 'yes'
     can :menu_option, :all if user.get_permission(:options, :users, :users, :index) == 'yes'
     can :menu_system, :all if user.get_permission(:system, :system, :system, :settings) == 'yes'
+    can :menu_contact, :all if user.get_permission(:contacts, :contacts, :contacts, :index) == 'yes'
   end
 end

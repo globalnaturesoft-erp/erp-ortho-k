@@ -6,6 +6,13 @@
     <i class="fa fa-archive"></i> <%= t('.stock_importing') %>
 <% end %>
 
+<% content_for :page_toolbar do %>
+    <%= erp_component('button/create', {
+        text: 'Cấu hình phân vùng',
+        href: erp_ortho_k.backend_setting_path
+    }) %>
+<% end %>
+
 <% content_for :global_filter do %>
     <div class="row">
         <div class="col-md-3">
@@ -78,10 +85,6 @@
             <a class="btn btn-primary global_filter_action" href="<%= erp_orders.new_type_backend_orders_path(type: Erp::Orders::Order::TYPE_PURCHASE_ORDER) %>">
                 <i class="fa fa-share-square"></i> <%= t('.create_purchase_order') %>
             </a>
-
-            <%= erp_component('button/export', {
-                text: '<i class="fa fa-download"></i> ' + t('.export_sheet')
-            }) %>
         </div>
     </div>
 <% end %>
