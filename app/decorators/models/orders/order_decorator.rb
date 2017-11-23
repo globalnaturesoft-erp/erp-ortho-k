@@ -22,4 +22,11 @@ Erp::Orders::Order.class_eval do
 
     (strs.empty? ? '' : "(#{strs.join(' / ')})")
   end
+  
+  def display_patient_info
+    return  {
+      name: self.patient.present? ? self.patient_name : '',
+      state: self.is_new_patient ? 'mới' : 'đổi len'
+    }
+  end
 end
