@@ -136,7 +136,7 @@ module Erp
           end
 
           # products
-          @products = @product_query.paginate(:page => params[:page], :per_page => 25)
+          @products = @product_query.paginate(:page => params[:page], :per_page => 10)
         end
 
 
