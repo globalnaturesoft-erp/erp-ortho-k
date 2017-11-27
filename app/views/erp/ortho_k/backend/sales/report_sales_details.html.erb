@@ -1,0 +1,116 @@
+<% content_for :title do %>
+    <%= t('.report_sales_details') %>
+<% end %>
+
+<% content_for :page_title do %>
+    <i class="fa fa-archive"></i> <%= t('.report_sales_details') %>
+<% end %>
+
+<% content_for :global_filter do %>
+    
+<% end %>
+
+<%= erp_datalist(
+    url: erp_ortho_k.report_sales_details_table_backend_sales_path,
+    sortable: true,
+    filters: [
+        {
+            text: 'Hàng đã bán', name: '', value: true, checked: false
+        },
+        {
+            text: 'Hàng bán bị trả lại', name: '', value: true, checked: false
+        },
+    ],
+    columns: [
+        {
+            text: t('.record_date'), name: 'record_date', value: true, checked: true
+        },
+        {
+            text: t('.voucher_date'), name: 'voucher_date', value: true, checked: true
+        },
+        {
+            text: t('.voucher_code'), name: 'voucher_code', value: true, checked: true
+        },
+        {
+            text: t('.customer_code'), name: 'customer_code', value: true, checked: true
+        },
+        {
+            text: t('.customer_name'), name: 'customer_name', value: true, checked: true
+        },
+        {
+            text: t('.description'), name: 'description', value: true, checked: true
+        },
+        {
+            text: t('.product_name'), name: 'product_name', value: true, checked: true
+        },
+        {
+            text: t('.status'), name: 'status', value: true, checked: true
+        },
+        {
+            text: t('.warehouse'), name: 'warehouse', value: true, checked: true
+        },
+        {
+            text: t('.unit'), name: 'unit', value: true, checked: true
+        },
+        {
+            text: t('.unknown_1'), name: 'unknown_1', value: true, checked: true
+        },
+        {
+            text: t('.unknown_2'), name: 'unknown_2', value: true, checked: true
+        },
+        {
+            text: t('.quantity'), name: 'quantity', value: true, checked: true
+        },
+        {
+            text: t('.s_price'), name: 's_price', value: true, checked: true
+        },
+        {
+            text: t('.tax_amount'), name: 'tax_amount', value: true, checked: true
+        },
+        {
+            text: t('.other_fees'), name: 'other_fees', value: true, checked: true
+        },
+        {
+            text: t('.unknown_3'), name: 'unknown_3', value: true, checked: true
+        },
+        {
+            text: t('.unknown_4'), name: 'unknown_4', value: true, checked: true
+        },
+        {
+            text: t('.p_price'), name: 'p_price', value: true, checked: true
+        },
+        {
+            text: t('.unknown_5'), name: 'unknown_5', value: true, checked: true
+        },
+        {
+            text: t('.patient_name'), name: 'patient_name', value: true, checked: true
+        },
+        {
+            text: t('.patient_state'), name: 'patient_state', value: true, checked: true
+        },
+        {
+            text: t('.eye_info'), name: 'eye_info', value: true, checked: true
+        },
+        {
+            text: t('.salesperson_name'), name: 'salesperson_name', value: true, checked: true
+        },
+        {
+            text: t('.salesperson_percent'), name: 'salesperson_percent', value: true, checked: true
+        },
+        {
+            text: t('.salesperson_commission_amount'), name: 'salesperson_commission_amount', value: true, checked: true
+        },
+        {
+            text: t('.goods_discount_percent'), name: 'goods_discount_percent', value: true, checked: true
+        },
+        {
+            text: t('.goods_discount_amount'), name: 'goods_discount_amount', value: true, checked: true
+        },
+        {
+            text: t('.customer_commission'), name: 'customer_commission', value: true, checked: true
+        },
+        {
+            text: t('.note'), name: 'note', value: true, checked: true
+        },
+    ]
+) %>

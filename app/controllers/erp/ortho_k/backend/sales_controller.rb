@@ -23,7 +23,10 @@ module Erp
         
         # So chi tiet ban hang
         def report_sales_details_table
-          
+          @rows = Erp::Orders::Order.sales_details_report(params)[:data]
+          @totals = Erp::Orders::Order.sales_details_report(params)[:total]
+
+          render layout: nil
         end
         
         # So chi tiet ban hang
