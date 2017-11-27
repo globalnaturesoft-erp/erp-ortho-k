@@ -1,0 +1,63 @@
+<% if @categories.empty? %>
+  <div class="alert alert-warning">
+      <p>Vui lòng chọn các tham số bắt buộc:
+          <br>- <strong>Loại hàng</strong>
+      </p>
+  </div>
+<% else %>
+  <h4 class="mb-10">
+    Báo cáo tồn kho
+    <% if @period.present? %>
+      <strong><%= @period.name %></strong>
+    <% end %>
+    từ <strong><%= format_date(@from_date) %></strong>
+    đến <strong><%= format_date(@to_date) %></strong>
+  </h4>
+  <table class="table table-bordered table-advance order-column">
+    <% product_ids = @product_query.select('id') %>
+    <% product_ids = -1 if product_ids.count == 0 %>
+    <% filters = @global_filters.clone.merge({product_id: product_ids}) %>
+    <tr>
+      <th colspan="2" class="text-right bg-grey">Tổng cộng</th>
+      <% @warehouses.each do |warehouse| %>
+        <% filters = @global_filters.clone.merge({
+          warehouse: warehouse,
+        }) %>
+        <th class="text-center bg-grey"><%= Erp::Products::Product.get_stock_real(filters) %></th>
+      <% end %>
+      <% filters = @global_filters %>
+      <th class="text-center bg-grey"><%= Erp::Products::Product.get_stock_real(filters) %></th>
+    </tr>
+
+    <tr>
+      <th class="text-center bg-primary">Sản phẩm</th>
+      <th class="text-center bg-primary">Đơn vị</th>
+      <% @warehouses.each do |warehouse| %>
+        <th class="text-center bg-primary"><%= warehouse.short_name %></th>
+      <% end %>
+      <th class="text-center bg-primary">Tất cả</th>
+    </tr>
+
+    <% @products.each do |product| %>
+      <% filters = @global_filters.clone.merge(product_id: product.id) %>
+      <tr>
+        <td class="text-semibold"><%= product.name %></td>
+        <td class="text-center"><%= product.unit_name %></td>
+        <% @warehouses.each do |warehouse| %>
+          <% filters = @global_filters.clone.merge({
+            warehouse: warehouse,
+            product_id: product.id,
+          }) %>
+          <td class="text-center"><%= Erp::Products::Product.get_stock_real(filters) %></td>
+        <% end %>
+
+        <% filters = @global_filters.clone.merge({
+          product_id: product.id,
+        }) %>
+        <td class="text-center"><%= Erp::Products::Product.get_stock_real(filters) %></td>
+      </tr>
+    <% end %>
+  </table>
+
+  <%= erp_datalist_pagination(@products) %>
+<% end %>

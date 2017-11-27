@@ -1,6 +1,12 @@
 Erp::Products::Product.class_eval do
   has_many :transfer_details, class_name: 'Erp::StockTransfers::TransferDetail'
 
+  after_save :update_cache_diameter
+
+  def update_cache_diameter
+    update_column(:cache_diameter, self.get_diameter)
+  end
+
   # get diameter value
   def get_value(property)
     return nil if !property.present?
@@ -372,27 +378,28 @@ Erp::Products::Product.class_eval do
     # need to purchase: @options["purchase_conditions"]
     ors = []
     @options["purchase_conditions"].each do |option|
+      if option[1]["category"].present?
+        ands = []
+        ands << "erp_products_products.category_id = #{option[1]["category"]}"
+        ands << "erp_products_products.cache_properties LIKE '%[\"#{option[1]["diameter"]}\",%'"
 
-      ands = []
-      ands << "erp_products_products.category_id = #{option[1]["category"]}"
-      ands << "erp_products_products.cache_properties LIKE '%[\"#{option[1]["diameter"]}\",%'"
+        letter_pv_ids = defined?(option) ? (option[1]["letter"].reject { |c| c.empty? }) : [-1]
+        number_pv_ids = defined?(option) ? (option[1]["number"].reject { |c| c.empty? }) : [-1]
 
-      letter_pv_ids = defined?(option) ? (option[1]["letter"].reject { |c| c.empty? }) : [-1]
-      number_pv_ids = defined?(option) ? (option[1]["number"].reject { |c| c.empty? }) : [-1]
+        qs = []
+        letter_pv_ids.each do |x|
+          qs << "(erp_products_products.cache_properties LIKE '%[\"#{x}\",%')"
+        end
+        ands << "(#{qs.join(" OR ")})" if !qs.empty?
 
-      qs = []
-      letter_pv_ids.each do |x|
-        qs << "(erp_products_products.cache_properties LIKE '%[\"#{x}\",%')"
+        qs = []
+        number_pv_ids.each do |x|
+          qs << "(erp_products_products.cache_properties LIKE '%[\"#{x}\",%')"
+        end
+        ands << "(#{qs.join(" OR ")})" if !qs.empty?
+
+        ors << "(#{ands.join(" AND ")})"
       end
-      ands << "(#{qs.join(" OR ")})" if !qs.empty?
-
-      qs = []
-      number_pv_ids.each do |x|
-        qs << "(erp_products_products.cache_properties LIKE '%[\"#{x}\",%')"
-      end
-      ands << "(#{qs.join(" OR ")})" if !qs.empty?
-
-      ors << "(#{ands.join(" AND ")})"
     end
 
     query = self.where(ors.join(" OR "))

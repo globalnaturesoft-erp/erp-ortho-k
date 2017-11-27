@@ -73,6 +73,10 @@ Erp::Products::Engine.load_seed
 puts "Create default payments"
 Erp::Payments::Engine.load_seed
 
+# Default taxes
+puts "Create default payments"
+Erp::Taxes::Engine.load_seed
+
 # Default periods
 puts "Create default periods 2017"
 Erp::Periods::Period.create_year_periods(2017)

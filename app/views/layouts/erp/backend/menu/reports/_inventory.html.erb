@@ -48,6 +48,13 @@
                 title: 'Thống kê tồn kho theo sản phẩm'
             %>
         </li>
+        <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/inventory" && params[:action] == "report_product" %>">
+            <%= link_to "Sản phẩm/Kho",
+                erp_ortho_k.report_product_warehouse_backend_inventory_index_path,
+                class: "nav-link ",
+                title: 'Thống kê tồn kho theo sản phẩm'
+            %>
+        </li>
         <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/inventory" && params[:action] == "report_central_area" %>">
             <%= link_to "Tồn vùng T.Tâm",
                 erp_ortho_k.report_central_area_backend_inventory_index_path,

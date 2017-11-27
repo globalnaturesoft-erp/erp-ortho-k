@@ -85,9 +85,12 @@ Erp::OrthoK::Engine.routes.draw do
 
 					get 'report_outside_product'
 					post 'report_outside_product_table'
+
+					get 'report_product_warehouse'
+					post 'report_product_warehouse_table'
 				end
 			end
-			
+
 			resources :sales do
 				collection do
 					get 'report_sell_and_return'
