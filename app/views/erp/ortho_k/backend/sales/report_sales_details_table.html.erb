@@ -200,16 +200,16 @@
                 <td class="text-left"><%= format_date(row[:voucher_date]) %></td>
                 <% end %>
                 <% if get_columns(params).include?("voucher_code") %>
-                <td class="text-left"><%= row[:voucher_code] %></td>
+                <td class="text-left text-nowrap"><%= row[:voucher_code] %></td>
                 <% end %>
                 <% if get_columns(params).include?("customer_code") %>
-                <td class="text-left"><%= row[:customer_code] %></td>
+                <td class="text-left text-nowrap"><%= row[:customer_code] %></td>
                 <% end %>
                 <% if get_columns(params).include?("customer_name") %>
-                <td class="text-left"><%= row[:customer_name] %></td>
+                <td class="text-left text-nowrap"><%= row[:customer_name] %></td>
                 <% end %>
                 <% if get_columns(params).include?("product_name") %>
-                <td class="text-left"><%= row[:product_name] %></td>
+                <td class="text-left text-nowrap"><%= row[:product_name] %></td>
                 <% end %>
                 <% if get_columns(params).include?("description") %>
                 <td class="text-left"><%= row[:description] %></td>
