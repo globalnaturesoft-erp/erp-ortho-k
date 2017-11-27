@@ -24,6 +24,7 @@
                 <th class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Sản phẩm</th>
                 <th class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Số lượng</th>
                 <th class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Đơn giá</th>
+                <th class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Giảm giá</th>
                 <th class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Thành tiền</th>
                 <th class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Ghi chú</th>
             </tr>
@@ -38,18 +39,19 @@
                         <td class="text-justify"><%= order_detail.product_name %></td>
                         <td class="text-center font-yellow-gold"><%= order_detail.quantity %></td>
                         <td class="text-right font-yellow-gold"><%= format_number(order_detail.price) %></td>
+                        <td class="text-right font-yellow-gold"><%= format_number(order_detail.discount) %></td>
                         <td class="text-right font-yellow-gold"><%= format_number(order_detail.subtotal) %></td>
                         <td class="text-justify"><%= raw order_detail.description %></td>
                     </tr>
                 <% end %>
                 <tr>
-                    <td class="text-center text-center" colspan="6"></td>
+                    <td class="text-center text-center" colspan="7"></td>
                     <td class="text-right font-yellow-gold bold"><%= format_number(order.cache_total) %></td>
                     <td class="text-right font-yellow-gold"></td>
                 </tr>
             <% end %>
             <tr>
-                <td class="bg-green-jungle bg-font-green-jungle text-center uppercase bold" colspan="6"><%= 'Tổng cộng' %></td>
+                <td class="bg-green-jungle bg-font-green-jungle text-center uppercase bold" colspan="7"><%= 'Tổng cộng' %></td>
                 <td class="bg-green-jungle bg-font-green-jungle text-right bold"><%= format_number(@orders.cache_total) %></td>
                 <td class="bg-green-jungle bg-font-green-jungle"></td>
             </tr>
@@ -107,7 +109,7 @@
             <% end %>
             <tr>
                 <td class="bg-green-jungle bg-font-green-jungle text-center uppercase bold" colspan="6"><%= 'Tổng cộng' %></td>
-                <td class="bg-green-jungle bg-font-green-jungle text-right bold"><%= '' %></td>
+                <td class="bg-green-jungle bg-font-green-jungle text-right bold"><%= format_number(@deliveries.total_amount) %></td>
                 <td class="bg-green-jungle bg-font-green-jungle"></td>
             </tr>
         </tbody>
