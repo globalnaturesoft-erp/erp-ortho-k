@@ -2,6 +2,20 @@ Erp::Orders::Order.class_eval do
   belongs_to :doctor, class_name: "Erp::Contacts::Contact", foreign_key: :doctor_id, optional: true
   belongs_to :patient, class_name: "Erp::Contacts::Contact", foreign_key: :patient_id, optional: true
   belongs_to :hospital, class_name: "Erp::Contacts::Contact", foreign_key: :hospital_id, optional: true
+  
+  # class const
+  POSITION_LEFT = 'left'
+  POSITION_RIGHT = 'right'
+  POSITION_BOTH = 'both'
+  
+  # get type options for contact
+  def self.get_eye_positions()
+    [
+      {text: I18n.t('left_eye'), value: self::POSITION_LEFT},
+      {text: I18n.t('right_eye'), value: self::POSITION_RIGHT},
+      {text: I18n.t('both_eyes'), value: self::POSITION_BOTH}
+    ]
+  end
 
   def doctor_name
     (doctor.present? ? doctor.name : '')

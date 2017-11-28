@@ -211,6 +211,9 @@ vi:
           supplier_liabilities: 'Công nợ (NCC)'
           period_liabilities: 'Thống kê công nợ (KH)'
   or: "và"
+  left_eye: "MT"
+  right_eye: "MP"
+  both_eyes: "MT/MP"
   erp:
     ortho_k:
       backend:
@@ -888,6 +891,7 @@ vi:
             product_code: "Mã SP"
             diameter: "Đ.kính"
             category: "Loại"
+            eye_position: "Thông tin mắt"
     stock_transfers:
       backend:
         transfers:
