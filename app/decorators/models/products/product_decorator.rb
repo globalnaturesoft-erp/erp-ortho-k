@@ -71,7 +71,7 @@ Erp::Products::Product.class_eval do
     end
 
     query.limit(5).each do |delivery_detail|
-      if [Erp::Qdeliveries::Delivery::TYPE_WAREHOUSE_EXPORT, Erp::Qdeliveries::Delivery::TYPE_MANUFACTURER_EXPORT].include?(delivery_detail.delivery.delivery_type)
+      if [Erp::Qdeliveries::Delivery::TYPE_SALES_EXPORT, Erp::Qdeliveries::Delivery::TYPE_PURCHASE_EXPORT].include?(delivery_detail.delivery.delivery_type)
         qty = -delivery_detail.quantity
       else
         qty = +delivery_detail.quantity
@@ -124,7 +124,7 @@ Erp::Products::Product.class_eval do
     end
 
     query.limit(5).each do |delivery_detail|
-      if [Erp::Qdeliveries::Delivery::TYPE_WAREHOUSE_EXPORT, Erp::Qdeliveries::Delivery::TYPE_MANUFACTURER_EXPORT].include?(delivery_detail.delivery.delivery_type)
+      if [Erp::Qdeliveries::Delivery::TYPE_SALES_EXPORT, Erp::Qdeliveries::Delivery::TYPE_PURCHASE_EXPORT].include?(delivery_detail.delivery.delivery_type)
         qty = -delivery_detail.quantity
       else
         qty = +delivery_detail.quantity

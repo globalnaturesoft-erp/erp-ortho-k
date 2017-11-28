@@ -32,7 +32,7 @@
                 <td class="text-left font-yellow-gold"><%= 'Hàng bán bị trả lại' %></td>
                 <td class="text-center font-yellow-gold">
                     <%= format_number(Erp::Qdeliveries::DeliveryDetail.total_amount_by_delivery_type(
-                                delivery_type: Erp::Qdeliveries::Delivery::TYPE_CUSTOMER_IMPORT,
+                                delivery_type: Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT,
                                 from_date: @from, to_date: @to)
                     ) %>
                 </td>

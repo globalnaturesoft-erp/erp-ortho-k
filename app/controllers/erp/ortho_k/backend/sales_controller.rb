@@ -18,7 +18,7 @@ module Erp
           @orders = Erp::Orders::Order.sales_orders.all_confirmed.search(params)
           
           @deliveries = Erp::Qdeliveries::Delivery.all_delivered.search(params)
-                          .where(delivery_type: Erp::Qdeliveries::Delivery::TYPE_CUSTOMER_IMPORT)
+                          .where(delivery_type: Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT)
         end
         
         # So chi tiet ban hang

@@ -17,7 +17,7 @@
             <%
                 count = Erp::Products::Product.get_qdelivery_import(@global_filters.merge({
                     product_id: product_ids,
-                    delivery_type: Erp::Qdeliveries::Delivery::TYPE_WAREHOUSE_IMPORT
+                    delivery_type: Erp::Qdeliveries::Delivery::TYPE_PURCHASE_IMPORT
                 }))
                 total_import += count
             %>
@@ -27,7 +27,7 @@
             <%
                 count = Erp::Products::Product.get_qdelivery_import(@global_filters.merge({
                     product_id: product_ids,
-                    delivery_type: Erp::Qdeliveries::Delivery::TYPE_CUSTOMER_IMPORT
+                    delivery_type: Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT
                 }))
                 total_import += count
             %>
@@ -72,7 +72,7 @@
             <%
                 count = Erp::Products::Product.get_qdelivery_export(@global_filters.merge({
                     product_id: product_ids,
-                    delivery_type: Erp::Qdeliveries::Delivery::TYPE_WAREHOUSE_EXPORT
+                    delivery_type: Erp::Qdeliveries::Delivery::TYPE_SALES_EXPORT
                 }))
                 total_export += count
             %>
@@ -82,7 +82,7 @@
             <%
                 count = Erp::Products::Product.get_qdelivery_export(@global_filters.merge({
                     product_id: product_ids,
-                    delivery_type: Erp::Qdeliveries::Delivery::TYPE_MANUFACTURER_EXPORT
+                    delivery_type: Erp::Qdeliveries::Delivery::TYPE_PURCHASE_EXPORT
                 }))
                 total_export += count
             %>
@@ -205,7 +205,7 @@
                         filters = @global_filters.clone
                         count = Erp::Products::Product.get_qdelivery_import(filters.merge({
                             product_id: product_ids,
-                            delivery_type: Erp::Qdeliveries::Delivery::TYPE_WAREHOUSE_IMPORT
+                            delivery_type: Erp::Qdeliveries::Delivery::TYPE_PURCHASE_IMPORT
                         }))
                         total_import += count
                     %>
@@ -216,7 +216,7 @@
                         filters = @global_filters.clone
                         count = Erp::Products::Product.get_qdelivery_import(filters.merge({
                             product_id: product_ids,
-                            delivery_type: Erp::Qdeliveries::Delivery::TYPE_CUSTOMER_IMPORT
+                            delivery_type: Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT
                         }))
                         total_import += count
                     %>
@@ -263,7 +263,7 @@
                     <%
                         count = Erp::Products::Product.get_qdelivery_export(@global_filters.merge({
                             product_id: product_ids,
-                            delivery_type: Erp::Qdeliveries::Delivery::TYPE_WAREHOUSE_EXPORT
+                            delivery_type: Erp::Qdeliveries::Delivery::TYPE_SALES_EXPORT
                         }))
                         total_export += count
                     %>
@@ -273,7 +273,7 @@
                     <%
                         count = Erp::Products::Product.get_qdelivery_export(@global_filters.merge({
                             product_id: product_ids,
-                            delivery_type: Erp::Qdeliveries::Delivery::TYPE_MANUFACTURER_EXPORT
+                            delivery_type: Erp::Qdeliveries::Delivery::TYPE_PURCHASE_EXPORT
                         }))
                         total_export += count
                     %>
@@ -365,7 +365,7 @@
                         filters = @global_filters.clone
                         count = Erp::Products::Product.get_qdelivery_import(filters.merge({
                             product_id: product_ids,
-                            delivery_type: Erp::Qdeliveries::Delivery::TYPE_WAREHOUSE_IMPORT
+                            delivery_type: Erp::Qdeliveries::Delivery::TYPE_PURCHASE_IMPORT
                         }))
                         total_import += count
                     %>
@@ -376,7 +376,7 @@
                         filters = @global_filters.clone
                         count = Erp::Products::Product.get_qdelivery_import(filters.merge({
                             product_id: product_ids,
-                            delivery_type: Erp::Qdeliveries::Delivery::TYPE_CUSTOMER_IMPORT
+                            delivery_type: Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT
                         }))
                         total_import += count
                     %>
@@ -423,7 +423,7 @@
                     <%
                         count = Erp::Products::Product.get_qdelivery_export(@global_filters.merge({
                             product_id: product_ids,
-                            delivery_type: Erp::Qdeliveries::Delivery::TYPE_WAREHOUSE_EXPORT
+                            delivery_type: Erp::Qdeliveries::Delivery::TYPE_SALES_EXPORT
                         }))
                         total_export += count
                     %>
@@ -433,7 +433,7 @@
                     <%
                         count = Erp::Products::Product.get_qdelivery_export(@global_filters.merge({
                             product_id: product_ids,
-                            delivery_type: Erp::Qdeliveries::Delivery::TYPE_MANUFACTURER_EXPORT
+                            delivery_type: Erp::Qdeliveries::Delivery::TYPE_PURCHASE_EXPORT
                         }))
                         total_export += count
                     %>

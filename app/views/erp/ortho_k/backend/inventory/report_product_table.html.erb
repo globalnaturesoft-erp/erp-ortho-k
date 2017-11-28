@@ -32,7 +32,7 @@
       <td class="text-center bg-grey text-bold">
         <%
           count = Erp::Products::Product.get_qdelivery_import(filters.clone.merge({
-              delivery_type: Erp::Qdeliveries::Delivery::TYPE_WAREHOUSE_IMPORT
+              delivery_type: Erp::Qdeliveries::Delivery::TYPE_PURCHASE_IMPORT
           }))
         %>
         <%= count %>
@@ -43,7 +43,7 @@
             count = Erp::Products::Product.get_qdelivery_import(filters.clone.merge({
                 delivery_type: [
                   Erp::Qdeliveries::Delivery::TYPE_CUSTOM_IMPORT,
-                  Erp::Qdeliveries::Delivery::TYPE_CUSTOMER_IMPORT
+                  Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT
                 ],
                 state: state
             }))
@@ -56,7 +56,7 @@
           count = Erp::Products::Product.get_qdelivery_export(filters.clone.merge({
               delivery_type: [
                 Erp::Qdeliveries::Delivery::TYPE_CUSTOM_EXPORT,
-                Erp::Qdeliveries::Delivery::TYPE_WAREHOUSE_EXPORT
+                Erp::Qdeliveries::Delivery::TYPE_SALES_EXPORT
               ]
           }))
           count += Erp::Products::Product.get_gift_given_export(filters)
@@ -112,7 +112,7 @@
         <td class="text-center">
           <%
             count = Erp::Products::Product.get_qdelivery_import(filters.clone.merge({
-                delivery_type: Erp::Qdeliveries::Delivery::TYPE_WAREHOUSE_IMPORT
+                delivery_type: Erp::Qdeliveries::Delivery::TYPE_PURCHASE_IMPORT
             }))
           %>
           <%= count %>
@@ -123,7 +123,7 @@
               count = Erp::Products::Product.get_qdelivery_import(filters.clone.merge({
                   delivery_type: [
                     Erp::Qdeliveries::Delivery::TYPE_CUSTOM_IMPORT,
-                    Erp::Qdeliveries::Delivery::TYPE_CUSTOMER_IMPORT
+                    Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT
                   ],
                   state: state
               }))
@@ -136,7 +136,7 @@
             count = Erp::Products::Product.get_qdelivery_export(filters.clone.merge({
                 delivery_type: [
                   Erp::Qdeliveries::Delivery::TYPE_CUSTOM_EXPORT,
-                  Erp::Qdeliveries::Delivery::TYPE_WAREHOUSE_EXPORT
+                  Erp::Qdeliveries::Delivery::TYPE_SALES_EXPORT
                 ]
             }))
             count += Erp::Products::Product.get_gift_given_export(filters)
