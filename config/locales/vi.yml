@@ -884,6 +884,22 @@ vi:
             goods_discount_amount: "Thành tiền"
             customer_commission: "Chiết khấu cho đối tượng"
             note: "Ghi chú"
+    products:
+      backend:
+        products:
+          import_export_table:
+            sales_import: "Hoàn kho (bị trả lại)"
+            sales_export: "Xuất bán hàng"
+            purchase_import: "Nhập hàng NCC"
+            purchase_export: "Xuất trả lại NCC"
+            custom_import: "Nhập kho (khác)"
+            custom_export: "Xuất kho (khác)"
+            stock_transfer: "Chuyển kho"
+            gift_given: "Xuất tặng"
+            consignment: "Xuất ký gửi/mượn"
+            cs_return: "Hàng KG/XM trả lại"
+            no_matching_records_found: "Lịch sử xuất nhập không được tìm thấy. Vui lòng chọn điều kiện khác để xem."
+            please_select_filter: "Vui lòng chọn THỜI GIAN trước khi xem"
     orders:
       backend:
         orders:
