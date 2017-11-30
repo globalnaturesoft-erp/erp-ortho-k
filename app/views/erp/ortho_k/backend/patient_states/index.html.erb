@@ -1,0 +1,36 @@
+<% content_for :title do %>
+    <%= t('.patient_states') %>
+<% end %>
+
+<% content_for :page_title do %>
+    <i class="fa fa-stethoscope"></i> <%= t('.patient_states') %>
+<% end %>
+
+<% content_for :page_toolbar do %>
+    <%= erp_component('button/create', {
+        text: t('.create'),
+        href: erp_ortho_k.new_backend_patient_state_path,
+        class: 'btn-noborder'
+    }) %>
+<% end %>
+
+<%= erp_datalist(
+    url: erp_ortho_k.list_backend_patient_states_path,
+    keywords: [
+        {
+            text: t('.name'), name: 'name'
+        }
+    ],
+    columns: [
+        {
+            text: t('.name'), name: 'name', value: true, checked: true
+        },
+        {
+            text: t('.description'), name: 'description', value: true, checked: true
+        },
+        {
+            text: t('.created_at'), name: 'created_at', value: true, checked: true
+        }
+    ],
+    sort: { sort_by: 'erp_ortho_k_patient_states.name', sort_direction: 'asc' }
+) %>

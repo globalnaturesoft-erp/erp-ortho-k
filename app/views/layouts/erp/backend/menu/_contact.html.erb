@@ -1,4 +1,5 @@
-<li class="nav-item <%= "active open" if ["erp/contacts/backend/contacts"].include?(params[:controller]) %>"">
+<li class="nav-item <%= "active open" if ["erp/contacts/backend/contacts",
+                                          "erp/ortho_k/backend/patient_states"].include?(params[:controller]) %>"">
     <a href="javascript:;" class="nav-link nav-toggle">
         <i class="icon-users"></i>
         <span class="title"><%= t('.contact') %></span>
@@ -17,6 +18,14 @@
                 <span class="selected"></span>
                 <% end %>
             </a>
-        </li>       
+        </li>
+        <li class="nav-item <%= "active open" if ["erp/ortho_k/backend/patient_states"].include?(params[:controller]) %>">
+            <a href="<%= erp_ortho_k.backend_patient_states_path %>" class="nav-link ">
+                <span class="title"><%= t('.patient_states') %></span>
+                <% if ["erp/ortho_k/backend/patient_states"].include?(params[:controller]) %>
+                <span class="selected"></span>
+                <% end %>
+            </a>
+        </li>
     </ul>
 </li>

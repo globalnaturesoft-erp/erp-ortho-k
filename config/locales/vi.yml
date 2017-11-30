@@ -621,6 +621,30 @@ vi:
             created_at: "Ngày tạo"
             save: "Lưu"
             cancel: "Hủy"
+        patient_states:
+          index:
+            patient_states: "Tình trạng bệnh nhân"
+            create: "Thêm tình trạng BN"
+            name: "Tên tình trạng"
+            description: "Mô tả"
+            created_at: "Ngày tạo"
+          list:
+            name: "Tên tình trạng"
+            description: "Mô tả"
+            created_at: "Ngày tạo"
+            actions: "Hành động"
+            edit: "Chỉnh sửa"
+          new:
+            patient_states: "Tình trạng bệnh nhân"
+            create: "Thêm tình trạng BN"
+          edit:
+            patient_states: "Tình trạng bệnh nhân"
+            create: "Thêm tình trạng BN"
+          form:
+            name: "Tên tình trạng"
+            description: "Mô tả"
+            save: "Lưu"
+            cancel: "Hủy"
         accountings:
           report_pay_receive:
             report_pay_receive: "Báo cáo - Thu/chi tiền hàng"
@@ -940,7 +964,8 @@ vi:
         menu:
           contact:
             contact: "Danh bạ"
-            contacts: "Sổ địa chỉ"
+            contacts: "Sổ địa chỉ liên hệ"
+            patient_states: "Cấu hình t.trạng BN"
           sales:
             sales: "Bán hàng"
             sales_orders: "Đơn bán hàng"

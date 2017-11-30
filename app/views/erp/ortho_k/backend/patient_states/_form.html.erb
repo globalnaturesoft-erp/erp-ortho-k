@@ -1,0 +1,23 @@
+<%= form_for([erp_ortho_k, :backend, patient_state]) do |f| %>
+    <%= erp_form_control("text", {
+        name: 'patient_state[name]',
+        value: patient_state.name,
+        label: t('.name'),
+        required: true,
+        errors: patient_state.errors.full_messages_for(:name)
+    }) %>
+    
+    <%= erp_form_control("textarea", {
+        name: 'patient_state[description]',
+        value: patient_state.description,
+        label: t('.description')
+    }) %>
+    
+    <%= erp_component('button/save', {
+        text: t('.save')
+    }) %>
+    <%= erp_component('button/cancel', {
+        text: t('.cancel'),
+        href: erp_ortho_k.backend_patient_states_path
+    }) %>
+<% end %>

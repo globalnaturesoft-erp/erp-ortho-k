@@ -1,0 +1,58 @@
+<table class="table table-advance table-hover table-striped table-checkable order-column" id="">
+    <thead>
+        <tr>
+            <th width='1%'>
+                <%= erp_datalist_check_all %>
+            </th>
+            <% if get_columns(params).include?("name") %>
+                <th class="sortable" sort-by='erp_orthok_patient_states.name'>
+                    <%= t('.name') %>
+                </th>
+            <% end %>
+            <% if get_columns(params).include?("description") %>
+                <th>
+                    <%= t('.description') %>
+                </th>
+            <% end %>
+            <% if get_columns(params).include?("created_at") %>
+                <th>
+                    <%= t('.created_at') %>
+                </th>
+            <% end %>
+            <th width="7%"><%= t('.actions') %></th>
+        </tr>
+    </thead>
+    <tbody>
+        <% @patient_states.each do |patient_state| %>
+            <tr class="odd gradeX">
+                <td>
+                    <%= erp_datalist_check_row(id: patient_state.id) %>
+                </td>
+                <% if get_columns(params).include?("name") %>
+                    <td><%= link_to patient_state.name, erp_ortho_k.edit_backend_patient_state_path(patient_state) %></td>
+                <% end %>
+                <% if get_columns(params).include?("description") %>
+                    <td><%= raw patient_state.description %></td>
+                <% end %>
+                <% if get_columns(params).include?("created_at") %>
+                    <td><%= patient_state.created_at.strftime("%d/%m/%Y") %></td>
+                <% end %>
+                <td>
+                    <%= erp_datalist_row_actions(
+                        [
+                            {
+                                text: '<i class="fa fa-edit"></i> '+t('.edit'),
+                                href: erp_ortho_k.edit_backend_patient_state_path(patient_state)
+                            }
+                        ]
+                    ) %>
+                </td>
+            </tr>
+        <% end %>
+    </tbody>
+</table>
+<% if @patient_states.empty? %>
+    <div class="datalist-empty-line"><%= t('.no_matching_records_found') %></div>
+<% end %>
+        
+<%= erp_datalist_pagination(@patient_states) %>

@@ -38,6 +38,13 @@ Erp::OrthoK::Engine.routes.draw do
 					get 'dataselect'
 				end
 			end
+			
+      resources :patient_states do
+        collection do
+					post 'list'
+					get 'dataselect'
+				end
+			end
 
 			resources :orders do
 				collection do

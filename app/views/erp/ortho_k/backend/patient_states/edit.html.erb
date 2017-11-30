@@ -1,0 +1,33 @@
+<% content_for :title do %>
+    <%= @patient_state.name %>
+<% end %>
+
+<% content_for :page_title do %>    
+    <a href="<%= erp_ortho_k.backend_patient_states_path %>">
+    <i class="fa fa-stethoscope"></i> <%= t('.patient_states') %>
+    </a> / <%= @patient_state.name %>
+<% end %>
+
+<% content_for :page_toolbar do %>
+    <%= erp_component('button/create', {
+        text: t('.create'),
+        href: erp_ortho_k.new_backend_patient_state_path,
+        class: 'btn-sm'
+    }) %>
+<% end %>
+
+<div class="row">
+    <div class="col-md-6">
+        <% if @patient_state.errors.any? %>
+            <%= erp_form_control("form_error_message") %>
+        <% end %>
+        
+        <!-- BEGIN SAMPLE FORM PORTLET-->
+        <div class="portlet light bordered">
+            <div class="portlet-body">
+                <%= render 'form', patient_state: @patient_state %>
+            </div>
+        </div>
+        <!-- END SAMPLE FORM PORTLET-->
+    </div>
+</div>
