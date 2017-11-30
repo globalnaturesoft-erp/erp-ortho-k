@@ -2,12 +2,12 @@ Erp::Orders::Order.class_eval do
   belongs_to :doctor, class_name: "Erp::Contacts::Contact", foreign_key: :doctor_id, optional: true
   belongs_to :patient, class_name: "Erp::Contacts::Contact", foreign_key: :patient_id, optional: true
   belongs_to :hospital, class_name: "Erp::Contacts::Contact", foreign_key: :hospital_id, optional: true
-  
+
   # class const
   POSITION_LEFT = 'left'
   POSITION_RIGHT = 'right'
   POSITION_BOTH = 'both'
-  
+
   # get type options for contact
   def self.get_eye_positions()
     [
@@ -36,14 +36,14 @@ Erp::Orders::Order.class_eval do
 
     (strs.empty? ? '' : "(#{strs.join(' / ')})")
   end
-  
+
   def display_patient_info
     return  {
       name: self.patient.present? ? self.patient_name : '',
       state: self.is_new_patient ? 'mới' : 'đổi len'
     }
   end
-  
+
   # get import report
   def self.sales_details_report(params={})
     result = []
@@ -51,12 +51,12 @@ Erp::Orders::Order.class_eval do
     total = {
       quantity: 0
     }
-    
+
     # Sales order
     query = Erp::Orders::OrderDetail.joins(:order)
             .where(erp_orders_orders: {supplier_id: Erp::Contacts::Contact.get_main_contact.id})
             .where(erp_orders_orders: {status: Erp::Orders::Order::STATUS_CONFIRMED})
-    
+
     if params[:from_date].present?
       query = query.where(erp_orders_orders: {'order_date >= ?': params[:from_date].to_date.beginning_of_day})
     end
@@ -64,7 +64,7 @@ Erp::Orders::Order.class_eval do
     if params[:to_date].present?
       query = query.where(erp_orders_orders: {'order_date <= ?': params[:to_date].to_date.end_of_day})
     end
-    
+
     query.each do |order_detail|
       qty = +order_detail.quantity
       #sales_total_amount = delivery_detail.subtotal
@@ -90,25 +90,25 @@ Erp::Orders::Order.class_eval do
       total[:quantity] += qty
       #total[:sales_total_amount] += sales_total_amount
     end
-    
+
     # Qdelivery: Có Chứng Từ
     query = Erp::Qdeliveries::DeliveryDetail.joins(:delivery, :order_detail => :product)
             .where.not(order_detail_id: nil)
             .where(erp_qdeliveries_deliveries: {status: Erp::Qdeliveries::Delivery::STATUS_DELIVERED})
             .where(erp_qdeliveries_deliveries: {delivery_type: Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT})
-    
+
     if params[:from_date].present?
       query = query.where(erp_qdeliveries_deliveries: {'date >= ?': params[:from_date].to_date.beginning_of_day})
     end
-    
+
     if params[:to_date].present?
       query = query.where(erp_qdeliveries_deliveries: {'date <= ?': params[:to_date].to_date.end_of_day})
     end
-    
+
     query.each do |delivery_detail|
         qty = -delivery_detail.quantity
         #sales_total_amount = -(delivery_detail.cache_total)
-    
+
       result << {
         record_date: delivery_detail.delivery.created_at,
         voucher_date: delivery_detail.delivery.date,
@@ -127,25 +127,25 @@ Erp::Orders::Order.class_eval do
       total[:quantity] += qty
       #total[:sales_total_amount] += sales_total_amount
     end
-    
+
     # Qdelivery: Không Chứng Từ
     query = Erp::Qdeliveries::DeliveryDetail.joins(:delivery, :product)
             .where(order_detail_id: nil)
             .where(erp_qdeliveries_deliveries: {status: Erp::Qdeliveries::Delivery::STATUS_DELIVERED})
             .where(erp_qdeliveries_deliveries: {delivery_type: Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT})
-    
+
     if params[:from_date].present?
       query = query.where(erp_qdeliveries_deliveries: {'date >= ?': params[:from_date].to_date.beginning_of_day})
     end
-    
+
     if params[:to_date].present?
       query = query.where(erp_qdeliveries_deliveries: {'date <= ?': params[:to_date].to_date.end_of_day})
     end
-    
+
     query.each do |delivery_detail|
       qty = -delivery_detail.quantity
       #sales_total_amount = -(delivery_detail.cache_total)
-    
+
       result << {
         record_date: delivery_detail.delivery.created_at,
         voucher_date: delivery_detail.delivery.date,
@@ -297,5 +297,15 @@ Erp::Orders::Order.class_eval do
     query = self.where(ors.join(" OR "))
 
     return query
+  end
+
+  # def get overdue sales order count
+  def self.sales_overdue_orders_count
+    self.sales_orders.all_overdue.count
+  end
+
+  # def get overdue purchase order count
+  def self.purchase_overdue_orders_count
+    self.purchase_orders.all_overdue.count
   end
 end

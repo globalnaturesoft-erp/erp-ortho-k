@@ -26,6 +26,9 @@
         <% else %>
             <span class="arrow"></span>
         <% end %>
+        <% if Erp::Orders::Order.sales_overdue_orders_count + Erp::Orders::Order.purchase_overdue_orders_count > 0 %>
+          <span class="badge badge-danger pull-right"><%= Erp::Orders::Order.sales_overdue_orders_count + Erp::Orders::Order.purchase_overdue_orders_count %></span>
+        <% end %>
     </a>
     <ul class="sub-menu">
         <li class="nav-item <%= "active open" if

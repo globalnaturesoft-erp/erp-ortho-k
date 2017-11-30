@@ -15,6 +15,9 @@
         <% else %>
             <span class="arrow"></span>
         <% end %>
+        <% if Erp::Orders::Order.sales_overdue_orders_count + Erp::Orders::Order.purchase_overdue_orders_count > 0 %>
+          <span class="badge badge-danger pull-right"><%= Erp::Orders::Order.sales_overdue_orders_count + Erp::Orders::Order.purchase_overdue_orders_count %></span>
+        <% end %>
     </a>
     <ul class="sub-menu" <% if
         ["erp/accounting/backend/sales_orders"].include?(params[:controller]) ||
@@ -29,6 +32,10 @@
                 <% if ["erp/accounting/backend/sales_orders"].include?(params[:controller]) %>
                 <span class="selected"></span>
                 <% end %>
+
+                <% if Erp::Orders::Order.sales_overdue_orders_count > 0 %>
+                    <span class="badge badge-danger pull-right"><%= Erp::Orders::Order.sales_overdue_orders_count %></span>
+                <% end %>
             </a>
         </li>
         <li class="nav-item <%= "active open" if ["erp/accounting/backend/purchase_orders"].include?(params[:controller]) %>">
@@ -38,6 +45,9 @@
                 <span class="selected"></span>
                 <% end %>
             </a>
+            <% if Erp::Orders::Order.purchase_overdue_orders_count > 0 %>
+              <span class="badge badge-danger pull-right"><%= Erp::Orders::Order.purchase_overdue_orders_count %></span>
+            <% end %>
         </li>
         <li class="nav-item <%= "active open" if ["erp/accounting/backend/product_returns"].include?(params[:controller]) %>">
             <a href="<%= erp_accounting.backend_product_returns_path %>" class="nav-link ">
