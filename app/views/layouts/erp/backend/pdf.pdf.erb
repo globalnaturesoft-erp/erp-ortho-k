@@ -11,7 +11,7 @@
                 CÔNG TY TNHH ORTHO-K VIỆT NAM
             </div>
             <div class="line-2">
-                535 An Dương Vương, Phường 8, Quận 5
+                535 An Dương Vương, P.8, Q.5, TP. Hồ Chí Minh
             </div>
         </div>
         <div class="right">
@@ -19,7 +19,10 @@
                 Thời điểm in: <%= Time.now.strftime('%d/%m/%Y, %I:%M %p') %>
             </div>
             <div class="line-1">
-                Mẫu số:
+                Mẫu số: <%= yield(:form_num) %>
+            </div>
+            <div class="line-1">
+                <%= yield(:form_info) %>
             </div>
         </div>
     </div>
