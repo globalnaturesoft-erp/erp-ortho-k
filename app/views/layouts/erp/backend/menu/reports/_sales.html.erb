@@ -21,7 +21,7 @@
          <li class="nav-item under_develop <%= "active" if params[:controller] == "erp/ortho_k/backend/sales" && params[:action] == "report_product_return" %>">
             <%= link_to "Báo cáo trả hàng", erp_ortho_k.report_product_return_backend_sales_path, class: "nav-link ", title: 'Báo cáo khách hàng trả hàng (theo ngày, tuần, quý, năm,...)' %>
         </li>
-        <li class="nav-item under_develop <%= "active" if params[:controller] == "erp/ortho_k/backend/sales" && params[:action] == "report_new_patient" %>">
+        <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/sales" && params[:action] == "report_new_patient" %>">
             <%= link_to "BN/PK mới", erp_ortho_k.report_new_patient_backend_sales_path, class: "nav-link ", title: 'Danh sách và số lượng bệnh nhân/Phòng khám mới' %>
         </li>
     </ul>

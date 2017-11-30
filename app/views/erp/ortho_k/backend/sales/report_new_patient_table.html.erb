@@ -21,7 +21,7 @@
                 <td class="text-center uppercase bold"><%= 'Khách hàng công ty' %></td>
                 <td class="text-center bold"><%= @liability_new_patients.count %></td>
                 <td class="text-justify font-yellow-gold">
-                    <% @liability_new_patients.each do |patient| %>
+                    <% @liability_new_patients.each_with_index do |patient,index| %>
                         <%= patient.name %><%= ' | ' if index+1 < @liability_new_patients.count %>
                     <% end %>
                 </td>
