@@ -28,7 +28,10 @@
         <% end %>
     </a>
     <ul class="sub-menu">
-        <li class="nav-item <%= "active open" if ["erp/payments/backend/payment_records"].include?(params[:controller]) %>">
+        <li class="nav-item <%= "active open" if
+            ["erp/payments/backend/payment_records"].include?(params[:controller]) &&
+            !["liabilities_tracking","supplier_liabilities_tracking","customer_commission","commission"].include?(params[:action])
+        %>">
             <a href="<%= erp_payments.backend_payment_records_path %>" class="nav-link ">
                 <span class="title"><%= t('.cash_book') %></span>
                 <% if ["erp/payments/backend/payment_records"].include?(params[:controller]) %>
@@ -44,6 +47,6 @@
         <%= render "layouts/erp/backend/menu/accounting/commission" %>
 
         <%= render "layouts/erp/backend/menu/accounting/option" %>
-        
+
     </ul>
 </li>

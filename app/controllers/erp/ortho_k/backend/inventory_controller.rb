@@ -89,6 +89,14 @@ module Erp
 
           # product query
           @product_query = Erp::Products::Product.where(category_id: category_ids)
+          # single keyword
+          if params.to_unsafe_hash[:keyword].present?
+            keyword = params.to_unsafe_hash[:keyword].strip.downcase
+            keyword.split(' ').each do |q|
+              q = q.strip
+              @product_query = @product_query.where('LOWER(erp_products_products.cache_search) LIKE ?', '%'+q+'%')
+            end
+          end
           # filter by diameters
           if diameter_ids.present?
             if !diameter_ids.kind_of?(Array)
@@ -136,7 +144,7 @@ module Erp
           end
 
           # products
-          @products = @product_query.paginate(:page => params[:page], :per_page => 10)
+          @products = @product_query.paginate(:page => params[:page], :per_page => 20)
         end
 
 
@@ -388,6 +396,14 @@ module Erp
 
           # product query
           @product_query = Erp::Products::Product.where(category_id: category_ids)
+          # single keyword
+          if params.to_unsafe_hash[:keyword].present?
+            keyword = params.to_unsafe_hash[:keyword].strip.downcase
+            keyword.split(' ').each do |q|
+              q = q.strip
+              @product_query = @product_query.where('LOWER(erp_products_products.cache_search) LIKE ?', '%'+q+'%')
+            end
+          end
           # filter by diameters
           if diameter_ids.present?
             if !diameter_ids.kind_of?(Array)

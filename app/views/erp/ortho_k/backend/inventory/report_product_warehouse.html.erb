@@ -92,6 +92,8 @@
 <%= erp_datalist(
     url: erp_ortho_k.report_product_warehouse_table_backend_inventory_index_path,
     sortable: true,
+    scroll_page: true,
+    keyword: true,
     filters: [
         {
             text: t('.show_virtual'), name: 'show_virtual', value: true, checked: false
