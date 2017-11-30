@@ -42,28 +42,6 @@
         <td class="text-center bg-grey text-bold">
           <%
             count = Erp::Products::Product.get_qdelivery_import(filters.clone.merge({
-                delivery_type: Erp::Qdeliveries::Delivery::TYPE_WAREHOUSE_IMPORT
-            }))
-          %>
-          <%= count %>
-        </td>
-        <% Erp::Products::State.all.each do |state| %>
-          <td class="text-center bg-grey text-bold">
-            <%
-              count = Erp::Products::Product.get_qdelivery_import(filters.clone.merge({
-                  delivery_type: [
-                    Erp::Qdeliveries::Delivery::TYPE_CUSTOM_IMPORT,
-                    Erp::Qdeliveries::Delivery::TYPE_CUSTOMER_IMPORT
-                  ],
-                  state: state
-              }))
-            %>
-            <%= count %>
-          </td>
-        <% end %>
-        <td class="text-center bg-grey text-bold">
-          <%
-            count = Erp::Products::Product.get_qdelivery_export(filters.clone.merge({
                 delivery_type: [
                   Erp::Qdeliveries::Delivery::TYPE_CUSTOM_IMPORT,
                   Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT
@@ -71,13 +49,6 @@
                 state: state
             }))
             count += Erp::Products::Product.get_gift_given_export(filters)
-          %>
-          <%= count %>
-        </td>
-        <td class="text-center bg-grey text-bold">
-          <%
-              count = Erp::Products::Product.get_damage_record_export(filters)
-              count += Erp::Products::Product.get_stock_check_export(filters)
           %>
           <%= count %>
         </td>
