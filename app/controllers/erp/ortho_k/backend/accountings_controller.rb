@@ -76,9 +76,11 @@ module Erp
           glb = params.to_unsafe_hash[:global_filter]
           if glb[:period].present?
             @period_name = Erp::Periods::Period.find(glb[:period]).name
+            @from = Erp::Periods::Period.find(glb[:period]).from_date.beginning_of_day
             @to = Erp::Periods::Period.find(glb[:period]).to_date.end_of_day
           else
             @period_name = nil
+            @from = (glb.present? and glb[:from_date].present?) ? glb[:from_date].to_date : nil
             @to = (glb.present? and glb[:to_date].present?) ? glb[:to_date].to_date : nil
           end
           

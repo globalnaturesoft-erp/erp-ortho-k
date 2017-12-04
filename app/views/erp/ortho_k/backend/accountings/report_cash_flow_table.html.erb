@@ -1,28 +1,44 @@
-<% if params.to_unsafe_hash[:global_filter][:to_date].present? ||
+<% if params.to_unsafe_hash[:global_filter][:from_date].present? ||
+      params.to_unsafe_hash[:global_filter][:to_date].present? ||
       params.to_unsafe_hash[:global_filter][:period].present? %>
     
     <div class="custom-show text-center">
         <h4 class="font-blue-madison bold uppercase mb-15">
-            Bảng báo cáo dòng tiền còn lại <%= @period_name.nil? ? 'đến ngày ' + @to.strftime('%d/%m/%Y') : ' cuối ' + @period_name %>
+            Bảng báo cáo dòng tiền
+            <% if @period_name.nil? %>
+                <%= 'Từ ' + @from.strftime('%d/%m/%Y') if !@from.nil? %>
+                <%= !@to.nil? ? ' Đến ' + @to.strftime('%d/%m/%Y') : ' đến nay' %>
+            <% else %>
+                <%= 'Trong ' + @period_name %>
+            <% end %>
         </h4>
     </div>
     
     <table class="table table-bordered order-column">
         <thead class="flip-content">
             <tr>
-                <th width="60%"  class="text-center bg-yellow bg-font-yellow text-nowrap">Danh mục</th>
-                <th width="40%" class="text-center bg-yellow bg-font-yellow text-nowrap">Số tiền</th>
+                <th width="40%"  class="text-center bg-yellow bg-font-yellow text-nowrap">Danh mục tài khoản</th>
+                <th width="20%" class="text-center bg-yellow bg-font-yellow text-nowrap">Số dư đầu kỳ</th>
+                <th width="20%" class="text-center bg-yellow bg-font-yellow text-nowrap">Số tiền thu</th>
+                <th width="20%" class="text-center bg-yellow bg-font-yellow text-nowrap">Số tiền chi</th>
+                <th width="20%" class="text-center bg-yellow bg-font-yellow text-nowrap">Số dư cuối kỳ</th>
             </tr>
         </thead>
         <tbody>
             <% @accounts.each do |account| %>
                 <tr>
                     <td class="text-center"><%= account.name %></td>
+                    <td class="text-center font-yellow-gold"><%= format_number(account.account_balance(to_date: (!@from.nil? ? (@from-1.day) : @from))) %></td>
+                    <td class="text-center font-yellow-gold"><%= format_number(account.received(from_date: @from, to_date: @to)) %></td>
+                    <td class="text-center font-yellow-gold"><%= format_number(account.paid(from_date: @from, to_date: @to)) %></td>
                     <td class="text-center font-yellow-gold"><%= format_number(account.account_balance(to_date: @to)) %></td>
                 </tr>
             <% end %>
             <tr>
                 <td class="text-center bold">TỔNG CỘNG</td>
+                <td class="text-center bold"><%= format_number(@accounts.account_balance(to_date: (!@from.nil? ? (@from-1.day) : @from))) %></td>
+                <td class="text-center bold"><%= format_number(@accounts.received(from_date: @from, to_date: @to)) %></td>
+                <td class="text-center bold"><%= format_number(@accounts.paid(from_date: @from, to_date: @to)) %></td>
                 <td class="text-center bold"><%= format_number(@accounts.account_balance(to_date: @to)) %></td>
             </tr>
             

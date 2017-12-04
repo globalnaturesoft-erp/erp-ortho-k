@@ -206,7 +206,7 @@ vi:
           payment_types: 'Tổng hợp thu/chi'
           sales: 'Kết quả bán hàng'
           revenue_report: 'Kết quả kinh doanh'
-          accounts: 'Dòng tiền còn lại'
+          accounts: 'Báo cáo dòng tiền'
           customer_liabilities: 'Công nợ (KH)'
           supplier_liabilities: 'Công nợ (NCC)'
           period_liabilities: 'Thống kê công nợ (KH)'
@@ -723,7 +723,7 @@ vi:
             please_select_filter: "Vui lòng chọn MỐC THỜI GIAN để xem nội dung báo cáo"
             no_matching_records_found: "Nội dung báo cáo không được tìm thấy. Vui lòng chọn các điều kiện khác để xem."
           report_cash_flow:
-            report_cash_flow: "Báo cáo - Dòng tiền còn lại cuối kỳ"
+            report_cash_flow: "Báo cáo - Dòng tiền theo tài khoản"
             from_date: "Từ ngày"
             to_date: "Đến ngày"
             select_from_date: "Chọn lọc theo ngày đầu kỳ"
