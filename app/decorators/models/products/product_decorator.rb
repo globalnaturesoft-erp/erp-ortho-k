@@ -545,7 +545,7 @@ Erp::Products::Product.class_eval do
 
     # Stock check
     query = Erp::Products::StockCheckDetail.joins(:stock_check, :product)
-            .where(erp_products_stock_checks: {status: Erp::Products::StockCheck::STOCK_CHECK_STATUS_DONE}).limit(2)
+            .where(erp_products_stock_checks: {status: Erp::Products::StockCheck::STATUS_DONE}).limit(2)
             .where.not(quantity: 0)
 
     if params[:product_id].present?
