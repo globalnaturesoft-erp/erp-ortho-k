@@ -26,8 +26,8 @@
         <% else %>
             <span class="arrow"></span>
         <% end %>
-        <% if Erp::Orders::Order.sales_overdue_orders_count + Erp::Orders::Order.purchase_overdue_orders_count > 0 %>
-          <span class="badge badge-danger pull-right"><%= Erp::Orders::Order.sales_overdue_orders_count + Erp::Orders::Order.purchase_overdue_orders_count %></span>
+        <% if Erp::Orders::Order.sales_overdue_orders_count + Erp::Orders::Order.purchase_overdue_orders_count + Erp::Qdeliveries::Delivery.get_waiting_not_paid_return_deliveries_count > 0 %>
+          <span class="badge badge-danger pull-right"><%= Erp::Orders::Order.sales_overdue_orders_count + Erp::Orders::Order.purchase_overdue_orders_count + Erp::Qdeliveries::Delivery.get_waiting_not_paid_return_deliveries_count %></span>
         <% end %>
     </a>
     <ul class="sub-menu">
