@@ -1,6 +1,6 @@
 module Erp::OrthoK
   class PatientState < ApplicationRecord
-    
+
     # Filters
     def self.filter(query, params)
       params = params.to_unsafe_hash
@@ -59,6 +59,11 @@ module Erp::OrthoK
       end
 
       query = query.limit(8).map{|ps| {value: ps.id, text: ps.name} }
+    end
+
+    # get new patient recor
+    def self.get_new_patient
+      self.where(name: 'Mới').first
     end
   end
 end

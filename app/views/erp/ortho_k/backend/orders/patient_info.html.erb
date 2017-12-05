@@ -2,12 +2,26 @@
 <% if !params[:order_id].present? %>
     <p>Bệnh nhân có <%= @orders.count %> đơn hàng <%= "(gần nhất vào #{format_date(@orders.last.order_date)})" if @orders.count > 0 %></p>
 <% end %>
-<%= erp_form_control('checkbox', {
-    name: 'order[is_new_patient]',
-    id: 'is_new_patient',
-    value: (params[:order_id].present? ? (Erp::Orders::Order.find(params[:order_id]).is_new_patient ? 'true' : 'false') : (@orders.count == 0 ? 'true' : 'false')),
-    not_selected_value: 'false',
-    options: [{value: 'true', text: 'Bệnh nhân mới'}]
+
+<%
+    state = (params[:order_id].present? ? Erp::Orders::Order.find(params[:order_id]).patient_state : nil)
+    state = (@orders.count == 0 ? Erp::OrthoK::PatientState.first : nil) if state.nil?
+%>
+
+<%= erp_form_control("dataselect", {
+    name: 'order[patient_state_id]',
+    value: (state.present? ? state.id : ''),
+    text: (state.present? ? state.name : ''),
+    label: 'Tình trạng bệnh nhân',
+    placeholder: 'Chọn tình trang',
+    url: erp_ortho_k.dataselect_backend_patient_states_path(format: 'json', parent_id: @contact.id),
+    create: {
+        url: erp_ortho_k.new_backend_patient_state_path,
+        title: 'Thêm tình trạng',
+        container_selector: '.new_patient_state',
+        input_selector: 'input[name="order[patient_state_id]"]',
+        modal_size: "md"
+    },
 }) %>
 
 

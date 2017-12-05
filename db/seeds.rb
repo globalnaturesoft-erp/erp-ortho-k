@@ -80,3 +80,18 @@ Erp::Taxes::Engine.load_seed
 # Default periods
 puts "Create default periods 2017"
 Erp::Periods::Period.create_year_periods(2017)
+
+# Default patient states
+Erp::OrthoK::PatientState.destroy_all
+Erp::OrthoK::PatientState.create(
+  name: 'Mới',
+  description: 'Bệnh nhận mới'
+)
+Erp::OrthoK::PatientState.create(
+  name: 'Đổi len',
+  description: 'Bệnh nhận đổi len'
+)
+Erp::OrthoK::PatientState.create(
+  name: 'Trả len',
+  description: 'Bệnh nhận trả len'
+)

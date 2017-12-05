@@ -25,6 +25,7 @@
 
     </div>
  <% end %>
+ 
  <% if @contact.contact_group == Erp::Contacts::ContactGroup.get_hospital %>
     <%= erp_form_control("dataselect", {
         name: 'order[doctor_id]',

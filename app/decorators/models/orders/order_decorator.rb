@@ -2,6 +2,7 @@ Erp::Orders::Order.class_eval do
   belongs_to :doctor, class_name: "Erp::Contacts::Contact", foreign_key: :doctor_id, optional: true
   belongs_to :patient, class_name: "Erp::Contacts::Contact", foreign_key: :patient_id, optional: true
   belongs_to :hospital, class_name: "Erp::Contacts::Contact", foreign_key: :hospital_id, optional: true
+  belongs_to :patient_state, class_name: "Erp::OrthoK::PatientState", foreign_key: :patient_state_id, optional: true
 
   # class const
   POSITION_LEFT = 'left'
@@ -27,6 +28,10 @@ Erp::Orders::Order.class_eval do
 
   def hospital_name
     (hospital.present? ? hospital.name : '')
+  end
+
+  def patient_state_name
+    (patient_state.present? ? patient_state.name : '')
   end
 
   def display_customer_info
