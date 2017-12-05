@@ -232,13 +232,11 @@ module Erp
 
           if @to_warehouse.present? and @from_warehouse.present? and @state.present?
             if @condition == 'to_required'
-              #ids = Erp::Products::Product.pluck(:id).sample(rand(90..250))
-              #@products = Erp::Products::Product.where(id: ids).order(:code)
               @product_query = @product_query.where(erp_products_cache_stocks: {warehouse_id: @to_warehouse.id, state_id: @state.id})
                 .where("stock <= ?", @condition_value)
             elsif @condition == 'from_redundant'
               @product_query = @product_query.where(erp_products_cache_stocks: {warehouse_id: @from_warehouse.id, state_id: @state.id})
-                .where("stock > ?", @condition_value)
+                .where("stock >= ?", @condition_value)
             end
           end
 

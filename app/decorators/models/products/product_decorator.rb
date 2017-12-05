@@ -3,6 +3,20 @@ Erp::Products::Product.class_eval do
 
   after_save :update_cache_diameter
 
+  def set_default_name
+    if !name.present?
+      self.name = "#{self.get_letter}#{self.get_number.to_s.rjust(2, '0')}-#{self.get_diameter}-#{self.category_name}"
+      self.save
+    end
+  end
+
+  def set_default_code
+    if !code.present?
+      self.code = "#{self.get_letter}#{self.get_number.to_s.rjust(2, '0')}"
+      self.save
+    end
+  end
+
   def update_cache_diameter
     update_column(:cache_diameter, self.get_diameter)
   end
@@ -33,10 +47,20 @@ Erp::Products::Product.class_eval do
   end
 
   # get diameter
+  def get_letter
+    self.get_value(Erp::Products::Property.getByName(Erp::Products::Property::NAME_CHU))
+  end
+
+  # get diameter
+  def get_number
+    self.get_value(Erp::Products::Property.getByName(Erp::Products::Property::NAME_SO))
+  end
+
+  # get diameter
   def get_diameter_properties_value
     self.get_properties_value(Erp::Products::Property.getByName(Erp::Products::Property::NAME_DUONG_KINH))
   end
-  
+
   # get import report
   def import_export_report(params={})
     return Erp::Products::Product.import_export_report(params.merge({product_id: self.id}))
@@ -49,12 +73,12 @@ Erp::Products::Product.class_eval do
     total = {
       quantity: 0
     }
-    
+
     # Qdelivery: Có Chứng Từ
     query = Erp::Qdeliveries::DeliveryDetail.joins(:delivery, :order_detail => :product)
             .where.not(order_detail_id: nil)
             .where(erp_qdeliveries_deliveries: {status: Erp::Qdeliveries::Delivery::STATUS_DELIVERED})
-            
+
     if params[:product_id].present?
       query = query.where(erp_orders_order_details: {product_id: params[:product_id]})
     end
@@ -120,7 +144,7 @@ Erp::Products::Product.class_eval do
     query = Erp::Qdeliveries::DeliveryDetail.joins(:delivery, :product)
             .where(order_detail_id: nil)
             .where(erp_qdeliveries_deliveries: {status: Erp::Qdeliveries::Delivery::STATUS_DELIVERED})
-            
+
     if params[:product_id].present?
       query = query.where(product_id: params[:product_id])
     end
@@ -180,47 +204,47 @@ Erp::Products::Product.class_eval do
       }
       total[:quantity] += qty
     end
-    
+
     # @todo tạm thời không lọc lịch sử xuất nhập kho theo StockTransfer (trên chi tiết sản phẩm)
     if !(params[:not_filters].present? and params[:not_filters] == 'stock_transfer')
       # Transfer: Kho Chuyển Đến /Kho Đích
       query = Erp::StockTransfers::TransferDetail.joins(:transfer, :product)
               .where(erp_stock_transfers_transfers: {status: Erp::StockTransfers::Transfer::STATUS_DELIVERED})#.limit(2)
-      
+
       if params[:product_id].present?
         query = query.where(product_id: params[:product_id])
       end
-  
+
       if params[:from_date].present?
         query = query.where('erp_stock_transfers_transfers.received_at >= ?', params[:from_date].to_date.beginning_of_day)
       end
-  
+
       if params[:to_date].present?
         query = query.where('erp_stock_transfers_transfers.received_at <= ?', params[:to_date].to_date.end_of_day)
       end
-  
+
       if params[:category_id].present?
         query = query.where(erp_products_products: {category_id: params[:category_id]})
       end
-  
+
       if params[:warehouse_id].present?
         query = query.where('erp_stock_transfers_transfers.source_warehouse_id = ? OR erp_stock_transfers_transfers.destination_warehouse_id = ?',
                             params[:warehouse_id], params[:warehouse_id])
-        
+
       end
-  
+
       if params[:source_warehouse_id].present?
         query = query.where('erp_stock_transfers_transfers.source_warehouse_id = ?', params[:source_warehouse_id])
       end
-  
+
       if params[:destination_warehouse_id].present?
         query = query.where('erp_stock_transfers_transfers.destination_warehouse_id = ?', params[:destination_warehouse_id])
       end
-  
+
       if params[:state_id].present?
         query = query.where(state_id: params[:state_id])
       end
-      
+
       query.each do |transfer_detail|
         qty = +transfer_detail.quantity
         qty_export = transfer_detail.quantity
@@ -244,45 +268,45 @@ Erp::Products::Product.class_eval do
         }
         total[:quantity] += qty
       end
-  
+
       # Transfer: Kho Chuyển Đi /Kho Nguồn
       quer = Erp::StockTransfers::TransferDetail.joins(:transfer)
             .where(erp_stock_transfers_transfers: {status: Erp::StockTransfers::Transfer::STATUS_DELIVERED}).limit(2)
-      
+
       if params[:product_id].present?
         query = query.where(product_id: params[:product_id])
       end
-  
+
       if params[:from_date].present?
         query = query.where('erp_stock_transfers_transfers.received_at >= ?', params[:from_date].to_date.beginning_of_day)
       end
-  
+
       if params[:to_date].present?
         query = query.where('erp_stock_transfers_transfers.received_at <= ?', params[:to_date].to_date.end_of_day)
       end
-  
+
       if params[:category_id].present?
         query = query.where(erp_products_products: {category_id: params[:category_id]})
       end
-  
+
       if params[:warehouse_id].present?
         query = query.where('erp_stock_transfers_transfers.source_warehouse_id = ? OR erp_stock_transfers_transfers.destination_warehouse_id = ?',
                             params[:warehouse_id], params[:warehouse_id])
-        
+
       end
-  
+
       if params[:source_warehouse_id].present?
         query = query.where('erp_stock_transfers_transfers.source_warehouse_id = ?', params[:source_warehouse_id])
       end
-  
+
       if params[:destination_warehouse_id].present?
         query = query.where('erp_stock_transfers_transfers.destination_warehouse_id = ?', params[:destination_warehouse_id])
       end
-  
+
       if params[:state_id].present?
         query = query.where(state_id: params[:state_id])
       end
-      
+
       query.each do |transfer_detail|
         qty = -transfer_detail.quantity
         qty_import = transfer_detail.quantity
@@ -311,7 +335,7 @@ Erp::Products::Product.class_eval do
     # Gift Given /Tặng Quà
     query = Erp::GiftGivens::GivenDetail.joins(:given, :product)
             .where(erp_gift_givens_givens: {status: Erp::GiftGivens::Given::STATUS_DELIVERED}).limit(5)
-    
+
     if params[:product_id].present?
       query = query.where(product_id: params[:product_id])
     end
@@ -335,7 +359,7 @@ Erp::Products::Product.class_eval do
     if params[:state_id].present?
       query = query.where(state_id: params[:state_id])
     end
-    
+
     query.each do |gv_detail|
       qty = -gv_detail.quantity
       qty_export = gv_detail.quantity
@@ -364,7 +388,7 @@ Erp::Products::Product.class_eval do
     # Consignment: Hàng ký gửi cho mượn
     query = Erp::Consignments::ConsignmentDetail.joins(:consignment, :product)
             .where(erp_consignments_consignments: {status: Erp::Consignments::Consignment::STATUS_DELIVERED}).limit(2)
-    
+
     if params[:product_id].present?
       query = query.where(product_id: params[:product_id])
     end
@@ -388,7 +412,7 @@ Erp::Products::Product.class_eval do
     if params[:state_id].present?
       query = query.where(state_id: params[:state_id])
     end
-    
+
     query.each do |csm_detail|
       qty = -csm_detail.quantity
       qty_export = csm_detail.quantity
@@ -417,7 +441,7 @@ Erp::Products::Product.class_eval do
     # Consignment: Hàng ký gửi trả lại
     query = Erp::Consignments::ReturnDetail.joins(:cs_return, :consignment_detail => :product)
             .where(erp_consignments_cs_returns: {status: Erp::Consignments::CsReturn::STATUS_DELIVERED}).limit(5)
-    
+
     if params[:product_id].present?
       query = query.where(erp_consignments_consignment_details: {product_id: params[:product_id]})
     end
@@ -441,7 +465,7 @@ Erp::Products::Product.class_eval do
     if params[:state_id].present?
       query = query.where(state_id: params[:state_id])
     end
-    
+
     query.each do |return_detail|
       qty = +return_detail.quantity
       qty_import = return_detail.quantity
@@ -470,7 +494,7 @@ Erp::Products::Product.class_eval do
     # Damage Record: Hàng xuất hủy
     query = Erp::Products::DamageRecordDetail.joins(:damage_record, :product)
             .where(erp_products_damage_records: {status: Erp::Products::DamageRecord::STATUS_DONE}).limit(2)
-    
+
     if params[:product_id].present?
       query = query.where(product_id: params[:product_id])
     end
@@ -494,7 +518,7 @@ Erp::Products::Product.class_eval do
     if params[:state_id].present?
       query = query.where(state_id: params[:state_id])
     end
-    
+
     query.each do |damage_record_detail|
       qty = -damage_record_detail.quantity
       qty_export = damage_record_detail.quantity
@@ -523,7 +547,7 @@ Erp::Products::Product.class_eval do
     query = Erp::Products::StockCheckDetail.joins(:stock_check, :product)
             .where(erp_products_stock_checks: {status: Erp::Products::StockCheck::STOCK_CHECK_STATUS_DONE}).limit(2)
             .where.not(quantity: 0)
-    
+
     if params[:product_id].present?
       query = query.where(product_id: params[:product_id])
     end
@@ -547,7 +571,7 @@ Erp::Products::Product.class_eval do
     if params[:state_id].present?
       query = query.where(state_id: params[:state_id])
     end
-    
+
     query.each do |stock_check_detail|
       qty = stock_check_detail.quantity
       if qty > 0

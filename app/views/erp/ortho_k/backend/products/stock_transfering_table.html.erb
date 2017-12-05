@@ -8,8 +8,8 @@
             <th class="bg-grey text-center" width="1%"><%= t('.number') %></th>
             <th class="bg-grey"><%= t('.code') %></th>
             <th class="bg-grey"><%= t('.name') %></th>
-            <th class="bg-grey text-center">Từ kho: <%= @from_warehouse.name %></th>
-            <th class="bg-grey text-center">Đến kho: <%= @to_warehouse.name %></th>
+            <th class="bg-grey text-center">Kho xuất: <%= @from_warehouse.name %></th>
+            <th class="bg-grey text-center">Kho nhập: <%= @to_warehouse.name %></th>
             <th class="bg-grey text-center"><%= t('.transfer_quantity') %></th>
         </tr>
         <% @products.each_with_index do |product,index| %>
@@ -21,7 +21,7 @@
                     to = Erp::Products::CacheStock.where(product_id: product.id)
                         .where(warehouse_id: @to_warehouse.id)
                         .where(state_id: @state.id).first.stock
-                    transfer = from - @condition_value.to_i
+                    transfer = (@transfer_quantity.to_i > from ? from : @transfer_quantity.to_i)
                 else
                     to = Erp::Products::CacheStock.where(product_id: product.id)
                         .where(warehouse_id: @to_warehouse.id)
@@ -32,18 +32,20 @@
                     transfer = from > @transfer_quantity.to_i ? @transfer_quantity.to_i : from
                 end
             %>
-            <tr>
-                <td class="text-center"><%= index+1 %></td>
-                <td class=""><%= product.code %></td>
-                <td class=""><%= product.name %></td>
-                <td class="text-center">
-                    <%= from %>
-                </td>
-                <td class="text-center"><%= to %></td>
-                <td class="text-center bg-warning">
-                    <%= transfer %>
-                </td>
-            </tr>
+            <% if transfer > 0 %>
+                <tr>
+                    <td class="text-center"><%= index+1 %></td>
+                    <td class=""><%= product.code %></td>
+                    <td class=""><%= product.name %></td>
+                    <td class="text-center">
+                        <%= from %>
+                    </td>
+                    <td class="text-center"><%= to %></td>
+                    <td class="text-center bg-warning">
+                        <%= transfer %>
+                    </td>
+                </tr>
+            <% end %>
         <% end %>
     </table>
 <% else %>
