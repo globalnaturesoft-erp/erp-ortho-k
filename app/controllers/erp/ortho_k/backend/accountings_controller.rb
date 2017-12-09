@@ -43,7 +43,9 @@ module Erp
           ).order('payment_date DESC')
 
           respond_to do |format|
-            format.xlsx
+            format.xlsx {
+              response.headers['Content-Disposition'] = 'attachment; filename="Thu chi tien ban hang.xlsx"'
+            }
           end
         end
 
@@ -82,7 +84,9 @@ module Erp
           @payment_types = Erp::Payments::PaymentType.all # Lấy các payment type ACTIVE
 
           respond_to do |format|
-            format.xlsx
+            format.xlsx {
+              response.headers['Content-Disposition'] = 'attachment; filename="Thu chi tong hop.xlsx"'
+            }
           end
         end
 
@@ -115,6 +119,12 @@ module Erp
           end
 
           @categories = Erp::Products::Category.all_unarchive
+          
+          respond_to do |format|
+            format.xlsx {
+              response.headers['Content-Disposition'] = 'attachment; filename="Ket qua doanh thu ban hang.xlsx"'
+            }
+          end
         end
 
         # Bao cao ket qua kinh doanh
@@ -144,7 +154,9 @@ module Erp
           end
 
           respond_to do |format|
-            format.xlsx
+            format.xlsx {
+              response.headers['Content-Disposition'] = 'attachment; filename="Ket qua kinh doanh.xlsx"'
+            }
           end
         end
 
@@ -179,7 +191,9 @@ module Erp
           @accounts = Erp::Payments::Account.search(params)
 
           respond_to do |format|
-            format.xlsx
+            format.xlsx {
+              response.headers['Content-Disposition'] = 'attachment; filename="Bao cao dong tien.xlsx"'
+            }
           end
         end
 
@@ -224,7 +238,9 @@ module Erp
           end
 
           respond_to do |format|
-            format.xlsx
+            format.xlsx {
+              response.headers['Content-Disposition'] = 'attachment; filename="Cong no khach hang.xlsx"'
+            }
           end
         end
 
@@ -269,7 +285,9 @@ module Erp
           end
 
           respond_to do |format|
-            format.xlsx
+            format.xlsx {
+              response.headers['Content-Disposition'] = 'attachment; filename="Cong no nha cung cap.xlsx"'
+            }
           end
         end
         
@@ -284,7 +302,9 @@ module Erp
           @customers = Erp::Contacts::Contact.where.not(id: Erp::Contacts::Contact.get_main_contact.id)
 
           respond_to do |format|
-            format.xlsx
+            format.xlsx {
+              response.headers['Content-Disposition'] = 'attachment; filename="Thong ke cong no khach hang.xlsx"'
+            }
           end
         end
       end
