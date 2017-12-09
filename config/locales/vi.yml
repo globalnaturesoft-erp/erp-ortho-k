@@ -660,9 +660,11 @@ vi:
             choose_customer: "Chọn lọc theo khách hàng"
             filter_supplier: "Nhà cung cấp"
             choose_supplier: "Chọn lọc theo nhà cung cấp"
+            ordinal_number: "Số thứ tự"
+            contact_name: "Tên khách hàng"
             voucher_date: "Ngày thanh toán"
-            pay_receive: "Diễn giải"
-            description: "Ghi chú"
+            pay_receive: "Loại phiếu"
+            description: "Diễn giải"
             amount: "Số tiền"
             options: "Tùy chọn"
             export_pdf: "Xuất ra PDF"
@@ -677,6 +679,17 @@ vi:
             pay_sales_order: "Hoàn tiền bán lẻ"
             please_select_filter: "Vui lòng chọn LOẠI PHIẾU và MỐC THỜI GIAN để xem nội dung báo cáo"
             no_matching_records_found: "Nội dung báo cáo không được tìm thấy. Vui lòng chọn các điều kiện khác để xem."
+          report_pay_receive_xlsx:
+            ordinal_number: "STT"
+            contact_name: "Tên khách hàng"
+            voucher_date: "Ngày thanh toán"
+            pay_receive: "Loại phiếu"
+            amount: "Số tiền"
+            description: "Diễn giải"
+            receive_sales_order: "Thu tiền bán lẻ"
+            receive_customer: "Thu tiền công nợ"
+            pay_sales_order: "Hoàn tiền bán lẻ"
+            pay_customer: "Hoàn tiền công nợ"
           report_synthesis_pay_receive:
             report_synthesis_pay_receive: "Báo cáo - Tổng hợp thu/chi"
             from_date: "Từ ngày"
@@ -722,6 +735,10 @@ vi:
           report_income_statement_table:
             please_select_filter: "Vui lòng chọn MỐC THỜI GIAN để xem nội dung báo cáo"
             no_matching_records_found: "Nội dung báo cáo không được tìm thấy. Vui lòng chọn các điều kiện khác để xem."
+          report_income_statement_xlsx:
+            ordinal_number: "STT"
+            name: "Chỉ tiêu kinh doanh"
+            amount: "Số tiền"
           report_cash_flow:
             report_cash_flow: "Báo cáo - Dòng tiền theo tài khoản"
             from_date: "Từ ngày"
@@ -738,6 +755,12 @@ vi:
             print: "In ấn / Print"
           report_cash_flow_table:
             please_select_filter: "Vui lòng chọn MỐC THỜI GIAN để xem nội dung báo cáo"
+          report_cash_flow_xlsx:
+            account_name: "Danh mục tài khoản"
+            begin_balance: "Số dư đầu kỳ"
+            received: "Số tiền thu"
+            paid: "Số tiền chi"
+            end_balance: "Số dư cuối kỳ"
           report_customer_liabilities:
             report_customer_liabilities: "Báo cáo - Công nợ khách hàng trong kỳ"
             from_date: "Từ ngày"
@@ -755,6 +778,14 @@ vi:
           report_customer_liabilities_table:
             please_select_filter: "Vui lòng chọn TỪ NGÀY - ĐẾN NGÀY hoặc THỜI GIAN CỐ ĐỊNH để xem nội dung báo cáo"
             no_matching_records_found: "Nội dung báo cáo không được tìm thấy. Vui lòng chọn các điều kiện khác để xem."
+          report_customer_liabilities_xlsx:
+            ordinal_number: "STT"
+            customer_name: "Tên khách hàng"
+            begin_period_debt_amount: "Nợ đầu kỳ"
+            total_debt_amount: "Nợ phát sinh"
+            total_paid_amount: "Đã thanh toán"
+            end_period_debt_amount: "Nợ cuối kỳ"
+            salesperson: "Nhân viên kinh doanh"
           report_supplier_liabilities:
             report_supplier_liabilities: "Báo cáo - Công nợ nhà cung cấp trong kỳ"
             from_date: "Từ ngày"
@@ -772,6 +803,13 @@ vi:
           report_supplier_liabilities_table:
             please_select_filter: "Vui lòng chọn TỪ NGÀY - ĐẾN NGÀY hoặc THỜI GIAN CỐ ĐỊNH để xem nội dung báo cáo"
             no_matching_records_found: "Nội dung báo cáo không được tìm thấy. Vui lòng chọn các điều kiện khác để xem."
+          report_supplier_liabilities_xlsx:
+            ordinal_number: "STT"
+            supplier_name: "Tên nhà cung cấp"
+            begin_period_debt_amount: "Nợ đầu kỳ"
+            total_debt_amount: "Nợ phát sinh"
+            total_paid_amount: "Đã thanh toán"
+            end_period_debt_amount: "Nợ cuối kỳ"
           report_statistics_liabilities:
             report_statistics_liabilities: "Thống kê - Tổng công nợ khách hàng"
             to_date: "Tháng cuối kỳ"
@@ -780,6 +818,11 @@ vi:
             export_pdf: "Xuất ra PDF"
             export_excel: "Xuất ra Excel"
             print: "In ấn / Print"
+          report_statistics_liabilities_xlsx:
+            periods: "Danh mục"
+            total_debt_amount: "Tổng nợ"
+            total_paid_amount: "Tổng thu"
+            total_remain_amount: "Còn lại"
         sales:
           report_new_patient:
             report_new_patient: "Báo cáo - Số lượng bệnh nhân mới"

@@ -56,20 +56,35 @@ Erp::OrthoK::Engine.routes.draw do
 				collection do
 					get 'report_pay_receive'
 					post 'report_pay_receive_table'
+					get 'report_pay_receive_xlsx'
+					
 					get 'report_synthesis_pay_receive'
 					post 'report_synthesis_pay_receive_table'
+					get 'report_synthesis_pay_receive_xlsx'
+					
 					get 'report_sales_results'
 					post 'report_sales_results_table'
+					get 'report_sales_results_xlsx'
+					
 					get 'report_income_statement'
 					post 'report_income_statement_table'
+					get 'report_income_statement_xlsx'
+					
 					get 'report_cash_flow'
 					post 'report_cash_flow_table'
+					get 'report_cash_flow_xlsx'
+					
 					get 'report_customer_liabilities'
 					post 'report_customer_liabilities_table'
+					get 'report_customer_liabilities_xlsx'
+					
 					get 'report_supplier_liabilities'
 					post 'report_supplier_liabilities_table'
+					get 'report_supplier_liabilities_xlsx'
+					
 					get 'report_statistics_liabilities'
 					post 'report_statistics_liabilities_table'
+					get 'report_statistics_liabilities_xlsx'
 				end
 			end
 

@@ -1,0 +1,112 @@
+wb = xlsx_package.workbook
+xlsx_package.use_autowidth = true
+thu = (get_filters(params)['pay_receive'].present? and get_filters(params)['pay_receive'].include?(Erp::Payments::PaymentRecord::TYPE_RECEIVE)) ? 'thu ' : ''
+chi = (get_filters(params)['pay_receive'].present? and get_filters(params)['pay_receive'].include?(Erp::Payments::PaymentRecord::TYPE_PAY)) ? 'chi ' : ''
+wb.styles do |s|
+  wb.styles.fonts.first.name = 'Tahoma'
+  wb.add_worksheet(name: (thu + chi + 'tiền hàng').capitalize) do |sheet|
+    # style
+    bg_info = {:bg_color => "305496", :fg_color => "FF"}
+    text_center = {alignment: { horizontal: :center }}
+    text_left = {alignment: { horizontal: :left }}
+    text_right = {alignment: { horizontal: :right }}
+    number = {format_code: '#,##0'}
+    border = {border: { style: :thin, color: "00", :edges => [:left, :right, :bottom] }}
+    bold = {b: true}
+    
+    # add empty row
+    sheet.add_row ['']
+    
+    # Title
+    date = "#{' TỪ ' + @from.to_date.strftime('%d/%m/%Y') if !@from.nil?}#{' ĐẾN ' + @to.to_date.strftime('%d/%m/%Y') if !@to.nil?}"
+    sheet.add_row [(thu + chi + 'TIỀN HÀNG' + date).upcase], sz: 16, b: true
+    
+    # add empty row
+    sheet.add_row ['']
+    
+    # header
+    header = {columns: [], styles: []}
+    footer = {columns: [], styles: []}
+    header[:columns] = []
+    if get_columns(params).include?("ordinal_number") or get_columns(params).empty?
+      header[:columns] << t('.ordinal_number')
+      header[:styles] << (s.add_style bg_info.deep_merge(text_center).merge(bold))
+      sheet.column_info.first.width = 5
+  
+      footer[:columns] << ""
+      footer[:styles] << (s.add_style border)
+    end
+    if get_columns(params).include?("contact_name") or get_columns(params).empty?
+      header[:columns] << t('.contact_name')
+      header[:styles] << (s.add_style bg_info.deep_merge(bold))
+  
+      footer[:columns] << ""
+      footer[:styles] << (s.add_style border)
+    end    
+    if get_columns(params).include?("voucher_date")
+      header[:columns] << t('.voucher_date')
+      header[:styles] << (s.add_style bg_info.deep_merge(bold))
+
+      footer[:columns] << ""
+      footer[:styles] << (s.add_style border)
+    end    
+    if get_columns(params).include?("pay_receive") or get_columns(params).empty?
+      header[:columns] << t('.pay_receive')
+      header[:styles] << (s.add_style bg_info.deep_merge(bold))
+
+      footer[:columns] << ""
+      footer[:styles] << (s.add_style border)
+    end
+    if get_columns(params).include?("description")
+      header[:columns] << t('.description')
+      header[:styles] << (s.add_style bg_info.deep_merge(bold))
+
+      footer[:columns] << ''
+      footer[:styles] << (s.add_style border)
+    end
+    if get_columns(params).include?("amount") or get_columns(params).empty?
+      header[:columns] << t('.amount')
+      header[:styles] << (s.add_style bg_info.deep_merge(text_right).deep_merge(bold))
+
+      footer[:columns] << @payment_records.remain_amount(from_date: @from, to_date: @to)
+      footer[:styles] << (s.add_style number.deep_merge(bold).deep_merge(border))
+    end
+
+    sheet.add_row header[:columns], style: header[:styles]
+    
+    # rows
+    @payment_records.each_with_index do |payment_record, index|
+      row = {columns: [], styles: []}
+      row[:columns] = []
+      if get_columns(params).include?("ordinal_number") or get_columns(params).empty?  
+        row[:columns] << index+1
+        row[:styles] << (s.add_style text_center.deep_merge(border))
+      end
+      if get_columns(params).include?("contact_name") or get_columns(params).empty?
+        row[:columns] << payment_record.customer_name if payment_record.customer != Erp::Contacts::Contact.get_main_contact
+        row[:styles] << (s.add_style text_left.deep_merge(border))
+      end
+      if get_columns(params).include?("voucher_date")
+        row[:columns] << payment_record.payment_date.strftime('%d/%m/%Y')
+        row[:styles] << (s.add_style text_left.deep_merge(border))
+      end
+      if get_columns(params).include?("pay_receive") or get_columns(params).empty?
+        row[:columns] << t(".#{display_payment_record_type(payment_record)}")
+        row[:styles] << (s.add_style text_left.deep_merge(border))
+      end
+      if get_columns(params).include?("description")
+        row[:columns] << payment_record.description
+        row[:styles] << (s.add_style text_left.deep_merge(border))
+      end
+      if get_columns(params).include?("amount") or get_columns(params).empty?
+        row[:columns] << payment_record.amount
+        row[:styles] << (s.add_style text_right.deep_merge(number).merge(border))
+      end
+
+      sheet.add_row row[:columns], style: row[:styles]
+    end
+
+    # footer
+    sheet.add_row footer[:columns], style: footer[:styles]
+  end
+end
