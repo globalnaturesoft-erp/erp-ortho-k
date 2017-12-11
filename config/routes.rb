@@ -117,12 +117,19 @@ Erp::OrthoK::Engine.routes.draw do
 				collection do
 					get 'report_sell_and_return'
 					post 'report_sell_and_return_table'
+					get 'report_sell_and_return_xlsx'
+					
 					get 'report_sales_details'
 					post 'report_sales_details_table'
+					get 'report_sales_details_xlsx'
+					
 					get 'report_product_return'
 					post 'report_product_return_table'
+					get 'report_product_return_xlsx'
+					
 					get 'report_new_patient'
 					post 'report_new_patient_table'
+					get 'report_new_patient_xlsx'
 				end
 			end
 

@@ -1,0 +1,300 @@
+wb = xlsx_package.workbook
+xlsx_package.use_autowidth = true
+wb.styles do |s|
+  wb.styles.fonts.first.name = 'Times New Roman'
+  wb.add_worksheet(name: 'Báo cáo bán và trả hàng') do |sheet|
+    # style
+    bg_info = {:bg_color => "305496", :fg_color => "FF"}
+    bg_subrow = {:bg_color => "dbdbdb", :fg_color => "00"}
+    text_center = {alignment: { horizontal: :center }}
+    text_left = {alignment: { horizontal: :left }}
+    text_right = {alignment: { horizontal: :right }}
+    number = {format_code: '#,##0'}
+    border = {border: { style: :thin, color: "00", :edges => [:left, :right, :bottom] }}
+    bold = {b: true}
+    if !@from.nil? and !@to.nil? and (@from.to_date == @to.to_date)
+      date = "#{' NGÀY ' + @from.to_date.strftime('%d/%m/%Y')}"
+    else
+      date = "#{' TỪ ' + @from.to_date.strftime('%d/%m/%Y') if !@from.nil?}#{' ĐẾN ' + @to.to_date.strftime('%d/%m/%Y') if !@to.nil?}"
+    end
+    
+    # ============================= SALES REPORT ================================
+    # add empty row
+    sheet.add_row ['']
+    
+    # Title 1
+    sheet.add_row ['BÁO CÁO BÁN HÀNG' + date], sz: 16, b: true, bg_color: "ffc801", style: (s.add_style text_center)
+    
+    # add empty row
+    sheet.add_row ['']
+    
+    # header
+    header = {columns: [], styles: []}
+    footer = {columns: [], styles: []}
+    header[:columns] = []
+    
+    header[:columns] << t('.ordinal_number')
+    header[:styles] << (s.add_style bg_info.deep_merge(text_center).merge(bold))
+    footer[:columns] << "TỔNG CỘNG"
+    footer[:styles] << (s.add_style bold.deep_merge(border).deep_merge(text_center))
+    
+    header[:columns] << t('.customer_name')
+    header[:styles] << (s.add_style bg_info.deep_merge(text_left).merge(bold))
+    footer[:columns] << ''
+    footer[:styles] << (s.add_style bold.deep_merge(border))
+    
+    header[:columns] << t('.employee_name')
+    header[:styles] << (s.add_style bg_info.deep_merge(text_left).merge(bold))
+    footer[:columns] << ''
+    footer[:styles] << (s.add_style bold.deep_merge(border))
+    
+    header[:columns] << t('.product_name')
+    header[:styles] << (s.add_style bg_info.deep_merge(text_left).merge(bold))
+    footer[:columns] << ''
+    footer[:styles] << (s.add_style bold.deep_merge(border))
+    
+    header[:columns] << t('.quantity')
+    header[:styles] << (s.add_style bg_info.deep_merge(text_right).merge(bold))
+    footer[:columns] << ''
+    footer[:styles] << (s.add_style number.deep_merge(bold).deep_merge(border))
+    
+    header[:columns] << t('.price')
+    header[:styles] << (s.add_style bg_info.deep_merge(text_right).merge(bold))
+    footer[:columns] << ''
+    footer[:styles] << (s.add_style number.deep_merge(bold).deep_merge(border))
+    
+    header[:columns] << t('.discount')
+    header[:styles] << (s.add_style bg_info.deep_merge(text_right).merge(bold))
+    footer[:columns] << ''
+    footer[:styles] << (s.add_style number.deep_merge(bold).deep_merge(border))
+    
+    header[:columns] << t('.amount')
+    header[:styles] << (s.add_style bg_info.deep_merge(text_right).merge(bold))
+    footer[:columns] << @orders.cache_total
+    footer[:styles] << (s.add_style number.deep_merge(bold).deep_merge(border))
+    
+    header[:columns] << t('.note')
+    header[:styles] << (s.add_style bg_info.deep_merge(text_right).merge(bold))
+    footer[:columns] << ''
+    footer[:styles] << (s.add_style border)
+    
+    sheet.add_row header[:columns], style: header[:styles]
+    
+    # rows
+    c = 4
+    i1 = 1
+    @orders.each do |order|
+      order.order_details.each_with_index do |order_detail|
+        row = {columns: [], styles: []}
+        row[:columns] = []
+        
+        row[:columns] << (i1)
+        i1 += 1
+        row[:styles] << (s.add_style text_center.deep_merge(border))
+        
+        row[:columns] << order.customer_name
+        row[:styles] << (s.add_style text_left.deep_merge(border))
+        
+        row[:columns] << order.employee_name
+        row[:styles] << (s.add_style text_left.deep_merge(border))
+        
+        row[:columns] << order_detail.product_name
+        row[:styles] << (s.add_style text_left.deep_merge(border))
+        
+        row[:columns] << order_detail.quantity
+        row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
+        
+        row[:columns] << order_detail.price
+        row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
+        
+        row[:columns] << order_detail.discount_amount
+        row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
+        
+        row[:columns] << order_detail.total
+        row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
+        
+        row[:columns] << order_detail.description
+        row[:styles] << (s.add_style text_center.deep_merge(border))
+        
+        sheet.add_row row[:columns], style: row[:styles]
+        c += 1
+      end
+      subrow = {columns: [], styles: []}
+      subrow[:columns] << ''
+      subrow[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_subrow))
+      
+      subrow[:columns] << ''
+      subrow[:styles] << (s.add_style text_left.deep_merge(border).deep_merge(bg_subrow))
+      
+      subrow[:columns] << ''
+      subrow[:styles] << (s.add_style text_left.deep_merge(border).deep_merge(bg_subrow))
+      
+      subrow[:columns] << ''
+      subrow[:styles] << (s.add_style text_left.deep_merge(border).deep_merge(bg_subrow))
+      
+      subrow[:columns] << ''
+      subrow[:styles] << (s.add_style text_right.deep_merge(border).deep_merge(bg_subrow))
+      
+      subrow[:columns] << ''
+      subrow[:styles] << (s.add_style text_right.deep_merge(border).deep_merge(bg_subrow))
+      
+      subrow[:columns] << ''
+      subrow[:styles] << (s.add_style text_right.deep_merge(border).deep_merge(bg_subrow))
+      
+      subrow[:columns] << order.cache_total
+      subrow[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border).deep_merge(bg_subrow).deep_merge(bold))
+      
+      subrow[:columns] << ''
+      subrow[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_subrow))
+      
+      sheet.add_row subrow[:columns], style: subrow[:styles]
+      c += 1
+    end
+    
+    # footer
+    sheet.add_row footer[:columns], style: footer[:styles]
+    c += 1
+    t1 = c
+    
+    # Setup
+    sheet.column_widths 5, 25, 15, 25, 15, 15, 15, 15, 15
+    sheet.merge_cells("A2:I2")
+    sheet.merge_cells("A#{t1}:G#{t1}")
+    
+    # ============================= PRODUCT RETURN REPORT ================================
+    # add empty row
+    sheet.add_row ['']
+    c += 1
+    sheet.add_row ['']
+    c += 1
+    
+    # Title 2
+    sheet.add_row ['BÁO CÁO TRẢ HÀNG' + date], sz: 16, b: true, bg_color: "ffc801", style: (s.add_style text_center)
+    c += 1
+    
+    # add empty row
+    sheet.add_row []
+    t2 = c + 1
+    
+    # header
+    header = {columns: [], styles: []}
+    footer = {columns: [], styles: []}
+    header[:columns] = []
+    
+    header[:columns] << t('.ordinal_number')
+    header[:styles] << (s.add_style bg_info.deep_merge(text_center).merge(bold))
+    footer[:columns] << "TỔNG CỘNG"
+    footer[:styles] << (s.add_style bold.deep_merge(border).deep_merge(text_center))
+    
+    header[:columns] << t('.customer_name')
+    header[:styles] << (s.add_style bg_info.deep_merge(text_left).merge(bold))
+    footer[:columns] << ''
+    footer[:styles] << (s.add_style bold.deep_merge(border))
+    
+    header[:columns] << t('.employee_name')
+    header[:styles] << (s.add_style bg_info.deep_merge(text_left).merge(bold))
+    footer[:columns] << ''
+    footer[:styles] << (s.add_style bold.deep_merge(border))
+    
+    header[:columns] << t('.product_name')
+    header[:styles] << (s.add_style bg_info.deep_merge(text_left).merge(bold))
+    footer[:columns] << ''
+    footer[:styles] << (s.add_style bold.deep_merge(border))
+    
+    header[:columns] << t('.quantity')
+    header[:styles] << (s.add_style bg_info.deep_merge(text_right).merge(bold))
+    footer[:columns] << ''
+    footer[:styles] << (s.add_style number.deep_merge(bold).deep_merge(border))
+    
+    header[:columns] << t('.price')
+    header[:styles] << (s.add_style bg_info.deep_merge(text_right).merge(bold))
+    footer[:columns] << ''
+    footer[:styles] << (s.add_style number.deep_merge(bold).deep_merge(border))
+    
+    header[:columns] << t('.amount')
+    header[:styles] << (s.add_style bg_info.deep_merge(text_right).merge(bold))
+    footer[:columns] << @deliveries.total_amount
+    footer[:styles] << (s.add_style number.deep_merge(bold).deep_merge(border))
+    
+    header[:columns] << t('.note')
+    header[:styles] << (s.add_style bg_info.deep_merge(text_right).merge(bold))
+    footer[:columns] << ''
+    footer[:styles] << (s.add_style border)
+    
+    sheet.add_row header[:columns], style: header[:styles]
+    t2 += 1
+    
+    # rows
+    i2 = 1
+    @deliveries.each_with_index do |delivery,index1|
+      delivery.delivery_details.each_with_index do |delivery_detail,index2|
+        row = {columns: [], styles: []}
+        row[:columns] = []
+        
+        row[:columns] << (i2)
+        i2 += 1
+        row[:styles] << (s.add_style text_center.deep_merge(border))
+        
+        row[:columns] << delivery.customer_name
+        row[:styles] << (s.add_style text_left.deep_merge(border))
+        
+        row[:columns] << delivery.customer.salesperson_name 
+        row[:styles] << (s.add_style text_left.deep_merge(border))
+        
+        row[:columns] << delivery_detail.product_name
+        row[:styles] << (s.add_style text_left.deep_merge(border))
+        
+        row[:columns] << delivery_detail.quantity
+        row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
+        
+        row[:columns] << delivery_detail.price
+        row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
+        
+        row[:columns] << delivery_detail.cache_total
+        row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
+        
+        row[:columns] << delivery_detail.note
+        row[:styles] << (s.add_style text_center.deep_merge(border))
+        
+        sheet.add_row row[:columns], style: row[:styles]
+        t2 += 1
+      end
+      subrow = {columns: [], styles: []}
+      subrow[:columns] << ''
+      subrow[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_subrow))
+      
+      subrow[:columns] << ''
+      subrow[:styles] << (s.add_style text_left.deep_merge(border).deep_merge(bg_subrow))
+      
+      subrow[:columns] << ''
+      subrow[:styles] << (s.add_style text_left.deep_merge(border).deep_merge(bg_subrow))
+      
+      subrow[:columns] << ''
+      subrow[:styles] << (s.add_style text_left.deep_merge(border).deep_merge(bg_subrow))
+      
+      subrow[:columns] << ''
+      subrow[:styles] << (s.add_style text_right.deep_merge(border).deep_merge(bg_subrow))
+      
+      subrow[:columns] << ''
+      subrow[:styles] << (s.add_style text_right.deep_merge(border).deep_merge(bg_subrow))
+      
+      subrow[:columns] << delivery.total_amount
+      subrow[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border).deep_merge(bg_subrow).deep_merge(bold))
+      
+      subrow[:columns] << ''
+      subrow[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_subrow))
+      
+      sheet.add_row subrow[:columns], style: subrow[:styles]
+      t2 += 1
+    end
+    
+    # footer
+    sheet.add_row footer[:columns], style: footer[:styles]
+    t2 += 1
+    
+    # Setup
+    sheet.column_widths 5, 25, 15, 25, 15, 15, 15, 15, 15
+    sheet.merge_cells("A#{c}:H#{c}")
+    sheet.merge_cells("A#{t2}:F#{t2}")
+  end
+end

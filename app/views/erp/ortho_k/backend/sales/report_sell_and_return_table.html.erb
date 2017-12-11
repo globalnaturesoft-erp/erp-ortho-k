@@ -2,6 +2,14 @@
       params.to_unsafe_hash[:global_filter][:to_date].present? ||
       params.to_unsafe_hash[:global_filter][:period].present? %>
     
+    <div class="text-right mb-10">
+        <a target="_blank"
+            href="<%= erp_ortho_k.report_sell_and_return_xlsx_backend_sales_path(params.to_unsafe_hash.merge({format: 'xlsx'})) %>"
+            target="_blank"
+            class="btn btn-primary"
+        >Xuất excel</a>
+    </div>
+    
     <div class="custom-show text-center">
         <h4 class="font-blue-madison bold uppercase mb-15">
             Báo cáo bán hàng <br>
