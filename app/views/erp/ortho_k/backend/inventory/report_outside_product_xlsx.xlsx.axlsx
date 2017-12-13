@@ -1,0 +1,205 @@
+wb = xlsx_package.workbook
+xlsx_package.use_autowidth = true
+wb.styles do |s|
+  wb.styles.fonts.first.name = 'Times New Roman'
+  wb.add_worksheet(name: 'Thống kê tồn kho') do |sheet|
+    # style
+    bg_info = {:bg_color => "305496", :fg_color => "FF"}
+    bg_subrow = {:bg_color => "dbdbdb", :fg_color => "3a3838"}
+    bg_toprow = {:bg_color => "dbdbdb", :fg_color => "00"}
+    text_center = {alignment: { horizontal: :center }}
+    text_left = {alignment: { horizontal: :left }}
+    text_right = {alignment: { horizontal: :right }}
+    middle_align = {alignment: { vertical: :center }}
+    number = {format_code: '#,##0'}
+    border = {border: { style: :thin, color: "00", :edges => [:top, :right, :bottom, :left] }}
+    bold = {b: true}
+    if (!@from_date.nil? and !@to_date.nil?) and (@from_date.to_date == @to_date.to_date)
+      date = "#{' NGÀY ' + @from_date.to_date.strftime('%d/%m/%Y')}"
+    else
+      date = "#{' TỪ ' + @from_date.to_date.strftime('%d/%m/%Y') if !@from_date.nil?}#{' ĐẾN ' + @to_date.to_date.strftime('%d/%m/%Y') if !@to_date.nil?}"
+    end
+    
+    # add empty row
+    sheet.add_row ['']
+    
+    # Title 1
+    sheet.add_row ['BÁO CÁO SẢN PHẨM TỒN THEO KHO' + date], sz: 16, b: true, bg_color: "ffc801", style: (s.add_style text_center)
+    
+    # add empty row
+    sheet.add_row ['']
+    
+    product_ids = @product_query.select('id')
+    product_ids = -1 if product_ids.count == 0
+    filters = @global_filters.clone.merge({product_id: product_ids})
+    
+    toprow = {columns: [], styles: []}
+    toprow[:columns] << 'TỔNG CỘNG'
+    toprow[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_toprow).deep_merge(bold))
+    
+    toprow[:columns] << ''
+    toprow[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_toprow).deep_merge(bold))
+    
+    toprow[:columns] << ''
+    toprow[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_toprow).deep_merge(bold))
+    
+    toprow[:columns] << ''
+    toprow[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_toprow).deep_merge(bold))
+    
+    begin_params = filters.clone
+    begin_params[:to_date] = filters[:from_date]
+    begin_params[:from_date] = nil
+    toprow[:columns] << Erp::Products::Product.get_stock_real(begin_params)
+    toprow[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_toprow).deep_merge(bold))
+    
+    count = Erp::Products::Product.get_qdelivery_import(filters.clone.merge({
+        delivery_type: Erp::Qdeliveries::Delivery::TYPE_PURCHASE_IMPORT
+    }))
+    toprow[:columns] << count
+    toprow[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_toprow).deep_merge(bold))
+    
+    count = Erp::Products::Product.get_qdelivery_import(filters.clone.merge({
+        delivery_type: [
+          Erp::Qdeliveries::Delivery::TYPE_CUSTOM_IMPORT,
+          Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT
+        ]
+    }))
+    toprow[:columns] << count
+    toprow[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_toprow).deep_merge(bold))
+    
+    count = Erp::Products::Product.get_qdelivery_export(filters.clone.merge({
+        delivery_type: [
+          Erp::Qdeliveries::Delivery::TYPE_CUSTOM_EXPORT,
+          Erp::Qdeliveries::Delivery::TYPE_SALES_EXPORT
+        ]
+    }))
+    count += Erp::Products::Product.get_gift_given_export(filters)
+    toprow[:columns] << count
+    toprow[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_toprow).deep_merge(bold))
+    
+    count = Erp::Products::Product.get_damage_record_export(filters)
+    count += Erp::Products::Product.get_stock_check_export(filters)
+    toprow[:columns] << count
+    toprow[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_toprow).deep_merge(bold))
+    
+    end_params = filters.clone
+    end_params[:from_date] = nil
+    toprow[:columns] << Erp::Products::Product.get_stock_real(end_params)
+    toprow[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_toprow).deep_merge(bold))
+    
+    toprow[:columns] << ''
+    toprow[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_toprow).deep_merge(bold))
+    
+    sheet.add_row toprow[:columns], style: toprow[:styles]
+    
+    # header
+    header = {columns: [], styles: []}
+    header[:columns] = []
+    
+    header[:columns] << 'Mã hàng'
+    header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
+    
+    header[:columns] << 'Đường kính'
+    header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
+    
+    header[:columns] << 'Loại hàng'
+    header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
+    
+    header[:columns] << 'Đơn vị'
+    header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
+    
+    header[:columns] << 'Dư đầu'
+    header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
+    
+    header[:columns] << 'Nhập NCC'
+    header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
+    
+    header[:columns] << 'Hoàn kho'
+    header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
+    
+    header[:columns] << 'Xuất'
+    header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
+    
+    header[:columns] << 'Hư/Mất'
+    header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
+    
+    header[:columns] << 'Dư cuối'
+    header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
+    
+    header[:columns] << 'Ngày nhập'
+    header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
+    
+    sheet.add_row header[:columns], style: header[:styles]
+    
+    # rows
+    @products.each do |product|
+        row = {columns: [], styles: []}
+        row[:columns] = []
+        
+        filters = @global_filters.clone.merge(product_id: product.id)
+        
+        row[:columns] << product.code
+        row[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(middle_align))
+        
+        row[:columns] << product.get_diameter
+        row[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(middle_align))
+        
+        row[:columns] << product.category_name
+        row[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(middle_align))
+        
+        row[:columns] << product.unit_name
+        row[:styles] << (s.add_style text_center.deep_merge(border))
+        
+        begin_params = filters.clone
+        begin_params[:to_date] = filters[:from_date]
+        begin_params[:from_date] = nil
+        row[:columns] << Erp::Products::Product.get_stock_real(begin_params)
+        row[:styles] << (s.add_style text_center.deep_merge(border))
+        
+        count = Erp::Products::Product.get_qdelivery_import(filters.clone.merge({
+            delivery_type: Erp::Qdeliveries::Delivery::TYPE_PURCHASE_IMPORT
+        }))
+        row[:columns] << count
+        row[:styles] << (s.add_style text_center.deep_merge(border))
+        
+        count = Erp::Products::Product.get_qdelivery_import(filters.clone.merge({
+            delivery_type: [
+              Erp::Qdeliveries::Delivery::TYPE_CUSTOM_IMPORT,
+              Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT
+            ]
+        }))
+        row[:columns] << count
+        row[:styles] << (s.add_style text_center.deep_merge(border))
+        
+        count = Erp::Products::Product.get_qdelivery_export(filters.clone.merge({
+            delivery_type: [
+              Erp::Qdeliveries::Delivery::TYPE_CUSTOM_EXPORT,
+              Erp::Qdeliveries::Delivery::TYPE_SALES_EXPORT
+            ]
+        }))
+        count += Erp::Products::Product.get_gift_given_export(filters)
+        row[:columns] << count
+        row[:styles] << (s.add_style text_center.deep_merge(border))
+        
+        count = Erp::Products::Product.get_damage_record_export(filters)
+        count += Erp::Products::Product.get_stock_check_export(filters)
+        row[:columns] << count
+        row[:styles] << (s.add_style text_center.deep_merge(border))
+        
+        end_params = filters.clone
+        end_params[:from_date] = nil
+        row[:columns] << Erp::Products::Product.get_stock_real(end_params)
+        row[:styles] << (s.add_style text_center.deep_merge(border))
+        
+        row[:columns] << (product.delivered_delivery_details.empty? ? '' : product.delivered_delivery_details.last.delivery.date.to_date.strftime('%d/%m/%Y'))
+        row[:styles] << (s.add_style text_center.deep_merge(border))
+        
+        sheet.add_row row[:columns], style: row[:styles]
+    end
+    
+    # Setup
+    sheet.column_widths 15, 15, 15, 15
+    sheet.merge_cells("A2:K2")
+    sheet.merge_cells("A4:D4")
+  end
+end

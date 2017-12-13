@@ -1,17 +1,37 @@
-  <h3 class="text-bold text-primary"><div>
-      <% if @warehouses.count > 0 %>
-        <%= @warehouses.map(&:name).join(' + ').html_safe %>
-      <% else %>
-        Tất cả kho
-      <% end %>
-    </div></h3>
-  <h5 class="mb-10">
-    <% if @period.present? %>
-      <strong><%= @period.name %></strong>
-    <% end %>
-    từ <strong><%= format_date(@from_date) %></strong>
-    đến <strong><%= format_date(@to_date) %></strong>
-  </h5>
+  <div class="custom-show text-center">
+      <h4 class="font-yellow bold uppercase mb-15">
+          Báo cáo hàng tồn theo kho
+          <% if @period.present? %>
+              <%= @period.name %>
+          <% else %>
+              <%= 'Từ ' + @from_date.strftime('%d/%m/%Y') if !@from_date.nil? %> <%= ' Đến ' + @to_date.strftime('%d/%m/%Y') if !@to_date.nil? %>
+          <% end %>
+      </h4>
+  </div>
+  
+  <div class="row">
+    <div class="col-md-6">
+      <div class="text-left mb-10">
+          <h3 class="text-bold text-primary no-margin">
+              <% if @warehouses.count > 0 %>
+                <%= @warehouses.map(&:name).join(' + ').html_safe %>
+              <% else %>
+                Tất cả kho
+              <% end %>
+          </h3>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="text-right mb-10">
+          <a target="_blank"
+              href="<%= erp_ortho_k.report_warehouse_xlsx_backend_inventory_index_path(params.to_unsafe_hash.merge({format: 'xlsx'})) %>"
+              target="_blank"
+              class="btn btn-primary"
+          >Xuất excel</a>
+      </div>
+    </div>
+  </div>
+  
   <table class="table table-bordered table-advance order-column">
 
     <tr>
