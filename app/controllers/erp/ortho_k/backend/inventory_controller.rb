@@ -47,7 +47,7 @@ module Erp
             end
           end
         end
-        
+
         def report_category_diameter_xlsx
           @global_filters = params.to_unsafe_hash[:global_filter]
 
@@ -84,7 +84,7 @@ module Erp
               @product_query = @product_query.where("(#{qs.join(" OR ")})")
             end
           end
-          
+
           respond_to do |format|
             format.xlsx {
               response.headers['Content-Disposition'] = 'attachment; filename="Thong ke ton kho.xlsx"'
@@ -132,7 +132,7 @@ module Erp
 
 
           # product query
-          @product_query = Erp::Products::Product.where(category_id: category_ids)
+          @product_query = Erp::Products::Product.joins(:category).where(category_id: category_ids)
           # single keyword
           if params.to_unsafe_hash[:keyword].present?
             keyword = params.to_unsafe_hash[:keyword].strip.downcase
@@ -188,9 +188,9 @@ module Erp
           end
 
           # products
-          @products = @product_query.paginate(:page => params[:page], :per_page => 20)
+          @products = @product_query.order('erp_products_categories.name, erp_products_products.name').paginate(:page => params[:page], :per_page => 20)
         end
-        
+
         def report_product_xlsx
           @global_filters = params.to_unsafe_hash[:global_filter]
 
@@ -279,14 +279,14 @@ module Erp
 
           # products
           @products = @product_query
-          
+
           respond_to do |format|
             format.xlsx {
               response.headers['Content-Disposition'] = 'attachment; filename="Thong ke ton kho theo san pham.xlsx"'
             }
           end
         end
-        
+
         def report_central_area
           # default from to date
           @from_date = Time.now.beginning_of_month
@@ -339,7 +339,7 @@ module Erp
           # warehouses
           @warehouses = Erp::Warehouses::Warehouse.where(id: @global_filters["warehouse_ids"])
         end
-        
+
         def report_central_area_xlsx
           @global_filters = params.to_unsafe_hash[:global_filter]
 
@@ -383,7 +383,7 @@ module Erp
 
           # warehouses
           @warehouses = Erp::Warehouses::Warehouse.where(id: @global_filters["warehouse_ids"])
-          
+
           respond_to do |format|
             format.xlsx {
               response.headers['Content-Disposition'] = 'attachment; filename="Thong ke vung trung tam.xlsx"'
@@ -449,7 +449,7 @@ module Erp
 
           # warehouses
           @warehouses = Erp::Warehouses::Warehouse.where(id: @global_filters["warehouse_ids"])
-          
+
           respond_to do |format|
             format.xlsx {
               response.headers['Content-Disposition'] = 'attachment; filename="Thong ke kho.xlsx"'
@@ -570,7 +570,7 @@ module Erp
               end
             end
           end
-          
+
           respond_to do |format|
             format.xlsx {
               response.headers['Content-Disposition'] = 'attachment; filename="Thong ke tuy chon theo vung.xlsx"'
@@ -636,7 +636,7 @@ module Erp
 
           # products
           @products = @product_query
-          
+
           respond_to do |format|
             format.xlsx {
               response.headers['Content-Disposition'] = 'attachment; filename="Thong ke len ngoai bang.xlsx"'
@@ -745,7 +745,7 @@ module Erp
           # products
           @products = @product_query.paginate(:page => params[:page], :per_page => 20)
         end
-        
+
         def report_product_warehouse_xlsx
           @global_filters = params.to_unsafe_hash[:global_filter]
 
@@ -836,7 +836,7 @@ module Erp
 
           # products
           @products = @product_query
-          
+
           respond_to do |format|
             format.xlsx {
               response.headers['Content-Disposition'] = 'attachment; filename="Thong ke hang ton theo kho va san pham.xlsx"'

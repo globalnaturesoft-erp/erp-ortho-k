@@ -24,22 +24,22 @@ wb.styles do |s|
     else
       wh = 'TẤT CẢ'
     end
-    
+
     # add empty row
     sheet.add_row ['']
-    
+
     # Title
     sheet.add_row ['BÁO CÁO TỒN KHO' + date], sz: 16, b: true, bg_color: "ffc801", style: (s.add_style text_center)
     sheet.add_row ['KHO: ' + wh], sz: 16, bg_color: "ffc801", style: (s.add_style text_center)
-    
+
     # add empty row
     sheet.add_row ['']
-    
+
     toprow = {columns: [], styles: []}
     toprow[:columns] << 'TỔNG CỘNG'
     toprow[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_toprow).deep_merge(bold))
-    
-    Erp::Products::State.all.each do |state|
+
+    Erp::Products::State.all_active.each do |state|
       product_ids = @product_query.select('id')
       product_ids = -1 if product_ids.count == 0
       filters = @global_filters.clone.merge(product_id: product_ids, state: state)
@@ -55,35 +55,35 @@ wb.styles do |s|
     end_params[:from_date] = nil
     toprow[:columns] << Erp::Products::Product.get_stock_real(end_params)
     toprow[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_toprow).deep_merge(bold))
-    
+
     sheet.add_row toprow[:columns], style: toprow[:styles]
-    
+
     # header
     header = {columns: [], styles: []}
     header[:columns] = []
-    
+
     header[:columns] << 'Loại hàng'
     header[:styles] << (s.add_style bg_info.deep_merge(text_left).deep_merge(middle_align).deep_merge(border).merge(bold))
-    
-    Erp::Products::State.all.each do |state|
+
+    Erp::Products::State.all_active.each do |state|
       header[:columns] << state.name
       header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
     end
-    
+
     header[:columns] << 'Tổng tồn kho'
     header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
-    
+
     sheet.add_row header[:columns], style: header[:styles]
-    
+
     # rows
     @categories.each do |category|
         row = {columns: [], styles: []}
         row[:columns] = []
-        
+
         row[:columns] << category.name
         row[:styles] << (s.add_style text_left.deep_merge(border).deep_merge(middle_align))
-        
-        Erp::Products::State.all.each do |state|
+
+        Erp::Products::State.all_active.each do |state|
           product_ids = @product_query.select('id').where(category_id: category.id)
           product_ids = -1 if product_ids.count == 0
           filters = @global_filters.clone.merge(product_id: product_ids, state: state)
@@ -92,7 +92,7 @@ wb.styles do |s|
           row[:columns] << Erp::Products::Product.get_stock_real(end_params)
           row[:styles] << (s.add_style text_center.deep_merge(border))
         end
-        
+
         product_ids = @product_query.select('id').where(category_id: category.id)
         product_ids = -1 if product_ids.count == 0
         filters = @global_filters.clone.merge(product_id: product_ids)
@@ -100,10 +100,10 @@ wb.styles do |s|
         end_params[:from_date] = nil
         row[:columns] << Erp::Products::Product.get_stock_real(end_params)
         row[:styles] << (s.add_style text_center.deep_merge(border))
-        
+
         sheet.add_row row[:columns], style: row[:styles]
     end
-    
+
     # Setup
     sheet.column_widths 25, 15, 15, 15, 15, 15
     sheet.merge_cells("A2:F2")
