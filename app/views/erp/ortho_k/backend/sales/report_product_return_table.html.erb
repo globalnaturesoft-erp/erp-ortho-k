@@ -19,7 +19,7 @@
         <tr>
             <th width="5%" rowspan="2" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">STT</th>
             <th rowspan="2" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Khách hàng</th>
-            <th colspan="<%= Erp::Products::State.all_active.count %>" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap uppercase">Len</th>
+            <th colspan="<%= Erp::Products::State.all_active.count+1 %>" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap uppercase">Len</th>
             <% @categories.each do |category| %>
                 <th rowspan="2" width="10%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap"><%= category.name %></th>
             <% end %>
@@ -29,6 +29,7 @@
             <% Erp::Products::State.all_active.each do |state| %>
                 <th width="10%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap"><%= state.name %></th>
             <% end %>
+            <th width="10%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Tổng</th>
         </tr>
         <tr>
             <td class="bg-green-jungle bg-font-green-jungle text-center uppercase bold" colspan="2"><%= 'Tổng cộng' %></td>
@@ -48,6 +49,19 @@
                     <%= count %>
                 </td>
             <% end %>
+            <td class="bg-green-jungle bg-font-green-jungle text-center bold">
+                <%
+                    count = Erp::Products::Product.get_qdelivery_import({
+                        product_id: @len_product_ids,
+                        from_date: @from,
+                        to_date: @to,
+                        delivery_type: [
+                            Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT
+                        ]
+                    })
+                %>
+                <%= count %>
+            </td>
             <% @categories.each do |category| %>
                 <td class="bg-green-jungle bg-font-green-jungle text-center bold">
                     <%
@@ -85,6 +99,20 @@
                         <%= count %>
                     </td>
                 <% end %>
+                <td class="text-center text-primary text-bold">
+                    <%
+                        count = Erp::Products::Product.get_qdelivery_import({
+                            product_id: @len_product_ids,
+                            from_date: @from,
+                            to_date: @to,
+                            delivery_type: [
+                                Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT
+                            ],
+                            customer_id: customer.id
+                        })
+                    %>
+                    <%= count %>
+                </td>
                 <% @categories.each do |category| %>
                     <td class="text-center font-yellow-gold">
                         <%
