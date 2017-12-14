@@ -1,7 +1,7 @@
 <% if params.to_unsafe_hash[:global_filter][:from_date].present? ||
       params.to_unsafe_hash[:global_filter][:to_date].present? ||
       params.to_unsafe_hash[:global_filter][:period].present? %>
-    
+
     <div class="custom-show text-center">
         <h4 class="font-blue-madison bold uppercase mb-15">
             Danh sách khách hàng trả hàng <br>
@@ -14,37 +14,93 @@
             </span>
         </h4>
     </div>
-    
+
     <table class="table table-bordered order-column">
         <tr>
             <th width="5%" rowspan="2" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">STT</th>
             <th rowspan="2" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Khách hàng</th>
-            <th colspan="3" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap uppercase">Len</th>
-            <th rowspan="2" width="10%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Hộp gỗ</th>
-            <th rowspan="2" width="20%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Ghi chú</th>
+            <th colspan="<%= Erp::Products::State.all_active.count %>" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap uppercase">Len</th>
+            <% @categories.each do |category| %>
+                <th rowspan="2" width="10%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap"><%= category.name %></th>
+            <% end %>
+            <!--<th rowspan="2" width="20%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Ghi chú</th>-->
         </tr>
         <tr>
-            <th width="10%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Trả + Đổi</th>
-            <th width="10%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Vỡ</th>
-            <th width="10%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Sau 1 năm</th>
+            <% Erp::Products::State.all_active.each do |state| %>
+                <th width="10%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap"><%= state.name %></th>
+            <% end %>
         </tr>
         <tr>
             <td class="bg-green-jungle bg-font-green-jungle text-center uppercase bold" colspan="2"><%= 'Tổng cộng' %></td>
-            <td class="bg-green-jungle bg-font-green-jungle text-center bold"><%= rand(0..10) %></td>
-            <td class="bg-green-jungle bg-font-green-jungle text-center bold"><%= rand(0..10) %></td>
-            <td class="bg-green-jungle bg-font-green-jungle text-center bold"><%= rand(0..10) %></td>
-            <td class="bg-green-jungle bg-font-green-jungle text-center bold"><%= rand(0..10) %></td>
-            <td class="bg-green-jungle bg-font-green-jungle"></td>
+            <% Erp::Products::State.all_active.each do |state| %>
+                <td class="bg-green-jungle bg-font-green-jungle text-center bold">
+                    <%
+                        count = Erp::Products::Product.get_qdelivery_import({
+                            product_id: @len_product_ids,
+                            from_date: @from,
+                            to_date: @to,
+                            delivery_type: [
+                                Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT
+                            ],
+                            state: state
+                        })
+                    %>
+                    <%= count %>
+                </td>
+            <% end %>
+            <% @categories.each do |category| %>
+                <td class="bg-green-jungle bg-font-green-jungle text-center bold">
+                    <%
+                        count = Erp::Products::Product.get_qdelivery_import({
+                            product_id: Erp::Products::Product.where(category_id: category.id).select('id'),
+                            from_date: @from,
+                            to_date: @to,
+                            delivery_type: [
+                                Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT
+                            ]
+                        })
+                    %>
+                    <%= count %>
+                </td>
+            <% end %>
         </tr>
         <% @customers.each_with_index do |customer,index| %>
             <tr>
                 <td class="text-center text-center"><%= index+1 %></td>
                 <td class="text-left bold"><%= customer.contact_name %></td>
-                <td class="text-center font-yellow-gold"><%= rand(0..10) %></td>
-                <td class="text-center font-yellow-gold"><%= rand(0..10) %></td>
-                <td class="text-center font-yellow-gold"><%= rand(1..10) %></td>
-                <td class="text-center font-yellow-gold"><%= rand(0..10) %></td>
-                <td class="text-justify"><%= '' %></td>
+                <% Erp::Products::State.all_active.each do |state| %>
+                    <td class="text-center font-yellow-gold">
+                        <%
+                            count = Erp::Products::Product.get_qdelivery_import({
+                                product_id: @len_product_ids,
+                                from_date: @from,
+                                to_date: @to,
+                                delivery_type: [
+                                    Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT
+                                ],
+                                state: state,
+                                customer_id: customer.id
+                            })
+                        %>
+                        <%= count %>
+                    </td>
+                <% end %>
+                <% @categories.each do |category| %>
+                    <td class="text-center font-yellow-gold">
+                        <%
+                            count = Erp::Products::Product.get_qdelivery_import({
+                                product_id: Erp::Products::Product.where(category_id: category.id).select('id'),
+                                from_date: @from,
+                                to_date: @to,
+                                delivery_type: [
+                                    Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT
+                                ],
+                                customer_id: customer.id
+                            })
+                        %>
+                        <%= count %>
+                    </td>
+                <% end %>
             </tr>
         <% end %>
     </table>

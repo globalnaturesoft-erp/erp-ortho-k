@@ -54,6 +54,20 @@
                 url: erp_periods.dataselect_backend_periods_path(format: 'json')
             }) %>
         </div>
+        <div class="col-md-3">
+            <%= erp_form_control("dataselect", {
+                name: 'categories',
+                value: '',
+                text: '',
+                label: 'Loại hàng khác',
+                placeholder: 'Chọn loại hàng',
+                url: erp_products.dataselect_backend_categories_path(
+                    format: 'json',
+                    remove_ids: Erp::Products::Category.get_lens.map(&:id).join(',')
+                ),
+                multiple: true
+            }) %>
+        </div>
     </div>
 <% end %>
 

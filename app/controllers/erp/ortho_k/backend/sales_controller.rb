@@ -20,7 +20,7 @@ module Erp
           @deliveries = Erp::Qdeliveries::Delivery.all_delivered.search(params)
                           .where(delivery_type: Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT)
         end
-        
+
         def report_sell_and_return_xlsx
           glb = params.to_unsafe_hash[:global_filter]
           if glb[:period].present?
@@ -37,7 +37,7 @@ module Erp
 
           @deliveries = Erp::Qdeliveries::Delivery.all_delivered.search(params)
             .where(delivery_type: Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT)
-          
+
           respond_to do |format|
             format.xlsx {
               response.headers['Content-Disposition'] = 'attachment; filename="Bao cao ban va tra hang.xlsx"'
@@ -68,6 +68,13 @@ module Erp
 
           # @todo chỉ lấy danh sách khách hàng nào có trả hàng trong thời gian lọc
           @customers = Erp::Contacts::Contact.where.not(id: Erp::Contacts::Contact.get_main_contact.id)
+
+          # get categories
+          category_ids = glb[:categories].present? ? glb[:categories] : nil
+          @categories = Erp::Products::Category.where(id: category_ids)
+
+          # len products
+          @len_product_ids = Erp::Products::Product.where(category_id: Erp::Products::Category.get_lens.map(&:id)).select('id')
         end
 
         # Bao cao danh sach benh nhan moi
