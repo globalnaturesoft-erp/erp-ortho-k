@@ -1042,7 +1042,7 @@ vi:
             supplier_liabilities_tracking: "Theo dõi công nợ (mua)"
             sales_statistics: "Thống kê doanh thu"
             commissions: "Hoa hồng nhân viên"
-            customer_commissions: "Hoa hồng khách hàng"
+            customer_commissions: "Chiết khấu khách hàng"
             discounts: "Cập nhật chiết khấu"
             payment_type: "Quản lý loại phiếu"
           inventory:

@@ -885,8 +885,12 @@ Erp::Products::Product.class_eval do
       end
     end
 
+    products = query.select('id')
+
+    products = -1 if products.empty?
+
     # cache
-    return Erp::Products::CacheStock.get_stock(query.select('id'), {state_id: options[:states], warehouse_id: options[:warehouses]})
+    return Erp::Products::CacheStock.get_stock(products, {state_id: options[:states], warehouse_id: options[:warehouses]})
   end
 
   # get stock class method

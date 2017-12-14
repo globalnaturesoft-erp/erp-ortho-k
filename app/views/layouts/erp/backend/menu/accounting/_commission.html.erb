@@ -3,7 +3,7 @@
   (params[:controller] == "erp/payments/backend/payment_records" && params[:action] == "commission")
 %>">
     <a href="javascript:;" class="nav-link nav-toggle">
-        <span class="title">Hoa hồng</span>
+        <span class="title">Hoa hồng & Chiết khấu</span>
         <% if
           (params[:controller] == "erp/payments/backend/payment_records" && params[:action] == "customer_commission") ||
           (params[:controller] == "erp/payments/backend/payment_records" && params[:action] == "commission")
@@ -22,12 +22,12 @@
     <% else %>style="display: none;"<% end %>>
         <li class="nav-item  <%= "active open" if (params[:controller] == "erp/payments/backend/payment_records" && params[:action] == "customer_commission") %>">
             <a href="<%= erp_payments.customer_commission_backend_payment_records_path %>" class="nav-link ">
-                <span class="title">Khách hàng</span>
+                <span class="title">Chiết khấu khách hàng</span>
             </a>
         </li>
         <li class="nav-item  <%= "active open" if (params[:controller] == "erp/payments/backend/payment_records" && params[:action] == "commission") %>">
             <a href="<%= erp_payments.commission_backend_payment_records_path %>" class="nav-link ">
-                <span class="title">Nhân viên</span>
+                <span class="title">Hoa hồng nhân viên</span>
             </a>
         </li>
     </ul>
