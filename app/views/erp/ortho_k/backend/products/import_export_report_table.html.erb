@@ -37,32 +37,32 @@ sales_price_colspan = (get_columns(params).include?("s_price") ? 1 : 0) +
         <tr>
             <%= "<td colspan='#{total_colspan_1}'></td>".html_safe if total_colspan_1 > 0 %>
             <% if get_columns(params).include?("unknown_1") %>
-            <td class="text-right stock-num text-bold text-primary"><%= format_number((400..999).to_a.sample*1000) %></td>
+            <td class="text-right stock-num text-bold text-primary"><%= '--' %></td>
             <% end %>
             <% if get_columns(params).include?("unknown_2") %>
-            <td class="text-right stock-num text-bold text-primary"><%= format_number((400..999).to_a.sample*1000) %></td>
+            <td class="text-right stock-num text-bold text-primary"><%= '--' %></td>
             <% end %>
             <% if get_columns(params).include?("quantity") %>
             <td class="text-center stock-num text-bold bg-warning"><%= @totals[:quantity] %></td>
             <% end %>
             <%= "<td colspan='#{total_colspan_2}'></td>".html_safe if total_colspan_2 > 0 %>
             <% if get_columns(params).include?("tax_amount") %>
-            <td class="text-right stock-num text-bold font-green-seagreen"><%= format_number((50..500).to_a.sample*1000) %></td>
+            <td class="text-right stock-num text-bold font-green-seagreen"><%= '--' %></td>
             <% end %>
             <% if get_columns(params).include?("other_fees") %>
-            <td class="text-right stock-num text-bold font-green-seagreen"><%= format_number((50..500).to_a.sample*1000) %></td>
+            <td class="text-right stock-num text-bold font-green-seagreen"><%= '--' %></td>
             <% end %>
             <% if get_columns(params).include?("unknown_3") %>
-            <td class="text-right stock-num text-bold text-warning"><%= format_number((400..999).to_a.sample*1000) %></td>
+            <td class="text-right stock-num text-bold text-warning"><%= '--' %></td>
             <% end %>
             <% if get_columns(params).include?("unknown_4") %>
-            <td class="text-right stock-num text-bold font-yellow-gold"><%= format_number((400..999).to_a.sample*1000) %></td>
+            <td class="text-right stock-num text-bold font-yellow-gold"><%= '--' %></td>
             <% end %>
             <% if get_columns(params).include?("s_price") %>
             <td></td>
             <% end %>
             <% if get_columns(params).include?("unknown_5") %>
-            <td class="text-right stock-num text-bold font-yellow-gold"><%= format_number((400..999).to_a.sample*1000) %></td>
+            <td class="text-right stock-num text-bold font-yellow-gold"><%= '--' %></td>
             <% end %>
             <% if get_columns(params).include?("note") %>
             <td></td>
@@ -214,10 +214,10 @@ sales_price_colspan = (get_columns(params).include?("s_price") ? 1 : 0) +
                 <td class="text-left"><%= row[:unit] %></td>
                 <% end %>
                 <% if get_columns(params).include?("unknown_1") %>
-                <td class="text-right stock-num text-primary"><%= format_number((100..500).to_a.sample*1000) %></td>
+                <td class="text-right stock-num text-primary"><%= '--' %></td><!--format_number((100..500).to_a.sample*1000)-->
                 <% end %>
                 <% if get_columns(params).include?("unknown_2") %>
-                <td class="text-right stock-num text-primary"><%= format_number((100..500).to_a.sample*1000) %></td>
+                <td class="text-right stock-num text-primary"><%= '--' %></td>
                 <% end %>
                 <% if get_columns(params).include?("quantity") %>
                 <td class="text-center stock-num bg-warning"><%= row[:quantity] %></td>
@@ -232,16 +232,16 @@ sales_price_colspan = (get_columns(params).include?("s_price") ? 1 : 0) +
                 <td class="text-right stock-num font-green-seagreen"><%= row[:other_fees].present? ? format_number(row[:other_fees]) : '--' %></td>
                 <% end %>
                 <% if get_columns(params).include?("unknown_3") %>
-                <td class="text-right stock-num text-warning"><%= format_number((50..500).to_a.sample*1000) %></td>
+                <td class="text-right stock-num text-warning"><%= '--' %></td>
                 <% end %>
                 <% if get_columns(params).include?("unknown_4") %>
-                <td class="text-right stock-num font-yellow-gold"><%= format_number((50..500).to_a.sample*1000) %></td>
+                <td class="text-right stock-num font-yellow-gold"><%= '--' %></td>
                 <% end %>
                 <% if get_columns(params).include?("s_price") %>
                 <td class="text-right stock-num text-primary"><%= row[:sales_price].present? ? format_number(row[:sales_price]) : '--' %></td>
                 <% end %>
                 <% if get_columns(params).include?("unknown_5") %>
-                <td class="text-right stock-num font-yellow-gold"><%= format_number((50..500).to_a.sample*1000) %></td>
+                <td class="text-right stock-num font-yellow-gold"><%= '--' %></td>
                 <% end %>
                 <% if get_columns(params).include?("note") %>
                 <td class="text-center stock-num"></td>
