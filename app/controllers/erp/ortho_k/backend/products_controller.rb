@@ -250,8 +250,9 @@ module Erp
         end
 
         def import_export_report_table
-          @rows = Erp::Products::Product.import_export_report(params)[:data]
-          @totals = Erp::Products::Product.import_export_report(params)[:total]
+          global_filters = params.to_unsafe_hash[:global_filter]
+          @rows = Erp::Products::Product.import_export_report(global_filters)[:data].sort_by { |n| n[:voucher_date] }.reverse!
+          @totals = Erp::Products::Product.import_export_report(global_filters)[:total]
 
           render layout: nil
         end

@@ -8,79 +8,91 @@
 
 <% content_for :global_filter do %>
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-2">
             <%= erp_form_control('date', {
                 label: t('.from_date'),
                 name: 'from_date',
                 placeholder: t('.select_from_date')
             }) %>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
             <%= erp_form_control('date', {
                 label: t('.to_date'),
                 name: 'to_date',
                 placeholder: t('.select_to_date')
             }) %>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
             <%= erp_form_control("dataselect", {
-                name: 'category',
-                value: '',
-                text: '',
-                label: t('.filter_category'),
-                placeholder: t('.choose_category'),
-                url: erp_products.dataselect_backend_categories_path(format: 'json'),
+                name: 'period_id',
+                label: 'Thời gian cố định',
+                placeholder: 'Chọn lọc theo ngày chứng từ',
+                url: erp_periods.dataselect_backend_periods_path(format: 'json')
+            }) %>
+        </div>
+        <div class="col-md-2">
+            <%= erp_form_control("dataselect", {
+                name: 'customer_id',
+                label: t('.filter_customer'),
+                placeholder: t('.chooose_customer'),
+                url: erp_contacts.dataselect_backend_contacts_path(format: 'json', is_customer: true),
                 multiple: true
             }) %>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
             <%= erp_form_control("dataselect", {
-                name: 'warehouse',
-                value: '',
-                text: '',
+                name: 'supplier_id',
+                label: t('.filter_supplier'),
+                placeholder: t('.chooose_supplier'),
+                url: erp_contacts.dataselect_backend_contacts_path(format: 'json', is_supplier: true),
+                multiple: true
+            }) %>
+        </div>
+        <div class="col-md-2">
+            <%= erp_form_control("dataselect", {
+                name: 'warehouse_id',
                 label: t('.filter_warehouse'),
                 placeholder: t('.choose_warehouse'),
                 url: erp_warehouses.dataselect_backend_warehouses_path(format: 'json'),
                 multiple: true
             }) %>
         </div>
-        <div class="col-md-3">
-            <%= erp_form_control('select', {
-                name: 'currency',
-                value: '',
-                text: '',
-                label: t('.filter_currency'),
-                options: [ {text: 'USD',value: ''}, {text: 'VNĐ',value: ''}, {text: 'Tất cả',value: ''} ]
+    </div>
+    <div class="row">
+        <div class="col-md-2">
+            <%= erp_form_control("dataselect", {
+                name: 'category_id',
+                label: t('.filter_category'),
+                placeholder: t('.choose_category'),
+                url: erp_products.dataselect_backend_categories_path(format: 'json'),
+                multiple: true
             }) %>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
             <%= erp_form_control("dataselect", {
-                name: 'customer',
-                value: '',
-                text: '',
-                label: t('.filter_customer'),
-                placeholder: t('.chooose_customer'),
-                url: erp_contacts.dataselect_backend_contacts_path(format: 'json', is_customer: true),
-            }) %>
-        </div>
-        <div class="col-md-3">
-            <%= erp_form_control("dataselect", {
-                name: 'supplier',
-                value: '',
-                text: '',
-                label: t('.filter_supplier'),
-                placeholder: t('.chooose_supplier'),
-                url: erp_contacts.dataselect_backend_contacts_path(format: 'json', is_supplier: true),
-            }) %>
-        </div>
-        <div class="col-md-3">
-            <%= erp_form_control("dataselect", {
-                name: 'product',
-                value: '',
-                text: '',
+                name: 'product_id',
                 label: t('.filter_product'),
                 placeholder: t('.chooose_product'),
                 url: erp_products.dataselect_backend_products_path(format: 'json'),
+                multiple: true
+            }) %>
+        </div>
+        <div class="col-md-2">
+            <%= erp_form_control("dataselect", {
+                name: 'product_id',
+                label: 'Trạng thái sản phẩm',
+                placeholder: 'Lọc theo trạng thái sản phẩm',
+                url: erp_products.dataselect_backend_states_path(format: 'json'),
+                multiple: true
+            }) %>
+        </div>
+        <div class="col-md-2">
+            <%= erp_form_control('select', {
+                name: 'types',
+                label: 'Loại xuất/nhập',
+                placeholder: 'Chọn loại phiếu xuất nhập',
+                options: Erp::Products::Product.get_import_export_type_options,
+                multiple: true
             }) %>
         </div>
     </div>
@@ -89,37 +101,6 @@
 <%= erp_datalist(
     url: erp_ortho_k.import_export_report_table_backend_products_path,
     sortable: true,
-    keywords: [
-        {
-            text: t('.name'), name: 'erp_products_products.name'
-        },
-    ],
-    filters: [
-        {
-            text: 'Hàng mới', name: '', value: true, checked: false
-        },
-        {
-            text: 'Hàng xước', name: '', value: true, checked: false
-        },
-        {
-            text: 'Hàng vỡ', name: '', value: true, checked: false
-        },
-        {
-            divider: true
-        },
-        {
-            text: 'Phiếu chuyển kho', name: '', value: true, checked: false
-        },
-        {
-            text: 'Nhập hàng mua', name: '', value: true, checked: false
-        },
-        {
-            text: 'Nhập hàng đã bán', name: '', value: true, checked: false
-        },
-        {
-            text: 'Hàng ký gửi trả lại', name: '', value: true, checked: false
-        },
-    ],
     columns: [
         {
             text: t('.record_date'), name: 'record_date', value: true, checked: true
@@ -174,12 +155,6 @@
         },
         {
             text: t('.quantity'), name: 'quantity', value: true, checked: true
-        },
-        {
-            text: t('.currency'), name: 'currency', value: true, checked: true
-        },
-        {
-            text: t('.rate'), name: 'rate', value: true, checked: true
         },
         {
             text: t('.p_price'), name: 'p_price', value: true, checked: true
