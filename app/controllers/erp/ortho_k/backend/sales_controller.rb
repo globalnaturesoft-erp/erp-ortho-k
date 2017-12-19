@@ -53,7 +53,7 @@ module Erp
           render layout: nil
         end
 
-        # So chi tiet ban hang
+        # Bao cao hang ban bi tra lai
         def report_product_return_table
           glb = params.to_unsafe_hash[:global_filter]
           if glb[:period].present?
@@ -75,6 +75,35 @@ module Erp
 
           # len products
           @len_product_ids = Erp::Products::Product.where(category_id: Erp::Products::Category.get_lens.map(&:id)).select('id')
+        end
+        
+        def report_product_return_xlsx
+          glb = params.to_unsafe_hash[:global_filter]
+          if glb[:period].present?
+            @period_name = Erp::Periods::Period.find(glb[:period]).name
+            @from_date = Erp::Periods::Period.find(glb[:period]).from_date.beginning_of_day
+            @to_date = Erp::Periods::Period.find(glb[:period]).to_date.end_of_day
+          else
+            @period_name = nil
+            @from_date = (glb.present? and glb[:from_date].present?) ? glb[:from_date].to_date : nil
+            @to_date = (glb.present? and glb[:to_date].present?) ? glb[:to_date].to_date : nil
+          end
+
+          # @todo chỉ lấy danh sách khách hàng nào có trả hàng trong thời gian lọc
+          @customers = Erp::Contacts::Contact.where.not(id: Erp::Contacts::Contact.get_main_contact.id)
+
+          # get categories
+          category_ids = glb[:categories].present? ? glb[:categories] : nil
+          @categories = Erp::Products::Category.where(id: category_ids)
+
+          # len products
+          @len_product_ids = Erp::Products::Product.where(category_id: Erp::Products::Category.get_lens.map(&:id)).select('id')
+          
+          respond_to do |format|
+            format.xlsx {
+              response.headers['Content-Disposition'] = 'attachment; filename="Bao cao khach hang tra hang.xlsx"'
+            }
+          end
         end
 
         # Bao cao danh sach benh nhan moi
