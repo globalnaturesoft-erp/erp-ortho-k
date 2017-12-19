@@ -130,6 +130,10 @@ Erp::OrthoK::Engine.routes.draw do
 					post 'report_sales_details_table'
 					get 'report_sales_details_xlsx'
 					
+					get 'report_product_sold'
+					post 'report_product_sold_table'
+					get 'report_product_sold_xlsx'
+					
 					get 'report_product_return'
 					post 'report_product_return_table'
 					get 'report_product_return_xlsx'

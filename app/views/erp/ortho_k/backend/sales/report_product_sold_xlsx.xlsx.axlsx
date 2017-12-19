@@ -1,0 +1,79 @@
+wb = xlsx_package.workbook
+xlsx_package.use_autowidth = true
+wb.styles do |s|
+  wb.styles.fonts.first.name = 'Times New Roman'
+  wb.add_worksheet(name: 'Báo cáo số lượng bán hàng') do |sheet|
+    # style
+    bg_info = {:bg_color => "305496", :fg_color => "FF"}
+    bg_subrow = {:bg_color => "dbdbdb", :fg_color => "00"}
+    text_center = {alignment: { horizontal: :center }}
+    text_left = {alignment: { horizontal: :left }}
+    text_right = {alignment: { horizontal: :right }}
+    number = {format_code: '#,##0'}
+    border = {border: { style: :thin, color: "00", :edges => [:left, :right, :bottom] }}
+    bold = {b: true}
+    if !@from.nil? and !@to.nil? and (@from.to_date == @to.to_date)
+      date = "#{' NGÀY ' + @from.to_date.strftime('%d/%m/%Y')}"
+    else
+      date = "#{' TỪ ' + @from.to_date.strftime('%d/%m/%Y') if !@from.nil?}#{' ĐẾN ' + @to.to_date.strftime('%d/%m/%Y') if !@to.nil?}"
+    end
+    
+    # add empty row
+    sheet.add_row ['']
+    
+    # Title
+    sheet.add_row ['BÁO CÁO SỐ LƯỢNG BÁN HÀNG' + date], sz: 16, b: true, bg_color: "ffc801", style: (s.add_style text_center)
+    
+    # add empty row
+    sheet.add_row ['']
+    
+    # header
+    header = {columns: [], styles: []}
+    footer = {columns: [], styles: []}
+    header[:columns] = []
+    
+    header[:columns] << 'STT'
+    header[:styles] << (s.add_style bg_info.deep_merge(text_center).merge(bold))
+    footer[:columns] << "TỔNG CỘNG"
+    footer[:styles] << (s.add_style bold.deep_merge(border).deep_merge(text_center))
+    
+    header[:columns] << 'Diễn giải'
+    header[:styles] << (s.add_style bg_info.deep_merge(text_left).merge(bold))
+    footer[:columns] << ''
+    footer[:styles] << (s.add_style bold.deep_merge(border))
+    
+    header[:columns] << 'Số lượng'
+    header[:styles] << (s.add_style bg_info.deep_merge(text_center).merge(bold))
+    footer[:columns] << @categories.total_sales_quantity(from_date: @from, to_date: @to)
+    footer[:styles] << (s.add_style number.deep_merge(text_center).deep_merge(border).merge(bold))
+    
+    sheet.add_row header[:columns], style: header[:styles]
+    
+    # rows
+    kt = 4
+    @categories.each_with_index do |category,index|
+      row = {columns: [], styles: []}
+      row[:columns] = []
+      
+      row[:columns] << (index+1)
+      row[:styles] << (s.add_style text_center.deep_merge(border))
+      
+      row[:columns] << category.name
+      row[:styles] << (s.add_style text_left.deep_merge(border))
+      
+      row[:columns] << category.get_sales_quantity(from_date: @from, to_date: @to)
+      row[:styles] << (s.add_style text_center.deep_merge(number).deep_merge(border))
+      
+      sheet.add_row row[:columns], style: row[:styles]
+      kt += 1
+    end
+    
+    # footer
+    sheet.add_row footer[:columns], style: footer[:styles]
+    
+    # Setup
+    sheet.column_widths 10, 80, 15
+    sheet.merge_cells("A2:C2")
+    sheet.merge_cells("A#{kt+1}:B#{kt+1}")
+  end
+end

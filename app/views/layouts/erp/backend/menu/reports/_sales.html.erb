@@ -13,13 +13,16 @@
     </a>
     <ul class="sub-menu">
         <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/sales" && params[:action] == "report_sell_and_return" %>">
-            <%= link_to "Báo cáo bán hàng", erp_ortho_k.report_sell_and_return_backend_sales_path, class: "nav-link ", title: 'Báo cáo bán hàng, trả hàng (theo ngày, tuần, quý, năm,...)' %>
+            <%= link_to "Báo cáo bán/trả hàng", erp_ortho_k.report_sell_and_return_backend_sales_path, class: "nav-link ", title: 'Báo cáo bán hàng, trả hàng (theo ngày, tuần, quý, năm,...)' %>
         </li>
         <li class="nav-item under_develop <%= "active" if params[:controller] == "erp/ortho_k/backend/sales" && params[:action] == "report_sales_details" %>">
             <%= link_to "Sổ chi tiết bán hàng", erp_ortho_k.report_sales_details_backend_sales_path, class: "nav-link ", title: 'Sổ chi tiết bán hàng (theo ngày, tuần, quý, năm,...)' %>
         </li>
+         <li class="nav-item under_develop <%= "active" if params[:controller] == "erp/ortho_k/backend/sales" && params[:action] == "report_product_sold" %>">
+            <%= link_to "Thống kê SL hàng bán", erp_ortho_k.report_product_sold_backend_sales_path, class: "nav-link ", title: 'Báo cáo số lượng hàng bán (theo ngày, tuần, quý, năm,...)' %>
+        </li>
          <li class="nav-item under_develop <%= "active" if params[:controller] == "erp/ortho_k/backend/sales" && params[:action] == "report_product_return" %>">
-            <%= link_to "Báo cáo trả hàng", erp_ortho_k.report_product_return_backend_sales_path, class: "nav-link ", title: 'Báo cáo khách hàng trả hàng (theo ngày, tuần, quý, năm,...)' %>
+            <%= link_to "Thống kê SL hàng trả", erp_ortho_k.report_product_return_backend_sales_path, class: "nav-link ", title: 'Báo cáo khách hàng trả hàng (theo ngày, tuần, quý, năm,...)' %>
         </li>
         <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/sales" && params[:action] == "report_new_patient" %>">
             <%= link_to "BN/PK mới", erp_ortho_k.report_new_patient_backend_sales_path, class: "nav-link ", title: 'Danh sách và số lượng bệnh nhân/Phòng khám mới' %>
