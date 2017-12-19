@@ -77,7 +77,7 @@ module Erp
             end
           end
 
-          @products_query = Erp::Products::Product.delivery_report(filters: @global_filters)
+          @products_query = Erp::Products::Product.search(params).delivery_report(filters: @global_filters)
 
           if @group_by_category.present?
             @categories = @group_by_category == 'all' ? Erp::Products::Category.order('name') : Erp::Products::Category.where(id: @group_by_category)

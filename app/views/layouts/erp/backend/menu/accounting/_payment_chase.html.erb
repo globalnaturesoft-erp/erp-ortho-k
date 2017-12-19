@@ -4,7 +4,7 @@
   ["erp/accounting/backend/product_returns"].include?(params[:controller])
 %>">
     <a href="javascript:;" class="nav-link nav-toggle">
-        <span class="title">Theo dõi thanh toán</span>
+        <span class="title">Đơn hàng</span>
         <% if
           ["erp/accounting/backend/sales_orders"].include?(params[:controller]) ||
           ["erp/accounting/backend/purchase_orders"].include?(params[:controller]) ||
@@ -44,7 +44,7 @@
                 <% if ["erp/accounting/backend/purchase_orders"].include?(params[:controller]) %>
                 <span class="selected"></span>
                 <% end %>
-              
+
                 <% if Erp::Orders::Order.purchase_overdue_orders_count > 0 %>
                   <span class="badge badge-danger pull-right"><%= Erp::Orders::Order.purchase_overdue_orders_count %></span>
                 <% end %>

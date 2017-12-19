@@ -60,7 +60,7 @@ Erp::Products::Product.class_eval do
   def get_diameter_properties_value
     self.get_properties_value(Erp::Products::Property.getByName(Erp::Products::Property::NAME_DUONG_KINH))
   end
-  
+
   # class const - XNK (import export report)
   TYPE_SALES_EXPORT = 'sales_export'
   TYPE_SALES_IMPORT = 'sales_import'
@@ -75,7 +75,7 @@ Erp::Products::Product.class_eval do
   TYPE_DAMAGE_RECORD = 'damage_record'
   TYPE_STOCK_CHECK = 'stock_check'
   TYPE_STATE_CHECK = 'state_check'
-  
+
   def self.get_import_export_type_options()
     [
       {text: I18n.t('sales_export'), value: Erp::Products::Product::TYPE_SALES_EXPORT},
@@ -149,7 +149,7 @@ Erp::Products::Product.class_eval do
     if params[:state_id].present?
       query = query.where(state_id: params[:state_id])
     end
-    
+
     if params[:types].present?
       query = query.where(erp_qdeliveries_deliveries: {delivery_type: params[:types]})
     end
@@ -209,7 +209,7 @@ Erp::Products::Product.class_eval do
     if params[:to_date].present?
       query = query.where('erp_qdeliveries_deliveries.date <= ?', params[:to_date].to_date.end_of_day)
     end
-    
+
     if params[:period_id].present?
       query = query.where('erp_qdeliveries_deliveries.date >= ? AND erp_qdeliveries_deliveries.date <= ?',
         Erp::Periods::Period.find(params[:period_id]).from_date.beginning_of_day,
@@ -219,7 +219,7 @@ Erp::Products::Product.class_eval do
     if params[:category_id].present?
       query = query.where(erp_products_products: {category_id: params[:category_id]})
     end
-    
+
     if params[:customer_id].present?
       query = query.where(erp_qdeliveries_deliveries: {customer_id: params[:customer_id]})
     end
@@ -235,7 +235,7 @@ Erp::Products::Product.class_eval do
     if params[:state_id].present?
       query = query.where(state_id: params[:state_id])
     end
-    
+
     if params[:types].present?
       query = query.where(erp_qdeliveries_deliveries: {delivery_type: params[:types]})
     end
@@ -250,7 +250,7 @@ Erp::Products::Product.class_eval do
         qty_import = delivery_detail.quantity
         destination_warehouse = delivery_detail.warehouse_name
       end
-      
+
       result << {
         record_type: delivery_detail.delivery.delivery_type,
         record_date: delivery_detail.delivery.created_at,
@@ -284,45 +284,45 @@ Erp::Products::Product.class_eval do
         query = Erp::StockTransfers::TransferDetail.joins(:transfer, :product)
                 .where(erp_stock_transfers_transfers: {status: Erp::StockTransfers::Transfer::STATUS_DELIVERED})
                 .limit(limit)
-  
+
         if params[:product_id].present?
           query = query.where(product_id: params[:product_id])
         end
-  
+
         if params[:from_date].present?
           query = query.where('erp_stock_transfers_transfers.received_at >= ?', params[:from_date].to_date.beginning_of_day)
         end
-  
+
         if params[:to_date].present?
           query = query.where('erp_stock_transfers_transfers.received_at <= ?', params[:to_date].to_date.end_of_day)
         end
-        
+
         if params[:period_id].present?
           query = query.where('erp_stock_transfers_transfers.received_at >= ? AND erp_stock_transfers_transfers.received_at <= ?',
             Erp::Periods::Period.find(params[:period_id]).from_date.beginning_of_day,
             Erp::Periods::Period.find(params[:period_id]).to_date.end_of_day)
         end
-  
+
         if params[:category_id].present?
           query = query.where(erp_products_products: {category_id: params[:category_id]})
         end
-        
+
         if params[:warehouse_id].present? # @todo loc theo kho dich (tuy tung truong hop ma xet them kho nguon)
           query = query.where('erp_stock_transfers_transfers.destination_warehouse_id IN (?)', params[:warehouse_id])
         end
-  
+
         if params[:source_warehouse_id].present?
           query = query.where(erp_stock_transfers_transfers: {source_warehouse_id: params[:source_warehouse_id]})
         end
-  
+
         if params[:destination_warehouse_id].present?
           query = query.where(erp_stock_transfers_transfers: {destination_warehouse_id: params[:destination_warehouse_id]})
         end
-  
+
         if params[:state_id].present?
           query = query.where(state_id: params[:state_id])
         end
-  
+
         query.each do |transfer_detail|
           qty = +transfer_detail.quantity
           qty_export = transfer_detail.quantity
@@ -346,50 +346,50 @@ Erp::Products::Product.class_eval do
           }
           total[:quantity] += qty
         end
-  
+
         # Transfer: Kho Chuyển Đi /Kho Nguồn
         quer = Erp::StockTransfers::TransferDetail.joins(:transfer)
               .where(erp_stock_transfers_transfers: {status: Erp::StockTransfers::Transfer::STATUS_DELIVERED})
               .limit(limit)
-  
+
         if params[:product_id].present?
           query = query.where(product_id: params[:product_id])
         end
-  
+
         if params[:from_date].present?
           query = query.where('erp_stock_transfers_transfers.received_at >= ?', params[:from_date].to_date.beginning_of_day)
         end
-  
+
         if params[:to_date].present?
           query = query.where('erp_stock_transfers_transfers.received_at <= ?', params[:to_date].to_date.end_of_day)
         end
-        
+
         if params[:period_id].present?
           query = query.where('erp_stock_transfers_transfers.received_at >= ? AND erp_stock_transfers_transfers.received_at <= ?',
             Erp::Periods::Period.find(params[:period_id]).from_date.beginning_of_day,
             Erp::Periods::Period.find(params[:period_id]).to_date.end_of_day)
         end
-  
+
         if params[:category_id].present?
           query = query.where(erp_products_products: {category_id: params[:category_id]})
         end
-        
+
         if params[:warehouse_id].present? # @todo loc theo kho nguon (tuy tung truong hop ma xet them kho dich)
           query = query.where('erp_stock_transfers_transfers.source_warehouse_id IN (?)', params[:warehouse_id])
         end
-  
+
         if params[:source_warehouse_id].present?
           query = query.where('erp_stock_transfers_transfers.source_warehouse_id = ?', params[:source_warehouse_id])
         end
-  
+
         if params[:destination_warehouse_id].present?
           query = query.where('erp_stock_transfers_transfers.destination_warehouse_id = ?', params[:destination_warehouse_id])
         end
-  
+
         if params[:state_id].present?
           query = query.where(state_id: params[:state_id])
         end
-  
+
         query.each do |transfer_detail|
           qty = -transfer_detail.quantity
           qty_import = transfer_detail.quantity
@@ -421,41 +421,41 @@ Erp::Products::Product.class_eval do
       query = Erp::GiftGivens::GivenDetail.joins(:given, :product)
               .where(erp_gift_givens_givens: {status: Erp::GiftGivens::Given::STATUS_DELIVERED})
               .limit(limit)
-  
+
       if params[:product_id].present?
         query = query.where(product_id: params[:product_id])
       end
-  
+
       if params[:from_date].present?
         query = query.where('erp_gift_givens_givens.given_date >= ?', params[:from_date].to_date.beginning_of_day)
       end
-  
+
       if params[:to_date].present?
         query = query.where('erp_gift_givens_givens.given_date <= ?', params[:to_date].to_date.end_of_day)
       end
-      
+
       if params[:period_id].present?
         query = query.where('erp_gift_givens_givens.given_date >= ? AND erp_gift_givens_givens.given_date <= ?',
           Erp::Periods::Period.find(params[:period_id]).from_date.beginning_of_day,
           Erp::Periods::Period.find(params[:period_id]).to_date.end_of_day)
       end
-  
+
       if params[:category_id].present?
         query = query.where(erp_products_products: {category_id: params[:category_id]})
       end
-      
+
       if params[:customer_id].present?
         query = query.where(erp_gift_givens_givens: {contact_id: params[:customer_id]})
       end
-  
+
       if params[:warehouse_id].present?
         query = query.where(warehouse_id: params[:warehouse_id])
       end
-  
+
       if params[:state_id].present?
         query = query.where(state_id: params[:state_id])
       end
-  
+
       query.each do |gv_detail|
         qty = -gv_detail.quantity
         qty_export = gv_detail.quantity
@@ -487,41 +487,41 @@ Erp::Products::Product.class_eval do
       query = Erp::Consignments::ConsignmentDetail.joins(:consignment, :product)
               .where(erp_consignments_consignments: {status: Erp::Consignments::Consignment::STATUS_DELIVERED})
               .limit(limit)
-  
+
       if params[:product_id].present?
         query = query.where(product_id: params[:product_id])
       end
-  
+
       if params[:from_date].present?
         query = query.where('erp_consignments_consignments.sent_date >= ?', params[:from_date].to_date.beginning_of_day)
       end
-  
+
       if params[:to_date].present?
         query = query.where('erp_consignments_consignments.sent_date <= ?', params[:to_date].to_date.end_of_day)
       end
-      
+
       if params[:period_id].present?
         query = query.where('erp_consignments_consignments.sent_date >= ? AND erp_consignments_consignments.sent_date <= ?',
           Erp::Periods::Period.find(params[:period_id]).from_date.beginning_of_day,
           Erp::Periods::Period.find(params[:period_id]).to_date.end_of_day)
       end
-  
+
       if params[:category_id].present?
         query = query.where(erp_products_products: {category_id: params[:category_id]})
       end
-      
+
       if params[:customer_id].present?
         query = query.where(erp_consignments_consignments: {contact_id: params[:customer_id]})
       end
-  
+
       if params[:warehouse_id].present?
         query = query.where(erp_consignments_consignments: {warehouse_id: params[:warehouse_id]})
       end
-  
+
       if params[:state_id].present?
         query = query.where(state_id: params[:state_id])
       end
-  
+
       query.each do |csm_detail|
         qty = -csm_detail.quantity
         qty_export = csm_detail.quantity
@@ -553,41 +553,41 @@ Erp::Products::Product.class_eval do
       query = Erp::Consignments::ReturnDetail.joins(:cs_return, :consignment_detail => :product)
               .where(erp_consignments_cs_returns: {status: Erp::Consignments::CsReturn::STATUS_DELIVERED})
               .limit(limit)
-  
+
       if params[:product_id].present?
         query = query.where(erp_consignments_consignment_details: {product_id: params[:product_id]})
       end
-  
+
       if params[:from_date].present?
         query = query.where('erp_consignments_cs_returns.return_date >= ?', params[:from_date].to_date.beginning_of_day)
       end
-  
+
       if params[:to_date].present?
         query = query.where('erp_consignments_cs_returns.return_date <= ?', params[:to_date].to_date.end_of_day)
       end
-      
+
       if params[:period_id].present?
         query = query.where('erp_consignments_cs_returns.return_date >= ? AND erp_consignments_cs_returns.return_date <= ?',
           Erp::Periods::Period.find(params[:period_id]).from_date.beginning_of_day,
           Erp::Periods::Period.find(params[:period_id]).to_date.end_of_day)
       end
-  
+
       if params[:category_id].present?
         query = query.where(erp_products_products: {category_id: params[:category_id]})
       end
-      
+
       if params[:customer_id].present?
         query = query.where(erp_consignments_cs_returns: {contact_id: params[:customer_id]})
       end
-  
+
       if params[:warehouse_id].present?
         query = query.where(erp_consignments_cs_returns: {warehouse_id: params[:warehouse_id]})
       end
-  
+
       if params[:state_id].present?
         query = query.where(state_id: params[:state_id])
       end
-  
+
       query.each do |return_detail|
         qty = +return_detail.quantity
         qty_import = return_detail.quantity
@@ -619,37 +619,37 @@ Erp::Products::Product.class_eval do
       query = Erp::Products::DamageRecordDetail.joins(:damage_record, :product)
               .where(erp_products_damage_records: {status: Erp::Products::DamageRecord::STATUS_DONE})
               .limit(limit)
-  
+
       if params[:product_id].present?
         query = query.where(product_id: params[:product_id])
       end
-  
+
       if params[:from_date].present?
         query = query.where('erp_products_damage_records.date >= ?', params[:from_date].to_date.beginning_of_day)
       end
-  
+
       if params[:to_date].present?
         query = query.where('erp_products_damage_records.date <= ?', params[:to_date].to_date.end_of_day)
       end
-      
+
       if params[:period_id].present?
         query = query.where('erp_products_damage_records.date >= ? AND erp_products_damage_records.date <= ?',
           Erp::Periods::Period.find(params[:period_id]).from_date.beginning_of_day,
           Erp::Periods::Period.find(params[:period_id]).to_date.end_of_day)
       end
-  
+
       if params[:category_id].present?
         query = query.where(erp_products_products: {category_id: params[:category_id]})
       end
-  
+
       if params[:warehouse_id].present?
         query = query.where(erp_products_damage_records: {warehouse_id: params[:warehouse_id]})
       end
-  
+
       if params[:state_id].present?
         query = query.where(state_id: params[:state_id])
       end
-  
+
       query.each do |damage_record_detail|
         qty = -damage_record_detail.quantity
         qty_export = damage_record_detail.quantity
@@ -681,37 +681,37 @@ Erp::Products::Product.class_eval do
               .where(erp_products_stock_checks: {status: Erp::Products::StockCheck::STATUS_DONE})
               .limit(limit)
               .where.not(quantity: 0)
-  
+
       if params[:product_id].present?
         query = query.where(product_id: params[:product_id])
       end
-  
+
       if params[:from_date].present?
         query = query.where('erp_products_stock_checks.adjustment_date >= ?', params[:from_date].to_date.beginning_of_day)
       end
-  
+
       if params[:to_date].present?
         query = query.where('erp_products_stock_checks.adjustment_date <= ?', params[:to_date].to_date.end_of_day)
       end
-      
+
       if params[:period_id].present?
         query = query.where('erp_products_stock_checks.adjustment_date >= ? AND erp_products_stock_checks.adjustment_date <= ?',
           Erp::Periods::Period.find(params[:period_id]).from_date.beginning_of_day,
           Erp::Periods::Period.find(params[:period_id]).to_date.end_of_day)
       end
-  
+
       if params[:category_id].present?
         query = query.where(erp_products_products: {category_id: params[:category_id]})
       end
-  
+
       if params[:warehouse_id].present?
         query = query.where(erp_products_stock_checks: {warehouse_id: params[:warehouse_id]})
       end
-  
+
       if params[:state_id].present?
         query = query.where(state_id: params[:state_id])
       end
-  
+
       query.each do |stock_check_detail|
         qty = stock_check_detail.quantity
         if qty > 0
@@ -744,44 +744,44 @@ Erp::Products::Product.class_eval do
         total[:quantity] += qty
       end
     end
-    
+
     # State check // trạng thái
     if (params[:types].present? and params[:types].include?(Erp::Products::Product::TYPE_STATE_CHECK)) or params[:types].nil?
       query = Erp::Products::StateCheckDetail.joins(:state_check, :product)
               .where(erp_products_state_checks: {status: Erp::Products::StateCheck::STATE_CHECK_STATUS_ACTIVE})
               .limit(limit)
               .where.not(quantity: 0)
-  
+
       if params[:product_id].present?
         query = query.where(product_id: params[:product_id])
       end
-  
+
       if params[:from_date].present?
         query = query.where('erp_products_state_checks.check_date >= ?', params[:from_date].to_date.beginning_of_day)
       end
-  
+
       if params[:to_date].present?
         query = query.where('erp_products_state_checks.check_date <= ?', params[:to_date].to_date.end_of_day)
       end
-      
+
       if params[:period_id].present?
         query = query.where('erp_products_state_checks.check_date >= ? AND erp_products_state_checks.check_date <= ?',
           Erp::Periods::Period.find(params[:period_id]).from_date.beginning_of_day,
           Erp::Periods::Period.find(params[:period_id]).to_date.end_of_day)
       end
-  
+
       if params[:category_id].present?
         query = query.where(erp_products_products: {category_id: params[:category_id]})
       end
-  
+
       if params[:warehouse_id].present?
         query = query.where(erp_products_state_checks: {warehouse_id: params[:warehouse_id]})
       end
-  
+
       if params[:state_id].present?
         query = query.where('state_id = ? OR old_state_id = ?', params[:state_id], params[:state_id])
       end
-  
+
       # Old state
       query.each do |state_check_detail|
         qty = - state_check_detail.quantity
@@ -803,7 +803,7 @@ Erp::Products::Product.class_eval do
         }
         total[:quantity] += qty
       end
-      
+
       # New state
       query.each do |state_check_detail|
         qty = state_check_detail.quantity
@@ -839,6 +839,15 @@ Erp::Products::Product.class_eval do
     if params[:filters].present?
 
       filters = params[:filters]
+
+      # single keyword
+      if params[:keyword].present?
+				keyword = params[:keyword].strip.downcase
+				keyword.split(' ').each do |q|
+					q = q.strip
+					query = query.where('LOWER(erp_products_products.cache_search) LIKE ?', '%'+q+'%')
+				end
+			end
 
       # category
       if filters[:categories].present?
