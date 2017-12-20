@@ -898,7 +898,16 @@ Erp::Products::Product.class_eval do
     query = self.orthok_filters(params)
 
     # only not-in-stock products
-    query = query.where(cache_stock: 0)
+    if params[:warehouse].present? or params[:state].present?
+      state_id = params[:state].present? ? params[:state] : nil
+      warehouse_id = params[:warehouse].present? ? params[:warehouse] : nil
+      query = query.joins(:cache_stocks)
+        .where(erp_products_cache_stocks: {state_id: state_id})
+        .where(erp_products_cache_stocks: {warehouse_id: warehouse_id})
+        .where(erp_products_cache_stocks: {stock: 0})
+    else
+      query = query.where(cache_stock: 0)
+    end
 
     # need to purchase: @options["purchase_conditions"]
     ors = []
@@ -927,7 +936,7 @@ Erp::Products::Product.class_eval do
       end
     end
 
-    query = self.where(ors.join(" OR "))
+    query = query.where(ors.join(" OR "))
 
     return query
   end

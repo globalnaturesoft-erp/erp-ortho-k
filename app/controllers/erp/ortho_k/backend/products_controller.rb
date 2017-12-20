@@ -138,13 +138,17 @@ module Erp
         def stock_importing_table
           global_filters = params.to_unsafe_hash[:global_filter]
 
-          @products = Erp::Products::Product.get_stock_importing_product(filters: global_filters)
-            .joins(:category)
-            .order("erp_products_categories.name, cache_diameter, code")
+          @warehouse = Erp::Warehouses::Warehouse.where(id: global_filters[:warehouse]).first
 
-          @side_quantity = (global_filters.present? and global_filters[:side_quantity].present? ? global_filters[:side_quantity].to_i : 0)
-          @central_quantity = (global_filters.present? and global_filters[:central_quantity].present? ? global_filters[:central_quantity].to_i : 0)
-          @area = (global_filters.present? and global_filters[:area].present? ? global_filters[:area] : nil)
+          if @warehouse.present?
+            @products = Erp::Products::Product.get_stock_importing_product(filters: global_filters, warehouse: global_filters[:warehouse], state: global_filters[:state])
+              .joins(:category)
+              .order("erp_products_categories.name, cache_diameter, code")
+
+            @side_quantity = (global_filters.present? and global_filters[:side_quantity].present? ? global_filters[:side_quantity].to_i : 0)
+            @central_quantity = (global_filters.present? and global_filters[:central_quantity].present? ? global_filters[:central_quantity].to_i : 0)
+            @area = (global_filters.present? and global_filters[:area].present? ? global_filters[:area] : nil)
+          end
 
           render layout: nil
         end

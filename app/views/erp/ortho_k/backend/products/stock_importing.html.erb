@@ -17,6 +17,26 @@
     <div class="row">
         <div class="col-md-3">
             <%= erp_form_control("dataselect", {
+                name: 'warehouse',
+                value: '',
+                text: '',
+                label: t('.warehouse'),
+                placeholder: t('.all_warehouses'),
+                url: erp_warehouses.dataselect_backend_warehouses_path(format: 'json')
+            }) %>
+        </div>
+        <div class="col-md-3">
+            <%= erp_form_control("dataselect", {
+                name: 'state',
+                value: '',
+                text: '',
+                label: 'Trạng thái',
+                placeholder: 'Tất cả trạng thái',
+                url: erp_products.dataselect_backend_states_path(format: 'json')
+            }) %>
+        </div>
+        <div class="col-md-3">
+            <%= erp_form_control("dataselect", {
                 name: 'categories[]',
                 value: '',
                 text: '',
@@ -26,7 +46,7 @@
                 multiple: true
             }) %>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-3">
             <% diameter = Erp::Products::Property.where(name: "Đường kính").first %>
             <%= erp_form_control("dataselect", {
                 name: 'diameters[]',
@@ -41,17 +61,6 @@
         </div>
         <!--<div class="col-md-3">
             <%= erp_form_control("dataselect", {
-                name: 'warehouse',
-                value: '',
-                text: '',
-                label: t('.warehouse'),
-                placeholder: t('.all_warehouses'),
-                url: erp_warehouses.dataselect_backend_warehouses_path(format: 'json'),
-                multiple: true
-            }) %>
-        </div>-->
-        <div class="col-md-3">
-            <%= erp_form_control("dataselect", {
                 name: 'area',
                 value: '',
                 text: '',
@@ -59,7 +68,7 @@
                 placeholder: t('.all_areas'),
                 url: erp_ortho_k.area_dataselect_backend_central_areas_path(format: 'json')
             }) %>
-        </div>
+        </div>-->
     </div>
     <div class="row">
         <div class="col-md-3">
