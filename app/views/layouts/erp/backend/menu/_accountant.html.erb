@@ -1,6 +1,7 @@
 <li class="nav-item <%= "active open" if ["erp/accounting/backend/sales_orders",
                                           "erp/accounting/backend/purchase_orders",
-                                          "erp/accounting/backend/product_returns",
+                                          "erp/accounting/backend/sales_product_returns",
+                                          "erp/accounting/backend/purchase_product_returns",
                                           "erp/payments/backend/accounts",
                                           "erp/payments/backend/payment_records",
                                           "erp/payments/backend/payment_types"].include?(params[:controller]) ||
@@ -13,7 +14,8 @@
         <span class="title"><%= t('.accountant') %></span>
         <% if ["erp/accounting/backend/sales_orders",
               "erp/accounting/backend/purchase_orders",
-              "erp/accounting/backend/product_returns",
+              "erp/accounting/backend/sales_product_returns",
+              "erp/accounting/backend/purchase_product_returns",
               "erp/payments/backend/accounts",
               "erp/payments/backend/payment_records",
               "erp/payments/backend/payment_types"].include?(params[:controller]) ||
@@ -26,8 +28,17 @@
         <% else %>
             <span class="arrow"></span>
         <% end %>
-        <% if Erp::Orders::Order.sales_overdue_orders_count + Erp::Orders::Order.purchase_overdue_orders_count + Erp::Qdeliveries::Delivery.get_waiting_not_paid_return_deliveries_count > 0 %>
-          <span class="badge badge-danger pull-right"><%= Erp::Orders::Order.sales_overdue_orders_count + Erp::Orders::Order.purchase_overdue_orders_count + Erp::Qdeliveries::Delivery.get_waiting_not_paid_return_deliveries_count %></span>
+        <% if (
+            Erp::Orders::Order.sales_overdue_orders_count +
+            Erp::Orders::Order.purchase_overdue_orders_count +
+            Erp::Qdeliveries::Delivery.get_waiting_not_paid_return_sales_deliveries_count +
+            Erp::Qdeliveries::Delivery.get_waiting_not_paid_return_purchase_deliveries_count) > 0 %>
+          <span class="badge badge-danger pull-right">
+            <%= (Erp::Orders::Order.sales_overdue_orders_count +
+                 Erp::Orders::Order.purchase_overdue_orders_count +
+                 Erp::Qdeliveries::Delivery.get_waiting_not_paid_return_sales_deliveries_count +
+                 Erp::Qdeliveries::Delivery.get_waiting_not_paid_return_purchase_deliveries_count)
+            %></span>
         <% end %>
     </a>
     <ul class="sub-menu">
