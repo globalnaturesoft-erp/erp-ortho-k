@@ -3,6 +3,9 @@
   <head>
     <meta charset='utf-8' />
     <%= stylesheet_link_tag wicked_pdf_asset_base64("pdf") %>
+    <style>
+        <%= yield(:style) %>
+    </style>
   </head>
   <body onload='number_pages'>
     <div class="header">
@@ -15,14 +18,19 @@
             </div>
         </div>
         <div class="right">
-            <div class="line-1">
-                Thời điểm in: <%= Time.now.strftime('%d/%m/%Y, %I:%M %p') %>
+            <div class="default">
+                <div class="line-1">
+                    Thời điểm in: <%= Time.now.strftime('%d/%m/%Y, %I:%M %p') %>
+                </div>
+                <div class="line-1">
+                    Mẫu số: <%= yield(:form_num) %>
+                </div>
             </div>
             <div class="line-1">
-                Mẫu số: <%= yield(:form_num) %>
+              <%= yield(:format_info) %>
             </div>
-            <div class="line-1">
-                <%= yield(:form_info) %>
+            <div class="line-1 acc-info">
+                <%= yield(:accounting_info) %>
             </div>
         </div>
     </div>
@@ -55,6 +63,7 @@
     </div>
     <div class="footer">
       <%= yield(:footer) %>
+      <%= yield(:bottom) %>
     </div>
   </body>
 </html>
