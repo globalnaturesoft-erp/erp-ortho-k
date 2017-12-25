@@ -1,0 +1,110 @@
+<% content_for :title do %>
+    Thống kê theo vùng
+<% end %>
+
+<% content_for :page_title do %>
+    <i class="fa fa-archive"></i> Thống kê theo vùng
+<% end %>
+
+<% content_for :global_filter do %>
+    <div class="row">
+        <div class="col-md-3">
+            <%= erp_form_control('date', {
+                label: 'Từ ngày',
+                name: 'from_date',
+                value: @from_date,
+                placeholder: 'Chọn ngày đầu kỳ'
+            }) %>
+        </div>
+        <div class="col-md-3">
+            <%= erp_form_control('date', {
+                label: 'Đến ngày',
+                name: 'to_date',
+                value: @to_date,
+                placeholder: 'Chọn ngày cuối kỳ'
+            }) %>
+        </div>
+        <div class="col-md-3">
+            <%= erp_form_control('dataselect', {
+                label: 'Mốc thời gian',
+                name: 'period',
+                value: (@period.present? ? @period.id : ''),
+                text: (@period.present? ? @period.name : ''),
+                placeholder: 'Chọn khoảng thời gian',
+                url: erp_periods.dataselect_backend_periods_path(format: 'json'),
+            }) %>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <%= erp_form_control("dataselect", {
+                name: 'categories',
+                value: '',
+                text: '',
+                label: 'Loại hàng',
+                placeholder: 'Chọn loại hàng',
+                url: erp_products.dataselect_backend_categories_path(format: 'json'),
+                multiple: true
+            }) %>
+        </div>
+        <div class="col-md-9 letter-box">
+            <% (0..100).each do |num| %>
+                <div class="area-select area-select-<%= num %> <%= 'hide' if num > 0 %> form-control-mb-0">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <%= erp_form_control("select_basic", {
+                                name: 'areas['+num.to_s+'][letters]',
+                                value: '',
+                                text: '',
+                                label: (num == 0 ? 'Vùng len' : ''),
+                                placeholder: 'Chọn chữ',
+                                options: Erp::Products::PropertiesValue.letter_value_options,
+                                include_blank: 'Tất cả chữ',
+                                multiple: true
+                            }) %>
+                        </div>
+                        <div class="col-md-4">
+                            <%= erp_form_control("select_basic", {
+                                name: 'areas['+num.to_s+'][numbers]',
+                                value: '',
+                                text: '',
+                                label: (num == 0 ? '.' : ''),
+                                placeholder: 'Chọn số',
+                                options: Erp::Products::PropertiesValue.number_value_options,
+                                include_blank: 'Tất cả số',
+                                multiple: true
+                            }) %>
+                        </div>
+                        <div class="col-md-4">
+                            <%= erp_form_control("select_basic", {
+                                name: 'areas['+num.to_s+'][diameters]',
+                                value: '',
+                                text: '',
+                                label: (num == 0 ? '.' : ''),
+                                placeholder: 'Chọn đường kính',
+                                options: Erp::Products::PropertiesValue.diameter_value_options,
+                                include_blank: 'Tất cả đường kính',
+                                multiple: true
+                            }) %>
+                        </div>
+                    </div>
+                </div>
+            <% end %>
+            <a href="#add_letter" class="" style="margin-bottom: 20px;display: block;"
+                onclick="$(this).closest('.letter-box').find('.area-select.hide').eq(0).removeClass('hide')"
+            >Thêm vùng</a>
+        </div>
+    </div>
+<% end %>
+
+<%= erp_datalist(
+    url: erp_ortho_k.report_custom_area_table_backend_inventory_index_path,
+    sortable: true,
+    filters: [
+        {
+            text: t('.show_virtual'), name: 'show_virtual', value: true, checked: false
+        },
+    ],
+    columns: [
+    ],
+) %>

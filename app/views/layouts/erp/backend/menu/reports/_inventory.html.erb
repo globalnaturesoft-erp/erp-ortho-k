@@ -69,6 +69,13 @@
                 title: 'Thống kê tồn tùy chọn theo vùng'
             %>
         </li>
+        <!--<li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/inventory" && params[:action] == "report_custom_area_v2" %>">
+            <%= link_to "Thống kê theo vùng / v2",
+                erp_ortho_k.report_custom_area_v2_backend_inventory_index_path,
+                class: "nav-link ",
+                title: 'Thống kê tồn tùy chọn theo vùng - loại 2'
+            %>
+        </li>-->
         <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/inventory" && params[:action] == "report_outside_product" %>">
             <%= link_to "Len ngoài bảng", erp_ortho_k.report_outside_product_backend_inventory_index_path, class: "nav-link ", title: 'Thống kê len bảng' %>
         </li>

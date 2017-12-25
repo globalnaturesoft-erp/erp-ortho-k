@@ -38,7 +38,7 @@ Erp::OrthoK::Engine.routes.draw do
 					get 'dataselect'
 				end
 			end
-			
+
       resources :patient_states do
         collection do
 					post 'list'
@@ -57,31 +57,31 @@ Erp::OrthoK::Engine.routes.draw do
 					get 'report_pay_receive'
 					post 'report_pay_receive_table'
 					get 'report_pay_receive_xlsx'
-					
+
 					get 'report_synthesis_pay_receive'
 					post 'report_synthesis_pay_receive_table'
 					get 'report_synthesis_pay_receive_xlsx'
-					
+
 					get 'report_sales_results'
 					post 'report_sales_results_table'
 					get 'report_sales_results_xlsx'
-					
+
 					get 'report_income_statement'
 					post 'report_income_statement_table'
 					get 'report_income_statement_xlsx'
-					
+
 					get 'report_cash_flow'
 					post 'report_cash_flow_table'
 					get 'report_cash_flow_xlsx'
-					
+
 					get 'report_customer_liabilities'
 					post 'report_customer_liabilities_table'
 					get 'report_customer_liabilities_xlsx'
-					
+
 					get 'report_supplier_liabilities'
 					post 'report_supplier_liabilities_table'
 					get 'report_supplier_liabilities_xlsx'
-					
+
 					get 'report_statistics_liabilities'
 					post 'report_statistics_liabilities_table'
 					get 'report_statistics_liabilities_xlsx'
@@ -117,6 +117,10 @@ Erp::OrthoK::Engine.routes.draw do
 					get 'report_product_warehouse'
 					post 'report_product_warehouse_table'
 					get 'report_product_warehouse_xlsx'
+
+					get 'report_custom_area_v2'
+					post 'report_custom_area_v2_table'
+					get 'report_custom_area_v2_xlsx'
 				end
 			end
 
@@ -125,19 +129,19 @@ Erp::OrthoK::Engine.routes.draw do
 					get 'report_sell_and_return'
 					post 'report_sell_and_return_table'
 					get 'report_sell_and_return_xlsx'
-					
+
 					get 'report_sales_details'
 					post 'report_sales_details_table'
 					get 'report_sales_details_xlsx'
-					
+
 					get 'report_product_sold'
 					post 'report_product_sold_table'
 					get 'report_product_sold_xlsx'
-					
+
 					get 'report_product_return'
 					post 'report_product_return_table'
 					get 'report_product_return_xlsx'
-					
+
 					get 'report_new_patient'
 					post 'report_new_patient_table'
 					get 'report_new_patient_xlsx'

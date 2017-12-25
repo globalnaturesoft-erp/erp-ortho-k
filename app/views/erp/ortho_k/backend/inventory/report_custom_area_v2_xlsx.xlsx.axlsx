@@ -1,0 +1,166 @@
+wb = xlsx_package.workbook
+xlsx_package.use_autowidth = true
+wb.styles do |s|
+  wb.styles.fonts.first.name = 'Times New Roman'
+  wb.add_worksheet(name: 'Tồn kho vùng tùy chọn') do |sheet|
+    # style
+    bg_info = {:bg_color => "305496", :fg_color => "FF"}
+    bg_subrow = {:bg_color => "dbdbdb", :fg_color => "3a3838"}
+    bg_toprow = {:bg_color => "dbdbdb", :fg_color => "00"}
+    text_center = {alignment: { horizontal: :center }}
+    text_left = {alignment: { horizontal: :left }}
+    text_right = {alignment: { horizontal: :right }}
+    middle_align = {alignment: { vertical: :center }}
+    wrap = {alignment: {wrap_text: true}}
+    number = {format_code: '#,##0'}
+    border = {border: { style: :thin, color: "00", :edges => [:top, :right, :bottom, :left] }}
+    bold = {b: true}
+    if (!@from_date.nil? and !@to_date.nil?) and (@from_date.to_date == @to_date.to_date)
+      date = "#{' NGÀY ' + @from_date.to_date.strftime('%d/%m/%Y')}"
+    else
+      date = "#{' TỪ ' + @from_date.to_date.strftime('%d/%m/%Y') if !@from_date.nil?}#{' ĐẾN ' + @to_date.to_date.strftime('%d/%m/%Y') if !@to_date.nil?}"
+    end
+
+    # add empty row
+    sheet.add_row ['']
+
+    # Title 1
+    sheet.add_row ['THỐNG KÊ TỒN THEO VÙNG' + date], sz: 16, b: true, bg_color: "ffc801", style: (s.add_style text_center)
+
+    # add empty row
+    sheet.add_row ['']
+
+    # header
+    header = {columns: [], styles: []}
+    subheader = {columns: [], styles: []}
+    header[:columns] = []
+
+    header[:columns] << 'Loại hàng'
+    header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
+    subheader[:columns] << ''
+    subheader[:styles] << (s.add_style bg_info.deep_merge(text_right).deep_merge(border).merge(bold))
+    kt = 0
+    sheet.merge_cells("#{('A'.codepoints.first + kt).chr}4:#{('A'.codepoints.first + kt).chr}5")
+
+    header[:columns] << 'Đường kính'
+    header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
+    subheader[:columns] << ''
+    subheader[:styles] << (s.add_style bg_info.deep_merge(text_right).deep_merge(border).merge(bold))
+    kt += 1
+    sheet.merge_cells("#{('A'.codepoints.first + kt).chr}4:#{('A'.codepoints.first + kt).chr}5")
+
+    header[:columns] << 'Vùng len'
+    header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
+    subheader[:columns] << ''
+    subheader[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(border).merge(bold))
+    kt += 1
+    sheet.merge_cells("#{('A'.codepoints.first + kt).chr}4:#{('A'.codepoints.first + kt).chr}5")
+
+    header[:columns] << 'Số lượng'
+    header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
+    subheader[:columns] << 'Đầu kỳ'
+    subheader[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(border).merge(bold))
+    kt += 1
+    c = kt
+    sheet.merge_cells("#{('A'.codepoints.first + c).chr}4:#{('A'.codepoints.first + (c + 1)).chr}4")
+
+    header[:columns] << ''
+    header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
+    subheader[:columns] << 'Cuối kỳ'
+    subheader[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(border).merge(bold))
+    kt += 1
+
+    header[:columns] << 'Chênh lệch'
+    header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
+    subheader[:columns] << ''
+    subheader[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(border).merge(bold))
+    kt += 1
+    sheet.merge_cells("#{('A'.codepoints.first + kt).chr}4:#{('A'.codepoints.first + kt).chr}5")
+
+    sheet.add_row header[:columns], style: header[:styles]
+    sheet.add_row subheader[:columns], style: subheader[:styles]
+
+    # rows
+    line = 5
+    @letter_array.each_with_index do |r,index|
+      row = {columns: [], styles: []}
+      row[:columns] = []
+
+      letters = r[:letters]
+      letter_ids = r[:letter_ids]
+
+      query = @product_query
+      # filter by letters
+      if letter_ids.present?
+        if !letter_ids.kind_of?(Array)
+          query = query.where("erp_products_products.cache_properties LIKE '%[\"#{letter_ids}\",%'")
+        else
+          letter_ids = (letter_ids.reject { |c| c.empty? })
+          if !letter_ids.empty?
+            qs = []
+            letter_ids.each do |x|
+              qs << "(erp_products_products.cache_properties LIKE '%[\"#{x}\",%')"
+            end
+            query = query.where("(#{qs.join(" OR ")})")
+          end
+        end
+      end
+      product_ids = query.select('id')
+
+      product_ids = -1 if product_ids.count == 0
+      filters = @global_filters.clone.merge({product_id: product_ids})
+
+      if @categories.empty?
+        cat_name = 'Tất cả loại'
+      else
+        cat_name = @categories.map(&:name).join("\x0A").html_safe
+      end
+
+      row[:columns] << (index == 0 ? cat_name : '')
+      row[:styles] << (s.add_style text_center.deep_merge(middle_align).deep_merge(border).deep_merge(wrap).deep_merge(bold))
+
+      if @diameters.empty?
+        diameter = 'Tất cả loại'
+      else
+        diameter = @diameters.map(&:value).join(", ").html_safe
+      end
+      row[:columns] << (index == 0 ? diameter : '')
+      row[:styles] << (s.add_style text_center.deep_merge(middle_align).deep_merge(border).deep_merge(bold))
+
+      if letters.empty?
+        letter = 'Tất cả loại'
+      else
+        letter = letters.map(&:value).join(", ").html_safe
+      end
+      row[:columns] << letter
+      row[:styles] << (s.add_style text_center.deep_merge(middle_align).deep_merge(border).deep_merge(bold))
+
+      begin_params = filters.clone
+      begin_params[:to_date] = filters[:from_date]
+      begin_params[:from_date] = nil
+      begin_amount = Erp::Products::Product.get_stock_real(begin_params)
+
+      end_params = filters.clone
+      end_params[:from_date] = nil
+      end_amount = Erp::Products::Product.get_stock_real(end_params)
+
+      row[:columns] << begin_amount
+      row[:styles] << (s.add_style text_center.deep_merge(middle_align).deep_merge(border).deep_merge(bold))
+
+      row[:columns] << end_amount
+      row[:styles] << (s.add_style text_center.deep_merge(middle_align).deep_merge(border).deep_merge(bold))
+
+      row[:columns] << (end_amount - begin_amount)
+      row[:styles] << (s.add_style text_center.deep_merge(middle_align).deep_merge(border).deep_merge(bold))
+
+      sheet.add_row row[:columns], style: row[:styles]
+      line += 1
+    end
+
+    # Setup
+    sheet.column_widths 25, 20, 20, 20, 20, 20
+    sheet.merge_cells("A2:F2")
+    sheet.merge_cells("A#{6}:A#{line}")
+    sheet.merge_cells("B#{6}:B#{line}")
+  end
+end
