@@ -3,9 +3,17 @@ Erp::Products::Product.class_eval do
 
   after_save :update_cache_diameter
 
+  def get_default_name
+    if !name.present?
+      "#{self.get_letter}#{self.get_number.to_s.rjust(2, '0')}-#{self.get_diameter}-#{self.category_name}"
+    else
+      name
+    end
+  end
+
   def set_default_name
     if !name.present?
-      self.name = "#{self.get_letter}#{self.get_number.to_s.rjust(2, '0')}-#{self.get_diameter}-#{self.category_name}"
+      self.name = self.get_default_name
       self.save
     end
   end

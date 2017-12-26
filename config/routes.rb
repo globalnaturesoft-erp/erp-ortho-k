@@ -23,6 +23,9 @@ Erp::OrthoK::Engine.routes.draw do
           post 'import_export_report_table'
           get 'export_report'
           post 'export_report_table'
+
+          get 'import'
+          post 'import'
         end
       end
       resources :central_areas do

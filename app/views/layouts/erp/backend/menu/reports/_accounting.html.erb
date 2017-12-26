@@ -17,7 +17,7 @@
     </a>
     <ul class="sub-menu">
         <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_pay_receive" %>">
-            <%= link_to "Báo cáo thu/chi", erp_ortho_k.report_pay_receive_backend_accountings_path, class: "nav-link ", title: 'Báo cáo thu/chi theo thời gian' %>
+            <%= link_to "Báo cáo thu tiền hàng", erp_ortho_k.report_pay_receive_backend_accountings_path, class: "nav-link ", title: 'Báo cáo thu/chi theo thời gian' %>
         </li>
         <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_synthesis_pay_receive" %>">
             <%= link_to "Tổng hợp thu/chi", erp_ortho_k.report_synthesis_pay_receive_backend_accountings_path, class: "nav-link ", title: 'Thông kê tổng hợp thu/chi theo loại thu chi' %>

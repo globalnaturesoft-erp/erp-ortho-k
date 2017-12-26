@@ -1,0 +1,117 @@
+<% content_for :title do %>
+    Nhập sản phẩm
+<% end %>
+
+<% content_for :page_title do %>
+    <a href="<%= erp_products.backend_products_path %>">
+    <i class="fa fa-folder"></i> Danh sách sản phẩm
+    </a> / Nhập sản phẩm
+<% end %>
+
+<% content_for :page_toolbar do %>
+    <div class="btn-group">
+        <div class="clearfix">
+        </div>
+    </div>
+<% end %>
+
+<div class="row">
+    <div class="col-md-12">
+      <%= form_tag("", multipart: true) do |f| %>
+
+
+            <% if defined?(@products) %>
+                <div class="portlet light bordered">
+                  <div class="portlet-body form">
+                        <h3>Danh sách nhập dữ liệu hàng</h3>
+                      <table class="table table-bordered">
+                        <tr>
+                          <th>Tên hàng</th>
+                          <th>Loại</th>
+                          <th>Đường kính</th>
+                          <th>Chữ</th>
+                          <th>Độ</th>
+                          <th>Số</th>
+                          <th>Độ K</th>
+                          <th>Đơn vị</th>
+                          <th>Ngoài bảng</th>
+                          <th>Trạng thái</th>
+                          <th>Ghi chú</th>
+                        </tr>
+                        <% @products.each do |row| %>
+                          <%
+                            product = row[:product]
+                            data = row[:data]
+                            errors = row[:errors]
+                            warnings = row[:warnings]
+                          %>
+                          <tr>
+                            <td>
+                              <%= data[:name] %>
+                            </td>
+                            <td>
+                              <%= data[:category] %>
+                            </td>
+                            <td>
+                              <%= data[:diameter] %>
+                            </td>
+                            <td>
+                              <%= data[:letter] %>
+                            </td>
+                            <td>
+                              <%= data[:degree] %>
+                            </td>
+                            <td>
+                              <%= data[:number] %>
+                            </td>
+                            <td>
+                              <%= data[:degree_k] %>
+                            </td>
+                            <td>
+                              <%= data[:unit] %>
+                            </td>
+                            <td>
+                              <%= data[:is_outside] ? 'có' : 'không' %>
+                            </td>
+                            <td>
+                              <% if params[:import_file].present? %>
+                                  <%= errors.count > 0 ? '<span class="text-danger">Lỗi</span>'.html_safe : '<span class="text-success">Có thể thêm</span>'.html_safe %>
+                              <% else %>
+                                  <%= errors.count > 0 ? '<span class="text-danger">Không lưu</span>'.html_safe : '<span class="text-success">Đã thêm</span>'.html_safe %>
+                              <% end %>
+                            </td>
+                            <td>
+                              <div class="text-danger"><%= errors.join('</div><div class="text-danger">').html_safe %></div>
+                              <div class="text-"><%= warnings.join('</div><div class="text-">').html_safe %></div>
+                            </td>
+                          </tr>
+                        <% end %>
+                      </table>
+                  </div>
+                  <div class="mt-25">
+                      <% if params[:import_file].present? %>
+                          <button class="btn btn-primary">Nhập dữ liệu</button>
+                      <% end %>
+                  </div>
+                </div>
+            <% end %>
+            <% if true %>
+                <div class="portlet light bordered">
+                  <div class="portlet-body form">
+                    <div>
+                        <%= erp_form_control("file", {
+                            name: 'import_file',
+                            value: '',
+                            text: '',
+                            label: ('Nhập từ file (<a href="'+url_for('/backend/file/product_import_list.xlsx')+'" target="_blank">Tải mẫu</a>)').html_safe,
+                        }) %>
+                    </div>
+                    <div class="mt-25">
+                        <button class="btn btn-primary">Tải file</button>
+                    </div>
+                  </div>
+                </div>
+            <% end %>
+        <% end %>
+    </div>
+</div>

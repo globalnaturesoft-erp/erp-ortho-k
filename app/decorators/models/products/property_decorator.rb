@@ -46,4 +46,14 @@ Erp::Products::Property.class_eval do
   def self.get_letter
     self.where(name: self::NAME_CHU).first
   end
+
+  # get degree property
+  def self.get_degree
+    self.where(name: self::NAME_DO).first
+  end
+
+  # get degree k property
+  def self.get_degree_k
+    self.where(name: self::NAME_DO_K).first
+  end
 end
