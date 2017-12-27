@@ -132,7 +132,7 @@ module Erp
 
 
           # product query
-          @product_query = Erp::Products::Product.joins(:category).where(category_id: category_ids)
+          @product_query = Erp::Products::Product.joins(:category).where(category_id: category_ids).order('erp_products_categories.name, erp_products_products.name')
           # single keyword
           if params.to_unsafe_hash[:keyword].present?
             keyword = params.to_unsafe_hash[:keyword].strip.downcase

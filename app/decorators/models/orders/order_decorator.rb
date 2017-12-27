@@ -313,7 +313,7 @@ Erp::Orders::Order.class_eval do
   def self.purchase_overdue_orders_count
     self.purchase_orders.all_overdue.count
   end
-  
+
   # get report name
   def get_report_name
     str = []
@@ -321,5 +321,51 @@ Erp::Orders::Order.class_eval do
     str << doctor_name if doctor_name.present?
     str << ('BN ' + patient_state_name + ': ' + patient_name) if patient_name.present?
     return 'Xuất bán - ' + str.join(" - ")
+  end
+
+  # get all checking orders
+  def self.checking_orders
+    self.where(status: [
+      self::STATUS_STOCK_CHECKING,
+      self::STATUS_STOCK_CHECKED,
+    ])
+  end
+
+  # get all not checking orders
+  def self.not_checking_orders
+    self.where.not(status: [
+      self::STATUS_STOCK_CHECKING,
+      self::STATUS_STOCK_CHECKED,
+    ])
+  end
+
+  # update checking order
+  after_save :checking_order_check
+
+  def self.update_checking_order
+    self.checking_orders.order('erp_orders_orders.checking_order, erp_orders_orders.created_at DESC').each_with_index do |o, index|
+      o.update_column(:checking_order, index+1)
+    end
+    self.not_checking_orders.update_all(checking_order: nil)
+  end
+
+  def self.checking_order_options
+    count = self.checking_orders.count
+    options = []
+    (1..count).each do |num|
+      options << {text: num.to_s, value: num}
+    end
+    options
+  end
+
+  def checking_order_check
+    if [
+      Erp::Orders::Order::STATUS_STOCK_CHECKING,
+      Erp::Orders::Order::STATUS_STOCK_CHECKED,
+    ].include?(self.status) and self.checking_order.nil?
+      self.update_column(:checking_order, 0.5)
+    end
+
+    Erp::Orders::Order.update_checking_order
   end
 end

@@ -52,6 +52,7 @@ Erp::OrthoK::Engine.routes.draw do
 			resources :orders do
 				collection do
 					get 'patient_info'
+					post 'change_checking_order'
 				end
 			end
 
