@@ -1184,4 +1184,98 @@ Erp::Products::Product.class_eval do
     return query
   end
 
+  # import init stock from file
+  def self.import_init_stock(file)
+    # config
+    timestamp = Time.now.to_i
+    xlsx = Roo::Spreadsheet.open(file)
+    user = Erp::User.first
+    state = Erp::Products::State.first  # Mới
+    warehouse = Erp::Warehouses::Warehouse.first  # SG
+
+    # Read excel file. sheet tabs loop
+    xlsx.each_with_pagename do |name, sheet|
+      cat_name = name
+
+      # Check if sheet tab is LEN
+      if ["Standard"].include?(cat_name)
+        # Stock check
+        stock_check = Erp::Products::StockCheck.new(
+          creator_id: user.id,
+          warehouse_id: warehouse.id,
+          adjustment_date: Time.now,
+          employee_id: user.id,
+          status: Erp::Products::StockCheck::STATUS_DONE
+        )
+        details = []
+
+        # Header, first table row
+        headers = sheet.row(2)
+
+        # description
+        stock_check.description = "Nhập kho ban đầu: #{cat_name}"
+
+        headers.each_with_index do |header, index|
+          if ["10.4","10.6","10.8","11","11.2","11.4"].include?(header.to_s)
+            # diameter
+            diameter_p = Erp::Products::Property.get_diameter
+            diameter_ppv = Erp::Products::PropertiesValue.where(property_id: diameter_p.id, value: header.to_s).first
+
+            sheet.each_row_streaming do |row|
+              if !row[index].empty? and row[index].value > 0 and !["10.4","10.6","10.8","11","11.2","11.4"].include?(row[index].value.to_s)
+                lns = row[0].value.scan(/\d+|\D+/)
+
+                # quantity
+                stock = row[index].value
+
+                # letter
+                letter_p = Erp::Products::Property.get_letter
+                letter_ppv = Erp::Products::PropertiesValue.where(property_id: letter_p.id, value: lns[0]).first
+
+                # number
+                number_p = Erp::Products::Property.get_number
+                number_ppv = Erp::Products::PropertiesValue.where(property_id: number_p.id, value: lns[1].rjust(2, '0')).first
+
+                if diameter_ppv.present? and letter_ppv.present? and number_ppv.present?
+                  pname = "#{letter_ppv.value}#{number_ppv.value}-#{diameter_ppv.value}-#{cat_name}"
+
+                  # Find product
+                  product = Erp::Products::Product
+                    .where(name: pname)
+                    .first
+
+                  # check if product exist
+                  if product.present?
+                    # add stock check detail
+                    details << stock_check.stock_check_details.build(
+                      product_id: product.id,
+                      quantity: stock,
+                      state_id: state.id
+                    )
+
+                    result = "SUCCESS::#{pname}: exist! checked!"
+                  else
+                    result = "ERROR::#{pname}: not exist! ignored!"
+                  end
+                end
+
+                # Logging
+                puts result
+                # File.open("tmp/import_init_stock-#{timestamp}.log", "a+") { |f| f << "#{result}\n"}
+                # sleep 1
+              end
+            end
+          end
+        end
+
+        # Save stock check record
+        puts details.count
+        self.transaction do
+          stock_check.save
+        end
+      end
+    end
+
+  end
+
 end

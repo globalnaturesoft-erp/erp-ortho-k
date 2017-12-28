@@ -34,26 +34,26 @@ Erp::Products::Property.class_eval do
 
   # get diameter property
   def self.get_diameter
-    self.where(name: self::NAME_DUONG_KINH).first
+    self.where(name: NAME_DUONG_KINH).first
   end
 
   # get diameter property
   def self.get_number
-    self.where(name: self::NAME_SO).first
+    self.where(name: NAME_SO).first
   end
 
   # get diameter property
   def self.get_letter
-    self.where(name: self::NAME_CHU).first
+    self.where(name: NAME_CHU).first
   end
 
   # get degree property
   def self.get_degree
-    self.where(name: self::NAME_DO).first
+    self.where(name: NAME_DO).first
   end
 
   # get degree k property
   def self.get_degree_k
-    self.where(name: self::NAME_DO_K).first
+    self.where(name: NAME_DO_K).first
   end
 end
