@@ -81,7 +81,7 @@ module Erp
 
           @payables = Erp::Payments::PaymentType.where(is_payable: true)
           @receivables = Erp::Payments::PaymentType.where(is_receivable: true)
-          @payment_types = Erp::Payments::PaymentType.all # Lấy các payment type ACTIVE
+          @payment_types = Erp::Payments::PaymentType.all_active # Lấy các payment type ACTIVE
 
           respond_to do |format|
             format.xlsx {
@@ -139,6 +139,9 @@ module Erp
             @from = (glb.present? and glb[:from_date].present?) ? glb[:from_date].to_date : nil
             @to = (glb.present? and glb[:to_date].present?) ? glb[:to_date].to_date : nil
           end
+          
+          @payables = Erp::Payments::PaymentType.get_custom_payment_types.payables
+          @receivables = Erp::Payments::PaymentType.get_custom_payment_types.receivables
         end
 
         def report_income_statement_xlsx
@@ -152,7 +155,10 @@ module Erp
             @from = (glb.present? and glb[:from_date].present?) ? glb[:from_date].to_date : nil
             @to = (glb.present? and glb[:to_date].present?) ? glb[:to_date].to_date : nil
           end
-
+          
+          @payables = Erp::Payments::PaymentType.get_custom_payment_types.payables
+          @receivables = Erp::Payments::PaymentType.get_custom_payment_types.receivables
+          
           respond_to do |format|
             format.xlsx {
               response.headers['Content-Disposition'] = 'attachment; filename="Ket qua kinh doanh.xlsx"'
@@ -304,6 +310,88 @@ module Erp
           respond_to do |format|
             format.xlsx {
               response.headers['Content-Disposition'] = 'attachment; filename="Thong ke cong no khach hang.xlsx"'
+            }
+          end
+        end
+        
+        # Bao cao cong no co phat sinh
+        def report_liabilities_arising_table
+          glb = params.to_unsafe_hash[:global_filter]
+          if glb[:period].present?
+            @period_name = Erp::Periods::Period.find(glb[:period]).name
+            @from = Erp::Periods::Period.find(glb[:period]).from_date.beginning_of_day
+            @to = Erp::Periods::Period.find(glb[:period]).to_date.end_of_day
+          else
+            @period_name = nil
+            @from = (glb.present? and glb[:from_date].present?) ? glb[:from_date].to_date : nil #Time.now.beginning_of_month
+            @to = (glb.present? and glb[:to_date].present?) ? glb[:to_date].to_date : nil
+          end
+
+          if glb[:customer].present?
+            @customers = Erp::Contacts::Contact.where(id: glb[:customer])
+          else
+            @customers = Erp::Contacts::Contact.where.not(id: Erp::Contacts::Contact.get_main_contact.id)
+          end
+          
+          # Loc danh sach cac khach hang co phat sinh giao dich (thanh toan, cong no)
+          order_query = Erp::Orders::Order.all_confirmed
+            .sales_orders
+            .payment_for_contact_orders(from_date: @from, to_date: @to)
+            .select('customer_id')
+          
+          product_return_query = Erp::Qdeliveries::Delivery.all_delivered
+            .sales_import_deliveries
+            .get_deliveries_with_payment_for_contact(from_date: @from, to_date: @to)
+            .select('customer_id')
+          
+          payment_query = Erp::Payments::PaymentRecord.all_done
+            .select('customer_id')
+            .where(payment_type_id: Erp::Payments::PaymentType.find_by_code(Erp::Payments::PaymentType::CODE_CUSTOMER).id)
+            .where("payment_date >= ? AND payment_date <= ?", @from, @to)
+          
+          @customers = @customers.where("id IN (?) OR id IN (?) OR id IN (?)", order_query, product_return_query, payment_query)
+          
+        end
+
+        def report_liabilities_arising_xlsx
+          glb = params.to_unsafe_hash[:global_filter]
+          if glb[:period].present?
+            @period_name = Erp::Periods::Period.find(glb[:period]).name
+            @from = Erp::Periods::Period.find(glb[:period]).from_date.beginning_of_day
+            @to = Erp::Periods::Period.find(glb[:period]).to_date.end_of_day
+          else
+            @period_name = nil
+            @from = (glb.present? and glb[:from_date].present?) ? glb[:from_date].to_date : nil #Time.now.beginning_of_month
+            @to = (glb.present? and glb[:to_date].present?) ? glb[:to_date].to_date : nil
+          end
+
+          if glb[:customer].present?
+            @customers = Erp::Contacts::Contact.where(id: glb[:customer])
+          else
+            @customers = Erp::Contacts::Contact.where.not(id: Erp::Contacts::Contact.get_main_contact.id)
+          end
+          
+          # Loc danh sach cac khach hang co phat sinh giao dich (thanh toan, cong no)
+          order_query = Erp::Orders::Order.all_confirmed
+            .sales_orders
+            .payment_for_contact_orders(from_date: @from, to_date: @to)
+            .select('customer_id')
+          
+          product_return_query = Erp::Qdeliveries::Delivery.all_delivered
+            .sales_import_deliveries
+            .get_deliveries_with_payment_for_contact(from_date: @from, to_date: @to)
+            .select('customer_id')
+          
+          payment_query = Erp::Payments::PaymentRecord.all_done
+            .select('customer_id')
+            .where(payment_type_id: Erp::Payments::PaymentType.find_by_code(Erp::Payments::PaymentType::CODE_CUSTOMER).id)
+            .where("payment_date >= ? AND payment_date <= ?", @from, @to)
+          
+          @customers = @customers.where("id IN (?) OR id IN (?) OR id IN (?)", order_query, product_return_query, payment_query)
+
+          respond_to do |format|
+            format.xlsx {
+              response.headers['Content-Disposition'] = 'attachment; filename="Bao cao khach hang phat sinh.xlsx"'
             }
           end
         end

@@ -29,7 +29,7 @@
                 <th width="10%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Nợ trong kỳ</th>
                 <th width="10%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Đã thanh toán</th>
                 <th width="10%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Nợ cuối kỳ</th>
-                <th width="20%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">NV Sell</th>
+                <th width="20%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">NV bán hàng</th>
             </tr>
         </thead>
         <tbody>
@@ -50,7 +50,7 @@
                         <%= format_number(customer.sales_debt_amount(to_date: @to)) %>
                     </td>
                     <td class="text-center">
-                        <%= !customer.salesperson.nil? ? customer.salesperson_name : 'Xem lại acc của sell nào' %>
+                        <%= !customer.salesperson.nil? ? customer.salesperson_name : '--' %>
                     </td>
                 </tr>
             <% end %>

@@ -239,7 +239,7 @@ wb.styles do |s|
         row[:columns] << ''
         row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
         
-        row[:columns] << delivery_detail.cache_total
+        row[:columns] << -(delivery_detail.cache_total)
         row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
         
         row[:columns] << delivery_detail.note

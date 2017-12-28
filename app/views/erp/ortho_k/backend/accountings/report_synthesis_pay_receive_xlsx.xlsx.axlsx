@@ -1,7 +1,7 @@
 wb = xlsx_package.workbook
 xlsx_package.use_autowidth = true
 wb.styles do |s|
-  wb.styles.fonts.first.name = 'Tahoma'
+  wb.styles.fonts.first.name = 'Calibri'
   wb.add_worksheet(name: 'Tổng hợp thu chi') do |sheet|
     # style
     header_bg_info = {:bg_color => "305496", :fg_color => "FF"}
@@ -48,20 +48,26 @@ wb.styles do |s|
     sheet.column_widths 10, 40, 15
     
     # rows 1
+    re_count = 0
     @receivables.each_with_index do |receive, index|
-      row = {columns: [], styles: []}
-      row[:columns] = []
-    
-      row[:columns] << (index==0 ? 'PHẦN THU' : '')
-      row[:styles] << (s.add_style text_center.deep_merge(middle_align).deep_merge(border).merge(bold))
-    
-      row[:columns] << receive.name
-      row[:styles] << (s.add_style text_left.deep_merge(border))
-    
-      row[:columns] << receive.receive_amount_by_payment_type(from_date: @from, to_date: @to)
-      row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
-    
-      sheet.add_row row[:columns], style: row[:styles]
+      amount = receive.receive_amount_by_payment_type(from_date: @from, to_date: @to)
+      if amount.to_f > 0
+        row = {columns: [], styles: []}
+        row[:columns] = []
+      
+        row[:columns] << (re_count==0 ? 'PHẦN THU' : '')
+        row[:styles] << (s.add_style text_center.deep_merge(middle_align).deep_merge(border).merge(bold))
+      
+        row[:columns] << receive.name
+        row[:styles] << (s.add_style text_left.deep_merge(border))
+      
+        row[:columns] << amount
+        row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
+      
+        sheet.add_row row[:columns], style: row[:styles]
+        
+        re_count += 1
+      end
     end
     row = {columns: [], styles: []}
     row[:columns] = []
@@ -74,20 +80,26 @@ wb.styles do |s|
     sheet.add_row row[:columns], style: row[:styles]
     
     # rows 2
+    pa_count = 0
     @payables.each_with_index do |pay, index|
-      row = {columns: [], styles: []}
-      row[:columns] = []
-    
-      row[:columns] << (index==0 ? 'PHẦN CHI' : '')
-      row[:styles] << (s.add_style text_center.deep_merge(middle_align).deep_merge(border).merge(bold))
-    
-      row[:columns] << pay.name
-      row[:styles] << (s.add_style text_left.deep_merge(border))
-    
-      row[:columns] << pay.paid_amount_by_payment_type(from_date: @from, to_date: @to)
-      row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
-    
-      sheet.add_row row[:columns], style: row[:styles]
+      amount = pay.paid_amount_by_payment_type(from_date: @from, to_date: @to)
+      if amount > 0
+        row = {columns: [], styles: []}
+        row[:columns] = []
+      
+        row[:columns] << (pa_count==0 ? 'PHẦN CHI' : '')
+        row[:styles] << (s.add_style text_center.deep_merge(middle_align).deep_merge(border).merge(bold))
+      
+        row[:columns] << pay.name
+        row[:styles] << (s.add_style text_left.deep_merge(border))
+      
+        row[:columns] << amount
+        row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
+      
+        sheet.add_row row[:columns], style: row[:styles]
+        
+        pa_count += 1
+      end
     end
     row = {columns: [], styles: []}
     row[:columns] = []
@@ -105,8 +117,8 @@ wb.styles do |s|
     # Setup
     sheet.merge_cells("A2:C2")
     cells_0 = 4
-    cells_1 = cells_0 + @receivables.count + 1
-    cells_2 = cells_1 + @payables.count + 1
+    cells_1 = cells_0 + re_count + 1
+    cells_2 = cells_1 + pa_count + 1
     sheet.merge_cells("A#{cells_0 + 1}:A#{cells_1}")
     sheet.merge_cells("A#{cells_1 + 1}:A#{cells_2}")
     sheet.merge_cells("A#{cells_2 + 1}:B#{cells_2 + 1}")

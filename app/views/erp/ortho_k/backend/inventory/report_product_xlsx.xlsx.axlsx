@@ -1,7 +1,7 @@
 wb = xlsx_package.workbook
 xlsx_package.use_autowidth = true
 wb.styles do |s|
-  wb.styles.fonts.first.name = 'Times New Roman'
+  wb.styles.fonts.first.name = 'Calibri'
   wb.add_worksheet(name: 'Thống kê tồn kho') do |sheet|
     # style
     bg_info = {:bg_color => "305496", :fg_color => "FF"}

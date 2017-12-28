@@ -3,7 +3,7 @@ xlsx_package.use_autowidth = true
 thu = (get_filters(params)['pay_receive'].present? and get_filters(params)['pay_receive'].include?(Erp::Payments::PaymentRecord::TYPE_RECEIVE)) ? 'thu ' : ''
 chi = (get_filters(params)['pay_receive'].present? and get_filters(params)['pay_receive'].include?(Erp::Payments::PaymentRecord::TYPE_PAY)) ? 'chi ' : ''
 wb.styles do |s|
-  wb.styles.fonts.first.name = 'Tahoma'
+  wb.styles.fonts.first.name = 'Calibri'
   wb.add_worksheet(name: (thu + chi + 'tiền hàng').capitalize) do |sheet|
     # style
     bg_info = {:bg_color => "305496", :fg_color => "FF"}

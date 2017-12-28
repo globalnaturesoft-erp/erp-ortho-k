@@ -63,35 +63,56 @@
                 <td class="text-center"><%= 5 %></td>
                 <td class="text-left font-yellow-gold"><%= 'Lợi nhuận gộp về bán hàng' %> <sup>( 5 = 3 - 4 )</sup></td>
                 <td class="text-center font-yellow-gold text-bold">
-                    <%= format_number(Erp::Orders::Order.loi_nhuan_gop_ve_ban_hang(from_date: @from, to_date: @to)) %>
+                    <% loi_nhuan_sau_ban_hang = Erp::Orders::Order.loi_nhuan_gop_ve_ban_hang(from_date: @from, to_date: @to) %>
+                    <%= format_number(loi_nhuan_sau_ban_hang) %>
                 </td>
             </tr>
             <tr>
                 <td class="text-center"><%= 6 %></td>
-                <td class="text-left font-yellow-gold"><%= 'Doanh thu hoạt động tài chính' %></td>
-                <td class="text-center font-yellow-gold">
-                    ???
+                <td class="text-left font-yellow-gold"><%= 'Tổng các khoản thu khác:' %></td>
+                <td class="text-center font-yellow-gold text-bold">
+                    <% tong_thu_khac = @receivables.receive_amount_by_payment_type(from_date: @from, to_date: @to) %>
+                    <%= format_number(tong_thu_khac) %>
                 </td>
             </tr>
+            <% @receivables.each do |receive| %>
+                <% receive_amount = receive.receive_amount_by_payment_type(from_date: @from, to_date: @to) %>
+                <% if receive_amount > 0 %>
+                    <tr>
+                        <td class="text-right"></td>
+                        <td class="text-left"><%= '- ' + receive.name %></td>
+                        <td class="text-center">
+                            <%= format_number(receive_amount) %>
+                        </td>
+                    </tr>
+                <% end %>
+            <% end %>
             <tr>
                 <td class="text-center"><%= 7 %></td>
-                <td class="text-left font-yellow-gold"><%= 'Chi phí tài chính' %></td>
-                <td class="text-center font-yellow-gold">
-                    ???
+                <td class="text-left font-yellow-gold"><%= 'Tổng các khoản chi khác:' %></td>
+                <td class="text-center font-yellow-gold text-bold">
+                    <% tong_chi_khac = @payables.paid_amount_by_payment_type(from_date: @from, to_date: @to) %>
+                    <%= format_number(tong_chi_khac) %>
                 </td>
             </tr>
+            <% @payables.each do |pay| %>
+                <% paid_amount = pay.paid_amount_by_payment_type(from_date: @from, to_date: @to) %>
+                <% if paid_amount > 0 %>
+                    <tr>
+                        <td class="text-right"></td>
+                        <td class="text-left"><%= '- ' + pay.name %></td>
+                        <td class="text-center">
+                            <%= format_number(paid_amount) %>
+                        </td>
+                    </tr>
+                <% end %>
+            <% end %>
             <tr>
-                <td class="text-center"><%= 8 %></td>
-                <td class="text-left font-yellow-gold"><%= 'Chi phí quản lý doanh nghiệp' %></td>
-                <td class="text-center font-yellow-gold">
-                    ???
-                </td>
-            </tr>
-            <tr>
-                <td class="bg-green-jungle bg-font-green-jungle text-center"><%= 9 %></td>
-                <td class="bg-green-jungle bg-font-green-jungle text-left"><%= 'Lợi nhuận thuần từ hoạt động kinh doanh' %> <sup>( 9 = ( 5 + 6 ) - ( 7 + 8 ) )</sup></td>
+                <td class="bg-green-jungle bg-font-green-jungle text-center"><%= 8 %></td>
+                <td class="bg-green-jungle bg-font-green-jungle text-left"><%= 'Lợi nhuận thuần từ hoạt động kinh doanh' %> <sup>( 8 = ( 5 + 6 ) - 7 )</sup></td>
                 <td class="bg-green-jungle bg-font-green-jungle text-center bold">
-                    ???
+                    <% loi_nhuan_thuan = loi_nhuan_sau_ban_hang + tong_thu_khac - tong_chi_khac %>
+                    <%= format_number(loi_nhuan_thuan) %>
                 </td>
             </tr>
         </tbody>

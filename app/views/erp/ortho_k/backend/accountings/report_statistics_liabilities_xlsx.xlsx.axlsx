@@ -1,7 +1,7 @@
 wb = xlsx_package.workbook
 xlsx_package.use_autowidth = true
 wb.styles do |s|
-  wb.styles.fonts.first.name = 'Tahoma'
+  wb.styles.fonts.first.name = 'Calibri'
   wb.add_worksheet(name: 'Thống kê công nợ KH') do |sheet|
     # style
     bg_info = {:bg_color => "305496", :fg_color => "FF"}
@@ -28,49 +28,63 @@ wb.styles do |s|
     
     header[:columns] << t('.periods')
     header[:styles] << (s.add_style bg_info.deep_merge(text_center).merge(bold))
-    footer[:columns] << "Tổng cộng"
-    footer[:styles] << (s.add_style text_center.deep_merge(border).merge(bold))
     
     header[:columns] << t('.total_debt_amount')
     header[:styles] << (s.add_style bg_info.deep_merge(text_right).merge(bold))
-    footer[:columns] << @customers.sales_total_amount(from_date: @periods.first[:from], to_date: @periods.last[:to])
-    footer[:styles] << (s.add_style number.deep_merge(bold).deep_merge(border))
     
     header[:columns] << t('.total_paid_amount')
     header[:styles] << (s.add_style bg_info.deep_merge(text_right).merge(bold))
-    footer[:columns] << @customers.sales_paid_amount(from_date: @periods.first[:from], to_date: @periods.last[:to])
-    footer[:styles] << (s.add_style number.deep_merge(bold).deep_merge(border))
     
     header[:columns] << t('.total_remain_amount')
     header[:styles] << (s.add_style bg_info.deep_merge(text_right).merge(bold))
-    footer[:columns] << @customers.sales_debt_amount(from_date: @periods.first[:from], to_date: @periods.last[:to])
-    footer[:styles] << (s.add_style number.deep_merge(bold).deep_merge(border))
     
     sheet.add_row header[:columns], style: header[:styles]
-    sheet.column_widths 25, 15, 15, 15
     
     # rows
     @periods.each do |period|
       row = {columns: [], styles: []}
       row[:columns] = []
-    
-      row[:columns] << period[:name]
-      row[:styles] << (s.add_style text_center.deep_merge(border))
-    
-      row[:columns] << @customers.sales_total_amount(from_date: period[:from], to_date: period[:to])
-      row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
-    
-      row[:columns] << @customers.sales_paid_amount(from_date: period[:from], to_date: period[:to])
-      row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
-    
-      row[:columns] << @customers.sales_debt_amount(from_date: period[:from], to_date: period[:to])
-      row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
-    
-      sheet.add_row row[:columns], style: row[:styles]
+      
+      total_amount = @customers.sales_total_amount(from_date: period[:from], to_date: period[:to])
+      paid_amount = @customers.sales_paid_amount(from_date: period[:from], to_date: period[:to])
+      debt_amount = @customers.sales_debt_amount(from_date: period[:from], to_date: period[:to])
+      
+      if (total_amount + paid_amount + debt_amount) > 0
+        row[:columns] << period[:name]
+        row[:styles] << (s.add_style text_center.deep_merge(border))
+      
+        row[:columns] << total_amount
+        row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
+      
+        row[:columns] << paid_amount
+        row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
+      
+        row[:columns] << debt_amount
+        row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
+      
+        sheet.add_row row[:columns], style: row[:styles]
+      end
     end
     
     # footer
+    total_amount = @customers.sales_total_amount(from_date: @periods.first[:from], to_date: @periods.last[:to])
+    paid_amount = @customers.sales_paid_amount(from_date: @periods.first[:from], to_date: @periods.last[:to])
+    debt_amount = @customers.sales_debt_amount(from_date: @periods.first[:from], to_date: @periods.last[:to])
+    
+    footer[:columns] << "Tổng cộng"
+    footer[:styles] << (s.add_style text_center.deep_merge(border).merge(bold))
+    
+    footer[:columns] << total_amount
+    footer[:styles] << (s.add_style number.deep_merge(bold).deep_merge(border))
+    
+    footer[:columns] << paid_amount
+    footer[:styles] << (s.add_style number.deep_merge(bold).deep_merge(border))
+    
+    footer[:columns] << debt_amount
+    footer[:styles] << (s.add_style number.deep_merge(bold).deep_merge(border))
+    
     sheet.add_row footer[:columns], style: footer[:styles]
+    sheet.column_widths 25, 15, 15, 15
     
     # Setup
     sheet.merge_cells("A2:D2")

@@ -1,7 +1,7 @@
 wb = xlsx_package.workbook
 xlsx_package.use_autowidth = true
 wb.styles do |s|
-  wb.styles.fonts.first.name = 'Tahoma'
+  wb.styles.fonts.first.name = 'Calibri'
   wb.add_worksheet(name: 'Danh sách khách hàng còn nợ') do |sheet|
     # style
     bg_info = {:bg_color => "305496", :fg_color => "FF"}
@@ -33,37 +33,21 @@ wb.styles do |s|
     footer[:styles] << (s.add_style bold.deep_merge(border).deep_merge(text_center))
     
     header[:columns] << t('.customer_name')
-    header[:styles] << (s.add_style bg_info.deep_merge(text_left).merge(bold))
+    header[:styles] << (s.add_style bg_info.deep_merge(text_center).merge(bold))
     footer[:columns] << ''
     footer[:styles] << (s.add_style bold.deep_merge(border))
     
-    header[:columns] << t('.begin_period_debt_amount')
-    header[:styles] << (s.add_style bg_info.deep_merge(text_right).merge(bold))
-    footer[:columns] << @customers.sales_debt_amount(to_date: (!@from.nil? ? (@from-1.day) : @from))
-    footer[:styles] << (s.add_style number.deep_merge(bold).deep_merge(border))
-    
-    header[:columns] << t('.total_debt_amount')
-    header[:styles] << (s.add_style bg_info.deep_merge(text_right).merge(bold))
-    footer[:columns] << @customers.sales_total_amount(from_date: @from, to_date: @to)
-    footer[:styles] << (s.add_style number.deep_merge(bold).deep_merge(border))
-    
-    header[:columns] << t('.total_paid_amount')
-    header[:styles] << (s.add_style bg_info.deep_merge(text_right).merge(bold))
-    footer[:columns] << @customers.sales_paid_amount(from_date: @from, to_date: @to)
-    footer[:styles] << (s.add_style number.deep_merge(bold).deep_merge(border))
-    
     header[:columns] << t('.end_period_debt_amount')
-    header[:styles] << (s.add_style bg_info.deep_merge(text_right).merge(bold))
+    header[:styles] << (s.add_style bg_info.deep_merge(text_center).merge(bold))
     footer[:columns] << @customers.sales_debt_amount(to_date: @to)
     footer[:styles] << (s.add_style number.deep_merge(bold).deep_merge(border))
     
     header[:columns] << t('.salesperson')
-    header[:styles] << (s.add_style bg_info.deep_merge(text_right).merge(bold))
+    header[:styles] << (s.add_style bg_info.deep_merge(text_center).merge(bold))
     footer[:columns] << ''
     footer[:styles] << (s.add_style border)
     
     sheet.add_row header[:columns], style: header[:styles]
-    sheet.column_widths 5, 25, 15, 15, 15, 15, 20
     
     # rows
     @customers.each_with_index do |customer,index|
@@ -76,19 +60,10 @@ wb.styles do |s|
       row[:columns] << customer.name
       row[:styles] << (s.add_style text_left.deep_merge(border))
     
-      row[:columns] << customer.sales_debt_amount(to_date: (!@from.nil? ? (@from-1.day) : @from))
-      row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
-    
-      row[:columns] << customer.sales_total_amount(from_date: @from, to_date: @to)
-      row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
-    
-      row[:columns] << customer.sales_paid_amount(from_date: @from, to_date: @to)
-      row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
-    
       row[:columns] << customer.sales_debt_amount(to_date: @to)
       row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
     
-      row[:columns] << (!customer.salesperson.nil? ? customer.salesperson_name : 'Không biết')
+      row[:columns] << (!customer.salesperson.nil? ? customer.salesperson_name : '')
       row[:styles] << (s.add_style text_center.deep_merge(border))
     
       sheet.add_row row[:columns], style: row[:styles]
@@ -96,9 +71,10 @@ wb.styles do |s|
     
     # footer
     sheet.add_row footer[:columns], style: footer[:styles]
+    sheet.column_widths 5, 50, 15, 22
     
     # Setup
-    sheet.merge_cells("A2:G2")
+    sheet.merge_cells("A2:D2")
     sheet.merge_cells("A#{@customers.count+5}:B#{@customers.count+5}")
   end
 end

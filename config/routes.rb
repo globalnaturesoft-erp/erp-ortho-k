@@ -89,6 +89,10 @@ Erp::OrthoK::Engine.routes.draw do
 					get 'report_statistics_liabilities'
 					post 'report_statistics_liabilities_table'
 					get 'report_statistics_liabilities_xlsx'
+					
+					get 'report_liabilities_arising'
+					post 'report_liabilities_arising_table'
+					get 'report_liabilities_arising_xlsx'
 				end
 			end
 

@@ -1,7 +1,7 @@
 wb = xlsx_package.workbook
 xlsx_package.use_autowidth = true
 wb.styles do |s|
-  wb.styles.fonts.first.name = 'Tahoma'
+  wb.styles.fonts.first.name = 'Calibri'
   wb.add_worksheet(name: 'Kết quả bán hàng') do |sheet|
     # style
     header_bg_info = {:bg_color => "305496", :fg_color => "FF"}
