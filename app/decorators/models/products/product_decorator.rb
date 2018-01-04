@@ -1275,7 +1275,6 @@ Erp::Products::Product.class_eval do
         end
       end
     end
-
   end
 
 end

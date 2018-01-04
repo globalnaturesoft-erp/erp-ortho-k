@@ -3,6 +3,7 @@ Erp::Contacts::ContactGroup.class_eval do
   GROUP_PATIENT = 1
   GROUP_DOCTOR = 2
   GROUP_HOSPITAL = 3
+  GROUP_COMPANY = 4
 
   def self.create_default_groups
     # Contact group
@@ -20,6 +21,10 @@ Erp::Contacts::ContactGroup.class_eval do
       id: GROUP_HOSPITAL,
       name: 'Bệnh viện/Phòng khám',
     )
+    self.create(
+      id: GROUP_COMPANY,
+      name: 'Công ty',
+    )
   end
 
   def self.get_doctor
@@ -32,5 +37,9 @@ Erp::Contacts::ContactGroup.class_eval do
 
   def self.get_patient
     return self.find(GROUP_PATIENT)
+  end
+
+  def self.get_company
+    return self.find(GROUP_COMPANY)
   end
 end
