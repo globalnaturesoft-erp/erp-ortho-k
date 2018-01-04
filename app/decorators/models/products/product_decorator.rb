@@ -1264,6 +1264,10 @@ Erp::Products::Product.class_eval do
                 # File.open("tmp/import_init_stock-#{timestamp}.log", "a+") { |f| f << "#{result}\n"}
                 # sleep 1
               end
+
+              if details.count > 10
+                break
+              end
             end
           end
         end
