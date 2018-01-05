@@ -1198,7 +1198,7 @@ Erp::Products::Product.class_eval do
       cat_name = name
 
       # Check if sheet tab is LEN
-      if ["Standard"].include?(cat_name)
+      if ["Toric"].include?(cat_name)
         # Stock check
         stock_check = Erp::Products::StockCheck.new(
           creator_id: user.id,
@@ -1222,7 +1222,7 @@ Erp::Products::Product.class_eval do
             diameter_ppv = Erp::Products::PropertiesValue.where(property_id: diameter_p.id, value: header.to_s).first
 
             sheet.each_row_streaming do |row|
-              if !row[index].empty? and row[index].value > 0 and !["10.4","10.6","10.8","11","11.2","11.4"].include?(row[index].value.to_s)
+              if row[index].present? and row[index].value.to_i > 0 and !["10.4","10.6","10.8","11","11.2","11.4"].include?(row[index].value.to_s)
                 lns = row[0].value.scan(/\d+|\D+/)
 
                 # quantity
@@ -1257,6 +1257,8 @@ Erp::Products::Product.class_eval do
                   else
                     result = "ERROR::#{pname}: not exist! ignored!"
                   end
+                else
+                  result = "ERROR::#{pname}: ppvs not exist! ignored!"
                 end
 
                 # Logging
@@ -1266,7 +1268,7 @@ Erp::Products::Product.class_eval do
               end
 
               if details.count > 10
-                break
+#                break
               end
             end
           end
@@ -1275,7 +1277,7 @@ Erp::Products::Product.class_eval do
         # Save stock check record
         puts details.count
         self.transaction do
-          stock_check.save
+          # stock_check.save
         end
       end
     end
