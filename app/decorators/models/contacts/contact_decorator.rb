@@ -15,16 +15,74 @@ Erp::Contacts::Contact.class_eval do
       # data posistion
       i_num = 0
       i_name = 2
-      i_address = 3
-      i_city = 4
-      i_area = 5
-      i_group = 6
-      i_phone = 7
+      i_address = 4
+      i_city = 5
+      i_area = 6
+      i_group = 7
+      i_phone = 8
 
       row_count = 1
       sheet.each_row_streaming do |row|
         # only rows with data
         if row_count >= 7 and row[i_name].value.present?
+          contact = self.new
+          contact.name = row[i_name].value.strip
+          contact.address = row[i_address].value.to_s.strip if row[i_address].present?
+          contact.phone = row[i_phone].value.to_s.strip if row[i_phone].present?
+          contact.creator = user
+          contact.contact_type = self::TYPE_OTHER
+
+
+          # find state
+          city_name = row[i_city].value.strip
+          city_name = 'Đắk Lắk' if city_name == 'Đaklak'
+          city_name = 'Đắk Nông' if city_name == 'Đaknong'
+          city_name = 'Hồ Chí Minh' if city_name == 'Sài Gòn'
+          city_name = 'Khánh Hòa' if city_name == 'Nha Trang'
+
+          state = Erp::Areas::State.where("LOWER(name) LIKE ? OR name LIKE ?", "%#{city_name.downcase}%", "%#{city_name}%").first
+          contact.state_id = state.id
+
+          # Check if is BS/BV/BN
+          if contact.name.include? "BV"
+            contact.contact_group = Erp::Contacts::ContactGroup.get_hospital
+          elsif contact.name.include?("PK")
+            contact.contact_group = Erp::Contacts::ContactGroup.get_clinic
+          elsif contact.name.include?("CTY")
+            contact.contact_group = Erp::Contacts::ContactGroup.get_company
+          elsif contact.name.include?("NHÀ THUỐC")
+            contact.contact_group = Erp::Contacts::ContactGroup.get_pharmacy
+          elsif contact.name.include?("KHÁCH LẺ")
+            contact.contact_group = Erp::Contacts::ContactGroup.get_retail_customer
+          end
+
+          # KH or NCC
+          if contact.name.include?("NCC") or contact.name.include?("NV")
+            contact.is_supplier = true
+          else
+            contact.is_customer = true
+          end
+
+          # puts contact.to_json
+          exist = Erp::Contacts::Contact.where(name: contact.name).first
+          if exist.nil?
+            contact.save
+            printf "%-20s %-20s %-20s %-20s\n", row[0].value, "SUCCESS", contact.contact_group_name, contact.name
+          else
+            printf "%-20s %-20s %-20s %-20s\n", row[0].value, "EXIST", contact.contact_group_name, contact.name
+          end
+        end
+
+        row_count += 1
+      end
+
+      # Child
+      i_parent = 2
+      i_name = 3
+      row_count = 1
+      sheet.each_row_streaming do |row|
+        # only rows with data
+        if row_count >= 7 and row[i_name].present? and row[i_name].value.present?
           contact = self.new
 
           contact.name = row[i_name].value.strip
@@ -34,34 +92,50 @@ Erp::Contacts::Contact.class_eval do
           contact.contact_type = self::TYPE_OTHER
 
           # find state
-          state = Erp::Areas::State.where("LOWER(name) LIKE ? OR name LIKE ?", "%#{row[i_city].value.strip.downcase}%", "%#{row[i_city].value.strip}%").first
+          city_name = row[i_city].value.strip
+          city_name = 'Đắk Lắk' if city_name == 'Đaklak'
+          city_name = 'Đắk Nông' if city_name == 'Đaknong'
+          city_name = 'Hồ Chí Minh' if city_name == 'Sài Gòn'
+          city_name = 'Khánh Hòa' if city_name == 'Nha Trang'
+          state = Erp::Areas::State.where("LOWER(name) LIKE ? OR name LIKE ?", "%#{city_name.downcase}%", "%#{city_name}%").first
           contact.state_id = state.id
 
           # Check if is BS/BV/BN
-          group_name = row[i_group].value.to_s
-          if group_name.include? "BS"
-            contact.contact_group = Erp::Contacts::ContactGroup.get_doctor
-          elsif group_name.include?("BV") or group_name.include?("PK")
+          if contact.name.include? "BV"
             contact.contact_group = Erp::Contacts::ContactGroup.get_hospital
-          elsif group_name.include?("CTY")
+          elsif contact.name.downcase.include?("pk")
+            contact.contact_group = Erp::Contacts::ContactGroup.get_clinic
+          elsif contact.name.downcase.include?("cty")
             contact.contact_group = Erp::Contacts::ContactGroup.get_company
+          elsif contact.name.include?("NHÀ THUỐC")
+            contact.contact_group = Erp::Contacts::ContactGroup.get_pharmacy
+          elsif contact.name.include?("KHÁCH LẺ")
+            contact.contact_group = Erp::Contacts::ContactGroup.get_retail_customer
+          elsif contact.name.downcase.include?("bs")
+            contact.contact_group = Erp::Contacts::ContactGroup.get_doctor
           end
 
           # KH or NCC
-          if group_name.include?("NCC") or group_name.include?("NV")
+          if contact.name.include?("NCC") or contact.name.include?("NV")
             contact.is_supplier = true
           else
             contact.is_customer = true
           end
 
-          puts 'saving.... ' + contact.name + ': '
-          puts contact.valid?
-          puts contact.errors.to_json
-          puts '-------'
+          # parent
+          if row[i_parent].present? and row[i_parent].value.present?
+            parent_name = row[i_parent].value.strip
+            parent = Erp::Contacts::Contact.where(name: parent_name).first
+            contact.parent_id = parent.id if parent.present?
+          end
 
           # puts contact.to_json
-          if Erp::Contacts::Contact.where(name: contact.name).empty?
-            puts contact.save
+          exist = Erp::Contacts::Contact.where(name: contact.name, parent_id: contact.parent_id).first
+          if exist.nil?
+            contact.save
+            printf "%-20s %-20s %-20s %-40s %-20s\n", row[0].value, "SUCCESS", contact.contact_group_name, contact.name, contact.parent_name
+          else
+            printf "%-20s %-20s %-20s %-40s %-20s\n", row[0].value, "EXIST", contact.contact_group_name, contact.name, contact.parent_name
           end
         end
 

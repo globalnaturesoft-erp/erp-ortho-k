@@ -30,7 +30,9 @@
     </div>
  <% end %>
 
- <% if @contact.contact_group == Erp::Contacts::ContactGroup.get_hospital %>
+ <% if [Erp::Contacts::ContactGroup.get_hospital,
+        Erp::Contacts::ContactGroup.get_clinic,
+        Erp::Contacts::ContactGroup.get_pharmacy].include?(@contact.contact_group) %>
     <%= erp_form_control("dataselect", {
         name: 'order[doctor_id]',
         value: @order.doctor_id,
