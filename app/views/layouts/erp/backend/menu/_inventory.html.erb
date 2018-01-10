@@ -75,15 +75,8 @@
         <% else %>
             <span class="arrow"></span>
         <% end %>
-        <% if Erp::Orders::Order.get_wait_for_delivery_sales_orders.count +
-            Erp::Orders::Order.get_wait_for_delivery_purchase_orders.count +
-            Erp::Orders::Order.stock_check_orders_count > 0 %>
-            <span class="badge badge-danger">
-                <%= Erp::Orders::Order.get_wait_for_delivery_sales_orders.count +
-                    Erp::Orders::Order.get_wait_for_delivery_purchase_orders.count +
-                    Erp::Orders::Order.stock_check_orders_count
-                %></span>
-        <% end %>
+
+        <span class="notification-badge-container notification-inventory"></span>
     </a>
     <ul class="sub-menu">
 
@@ -98,9 +91,7 @@
                     <span class="selected"></span>
                     <% end %>
 
-                    <% if Erp::Orders::Order.stock_check_orders_count > 0 %>
-                        <span class="badge badge-danger pull-right"><%= Erp::Orders::Order.stock_check_orders_count %></span>
-                    <% end %>
+                    <span class="notification-badge-container notification-inventory_stock_check_orders_count"></span>
                 </a>
             </li>
         <% end %>

@@ -17,18 +17,7 @@
         <% else %>
             <span class="arrow"></span>
         <% end %>
-        <% if
-          (Erp::Orders::Order.sales_overdue_orders_count +
-           Erp::Orders::Order.purchase_overdue_orders_count +
-           Erp::Qdeliveries::Delivery.get_waiting_not_paid_return_sales_deliveries_count +
-           Erp::Qdeliveries::Delivery.get_waiting_not_paid_return_purchase_deliveries_count) > 0 %>
-          <span class="badge badge-danger pull-right">
-            <%= (Erp::Orders::Order.sales_overdue_orders_count +
-                 Erp::Orders::Order.purchase_overdue_orders_count +
-                 Erp::Qdeliveries::Delivery.get_waiting_not_paid_return_sales_deliveries_count +
-                 Erp::Qdeliveries::Delivery.get_waiting_not_paid_return_purchase_deliveries_count)
-            %></span>
-        <% end %>
+        <span class="notification-badge-container notification-accounting"></span>
     </a>
     <ul class="sub-menu" <% if
         ["erp/accounting/backend/sales_orders"].include?(params[:controller]) ||
@@ -45,9 +34,7 @@
                 <span class="selected"></span>
                 <% end %>
 
-                <% if Erp::Orders::Order.sales_overdue_orders_count > 0 %>
-                    <span class="badge badge-danger pull-right"><%= Erp::Orders::Order.sales_overdue_orders_count %></span>
-                <% end %>
+                <span class="notification-badge-container notification-accounting_sales_overdue_orders_count"></span>
             </a>
         </li>
         <li class="nav-item <%= "active open" if ["erp/accounting/backend/purchase_orders"].include?(params[:controller]) %>">
@@ -57,9 +44,7 @@
                 <span class="selected"></span>
                 <% end %>
 
-                <% if Erp::Orders::Order.purchase_overdue_orders_count > 0 %>
-                  <span class="badge badge-danger pull-right"><%= Erp::Orders::Order.purchase_overdue_orders_count %></span>
-                <% end %>
+                <span class="notification-badge-container notification-accounting_purchase_overdue_orders_count"></span>
             </a>
         </li>
         <li class="nav-item <%= "active open" if ["erp/accounting/backend/sales_product_returns"].include?(params[:controller]) %>">
@@ -69,9 +54,7 @@
                 <span class="selected"></span>
                 <% end %>
 
-                <% if Erp::Qdeliveries::Delivery.get_waiting_not_paid_return_sales_deliveries_count > 0 %>
-                  <span class="badge badge-danger pull-right"><%= Erp::Qdeliveries::Delivery.get_waiting_not_paid_return_sales_deliveries_count %></span>
-                <% end %>
+                <span class="notification-badge-container notification-accounting_get_waiting_not_paid_return_sales_deliveries_count"></span>
             </a>
         </li>
         <li class="nav-item <%= "active open" if ["erp/accounting/backend/purchase_product_returns"].include?(params[:controller]) %>">
@@ -81,9 +64,7 @@
                 <span class="selected"></span>
                 <% end %>
 
-                <% if Erp::Qdeliveries::Delivery.get_waiting_not_paid_return_purchase_deliveries_count > 0 %>
-                  <span class="badge badge-danger pull-right"><%= Erp::Qdeliveries::Delivery.get_waiting_not_paid_return_purchase_deliveries_count %></span>
-                <% end %>
+                <span class="notification-badge-container notification-accounting_get_waiting_not_paid_return_purchase_deliveries_count"></span>
             </a>
         </li>
     </ul>

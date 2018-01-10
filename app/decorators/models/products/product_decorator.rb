@@ -1263,12 +1263,7 @@ Erp::Products::Product.class_eval do
 
                 # Logging
                 puts result
-                # File.open("tmp/import_init_stock-#{timestamp}.log", "a+") { |f| f << "#{result}\n"}
-                # sleep 1
-              end
-
-              if details.count > 10
-#                break
+                File.open("tmp/import_init_stock-#{timestamp}.log", "a+") { |f| f << "#{result}\n"}
               end
             end
           end
@@ -1347,8 +1342,7 @@ Erp::Products::Product.class_eval do
 
             # Logging
             puts result
-            # File.open("tmp/import_init_stock-#{timestamp}.log", "a+") { |f| f << "#{result}\n"}
-            # sleep 1
+            File.open("tmp/import_init_stock-#{timestamp}.log", "a+") { |f| f << "#{result}\n"}
           end
         end
 
@@ -1459,8 +1453,7 @@ Erp::Products::Product.class_eval do
 
             # Logging
             puts result
-            # File.open("tmp/import_init_stock-#{timestamp}.log", "a+") { |f| f << "#{result}\n"}
-            # sleep 1
+            File.open("tmp/import_init_stock-#{timestamp}.log", "a+") { |f| f << "#{result}\n"}
           end
         end
 

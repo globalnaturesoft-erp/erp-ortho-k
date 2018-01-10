@@ -89,7 +89,7 @@ Erp::OrthoK::Engine.routes.draw do
 					get 'report_statistics_liabilities'
 					post 'report_statistics_liabilities_table'
 					get 'report_statistics_liabilities_xlsx'
-					
+
 					get 'report_liabilities_arising'
 					post 'report_liabilities_arising_table'
 					get 'report_liabilities_arising_xlsx'
@@ -153,6 +153,12 @@ Erp::OrthoK::Engine.routes.draw do
 					get 'report_new_patient'
 					post 'report_new_patient_table'
 					get 'report_new_patient_xlsx'
+				end
+			end
+
+			resources :notification do
+				collection do
+					get 'notification_badge'
 				end
 			end
 

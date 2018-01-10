@@ -1,0 +1,33 @@
+<%
+  notis = {}
+
+  # Accounting
+  notis[:accounting_sales_overdue_orders_count] = Erp::Orders::Order.sales_overdue_orders_count
+  notis[:accounting_purchase_overdue_orders_count] = Erp::Orders::Order.purchase_overdue_orders_count
+  notis[:accounting_get_waiting_not_paid_return_sales_deliveries_count] = Erp::Qdeliveries::Delivery.get_waiting_not_paid_return_sales_deliveries_count
+  notis[:accounting_get_waiting_not_paid_return_purchase_deliveries_count] = Erp::Qdeliveries::Delivery.get_waiting_not_paid_return_purchase_deliveries_count
+
+  notis[:accounting] = notis[:accounting_sales_overdue_orders_count] +
+    notis[:accounting_purchase_overdue_orders_count] +
+    notis[:accounting_get_waiting_not_paid_return_sales_deliveries_count] +
+    notis[:accounting_get_waiting_not_paid_return_purchase_deliveries_count]
+
+  # Inventory
+  notis[:inventory_get_wait_for_delivery_sales_orders] = Erp::Orders::Order.get_wait_for_delivery_sales_orders.count
+  notis[:inventory_get_wait_for_delivery_purchase_orders] = Erp::Orders::Order.get_wait_for_delivery_purchase_orders.count
+  notis[:inventory_stock_check_orders_count] = Erp::Orders::Order.stock_check_orders_count
+  notis[:inventory] = notis[:inventory_get_wait_for_delivery_sales_orders] +
+    notis[:inventory_get_wait_for_delivery_purchase_orders] +
+    notis[:inventory_stock_check_orders_count]
+  notis[:inventory_qdelivery] = notis[:inventory_get_wait_for_delivery_sales_orders] +
+    notis[:inventory_get_wait_for_delivery_purchase_orders]
+%>
+
+<% notis.each do |noti| %>
+  <div class="notification-badge-content" data-container="notification-<%= noti[0] %>">
+    <% if noti[1] > 0 %>
+      <span class="badge badge-danger pull-right"><%= noti[1] %></span>
+    <% end %>
+  </div>
+<% end %>
+
