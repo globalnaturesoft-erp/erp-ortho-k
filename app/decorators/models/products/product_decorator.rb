@@ -1357,115 +1357,7 @@ Erp::Products::Product.class_eval do
 
 
 
-      ################################################ LEN KHÁC ###############################################
-      if ["len khác"].include?(cat_name)
-        # Stock check
-        stock_check = Erp::Products::StockCheck.new(
-          creator_id: user.id,
-          warehouse_id: warehouse.id,
-          adjustment_date: Time.now,
-          employee_id: user.id,
-          status: Erp::Products::StockCheck::STATUS_DONE
-        )
-        details = []
-
-        # Header, first table row
-        headers = sheet.row(2)
-
-        # description
-        stock_check.description = "Nhập kho ban đầu: #{cat_name}"
-
-        sheet.each_row_streaming do |row|
-          if row[3].present? and row[3].value.to_i > 0
-            cat_name = row[2].value
-            category = Erp::Products::Category.where(name: cat_name).first
-            lns = row[0].value.scan(/\d+|\D+/)
-
-            # diameter
-            diameter_p = Erp::Products::Property.get_diameter
-            diameter_ppv = Erp::Products::PropertiesValue.where(property_id: diameter_p.id, value: row[1].value).first
-
-            # quantity
-            stock = row[3].value
-
-            # letter
-            letter_p = Erp::Products::Property.get_letter
-            letter_ppv = Erp::Products::PropertiesValue.where(property_id: letter_p.id, value: lns[0]).first
-
-            # number
-            number_p = Erp::Products::Property.get_number
-            number_ppv = Erp::Products::PropertiesValue.where(property_id: number_p.id, value: lns[1].rjust(2, '0')).first
-
-            if diameter_ppv.present? and letter_ppv.present? and number_ppv.present?
-              pname = "#{letter_ppv.value}#{number_ppv.value}-#{diameter_ppv.value}-#{cat_name}"
-
-              # Find product
-              product = Erp::Products::Product
-                .where(name: pname)
-                .first
-
-              # check if product exist
-              if product.present?
-                result = "SUCCESS::#{pname}: exist! checked!"
-              else
-                user = Erp::User.first
-                brand = Erp::Products::Brand.where(name: "Ortho-K").first
-                unit_cai = Erp::Products::Unit.where(name: "Cái").first
-
-                product = Erp::Products::Product.create(
-                  code: "#{letter_ppv.value}#{number_ppv.value}",
-                  name: pname,
-                  category_id: category.id,
-                  brand_id: brand.id,
-                  creator_id: user.id,
-                  unit_id: unit_cai.id,
-                  price: nil, # rand(5..100)*10000,
-                  is_outside: true
-                )
-
-                Erp::Products::ProductsValue.create(
-                  product_id: product.id,
-                  properties_value_id: diameter_ppv.id
-                ) if diameter_ppv.present?
-                Erp::Products::ProductsValue.create(
-                  product_id: product.id,
-                  properties_value_id: letter_ppv.id
-                ) if letter_ppv.present?
-                Erp::Products::ProductsValue.create(
-                  product_id: product.id,
-                  properties_value_id: number_ppv.id
-                ) if number_ppv.present?
-
-                Erp::Products::Product.find(product.id).update_cache_properties
-
-                result = "SUCCESS::#{pname}: not exist! created! checked!"
-              end
-
-              # add stock check detail
-              details << stock_check.stock_check_details.build(
-                product_id: product.id,
-                quantity: stock,
-                state_id: state.id
-              )
-            else
-              result = "ERROR::#{lns[0]}: ppvs not exist! ignored!"
-            end
-
-            # Logging
-            puts result
-            File.open("tmp/import_init_stock-#{timestamp}.log", "a+") { |f| f << "#{result}\n"}
-          end
-        end
-
-        # Save stock check record
-        puts details.count
-        self.transaction do
-          stock_check.save
-        end
-      end
-
-
-      ################################################# SPham KHÁC ###############################################
+      ################################################# LEN KHÁC ###############################################
       #if ["len khác"].include?(cat_name)
       #  # Stock check
       #  stock_check = Erp::Products::StockCheck.new(
@@ -1561,19 +1453,16 @@ Erp::Products::Product.class_eval do
       #
       #      # Logging
       #      puts result
-      #      # File.open("tmp/import_init_stock-#{timestamp}.log", "a+") { |f| f << "#{result}\n"}
-      #      # sleep 1
+      #      File.open("tmp/import_init_stock-#{timestamp}.log", "a+") { |f| f << "#{result}\n"}
       #    end
       #  end
       #
       #  # Save stock check record
       #  puts details.count
       #  self.transaction do
-      #    #stock_check.save
+      #    stock_check.save
       #  end
       #end
-
-
 
     end
   end
