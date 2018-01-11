@@ -47,6 +47,28 @@
                 multiple: true
             }) %>
         </div>
+        <div class="col-md-3">
+            <%= erp_form_control("dataselect", {
+                name: 'warehouse_ids',
+                value: '',
+                text: '',
+                label: 'Kho',
+                placeholder: 'Chọn kho',
+                url: erp_warehouses.dataselect_backend_warehouses_path(format: 'json'),
+                multiple: true
+            }) %>
+        </div>
+        <div class="col-md-3">
+            <%= erp_form_control("dataselect", {
+                name: 'state_ids',
+                value: '',
+                text: '',
+                label: 'Tình trạng',
+                placeholder: 'Tất cả tình trạng',
+                url: erp_products.dataselect_backend_states_path(format: 'json'),
+                multiple: true
+            }) %>
+        </div>
     </div>
 <% end %>
 

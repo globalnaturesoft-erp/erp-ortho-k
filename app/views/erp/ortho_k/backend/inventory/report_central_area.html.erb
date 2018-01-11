@@ -45,17 +45,6 @@
     <div class="row">
         <div class="col-md-3">
             <%= erp_form_control("dataselect", {
-                name: 'warehouse_ids',
-                value: '',
-                text: '',
-                label: 'Kho',
-                placeholder: 'Chọn kho',
-                url: erp_warehouses.dataselect_backend_warehouses_path(format: 'json'),
-                multiple: true
-            }) %>
-        </div>
-        <div class="col-md-3">
-            <%= erp_form_control("dataselect", {
                 name: 'categories',
                 value: '',
                 text: '',
@@ -75,6 +64,28 @@
                 placeholder: diameter.name,
                 url: erp_products.dataselect_backend_properties_values_path(format: 'json', property_id: diameter.id),
                 include_blank: t('.all_diameters'),
+                multiple: true
+            }) %>
+        </div>
+        <div class="col-md-3">
+            <%= erp_form_control("dataselect", {
+                name: 'warehouse_ids',
+                value: '',
+                text: '',
+                label: 'Kho',
+                placeholder: 'Chọn kho',
+                url: erp_warehouses.dataselect_backend_warehouses_path(format: 'json'),
+                multiple: true
+            }) %>
+        </div>
+        <div class="col-md-3">
+            <%= erp_form_control("dataselect", {
+                name: 'state_ids',
+                value: '',
+                text: '',
+                label: 'Tình trạng',
+                placeholder: 'Tất cả tình trạng',
+                url: erp_products.dataselect_backend_states_path(format: 'json'),
                 multiple: true
             }) %>
         </div>
