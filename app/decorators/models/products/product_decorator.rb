@@ -722,10 +722,10 @@ Erp::Products::Product.class_eval do
 
       query.each do |stock_check_detail|
         qty = stock_check_detail.quantity
-        if qty > 0
+        if qty < 0
           qty_export = stock_check_detail.quantity
           source_warehouse = stock_check_detail.stock_check.warehouse_name
-        elsif qty < 0
+        elsif qty > 0
           qty_import = stock_check_detail.quantity
           destination_warehouse = stock_check_detail.stock_check.warehouse_name
         end
@@ -1464,7 +1464,216 @@ Erp::Products::Product.class_eval do
       #  end
       #end
 
+
+
+      ################################################ SPham KHÁC ###############################################
+      if ["len khác"].include?(cat_name)
+        # Stock check
+        stock_check = Erp::Products::StockCheck.new(
+          creator_id: user.id,
+          warehouse_id: warehouse.id,
+          adjustment_date: Time.now,
+          employee_id: user.id,
+          status: Erp::Products::StockCheck::STATUS_DONE
+        )
+        details = []
+
+        # Header, first table row
+        headers = sheet.row(2)
+
+        # description
+        stock_check.description = "Nhập kho ban đầu: #{cat_name}"
+
+        sheet.each_row_streaming do |row|
+          if row[3].present? and row[3].value.to_i > 0
+            cat_name = row[2].value
+            category = Erp::Products::Category.where(name: cat_name).first
+            lns = row[0].value.scan(/\d+|\D+/)
+
+            # diameter
+            diameter_p = Erp::Products::Property.get_diameter
+            diameter_ppv = Erp::Products::PropertiesValue.where(property_id: diameter_p.id, value: row[1].value).first
+
+            # quantity
+            stock = row[3].value
+
+            # letter
+            letter_p = Erp::Products::Property.get_letter
+            letter_ppv = Erp::Products::PropertiesValue.where(property_id: letter_p.id, value: lns[0]).first
+
+            # number
+            number_p = Erp::Products::Property.get_number
+            number_ppv = Erp::Products::PropertiesValue.where(property_id: number_p.id, value: lns[1].rjust(2, '0')).first
+
+            if diameter_ppv.present? and letter_ppv.present? and number_ppv.present?
+              pname = "#{letter_ppv.value}#{number_ppv.value}-#{diameter_ppv.value}-#{cat_name}"
+
+              # Find product
+              product = Erp::Products::Product
+                .where(name: pname)
+                .first
+
+              # check if product exist
+              if product.present?
+                result = "SUCCESS::#{pname}: exist! checked!"
+              else
+                user = Erp::User.first
+                brand = Erp::Products::Brand.where(name: "Ortho-K").first
+                unit_cai = Erp::Products::Unit.where(name: "Cái").first
+
+                product = Erp::Products::Product.create(
+                  code: "#{letter_ppv.value}#{number_ppv.value}",
+                  name: pname,
+                  category_id: category.id,
+                  brand_id: brand.id,
+                  creator_id: user.id,
+                  unit_id: unit_cai.id,
+                  price: nil, # rand(5..100)*10000,
+                  is_outside: true
+                )
+
+                Erp::Products::ProductsValue.create(
+                  product_id: product.id,
+                  properties_value_id: diameter_ppv.id
+                ) if diameter_ppv.present?
+                Erp::Products::ProductsValue.create(
+                  product_id: product.id,
+                  properties_value_id: letter_ppv.id
+                ) if letter_ppv.present?
+                Erp::Products::ProductsValue.create(
+                  product_id: product.id,
+                  properties_value_id: number_ppv.id
+                ) if number_ppv.present?
+
+                Erp::Products::Product.find(product.id).update_cache_properties
+
+                result = "SUCCESS::#{pname}: not exist! created! checked!"
+              end
+
+              # add stock check detail
+              details << stock_check.stock_check_details.build(
+                product_id: product.id,
+                quantity: stock,
+                state_id: state.id
+              )
+            else
+              result = "ERROR::#{lns[0]}: ppvs not exist! ignored!"
+            end
+
+            # Logging
+            puts result
+            # File.open("tmp/import_init_stock-#{timestamp}.log", "a+") { |f| f << "#{result}\n"}
+            # sleep 1
+          end
+        end
+
+        # Save stock check record
+        puts details.count
+        self.transaction do
+          #stock_check.save
+        end
+      end
     end
+  end
+  
+  # Combine/Split: Product parts
+  def split_parts(quantity, options={}) # options: user, warehouse, state
+    return false if parts.empty?
+    
+    # Stock check
+    stock_check = Erp::Products::StockCheck.new(
+      creator_id: options[:user].id,
+      warehouse_id: options[:warehouse].id,
+      adjustment_date: Time.now,
+      employee_id: options[:user].id,
+      status: Erp::Products::StockCheck::STATUS_DONE,
+      description: "Tách sản phẩm"
+    )
+    
+    # reduce parent
+    stock_check.stock_check_details.build(
+      product_id: self.id,
+      quantity: -quantity,
+      state_id: options[:state].id,
+      stock: self.get_stock(state: options[:state], warehouse: options[:warehouse]),
+      real: self.get_stock(state: options[:state], warehouse: options[:warehouse]) - quantity,
+      note: "Được tách ra"
+    )
+    
+    # add parts
+    self.products_parts.each do |part|
+      amount = quantity*part.quantity
+      
+      stock_check.stock_check_details.build(
+        product_id: part.part_id,
+        quantity: amount,
+        state_id: options[:state].id,
+        stock: part.part.get_stock(state: options[:state], warehouse: options[:warehouse]),
+        real: part.part.get_stock(state: options[:state], warehouse: options[:warehouse]) + amount,
+        note: "Tách từ #{self.name}"
+      )
+      
+      # save to database
+      Erp::Products::Product.transaction do
+        stock_check.save
+      end
+    end
+    
+  end
+  
+  def combine_parts(quantity, options={}) # options: user, warehouse, state
+    return false if parts.empty?
+    
+    # Stock check
+    stock_check = Erp::Products::StockCheck.new(
+      creator_id: options[:user].id,
+      warehouse_id: options[:warehouse].id,
+      adjustment_date: Time.now,
+      employee_id: options[:user].id,
+      status: Erp::Products::StockCheck::STATUS_DONE,
+      description: "Ghép sản phẩm"
+    )
+    
+    # reduce parent
+    stock_check.stock_check_details.build(
+      product_id: self.id,
+      quantity: quantity,
+      state_id: options[:state].id,
+      stock: self.get_stock(state: options[:state], warehouse: options[:warehouse]),
+      real: self.get_stock(state: options[:state], warehouse: options[:warehouse]) + quantity,
+      note: "Được ghép thêm"
+    )
+    
+    # add parts
+    self.products_parts.each do |part|
+      amount = quantity*part.quantity
+      
+      stock_check.stock_check_details.build(
+        product_id: part.part_id,
+        quantity: -amount,
+        state_id: options[:state].id,
+        stock: part.part.get_stock(state: options[:state], warehouse: options[:warehouse]),
+        real: part.part.get_stock(state: options[:state], warehouse: options[:warehouse]) - amount,
+        note: "Ghép cho #{self.name}"
+      )
+      
+      # save to database
+      Erp::Products::Product.transaction do
+        stock_check.save
+      end
+    end
+  end
+  
+  def get_combine_max_quantity(options={})
+    return 0 if parts.empty?
+    max = 1000
+    self.products_parts.each do |pp|
+      amount = (pp.part.get_stock(state: options[:state], warehouse: options[:warehouse])/pp.quantity).to_i
+      if amount < max
+        max = amount
+      end
+    end
+    return max
   end
 
 end

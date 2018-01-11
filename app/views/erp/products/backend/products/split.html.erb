@@ -1,0 +1,17 @@
+<% content_for :title do %>
+    <%= 'Tách sản phẩm' %>
+<% end %>
+
+<% content_for :page_title do %>    
+    <a href="<%= erp_products.backend_products_path %>">
+    <i class="fa fa-expand"></i> <%= t('.products') %>
+    </a> / <%= 'Tách sản phẩm' %>
+<% end %>
+
+<div class="row">
+    <div class="col-md-12">
+        <%= form_for '', url: erp_products.do_split_backend_products_path do |f| %>
+            <%= render 'split_form' %>
+        <% end %>
+    </div>
+</div>

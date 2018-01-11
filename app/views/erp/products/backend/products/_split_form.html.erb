@@ -1,0 +1,65 @@
+<div class="form-body">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="portlet light bordered">
+                <div class="portlet-body form">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <%= erp_form_control("dataselect", {
+                                name: 'product_id',
+                                value: (!@product.nil? ? @product.id : ''),
+                                text: (!@product.nil? ? @product.name : ''),
+                                placeholder: 'Chọn sản phẩm',
+                                label: 'Sản phẩm',
+                                url: erp_products.dataselect_backend_products_path(format: 'json', has_parts: true),
+                                required: true
+                            }) %>
+                        </div>
+                        <div class="col-md-3">
+                            <%= erp_form_control("dataselect", {
+                                name: 'warehouse_id',
+                                value: @warehouse.id,
+                                text: @warehouse.name,
+                                placeholder: 'Chọn kho',
+                                label: 'Kho',
+                                url: erp_warehouses.dataselect_backend_warehouses_path(format: 'json'),
+                                required: true
+                            }) %>
+                        </div>
+                        <div class="col-md-3">
+                            <%= erp_form_control("dataselect", {
+                                name: 'state_id',
+                                value: @state.id,
+                                text: @state.name,
+                                placeholder: 'Chọn tình trạng',
+                                label: 'Tình trạng',
+                                url: erp_products.dataselect_backend_states_path(format: 'json'),
+                                required: true
+                            }) %>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="ajax-box"
+                                data-url="<%= erp_products.ajax_split_quantity_backend_products_path %>"
+                                data-control="
+                                    [name='product_id'],
+                                    [name='warehouse_id'],
+                                    [name='state_id']
+                                ">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="ajax-box"
+                                data-url="<%= erp_products.ajax_preview_split_backend_products_path %>"
+                                data-control="
+                                    [name='quantity']
+                                ">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

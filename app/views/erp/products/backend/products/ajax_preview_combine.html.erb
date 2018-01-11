@@ -1,0 +1,52 @@
+<% if @product.present? and @warehouse.present? and @state.present? and @quantity > 0 %>
+    <div class="alert alert-info no-margin">
+        <div class="row">
+            <div class="col-md-6">
+                <strong><i class="fa fa-bars"></i> Kết quả ghép - Xem trước</strong>
+            </div>
+            <div class="col-md-6 text-right">
+                <%= erp_component('button/save', {
+                    text: 'Xác nhận - Ghép'
+                }) %>
+            </div>
+        </div>
+        
+        <hr class="mt-5 mb-10">
+        
+        <table class="table table-bordered mb-5">
+            <thead class="flip-content">
+                <tr>
+                    <th class="bg-grey-silver bg-font-grey-silver text-nowrap border-white text-left" width="25%">Tên sản phẩm</th>
+                    <th class="bg-grey-silver bg-font-grey-silver text-nowrap border-white text-center" width="10%">ĐVT</th>
+                    <th class="bg-grey-silver bg-font-grey-silver text-nowrap border-white text-center" width="12%">Tồn kho trước</th>
+                    <th class="bg-grey-silver bg-font-grey-silver text-nowrap border-white text-center" width="12%">Số lượng</th>
+                    <th class="bg-grey-silver bg-font-grey-silver text-nowrap border-white text-center" width="12%">Tồn kho sau</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% before_stock = @product.get_stock(warehouse: @warehouse, state: @state) %>
+                <% amount = @quantity %>
+                <% after_stock = before_stock + amount %>
+                <tr>
+                    <td class="font-dark border-white text-left"><%= @product.name %></td>
+                    <td class="font-dark border-white text-center"><%= @product.unit_name %></td>
+                    <td class="font-dark border-white text-center"><%= before_stock %></td>
+                    <td class="font-dark border-white text-center"><%= amount %></td>
+                    <td class="font-dark border-white text-center"><%= after_stock %></td>
+                </tr>
+                <% @product.products_parts.each do |pp| %>
+                    <% before_stock = pp.part.get_stock(warehouse: @warehouse, state: @state) %>
+                    <% amount = -(@quantity*pp.quantity) %>
+                    <% after_stock = before_stock + amount %>
+                    <tr>
+                        <td class="font-dark border-white text-left"><%= pp.part.name %></td>
+                        <td class="font-dark border-white text-center"><%= pp.part.unit_name %></td>
+                        <td class="font-dark border-white text-center"><%= before_stock %></td>
+                        <td class="font-dark border-white text-center"><%= amount %></td>
+                        <td class="font-dark border-white text-center"><%= after_stock %></td>
+                    </tr>
+                <% end %>
+            </tbody>
+        </table>
+    </div>
+<% end %>

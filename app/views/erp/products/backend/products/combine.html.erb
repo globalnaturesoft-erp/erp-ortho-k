@@ -1,0 +1,17 @@
+<% content_for :title do %>
+    <%= 'Ghép sản phẩm' %>
+<% end %>
+
+<% content_for :page_title do %>    
+    <a href="<%= erp_products.backend_products_path %>">
+    <i class="fa fa-compress"></i> <%= t('.products') %>
+    </a> / <%= 'Ghép sản phẩm' %>
+<% end %>
+
+<div class="row">
+    <div class="col-md-12">
+        <%= form_for '', url: erp_products.do_combine_backend_products_path do |f| %>
+            <%= render 'combine_form' %>
+        <% end %>
+    </div>
+</div>

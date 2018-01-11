@@ -1,0 +1,25 @@
+<% if @product.present? and @warehouse.present? and @state.present? %>
+    <% if @max_quantity > 0 %>
+        <%= erp_form_control("select", {
+            name: "quantity",
+            value: nil,
+            label: 'Số lượng',
+            placeholder: 'Chọn số lượng',
+            options: (1..@max_quantity).map{|num| {value: num, text: "#{num}"} },
+            class: "line_quantity",
+            required: true,
+            include_blank: '-- Chọn --'
+        }) %>
+    <% else %>
+        <div class="form-group">
+            <label><%= 'Số lượng' %>:</label>
+            <div class="form-control font-red-sunglo">
+              <input type='hidden' name='quantity' value='' />
+              <span class="fa fa-exclamation-triangle"></span> Thiếu số lượng thành phần
+            </div>
+        </div>
+    <% end %>
+<% end %>
+<script>
+  $("[name=quantity]").change();
+</script>

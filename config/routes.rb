@@ -2,6 +2,26 @@ Erp::Core::Engine.routes.draw do
 	root to: "backend/dashboard#index"
 end
 
+Erp::Products::Engine.routes.draw do
+  scope "(:locale)", locale: /en|vi/ do
+		namespace :backend, module: "backend", path: "orthok/backend" do
+      resources :products do
+        collection do
+          get 'split'
+          post 'do_split'
+          get 'ajax_split_quantity'
+          get 'ajax_preview_split'
+          
+          get 'combine'
+          post 'do_combine'
+          get 'ajax_combine_quantity'
+          get 'ajax_preview_combine'
+        end
+      end
+    end
+	end
+end
+
 Erp::OrthoK::Engine.routes.draw do
   scope "(:locale)", locale: /en|vi/ do
 		namespace :backend, module: "backend", path: "orthok/backend/products" do
@@ -26,6 +46,8 @@ Erp::OrthoK::Engine.routes.draw do
 
           get 'import'
           post 'import'
+          
+          
         end
       end
       resources :central_areas do

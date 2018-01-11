@@ -209,6 +209,7 @@ vi:
           accounts: 'Báo cáo dòng tiền'
           customer_liabilities: 'Công nợ (KH)'
           supplier_liabilities: 'Công nợ (NCC)'
+          liabilities_arising: 'KH phát sinh giao dịch'
           period_liabilities: 'Thống kê công nợ (KH)'
   or: "và"
   left_eye: "MT"
@@ -1029,6 +1030,10 @@ vi:
             damage_record: "Xuất hủy"
             no_matching_records_found: "Lịch sử xuất nhập không được tìm thấy. Vui lòng chọn điều kiện khác để xem."
             please_select_filter: "Vui lòng chọn THỜI GIAN trước khi xem"
+          index:
+            combine_split: "Ghép / Tách"
+            combine: "Ghép sản phẩm"
+            split: "Tách sản phẩm"
     orders:
       backend:
         orders:
