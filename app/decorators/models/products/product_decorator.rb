@@ -1082,16 +1082,18 @@ Erp::Products::Product.class_eval do
       return false
     end
 
-    @options["central_conditions"].each do |option|
-      if self.category_id == option[1]["category"].to_i
-        letter_pv_ids = defined?(option) ? (option[1]["letter"].reject { |c| c.empty? }) : [-1]
-        number_pv_ids = defined?(option) ? (option[1]["number"].reject { |c| c.empty? }) : [-1]
+    if @options["central_conditions"].present?
+      @options["central_conditions"].each do |option|
+        if self.category_id == option[1]["category"].to_i
+          letter_pv_ids = defined?(option) ? (option[1]["letter"].reject { |c| c.empty? }) : [-1]
+          number_pv_ids = defined?(option) ? (option[1]["number"].reject { |c| c.empty? }) : [-1]
 
-        letter_pv_ids.each do |l|
-          if self.cache_properties.include? "[\"#{l}\","
-            number_pv_ids.each do |n|
-              if self.cache_properties.include? "[\"#{n}\","
-                return true
+          letter_pv_ids.each do |l|
+            if self.cache_properties.include? "[\"#{l}\","
+              number_pv_ids.each do |n|
+                if self.cache_properties.include? "[\"#{n}\","
+                  return true
+                end
               end
             end
           end
@@ -1575,11 +1577,11 @@ Erp::Products::Product.class_eval do
       end
     end
   end
-  
+
   # Combine/Split: Product parts
   def split_parts(quantity, options={}) # options: user, warehouse, state
     return false if parts.empty?
-    
+
     # Stock check
     stock_check = Erp::Products::StockCheck.new(
       creator_id: options[:user].id,
@@ -1589,7 +1591,7 @@ Erp::Products::Product.class_eval do
       status: Erp::Products::StockCheck::STATUS_DONE,
       description: "Tách sản phẩm"
     )
-    
+
     # reduce parent
     stock_check.stock_check_details.build(
       product_id: self.id,
@@ -1599,11 +1601,11 @@ Erp::Products::Product.class_eval do
       real: self.get_stock(state: options[:state], warehouse: options[:warehouse]) - quantity,
       note: "Được tách ra"
     )
-    
+
     # add parts
     self.products_parts.each do |part|
       amount = quantity*part.quantity
-      
+
       stock_check.stock_check_details.build(
         product_id: part.part_id,
         quantity: amount,
@@ -1612,18 +1614,18 @@ Erp::Products::Product.class_eval do
         real: part.part.get_stock(state: options[:state], warehouse: options[:warehouse]) + amount,
         note: "Tách từ #{self.name}"
       )
-      
+
       # save to database
       Erp::Products::Product.transaction do
         stock_check.save
       end
     end
-    
+
   end
-  
+
   def combine_parts(quantity, options={}) # options: user, warehouse, state
     return false if parts.empty?
-    
+
     # Stock check
     stock_check = Erp::Products::StockCheck.new(
       creator_id: options[:user].id,
@@ -1633,7 +1635,7 @@ Erp::Products::Product.class_eval do
       status: Erp::Products::StockCheck::STATUS_DONE,
       description: "Ghép sản phẩm"
     )
-    
+
     # reduce parent
     stock_check.stock_check_details.build(
       product_id: self.id,
@@ -1643,11 +1645,11 @@ Erp::Products::Product.class_eval do
       real: self.get_stock(state: options[:state], warehouse: options[:warehouse]) + quantity,
       note: "Được ghép thêm"
     )
-    
+
     # add parts
     self.products_parts.each do |part|
       amount = quantity*part.quantity
-      
+
       stock_check.stock_check_details.build(
         product_id: part.part_id,
         quantity: -amount,
@@ -1656,14 +1658,14 @@ Erp::Products::Product.class_eval do
         real: part.part.get_stock(state: options[:state], warehouse: options[:warehouse]) - amount,
         note: "Ghép cho #{self.name}"
       )
-      
+
       # save to database
       Erp::Products::Product.transaction do
         stock_check.save
       end
     end
   end
-  
+
   def get_combine_max_quantity(options={})
     return 0 if parts.empty?
     max = 1000
