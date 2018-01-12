@@ -868,43 +868,30 @@ module Erp
           @from_date = @global_filters[:from_date].to_date
           @to_date = @global_filters[:to_date].to_date
 
-          # get categories
-          category_ids = @global_filters[:categories].present? ? @global_filters[:categories] : nil
-          @categories = Erp::Products::Category.where(id: category_ids)
+          # area array
+          @rows = []
+          # categories each
+          @global_filters[:categories].each do |category_id|
+            span = (@global_filters[:letters].count)
+            row = {category: Erp::Products::Category.find(category_id), letter_groups: [], span: 0}
 
-          # get diameters
-          diameter_ids = @global_filters[:diameters].present? ? @global_filters[:diameters] : nil
-          @diameters = Erp::Products::PropertiesValue.where(id: diameter_ids)
+            # letters each
+            @global_filters[:letters].each do |lrow|
+              row_2 = {letter_ids: lrow[1], numbers_diameters: []}
 
-          # get diameters
-          @letter_array = []
-          (0..100).each do |num|
-            if @global_filters['letters_'+num.to_s].present?
-              letter_ids = @global_filters['letters_'+num.to_s]
-              @letters = Erp::Products::PropertiesValue.where(id: letter_ids).order('value')
+              # numbers diameters
+              @global_filters[:numbers_diameters].each do |ndrow|
+                row_2[:numbers_diameters] << {number_ids: ndrow[1][:numbers], diameter_ids: ndrow[1][:diameters]}
+              end
 
-              @letter_array << {letter_ids: letter_ids, letters: @letters}
+              # letters
+              row[:letter_groups] << row_2
             end
+
+            @rows << row
           end
 
           @product_query = Erp::Products::Product
-          # product query
-          @product_query = @product_query.where(category_id: category_ids) if category_ids.present?
-          # filter by diameters
-          if diameter_ids.present?
-            if !diameter_ids.kind_of?(Array)
-              @product_query = @product_query.where("erp_products_products.cache_properties LIKE '%[\"#{diameter_ids}\",%'")
-            else
-              diameter_ids = (diameter_ids.reject { |c| c.empty? })
-              if !diameter_ids.empty?
-                qs = []
-                diameter_ids.each do |x|
-                  qs << "(erp_products_products.cache_properties LIKE '%[\"#{x}\",%')"
-                end
-                @product_query = @product_query.where("(#{qs.join(" OR ")})")
-              end
-            end
-          end
         end
 
         def report_custom_area_v2_xlsx

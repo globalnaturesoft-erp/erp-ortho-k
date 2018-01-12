@@ -8,7 +8,7 @@
 
 <% content_for :global_filter do %>
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-2">
             <%= erp_form_control('date', {
                 label: 'Từ ngày',
                 name: 'from_date',
@@ -16,7 +16,7 @@
                 placeholder: 'Chọn ngày đầu kỳ'
             }) %>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
             <%= erp_form_control('date', {
                 label: 'Đến ngày',
                 name: 'to_date',
@@ -24,7 +24,7 @@
                 placeholder: 'Chọn ngày cuối kỳ'
             }) %>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
             <%= erp_form_control('dataselect', {
                 label: 'Mốc thời gian',
                 name: 'period',
@@ -32,6 +32,28 @@
                 text: (@period.present? ? @period.name : ''),
                 placeholder: 'Chọn khoảng thời gian',
                 url: erp_periods.dataselect_backend_periods_path(format: 'json'),
+            }) %>
+        </div>
+        <div class="col-md-3">
+            <%= erp_form_control("dataselect", {
+                name: 'warehouse_ids',
+                value: '',
+                text: '',
+                label: 'Kho',
+                placeholder: 'Chọn kho',
+                url: erp_warehouses.dataselect_backend_warehouses_path(format: 'json'),
+                multiple: true
+            }) %>
+        </div>
+        <div class="col-md-3">
+            <%= erp_form_control("dataselect", {
+                name: 'state_ids',
+                value: '',
+                text: '',
+                label: 'Tình trạng',
+                placeholder: 'Tất cả tình trạng',
+                url: erp_products.dataselect_backend_states_path(format: 'json'),
+                multiple: true
             }) %>
         </div>
     </div>
@@ -47,64 +69,113 @@
                 multiple: true
             }) %>
         </div>
-        <div class="col-md-9 letter-box">
-            <% (0..100).each do |num| %>
-                <div class="area-select area-select-<%= num %> <%= 'hide' if num > 0 %> form-control-mb-0">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <%= erp_form_control("select_basic", {
-                                name: 'areas['+num.to_s+'][letters]',
-                                value: '',
-                                text: '',
-                                label: (num == 0 ? 'Vùng len' : ''),
-                                placeholder: 'Chọn chữ',
-                                options: Erp::Products::PropertiesValue.letter_value_options,
-                                include_blank: 'Tất cả chữ',
-                                multiple: true
-                            }) %>
-                        </div>
-                        <div class="col-md-4">
-                            <%= erp_form_control("select_basic", {
-                                name: 'areas['+num.to_s+'][numbers]',
-                                value: '',
-                                text: '',
-                                label: (num == 0 ? '.' : ''),
-                                placeholder: 'Chọn số',
-                                options: Erp::Products::PropertiesValue.number_value_options,
-                                include_blank: 'Tất cả số',
-                                multiple: true
-                            }) %>
-                        </div>
-                        <div class="col-md-4">
-                            <%= erp_form_control("select_basic", {
-                                name: 'areas['+num.to_s+'][diameters]',
-                                value: '',
-                                text: '',
-                                label: (num == 0 ? '.' : ''),
-                                placeholder: 'Chọn đường kính',
-                                options: Erp::Products::PropertiesValue.diameter_value_options,
-                                include_blank: 'Tất cả đường kính',
-                                multiple: true
-                            }) %>
-                        </div>
-                    </div>
-                </div>
-            <% end %>
-            <a href="#add_letter" class="" style="margin-bottom: 20px;display: block;"
-                onclick="$(this).closest('.letter-box').find('.area-select.hide').eq(0).removeClass('hide')"
-            >Thêm vùng</a>
+        <div class="col-md-3 addable-container">
+            <div style="height: 25px"></div>
+            <div class="addable-boxes" data-pattern=".patterns-lvl1">
+            </div>
+            <div class="text-right mb-10" style="border-top: solid 1px #aaa">
+                <a class="btn btn-xs btn-primary mt-10 addable-but-add">Thêm Chữ</a>
+            </div>
+        </div>
+        <div class="col-md-6 addable-container">
+            <div style="height: 25px"></div>
+            <div class="addable-boxes" data-pattern=".patterns-lvl2">
+            </div>
+            <div class="text-right mb-10" style="border-top: solid 1px #aaa">
+                <a class="btn btn-xs btn-primary mt-10 addable-but-add">Thêm Số/ĐK</a>
+            </div>
         </div>
     </div>
 <% end %>
 
+<div class="patterns-lvl1" style="display: none">
+    <div class="addable-box">
+        <div class="row">
+            <div class="col-md-10">
+                <% letter = Erp::Products::Property.where(name: "Chữ").first %>
+                <%= erp_form_control("dataselect", {
+                    name: 'letters[<<index1>>]',
+                    value: '',
+                    text: '',
+                    label: '',
+                    placeholder: letter.name,
+                    url: erp_products.dataselect_backend_properties_values_path(format: 'json', property_id: letter.id),
+                    include_blank: 'Tất cả chữ',
+                    multiple: true
+                }) %>
+            </div>
+            <div class="col-md-2">
+                <a class="btn btn-xs btn-danger mb-10 addable-but-remove">Xóa</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--<div class="patterns-lvl1" style="display: none">
+    <div class="addable-box">
+        <div class="row">
+            <div class="col-md-4">
+                <% letter = Erp::Products::Property.where(name: "Chữ").first %>
+                <%= erp_form_control("dataselect", {
+                    name: 'areas[<<index1>>][letters]',
+                    value: '',
+                    text: '',
+                    label: '',
+                    placeholder: letter.name,
+                    url: erp_products.dataselect_backend_properties_values_path(format: 'json', property_id: letter.id),
+                    include_blank: 'Tất cả chữ',
+                    multiple: true
+                }) %>
+                <a class="btn btn-xs btn-danger mb-10 addable-but-remove">Xóa</a>
+            </div>
+            <div class="col-md-8 addable-container">
+                <div class="addable-boxes" data-pattern=".patterns-lvl2">
+                </div>
+                <div class="text-right mb-10" style="border-top: solid 1px #aaa">
+                    <a class="btn btn-xs btn-success mt-10 addable-but-add">Thêm Số/ĐK</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>-->
+
+<div class="patterns-lvl2" style="display: none">
+    <div class="addable-box">
+        <div class="row">
+            <div class="col-md-5">
+                <% number = Erp::Products::Property.where(name: "Số").first %>
+                <%= erp_form_control("dataselect", {
+                    name: 'numbers_diameters[<<index1>>][numbers]',
+                    value: '',
+                    text: '',
+                    label: '',
+                    placeholder: number.name,
+                    url: erp_products.dataselect_backend_properties_values_path(format: 'json', property_id: number.id),
+                    include_blank: 'Tất cả số',
+                    multiple: true
+                }) %>
+            </div>
+            <div class="col-md-5">
+                <% diameter = Erp::Products::Property.where(name: "Đường kính").first %>
+                <%= erp_form_control("dataselect", {
+                    name: 'numbers_diameters[<<index1>>][diameters]',
+                    value: '',
+                    text: '',
+                    label: '',
+                    placeholder: 'Chọn đường kính',
+                    url: erp_products.dataselect_backend_properties_values_path(format: 'json', property_id: diameter.id),
+                    include_blank: 'Tất cả đường kính',
+                    multiple: true
+                }) %>
+            </div>
+            <div class="col-md-2"><a class="btn btn-xs btn-danger mb-10 addable-but-remove">Xóa</a></div>
+        </div>
+    </div>
+</div>
+
 <%= erp_datalist(
-    url: erp_ortho_k.report_custom_area_table_backend_inventory_index_path,
+    url: erp_ortho_k.report_custom_area_v2_table_backend_inventory_index_path,
     sortable: true,
-    filters: [
-        {
-            text: t('.show_virtual'), name: 'show_virtual', value: true, checked: false
-        },
-    ],
     columns: [
     ],
 ) %>

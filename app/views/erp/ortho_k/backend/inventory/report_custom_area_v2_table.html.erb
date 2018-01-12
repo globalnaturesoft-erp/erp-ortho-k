@@ -1,4 +1,4 @@
-<% if @letter_array.empty? %>
+<% if false %>
   <div class="alert alert-warning">
       <p>Vui lòng chọn các tham số bắt buộc:
           <br>- <strong>Vùng len</strong>
@@ -27,94 +27,225 @@
 
   <table class="table table-bordered table-advance order-column">
     <tr>
-      <th rowspan="2" class="text-center bg-primary">Loại hàng</th>
-      <th rowspan="2" class="text-center bg-primary">Đường kính</th>
-      <th rowspan="2" class="text-center bg-primary">Vùng len</th>
-      <th colspan="2" class="text-center bg-primary">Số lượng</th>
-      <th rowspan="2" class="text-center bg-primary">Chênh lệch</th>
+        <th rowspan="2" class="text-center bg-primary">Loại</th>
+        <th rowspan="2" class="text-center bg-primary">Chữ</th>
+        <th rowspan="2" class="text-center bg-primary">Số</th>
+        <th rowspan="2" class="text-center bg-primary">Đường kính</th>
+        <th rowspan="2" class="text-center bg-primary">Dư đầu</th>
+        <th rowspan="2" class="text-center bg-primary" title="Nhập NCC">Nhập NCC</th>
+        <th rowspan="2" class="text-center bg-primary" title="Nhập kiểm kho">Nhập KK</th>
+        <th colspan="<%= Erp::Products::State.all_active.count %>" class="text-center bg-primary" title="Khách trả; Ký gửi trả">Hoàn kho</th>
+        <th rowspan="2" class="text-center bg-primary" title="Xuất bán; Cho mượn/Ký gửi; Tặng quà">Xuất</th>
+        <th rowspan="2" class="text-center bg-primary" title="Hủy kho; Kiểm kho">Xuất KK</th>
+        <th rowspan="2" class="text-center bg-primary" title="Kiểm trạng thái">Xuất KTT</th>
+        <th rowspan="2" class="text-center bg-primary">Dư cuối</th>
     </tr>
     <tr>
-      <th class="text-center bg-primary">Đầu kỳ</th>
-      <th class="text-center bg-primary">Cuối kỳ</th>
+        <% Erp::Products::State.all_active.each do |state| %>
+            <th class="text-center bg-primary text-nowrap" width="5%"><%= state.name %></th>
+        <% end %>
     </tr>
+    <% @rows.each_with_index do |row, index| %>
+        <% row[:letter_groups].each_with_index do |lg,index2| %>
+            <% lg[:numbers_diameters].each_with_index do |nd,index3| %>
+                <%
+                    query = @product_query
+                    # filter by properties
+                    [nd[:diameter_ids], lg[:letter_ids], nd[:number_ids]].each do |ids|
+                        if ids.present?
+                          if !ids.kind_of?(Array)
+                            query = query.where("erp_products_products.cache_properties LIKE '%[\"#{ids}\",%'")
+                          else
+                            ids = (ids.reject { |c| c.empty? })
+                            if !ids.empty?
+                              qs = []
+                              ids.each do |x|
+                                qs << "(erp_products_products.cache_properties LIKE '%[\"#{x}\",%')"
+                              end
+                              query = query.where("(#{qs.join(" OR ")})")
+                            end
+                          end
+                        end
+                    end
+
+                    product_ids = query.select('id').where(category_id: row[:category].id)
+                %>
+                <% product_ids = -1 if product_ids.count == 0 %>
+                <% filters = @global_filters.clone.merge({product_id: product_ids}) %>
+
+                <tr>
+                    <td class="text-bold text-primary">
+                        <%= row[:category].name if index2 == 0 and index3 == 0 %>
+                    </td>
+                    <td class="text-bold">
+                        <% if index3 == 0 %>
+                            <% values = Erp::Products::PropertiesValue.where(id: lg[:letter_ids]).map(&:value) %>
+                            <%= values.first %> -> <%= values.last %>
+                        <% end %>
+                    </td>
+                    <td>
+                        <% values = Erp::Products::PropertiesValue.where(id: nd[:number_ids]).map(&:value) %>
+                        <%= values.first %> -> <%= values.last %>
+                    </td>
+                    <td>
+                        <% values = Erp::Products::PropertiesValue.where(id: nd[:diameter_ids]).map(&:value) %>
+                        <%= values.first %> -> <%= values.last %>
+                    </td>
 
 
-    <% @letter_array.each_with_index do |row,index| %>
-      <%
-        letters = row[:letters]
-        letter_ids = row[:letter_ids]
-      %>
-      <tr>
+                    <td class="text-center text-bold">
+                        <%
+                            begin_params = filters.clone
+                            begin_params[:to_date] = filters[:from_date]
+                            begin_params[:from_date] = nil
+                        %>
+                        <%= Erp::Products::Product.get_stock_real(begin_params) %>
+                    </td>
+                    <td class="text-center">
+                        <%
+                            count = Erp::Products::Product.get_qdelivery_import(filters.clone.merge({
+                                delivery_type: Erp::Qdeliveries::Delivery::TYPE_PURCHASE_IMPORT
+                            }))
+                        %>
+                        <%= count %>
+                    </td>
+                    <td class="text-center">
+                        <%
+                            count = Erp::Products::Product.get_stock_check_import(filters)
+                        %>
+                        <%= count %>
+                    </td>
+                    <% Erp::Products::State.all_active.each do |state| %>
+                        <td class="text-center">
+                            <%
+                              count = Erp::Products::Product.get_qdelivery_import(filters.clone.merge({
+                                    delivery_type: [
+                                        Erp::Qdeliveries::Delivery::TYPE_CUSTOM_IMPORT,
+                                        Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT
+                                    ],
+                                    state: state
+                              }))
+                            %>
+                            <%= count %>
+                        </td>
+                    <% end %>
+                    <td class="text-center">
+                        <%
+                            count = Erp::Products::Product.get_qdelivery_export(filters.clone.merge({
+                                delivery_type: [
+                                  Erp::Qdeliveries::Delivery::TYPE_CUSTOM_EXPORT,
+                                  Erp::Qdeliveries::Delivery::TYPE_SALES_EXPORT
+                                ]
+                            }))
+                            count += Erp::Products::Product.get_gift_given_export(filters)
+                        %>
+                        <%= count %>
+                    </td>
+                    <td class="text-center">
+                        <%
+                            count = Erp::Products::Product.get_damage_record_export(filters)
+                            count += Erp::Products::Product.get_stock_check_export(filters)
+                        %>
+                        <%= count %>
+                    </td>
+                    <td class="text-center">
+                        <%
+                          count = (filters[:state_id].present? ? Erp::Products::Product.get_state_check_export(filters) : '--')
+                        %>
+                        <%= count %>
+                    </td>
+                    <td class="text-center text-bold">
+                        <%
+                            end_params = filters.clone
+                            end_params[:from_date] = nil
+                        %>
+                        <%= Erp::Products::Product.get_stock_real(end_params) %>
+                    </td>
+                </tr>
+            <% end %>
+        <% end %>
+
+
         <%
-          query = @product_query
-          # filter by letters
-          if letter_ids.present?
-            if !letter_ids.kind_of?(Array)
-              query = query.where("erp_products_products.cache_properties LIKE '%[\"#{letter_ids}\",%'")
-            else
-              letter_ids = (letter_ids.reject { |c| c.empty? })
-              if !letter_ids.empty?
-                qs = []
-                letter_ids.each do |x|
-                  qs << "(erp_products_products.cache_properties LIKE '%[\"#{x}\",%')"
-                end
-                query = query.where("(#{qs.join(" OR ")})")
-              end
-            end
-          end
-          product_ids = query.select('id')
+            query = @product_query
+            product_ids = query.select('id').where(category_id: row[:category].id)
         %>
         <% product_ids = -1 if product_ids.count == 0 %>
         <% filters = @global_filters.clone.merge({product_id: product_ids}) %>
 
-        <% if index == 0 %>
-          <td class="text-left text-bold" rowspan="<%= @letter_array.count %>">
-            <% if @categories.empty? %>
-              Tất cả loại
-            <% else %>
-              <%= @categories.map(&:name).join("<br />").html_safe %>
+        <tr>
+            <td class="text-bold bg-grey text-right" colspan="4">
+                Tổng cộng
+            </td>
+            <td class="text-center bg-grey text-bold">
+                <%
+                    begin_params = filters.clone
+                    begin_params[:to_date] = filters[:from_date]
+                    begin_params[:from_date] = nil
+                %>
+                <%= Erp::Products::Product.get_stock_real(begin_params) %>
+            </td>
+            <td class="text-center bg-grey">
+                <%
+                    count = Erp::Products::Product.get_qdelivery_import(filters.clone.merge({
+                        delivery_type: Erp::Qdeliveries::Delivery::TYPE_PURCHASE_IMPORT
+                    }))
+                %>
+                <%= count %>
+            </td>
+            <td class="text-center bg-grey">
+                <%
+                    count = Erp::Products::Product.get_stock_check_import(filters)
+                %>
+                <%= count %>
+            </td>
+            <% Erp::Products::State.all_active.each do |state| %>
+                <td class="text-center bg-grey">
+                    <%
+                      count = Erp::Products::Product.get_qdelivery_import(filters.clone.merge({
+                            delivery_type: [
+                                Erp::Qdeliveries::Delivery::TYPE_CUSTOM_IMPORT,
+                                Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT
+                            ],
+                            state: state
+                      }))
+                    %>
+                    <%= count %>
+                </td>
             <% end %>
-          </td>
-          <td class="text-left text-bold" rowspan="<%= @letter_array.count %>">
-            <% if @diameters.empty? %>
-              Tất cả loại
-            <% else %>
-              <%= @diameters.map(&:value).join(", ").html_safe %>
-            <% end %>
-          </td>
-        <% end %>
-
-
-
-        <td class="text-left text-bold">
-          <% if letters.empty? %>
-            Tất cả loại
-          <% else %>
-            <%= letters.map(&:value).join(", ").html_safe %>
-          <% end %>
-        </td>
-        <td class="text-center text-bold">
-          <%
-              begin_params = filters.clone
-              begin_params[:to_date] = filters[:from_date]
-              begin_params[:from_date] = nil
-          %>
-          <% begin_amount = Erp::Products::Product.get_stock_real(begin_params) %>
-          <%= begin_amount %>
-        </td>
-        <td class="text-center text-bold">
-          <%
-              end_params = filters.clone
-              end_params[:from_date] = nil
-          %>
-          <% end_amount = Erp::Products::Product.get_stock_real(end_params) %>
-          <%= end_amount %>
-        </td>
-        <td class="text-center text-bold">
-          <%= end_amount - begin_amount %>
-        </td>
-      </tr>
-
+            <td class="text-center bg-grey">
+                <%
+                    count = Erp::Products::Product.get_qdelivery_export(filters.clone.merge({
+                        delivery_type: [
+                          Erp::Qdeliveries::Delivery::TYPE_CUSTOM_EXPORT,
+                          Erp::Qdeliveries::Delivery::TYPE_SALES_EXPORT
+                        ]
+                    }))
+                    count += Erp::Products::Product.get_gift_given_export(filters)
+                %>
+                <%= count %>
+            </td>
+            <td class="text-center bg-grey">
+                <%
+                    count = Erp::Products::Product.get_damage_record_export(filters)
+                    count += Erp::Products::Product.get_stock_check_export(filters)
+                %>
+                <%= count %>
+            </td>
+            <td class="text-center bg-grey">
+                <%
+                  count = (filters[:state_id].present? ? Erp::Products::Product.get_state_check_export(filters) : '--')
+                %>
+                <%= count %>
+            </td>
+            <td class="text-center bg-grey text-bold">
+                <%
+                    end_params = filters.clone
+                    end_params[:from_date] = nil
+                %>
+                <%= Erp::Products::Product.get_stock_real(end_params) %>
+            </td>
+        </tr>
     <% end %>
   </table>
 <% end %>

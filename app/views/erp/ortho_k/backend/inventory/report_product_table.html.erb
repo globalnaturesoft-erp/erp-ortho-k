@@ -129,7 +129,7 @@
 
         <% @products.each do |product| %>
             <% filters = @global_filters.clone.merge(product_id: product.id) %>
-            <% filters[:state_id] = Erp::Products::State.get_new_state.id %>
+            
             <tr>
                 <td class="text-semibold"><%= product.name %></td>
                 <td class="text-center text-nowrap"><%= product.category_name %></td>
