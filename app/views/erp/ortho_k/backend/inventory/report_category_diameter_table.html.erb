@@ -30,7 +30,6 @@
     <% product_ids = @product_query.select('id') %>
     <% product_ids = -1 if product_ids.count == 0 %>
     <% filters = @global_filters.clone.merge({product_id: product_ids}) %>
-    <% filters[:state_id] = Erp::Products::State.get_new_state.id %>
     <tr>
       <th colspan="2" class="text-right bg-grey">Tổng cộng</th>
 
@@ -57,7 +56,7 @@
             %>
             <%= count %>
       </td>
-      <% Erp::Products::State.all_active.each do |state| %>
+      <% @states.each do |state| %>
         <td class="text-center bg-grey text-bold">
           <%
             count = Erp::Products::Product.get_qdelivery_import(filters.clone.merge({
@@ -111,14 +110,14 @@
       <th rowspan="2" class="text-center bg-primary">Dư đầu</th>
       <th rowspan="2" class="text-center bg-primary" title="Nhập NCC">Nhập NCC</th>
       <th rowspan="2" class="text-center bg-primary" title="Nhập kiểm kho">Nhập KK</th>
-      <th colspan="<%= Erp::Products::State.all_active.count %>" class="text-center bg-primary" title="Khách trả; Ký gửi trả">Hoàn kho</th>
+      <th colspan="<%= @states.count %>" class="text-center bg-primary text-nowrap" title="Khách trả; Ký gửi trả">Hoàn kho</th>
       <th rowspan="2" class="text-center bg-primary" title="Xuất bán; Cho mượn/Ký gửi; Tặng quà">Xuất</th>
       <th rowspan="2" class="text-center bg-primary" title="Hủy kho; Kiểm kho">Xuất KK</th>
       <th rowspan="2" class="text-center bg-primary" title="Kiểm trạng thái">Xuất KTT</th>
       <th rowspan="2" class="text-center bg-primary">Dư cuối</th>
     </tr>
     <tr>
-      <% Erp::Products::State.all_active.each do |state| %>
+      <% @states.each do |state| %>
         <th class="text-center bg-primary text-nowrap" width="5%"><%= state.name %></th>
       <% end %>
     </tr>
@@ -128,7 +127,6 @@
         <% product_ids = @product_query.select('id').where(category_id: category.id).where("erp_products_products.cache_properties LIKE '%[\"#{diameter.id}\",%'") %>
         <% product_ids = -1 if product_ids.count == 0 %>
         <% filters = @global_filters.clone.merge(product_id: product_ids) %>
-        <% filters[:state_id] = Erp::Products::State.get_new_state.id %>
         <tr>
           <% if diameter_index == 0 %>
             <td class="text-semibold" rowspan="<%= @diameters.count %>"><%= category.name %></td>
@@ -157,7 +155,7 @@
               %>
               <%= count %>
           </td>
-          <% Erp::Products::State.all_active.each do |state| %>
+          <% @states.each do |state| %>
             <td class="text-center">
               <%
                 count = Erp::Products::Product.get_qdelivery_import(filters.clone.merge({
@@ -210,7 +208,6 @@
       <% product_ids = @product_query.select('id').where(category_id: category.id) %>
       <% product_ids = -1 if product_ids.count == 0 %>
       <% filters = @global_filters.clone.merge({product_id: product_ids}) %>
-      <% filters[:state_id] = Erp::Products::State.get_new_state.id %>
       <tr>
         <th colspan="2" class="text-right bg-grey">Tổng cộng</th>
 
@@ -237,7 +234,7 @@
             %>
             <%= count %>
         </td>
-        <% Erp::Products::State.all_active.each do |state| %>
+        <% @states.each do |state| %>
           <td class="text-center bg-grey text-bold">
             <%
               count = Erp::Products::Product.get_qdelivery_import(filters.clone.merge({

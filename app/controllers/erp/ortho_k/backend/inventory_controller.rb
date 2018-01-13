@@ -46,6 +46,12 @@ module Erp
               @product_query = @product_query.where("(#{qs.join(" OR ")})")
             end
           end
+
+          # state
+          @states = Erp::Products::State.all_active
+          if @global_filters[:state_ids].present?
+            @states = Erp::Products::State.where(id: @global_filters[:state_ids])
+          end
         end
 
         def report_category_diameter_xlsx
@@ -83,6 +89,12 @@ module Erp
               end
               @product_query = @product_query.where("(#{qs.join(" OR ")})")
             end
+          end
+
+          # state
+          @states = Erp::Products::State.all_active
+          if @global_filters[:state_ids].present?
+            @states = Erp::Products::State.where(id: @global_filters[:state_ids])
           end
 
           respond_to do |format|
@@ -189,6 +201,12 @@ module Erp
 
           # products
           @products = @product_query.order('erp_products_categories.name, erp_products_products.name').paginate(:page => params[:page], :per_page => 20)
+
+          # state
+          @states = Erp::Products::State.all_active
+          if @global_filters[:state_ids].present?
+            @states = Erp::Products::State.where(id: @global_filters[:state_ids])
+          end
         end
 
         def report_product_xlsx
@@ -279,6 +297,12 @@ module Erp
 
           # products
           @products = @product_query
+
+          # state
+          @states = Erp::Products::State.all_active
+          if @global_filters[:state_ids].present?
+            @states = Erp::Products::State.where(id: @global_filters[:state_ids])
+          end
 
           respond_to do |format|
             format.xlsx {
@@ -871,27 +895,35 @@ module Erp
           # area array
           @rows = []
           # categories each
-          @global_filters[:categories].each do |category_id|
-            span = (@global_filters[:letters].count)
-            row = {category: Erp::Products::Category.find(category_id), letter_groups: [], span: 0}
+          if @global_filters[:categories].present? and @global_filters[:letters].present? and @global_filters[:numbers_diameters].present?
+            @global_filters[:categories].each do |category_id|
+              span = (@global_filters[:letters].count)
+              row = {category: Erp::Products::Category.find(category_id), letter_groups: [], span: 0}
 
-            # letters each
-            @global_filters[:letters].each do |lrow|
-              row_2 = {letter_ids: lrow[1], numbers_diameters: []}
+              # letters each
+              @global_filters[:letters].each do |lrow|
+                row_2 = {letter_ids: lrow[1], numbers_diameters: []}
 
-              # numbers diameters
-              @global_filters[:numbers_diameters].each do |ndrow|
-                row_2[:numbers_diameters] << {number_ids: ndrow[1][:numbers], diameter_ids: ndrow[1][:diameters]}
+                # numbers diameters
+                @global_filters[:numbers_diameters].each do |ndrow|
+                  row_2[:numbers_diameters] << {number_ids: ndrow[1][:numbers], diameter_ids: ndrow[1][:diameters]}
+                end
+
+                # letters
+                row[:letter_groups] << row_2
               end
 
-              # letters
-              row[:letter_groups] << row_2
+              @rows << row
             end
-
-            @rows << row
           end
 
           @product_query = Erp::Products::Product
+
+          # state
+          @states = Erp::Products::State.all_active
+          if @global_filters[:state_ids].present?
+            @states = Erp::Products::State.where(id: @global_filters[:state_ids])
+          end
         end
 
         def report_custom_area_v2_xlsx

@@ -15,19 +15,20 @@
   # Inventory
   notis[:inventory_get_wait_for_delivery_sales_orders] = Erp::Orders::Order.get_wait_for_delivery_sales_orders.count
   notis[:inventory_get_wait_for_delivery_purchase_orders] = Erp::Orders::Order.get_wait_for_delivery_purchase_orders.count
-  notis[:inventory_stock_check_orders_count] = Erp::Orders::Order.stock_check_orders_count
+  notis[:inventory_stock_checking_orders_count] = Erp::Orders::Order.stock_checking_orders_count
   notis[:inventory] = notis[:inventory_get_wait_for_delivery_sales_orders] +
     notis[:inventory_get_wait_for_delivery_purchase_orders] +
-    notis[:inventory_stock_check_orders_count]
+    notis[:inventory_stock_checking_orders_count]
   notis[:inventory_qdelivery] = notis[:inventory_get_wait_for_delivery_sales_orders] +
     notis[:inventory_get_wait_for_delivery_purchase_orders]
+
+  # Sales
+  notis[:sales_get_waiting_sales_orders] = Erp::Orders::Order.get_waiting_sales_orders.count
+  notis[:sales] = notis[:sales_get_waiting_sales_orders]
 %>
 
 <% notis.each do |noti| %>
   <div class="notification-badge-content" data-container="notification-<%= noti[0] %>">
-    <% if noti[1] > 0 %>
-      <span class="badge badge-danger pull-right"><%= noti[1] %></span>
-    <% end %>
+    <span class="badge badge-danger pull-right"><%= (noti[1] > 0 ? noti[1] : '') %></span>
   </div>
 <% end %>
-

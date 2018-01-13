@@ -54,7 +54,7 @@ wb.styles do |s|
     toprow[:columns] << count
     toprow[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_toprow).deep_merge(bold))
 
-    Erp::Products::State.all_active.each do |state|
+    @states.each do |state|
       count = Erp::Products::Product.get_qdelivery_import(filters.clone.merge({
           delivery_type: [
             Erp::Qdeliveries::Delivery::TYPE_CUSTOM_IMPORT,
@@ -126,14 +126,14 @@ wb.styles do |s|
     kt += 1
     sheet.merge_cells("#{('A'.codepoints.first + kt).chr}5:#{('A'.codepoints.first + kt).chr}6")
 
-    Erp::Products::State.all_active.each_with_index do |state,index|
+    @states.each_with_index do |state,index|
       header[:columns] << (index==0 ? 'Hoàn kho' : '')
       header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
       subheader[:columns] << state.name
       subheader[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
       kt += 1
     end
-    sheet.merge_cells("#{('A'.codepoints.first + (kt-(Erp::Products::State.all_active.count-1))).chr}5:#{('A'.codepoints.first + kt).chr}5")
+    sheet.merge_cells("#{('A'.codepoints.first + (kt-(@states.count-1))).chr}5:#{('A'.codepoints.first + kt).chr}5")
 
     header[:columns] << 'Xuất'
     header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
@@ -198,7 +198,7 @@ wb.styles do |s|
         row[:columns] << count
         row[:styles] << (s.add_style text_center.deep_merge(border))
 
-        Erp::Products::State.all_active.each do |state|
+        @states.each do |state|
           count = Erp::Products::Product.get_qdelivery_import(filters.clone.merge({
               delivery_type: [
                 Erp::Qdeliveries::Delivery::TYPE_CUSTOM_IMPORT,
@@ -261,7 +261,7 @@ wb.styles do |s|
       subrow[:columns] << count
       subrow[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_subrow).merge(bold))
 
-      Erp::Products::State.all_active.each do |state|
+      @states.each do |state|
         count = Erp::Products::Product.get_qdelivery_import(filters.clone.merge({
             delivery_type: [
               Erp::Qdeliveries::Delivery::TYPE_CUSTOM_IMPORT,
