@@ -1755,4 +1755,49 @@ Erp::Products::Product.class_eval do
 
     return stock
   end
+
+  # get alternative products
+  def get_alternative_products(options={})
+    a_products = []
+
+    letter = self.get_letter
+    number = self.get_number
+    diameter = self.get_diameter
+    cat = self.category_name
+
+    # letter array
+    letters = ('A'..'T').to_a
+    ('C'..'U').each do |x|
+      letters << "H#{x}"
+    end
+
+    # alternative arr
+    arr = []
+
+    arr << {number: number, letter: letter}
+    arr << {number: number, letter: letters[letters.index(letter)+1]}
+    arr << {number: number, letter: letters[letters.index(letter)-1]} if letters.index(letter) > 0
+    arr << {number: (number.to_i+1).to_s.rjust(2, '0'), letter: letter}
+    arr << {number: (number.to_i-1).to_s.rjust(2, '0'), letter: letter}
+
+    # find
+    arr.each do |item|
+      if item[:number].present? and item[:number].to_i > 0 and item[:letter].present?
+        pname = "#{item[:letter]}#{item[:number]}-%-#{cat}"
+
+        products = Erp::Products::Product.where('erp_products_products.name LIKE ?', pname)
+
+        # min
+        if options[:min_stock].present?
+          products = products.where('cache_stock >= ?', options[:min_stock])
+        end
+
+        products.each do |p|
+          a_products << p if p.cache_stock.to_i > 0
+        end
+      end
+    end
+
+    return a_products
+  end
 end
