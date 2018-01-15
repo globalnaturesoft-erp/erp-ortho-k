@@ -11,7 +11,7 @@ Erp::Products::Engine.routes.draw do
           post 'do_split'
           get 'ajax_split_quantity'
           get 'ajax_preview_split'
-          
+
           get 'combine'
           post 'do_combine'
           get 'ajax_combine_quantity'
@@ -46,8 +46,6 @@ Erp::OrthoK::Engine.routes.draw do
 
           get 'import'
           post 'import'
-          
-          
         end
       end
       resources :central_areas do
@@ -151,6 +149,12 @@ Erp::OrthoK::Engine.routes.draw do
 					get 'report_custom_area_v2'
 					post 'report_custom_area_v2_table'
 					get 'report_custom_area_v2_xlsx'
+
+					get 'report_product_request'
+          post 'report_product_request_table'
+
+          get 'report_product_ordered'
+          post 'report_product_ordered_table'
 				end
 			end
 

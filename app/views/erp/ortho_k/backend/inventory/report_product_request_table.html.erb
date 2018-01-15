@@ -1,0 +1,66 @@
+    <%
+        so_p = Erp::Products::Property.get_number
+        chu_p = Erp::Products::Property.get_letter
+    %>
+
+    <div class="custom-show text-center">
+        <h4 class="font-blue-madison bold uppercase mb-15">
+            Thông kê nhu cầu đặt hàng
+            <% if @from_date.present? or @to_date.present? %>
+                <br>
+                <span class="font-sm">
+                    <% if !defined?(@period) %>
+                        (<%= 'Từ ' + @from_date.strftime('%d/%m/%Y') if !@from_date.nil? %> <%= ' Đến ' + @to_date.strftime('%d/%m/%Y') if !@to_date.nil? %>)
+                    <% else %>
+                        (<%= @period.name %>)
+                    <% end %>
+                </span>
+            <% end %>
+        </h4>
+    </div>
+
+    <table class="table table-advance table-checkable order-column table-matrix" id="">
+        <tr>
+            <th class="bg-grey" width="6%"></th>
+            <% Erp::Products::Product.matrix_cols.each do |col| %>
+                <th class="text-center bg-grey" width="">
+                  <%= col[:degree] %><br><%= col[:letter] %>
+                </th>
+            <% end %>
+        </tr>
+        <% Erp::Products::Product.matrix_rows.each do |row| %>
+            <tr>
+                <th class="text-center bg-grey text-nowrap" style="width: 108px !important">
+                    <%= row[:degree_k] %>/<%= row[:number] %>
+                </th>
+                <% Erp::Products::Product.matrix_cols.each do |col| %>
+                    <%
+                        chu_pv = Erp::Products::PropertiesValue.where(property_id: chu_p.id, value: col[:letter]).first
+                        so_pv = Erp::Products::PropertiesValue.where(property_id: so_p.id, value: row[:number]).first
+
+                        # @product_query.count
+                        query = @product_query
+                        qs = []
+                        [chu_pv.id,so_pv.id].each do |x|
+                          qs << "(erp_products_products.cache_properties LIKE '%[\"#{x}\",%')"
+                        end
+                        query = query.where("(#{qs.join(" AND ")})")
+
+                        product_ids = query.select('erp_products_products.id')
+                        product_ids = -1 if query.count == 0
+                        # stock
+                        stock = Erp::Products::Product.get_order_request_count(
+                            product_id: product_ids,
+                            warehouse_ids: @global_filters[:warehouses],
+                            state_ids: @global_filters[:states],
+                            from_date: @from_date,
+                            to_date: @to_date,
+                        )
+                    %>
+                    <td class="text-center stock-num stock-num-<%= stock %>">
+                        <%= stock %>
+                    </td>
+                <% end %>
+            </tr>
+        <% end %>
+    </table>

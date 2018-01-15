@@ -1620,7 +1620,6 @@ Erp::Products::Product.class_eval do
         stock_check.save
       end
     end
-
   end
 
   def combine_parts(quantity, options={}) # options: user, warehouse, state
@@ -1678,4 +1677,82 @@ Erp::Products::Product.class_eval do
     return max
   end
 
+  # Get matrix rows columns
+  def self.matrix_rows
+    [
+      {number: '01', degree_k: 'K1'},
+      {number: '02', degree_k: 'K2'},
+      {number: '03', degree_k: 'K3'},
+      {number: '04', degree_k: 'K4'},
+      {number: '05', degree_k: '46.00/7.34'},
+      {number: '06', degree_k: '45.75/7.37'},
+      {number: '07', degree_k: '45.50/7.42'},
+      {number: '08', degree_k: '45.25/7.46'},
+      {number: '09', degree_k: '45.00/7.50'},
+      {number: '10', degree_k: '44.75/7.54'},
+      {number: '11', degree_k: '44.50/7.58'},
+      {number: '12', degree_k: '44.25/7.63'},
+      {number: '13', degree_k: '44.00/7.67'},
+      {number: '14', degree_k: '43.75/7.71'},
+      {number: '15', degree_k: '43.50/7.75'},
+      {number: '16', degree_k: '43.25/7.80'},
+      {number: '17', degree_k: '43.00/7.84'},
+      {number: '18', degree_k: '42.75/7.89'},
+      {number: '19', degree_k: '42.50/7.94'},
+      {number: '20', degree_k: '42.25/7.98'},
+      {number: '21', degree_k: '42.00/8.03'},
+      {number: '22', degree_k: '41.75/8.08'},
+      {number: '23', degree_k: '41.50/8.13'},
+      {number: '24', degree_k: '41.25/8.18'},
+      {number: '25', degree_k: '41.00/8.23'},
+      {number: '26', degree_k: '40.75/8.28'},
+      {number: '27', degree_k: '40.50/8.33'},
+      {number: '28', degree_k: '40.25/8.38'},
+      {number: '29', degree_k: '40.00/8.44'},
+      {number: '30', degree_k: 'K30'},
+      {number: '31', degree_k: 'K31'},
+      {number: '32', degree_k: 'K32'},
+      {number: '33', degree_k: 'K33'},
+      {number: '34', degree_k: 'K34'},
+      {number: '35', degree_k: 'K35'},
+      {number: '36', degree_k: 'K36'},
+    ]
+  end
+
+  # Get matrix rows columns
+  def self.matrix_cols
+    arr = []
+
+    letters = ('A'..'T').to_a
+    ('C'..'U').each do |x|
+      letters << "H#{x}"
+    end
+
+    do_v = 0.5
+    letters.each do |letter|
+      arr << {letter: letter, degree: do_v.to_s}
+      do_v = do_v + 0.25
+    end
+
+    arr
+  end
+
+  ####################################### GET REQUEST PRODUCT ##########################
+  # @todo export
+  def self.get_order_request_count(params={})
+    stock = 0
+
+    main_query = self.get_order_query(params)
+
+    # consignment detail with order detail
+    query = main_query.where(erp_orders_orders: {supplier_id: Erp::Contacts::Contact::MAIN_CONTACT_ID})
+
+    if params[:product_id].present?
+      query = query.where(request_product_id: params[:product_id])
+    end
+
+    stock = stock + query.sum("erp_orders_order_details.quantity")
+
+    return stock
+  end
 end

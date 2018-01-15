@@ -1,37 +1,61 @@
-<% if true or @global_filter[:categories].present? or @global_filter[:diameters].present? %>
+<% if @columns.present? and @rows.present? %>
     <table class="table table-advance table-checkable order-column table-matrix" id="">
         <tr>
             <th class="bg-grey" width="6%"></th>
-            <% Erp::Products::Product.matrix_cols.each do |col| %>
-                <th class="text-center bg-grey" width="">
-                  <%= col[:degree] %><br><%= col[:letter] %>
-                </th>
+            <% if @row_subs.present? %>
+                <th class="bg-grey"></th>
+            <% end %>
+            <% @columns.each do |column| %>
+                <th class="text-center bg-grey" width=""><%= column.value %></th>
             <% end %>
         </tr>
-        <% Erp::Products::Product.matrix_rows.each do |row| %>
+        <% if @column_subs.present? %>
             <tr>
-                <th class="text-center bg-grey text-nowrap" style="width: 108px !important">
-                    <%= row[:degree_k] %>/<%= row[:number] %>
-                </th>
-                <% Erp::Products::Product.matrix_cols.each do |col| %>
-                    <%
-                        so_p = Erp::Products::Property.get_number
-                        chu_p = Erp::Products::Property.get_letter
-
-                        chu_pv = Erp::Products::PropertiesValue.where(property_id: chu_p.id, value: col[:letter]).first
-                        so_pv = Erp::Products::PropertiesValue.where(property_id: so_p.id, value: row[:number]).first
-
-                        stock = Erp::Products::Product.get_stock(
-                            properties_value_ids: [chu_pv.id,so_pv.id],
-                            categories: @global_filter[:categories],
-                            warehouses: @global_filter[:warehouses],
-                            states: @global_filter[:states],
-                            diameters: @global_filter[:diameters])
+                <th class="bg-grey"></th>
+                <% if @row_subs.present? %>
+                    <th class="bg-grey"></th>
+                <% end %>
+                <% @columns.each do |column| %>
+                    <% @column_subs.each do |column_sub| %>
+                        <% if !Erp::Products::Product.joins(:products_values)
+                            .where("erp_products_products.cache_properties LIKE ?", "%[\"#{column.id}\",%")
+                            .where("erp_products_products.cache_properties LIKE ?", "%[\"#{column_sub.id}\",%")
+                            .empty?
+                        %>
+                            <th class="text-center bg-grey"><%= column_sub.value %></th>
+                        <% end %>
+                    <% end %>
+                <% end %>
+            </tr>
+        <% end %>
+        <% @rows.each do |row| %>
+            <tr>
+                <th class="text-center bg-grey" style="padding: 8px"><%= row.value %></th>
+                <% if @row_subs.present? %>
+                    <th class="text-center bg-grey" width="1%">
+                        <% @row_subs.each do |row_sub| %>
+                            <% if !Erp::Products::Product.joins(:products_values)
+                                .where("erp_products_products.cache_properties LIKE ?", "%[\"#{row.id}\",%")
+                                .where("erp_products_products.cache_properties LIKE ?", "%[\"#{row_sub.id}\",%")
+                                .empty?
+                            %>
+                                <%= row_sub.value %>
+                            <% end %>
+                        <% end %>
+                    </th>
+                <% end %>
+                <% @columns.each do |column| %>
+                    <% stock = Erp::Products::Product.get_stock(
+                                    properties_value_ids: [column.id,row.id],
+                                    categories: @global_filter[:categories],
+                                    warehouses: @global_filter[:warehouses],
+                                    states: @global_filter[:states],
+                                    diameters: @global_filter[:diameters])
                     %>
 
                     <td class="text-center stock-num stock-num-<%= stock %>"
                         data-tooltip-url="<%= erp_ortho_k.tooltip_warehouse_info_backend_products_path(
-                                                    properties_value_ids: [chu_pv.id,so_pv.id],
+                                                    properties_value_ids: [column.id,row.id],
                                                     categories: @global_filter[:categories],
                                                     warehouses: @global_filter[:warehouses],
                                                     states: @global_filter[:states],
@@ -122,7 +146,5 @@
         </div>
     </div>
 <% else %>
-    <div class="alert alert-warning">
-        Chọn <strong>Đường kính</strong> hoặc <strong>Loại hàng</strong> để xem
-    </div>
+    <div class="alert alert-warning"><%=raw t('.please_select_column_and_row_filter') %></div>
 <% end %>

@@ -27,7 +27,7 @@
                             style="display: block;"
                         <% else %>style="display: none;"<% end %>>
         <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "matrix_report" %>">
-            <%= link_to t('.inventory_report'), erp_ortho_k.matrix_report_backend_products_path, class: "nav-link ", title: t('.inventory_report') %>
+            <%= link_to 'Tồn kho (ma trận)', erp_ortho_k.matrix_report_backend_products_path, class: "nav-link ", title: 'Tồn kho (ma trận)' %>
         </li>
         <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "delivery_report" %>">
             <%= link_to 'Báo cáo xuất/nhập/tồn', erp_ortho_k.delivery_report_backend_products_path, class: "nav-link ", title: t('.delivery_report') %>
@@ -84,6 +84,20 @@
                 erp_ortho_k.report_warehouse_backend_inventory_index_path,
                 class: "nav-link ",
                 title: 'Thống kê tồn theo kho / loại sản phẩm'
+            %>
+        </li>
+        <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/inventory" && params[:action] == "report_product_request" %>">
+            <%= link_to "Nhuc cầu mua (ma trận)",
+                erp_ortho_k.report_product_request_backend_inventory_index_path,
+                class: "nav-link ",
+                title: 'Nhu cầu mua (ma trận)'
+            %>
+        </li>
+        <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/inventory" && params[:action] == "report_product_ordered" %>">
+            <%= link_to "Đặt hàng (ma trận)",
+                erp_ortho_k.report_product_ordered_backend_inventory_index_path,
+                class: "nav-link ",
+                title: 'Đặt hàng (ma trận)'
             %>
         </li>
     </ul>

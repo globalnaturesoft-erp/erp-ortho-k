@@ -983,6 +983,84 @@ module Erp
             }
           end
         end
+
+        def report_product_request
+        end
+
+        def report_product_request_table
+          @global_filters = params.to_unsafe_hash[:global_filter]
+
+          # if has period
+          if @global_filters[:period].present?
+            @period = Erp::Periods::Period.find(@global_filters[:period])
+            @global_filters[:from_date] = @period.from_date
+            @global_filters[:to_date] = @period.to_date
+          end
+
+          @from_date = @global_filters[:from_date].to_date
+          @to_date = @global_filters[:to_date].to_date
+
+          @product_query = Erp::Products::Product
+
+          # catgories
+          @product_query = @product_query.where(category_id: @global_filters[:categories]) if @global_filters[:categories].present?
+
+          # diameters
+          diameter_ids = @global_filters[:diameters].present? ? @global_filters[:diameters] : nil
+          if diameter_ids.present?
+            if !diameter_ids.kind_of?(Array)
+              @product_query = @product_query.where("erp_products_products.cache_properties LIKE '%[\"#{diameter_ids}\",%'")
+            else
+              diameter_ids = (diameter_ids.reject { |c| c.empty? })
+              if !diameter_ids.empty?
+                qs = []
+                diameter_ids.each do |x|
+                  qs << "(erp_products_products.cache_properties LIKE '%[\"#{x}\",%')"
+                end
+                @product_query = @product_query.where("(#{qs.join(" OR ")})")
+              end
+            end
+          end
+        end
+
+        def report_product_ordered
+        end
+
+        def report_product_ordered_table
+          @global_filters = params.to_unsafe_hash[:global_filter]
+
+          # if has period
+          if @global_filters[:period].present?
+            @period = Erp::Periods::Period.find(@global_filters[:period])
+            @global_filters[:from_date] = @period.from_date
+            @global_filters[:to_date] = @period.to_date
+          end
+
+          @from_date = @global_filters[:from_date].to_date
+          @to_date = @global_filters[:to_date].to_date
+
+          @product_query = Erp::Products::Product
+
+          # catgories
+          @product_query = @product_query.where(category_id: @global_filters[:categories]) if @global_filters[:categories].present?
+
+          # diameters
+          diameter_ids = @global_filters[:diameters].present? ? @global_filters[:diameters] : nil
+          if diameter_ids.present?
+            if !diameter_ids.kind_of?(Array)
+              @product_query = @product_query.where("erp_products_products.cache_properties LIKE '%[\"#{diameter_ids}\",%'")
+            else
+              diameter_ids = (diameter_ids.reject { |c| c.empty? })
+              if !diameter_ids.empty?
+                qs = []
+                diameter_ids.each do |x|
+                  qs << "(erp_products_products.cache_properties LIKE '%[\"#{x}\",%')"
+                end
+                @product_query = @product_query.where("(#{qs.join(" OR ")})")
+              end
+            end
+          end
+        end
       end
     end
   end

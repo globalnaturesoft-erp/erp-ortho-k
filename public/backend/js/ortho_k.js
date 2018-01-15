@@ -23,5 +23,5 @@ function getNotification() {
 
 $(document).ready(function() {
     getNotification();
-    setInterval(function() {getNotification();}, 10000);
+    // setInterval(function() {getNotification();}, 10000);
 });
