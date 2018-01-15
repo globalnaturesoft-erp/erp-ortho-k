@@ -274,12 +274,12 @@
                 </td>
                 <% end %>
                 <% if get_columns(params).include?("patient_name") %>
-                <td class="text-<%= row[:patient_name].present? ? 'left' : 'center' %>">
+                <td class="text-<%= row[:patient_name].present? ? 'left' : 'center' %> text-nowrap">
                     <%= row[:patient_name].present? ? row[:patient_name] : '--' %>
                 </td>
                 <% end %>
                 <% if get_columns(params).include?("patient_state") %>
-                <td class="text-<%= row[:patient_name].present? ? 'left' : 'center' %>">
+                <td class="text-<%= row[:patient_state].present? ? 'left' : 'center' %>">
                     <%= row[:patient_state].present? ? row[:patient_state] : '--' %>
                 </td>
                 <% end %>
@@ -289,7 +289,7 @@
                 </td>
                 <% end %>
                 <% if get_columns(params).include?("salesperson_name") %>
-                <td class="text-<%= row[:salesperson_name].present? ? 'left' : 'center' %>">
+                <td class="text-<%= row[:salesperson_name].present? ? 'left' : 'center' %> text-nowrap">
                     <%= row[:salesperson_name].present? ? row[:salesperson_name] : '--' %>
                 </td>
                 <% end %>
