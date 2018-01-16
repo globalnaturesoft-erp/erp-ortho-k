@@ -141,7 +141,55 @@ Erp::Contacts::Contact.class_eval do
 
         row_count += 1
       end
-
     end
+
+  end
+
+  # get contacts list for payment chasing
+  def self.get_sales_payment_chasing_contacts(options={})
+    @from = options[:from_date]
+    @to = options[:to_date]
+
+    # Loc danh sach cac khach hang co phat sinh giao dich (thanh toan, cong no)
+    order_query = Erp::Orders::Order.all_confirmed
+      .sales_orders
+      .payment_for_contact_orders(from_date: @from, to_date: @to)
+      .select('customer_id')
+
+    product_return_query = Erp::Qdeliveries::Delivery.all_delivered
+      .sales_import_deliveries
+      .get_deliveries_with_payment_for_contact(from_date: @from, to_date: @to)
+      .select('customer_id')
+
+    payment_query = Erp::Payments::PaymentRecord.all_done
+      .select('customer_id')
+      .where(payment_type_id: Erp::Payments::PaymentType.find_by_code(Erp::Payments::PaymentType::CODE_CUSTOMER).id)
+      .where("payment_date >= ? AND payment_date <= ?", @from, @to)
+
+    self.where("id IN (?) OR id IN (?) OR id IN (?)", order_query, product_return_query, payment_query)
+  end
+
+  # get contacts list for payment chasing
+  def self.get_purchase_payment_chasing_contacts(options={})
+    @from = options[:from_date]
+    @to = options[:to_date]
+
+    # Loc danh sach cac khach hang co phat sinh giao dich (thanh toan, cong no)
+    order_query = Erp::Orders::Order.all_confirmed
+      .purchase_orders
+      .payment_for_contact_orders(from_date: @from, to_date: @to)
+      .select('supplier_id')
+
+    product_return_query = Erp::Qdeliveries::Delivery.all_delivered
+      .purchase_export_deliveries
+      .get_deliveries_with_payment_for_contact(from_date: @from, to_date: @to)
+      .select('supplier_id')
+
+    payment_query = Erp::Payments::PaymentRecord.all_done
+      .select('supplier_id')
+      .where(payment_type_id: Erp::Payments::PaymentType.find_by_code(Erp::Payments::PaymentType::CODE_SUPPLIER).id)
+      .where("payment_date >= ? AND payment_date <= ?", @from, @to)
+
+    self.where("id IN (?) OR id IN (?) OR id IN (?)", order_query, product_return_query, payment_query)
   end
 end
