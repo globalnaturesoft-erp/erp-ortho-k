@@ -1775,8 +1775,8 @@ Erp::Products::Product.class_eval do
     arr = []
 
     arr << {number: number, letter: letter}
-    arr << {number: number, letter: letters[letters.index(letter)+1]}
-    arr << {number: number, letter: letters[letters.index(letter)-1]} if letters.index(letter) > 0
+    arr << {number: number, letter: letters[letters.index(letter)+1]} if letters.index(letter).present?
+    arr << {number: number, letter: letters[letters.index(letter)-1]} if letters.index(letter).present? and letters.index(letter) > 0
     arr << {number: (number.to_i+1).to_s.rjust(2, '0'), letter: letter}
     arr << {number: (number.to_i-1).to_s.rjust(2, '0'), letter: letter}
 
@@ -1800,4 +1800,50 @@ Erp::Products::Product.class_eval do
 
     return a_products
   end
+
+  # data for dataselect ajax
+  def self.dataselect(keyword='', params={})
+    query = self.all
+
+    # single keyword
+    if keyword.present?
+      keyword = keyword.strip.downcase
+      keyword.split(' ').each do |q|
+        q = q.strip
+        query = query.where('LOWER(erp_products_products.name) LIKE ? OR LOWER(erp_products_products.name) LIKE ? OR LOWER(erp_products_products.name) LIKE ?', q+'%', ' '+q+'%', '%-'+q+'%')
+      end
+    end
+
+    # has part
+    if params[:has_parts].present? and params[:has_parts] == 'true'
+      query = query.joins(:products_parts).where("erp_products_products_parts.id IS NOT NULL")
+    end
+
+    if Erp::Core.available?("orders")
+      # product from order
+      if params[:order_id].present?
+        query = query.includes(:order_details)
+          .where(erp_orders_order_details: {order_id: params[:order_id]})
+
+        if Erp::Core.available?("qdeliveries")
+          if params[:delivery_type].present?
+            if [Erp::Qdeliveries::Delivery::TYPE_SALES_EXPORT, Erp::Qdeliveries::Delivery::TYPE_PURCHASE_IMPORT].include?(params[:delivery_type])
+              query = query.where(erp_orders_order_details: {cache_delivery_status: Erp::Orders::OrderDetail::DELIVERY_STATUS_NOT_DELIVERY})
+            end
+          end
+        end
+      end
+    end
+
+    if Erp::Core.available?("ortho_k")
+      if params[:show_stock] == 'true'
+        query = query.distinct.order(:name).limit(80).map{|product| {value: product.id, text: product.name_with_stock} }
+      else
+        query = query.distinct.order(:name).limit(80).map{|product| {value: product.id, text: product.name} }
+      end
+    else
+      query = query.distinct.order(:name).limit(80).map{|product| {value: product.id, text: product.name} }
+    end
+  end
+
 end
