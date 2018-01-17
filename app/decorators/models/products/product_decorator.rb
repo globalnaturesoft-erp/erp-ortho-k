@@ -1805,6 +1805,15 @@ Erp::Products::Product.class_eval do
   def self.dataselect(keyword='', params={})
     query = self.all
 
+    if params[:related_with].present? # and !keyword.present?
+      product = self.find(params[:related_with])
+      items = product.get_alternative_products
+      if params[:current_value].present?
+        items = items.reject {|item| params[:current_value].split(',').include?(item.id.to_s)}
+      end
+      return items.map{ |product| {value: product.id, text: product.name_with_stock} }
+    end
+
     # single keyword
     if keyword.present?
       keyword = keyword.strip.downcase
@@ -1845,5 +1854,4 @@ Erp::Products::Product.class_eval do
       query = query.distinct.order(:name).limit(80).map{|product| {value: product.id, text: product.name} }
     end
   end
-
 end
