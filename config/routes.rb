@@ -22,6 +22,22 @@ Erp::Products::Engine.routes.draw do
 	end
 end
 
+Erp::Payments::Engine.routes.draw do
+  scope "(:locale)", locale: /en|vi/ do
+		namespace :backend, module: "backend", path: "orthok/backend" do
+      resources :payment_records do
+        collection do
+					get 'commission_with_for_order_xlsx'
+					get 'commission_with_for_contact_xlsx'
+					get 'employee_target_xlsx'
+					get 'company_target_xlsx'
+					get 'commission_xlsx'
+        end
+      end
+    end
+	end
+end
+
 Erp::OrthoK::Engine.routes.draw do
   scope "(:locale)", locale: /en|vi/ do
 		namespace :backend, module: "backend", path: "orthok/backend/products" do

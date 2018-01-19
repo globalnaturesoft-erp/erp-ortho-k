@@ -1,0 +1,121 @@
+wb = xlsx_package.workbook
+xlsx_package.use_autowidth = true
+wb.styles do |s|
+  wb.styles.fonts.first.name = 'Calibri'
+  wb.add_worksheet(name: "Thưởng doanh thu 1%") do |sheet|
+    # style
+    bg_info = {:bg_color => "305496", :fg_color => "FF"}
+    bg_top = {:bg_color => "b7dee8", :fg_color => "00"}
+    bg_subrow = {:bg_color => "dbdbdb", :fg_color => "00"}
+    text_center = {alignment: { horizontal: :center }}
+    text_left = {alignment: { horizontal: :left }}
+    text_right = {alignment: { horizontal: :right }}
+    wrap_text = {alignment: { horizontal: :center, vertical: :center, wrap_text: true}}
+    number = {format_code: '#,##0'}
+    date_format = {format_code: 'DD/MM/YYYY'}
+    border = {border: { style: :thin, color: "00", :edges => [:left, :right, :bottom, :top] }}
+    bold = {b: true}
+    italic = {i: true}
+    
+    if @period.present?
+      date = "(#{@period.name})"
+    end
+    
+    # Top head
+    sheet.add_row ["CÔNG TY TNHH ORTHO-K VIỆT NAM"], b: true
+    sheet.add_row ["535 An Dương Vương, P 8, Q 5, Hồ Chí Minh"], b: true
+    
+    # add empty row
+    sheet.add_row ['']
+    
+    sheet.add_row ['DANH SÁCH NHẬN THƯỞNG DOANH THU'], sz: 16, b: true, bg_color: "ffc801", style: (s.add_style text_center)
+    sheet.add_row [date], sz: 14, bg_color: "ffc801", style: (s.add_style text_center)
+    
+    # add empty row
+    sheet.add_row ['']
+    
+    # Check if company target is present
+    if @company_target.present?
+      
+      toprow_1 = {columns: [], styles: []}
+      toprow_1[:columns] << ''
+      toprow_1[:styles] << (s.add_style {})
+      toprow_1[:columns] << 'Tổng doanh thu'
+      toprow_1[:styles] << (s.add_style bg_top.deep_merge(wrap_text).merge(bold).deep_merge(border))
+      toprow_1[:columns] << @company_target.revenue
+      toprow_1[:styles] << (s.add_style bg_top.deep_merge(text_right).merge(bold).deep_merge(border).deep_merge(number))
+      sheet.add_row toprow_1[:columns], style: toprow_1[:styles]
+      
+      toprow_2 = {columns: [], styles: []}
+      toprow_2[:columns] << ''
+      toprow_2[:styles] << (s.add_style {})
+      toprow_2[:columns] << 'Mục tiêu'
+      toprow_2[:styles] << (s.add_style bg_top.deep_merge(wrap_text).merge(bold).deep_merge(border))
+      toprow_2[:columns] << @company_target.amount
+      toprow_2[:styles] << (s.add_style bg_top.deep_merge(text_right).merge(bold).deep_merge(border).deep_merge(number))
+      sheet.add_row toprow_2[:columns], style: toprow_2[:styles]
+      
+      toprow_3 = {columns: [], styles: []}
+      toprow_3[:columns] << ''
+      toprow_3[:styles] << (s.add_style {})
+      toprow_3[:columns] << '1% doanh thu'
+      toprow_3[:styles] << (s.add_style bg_top.deep_merge(wrap_text).merge(bold).deep_merge(border))
+      toprow_3[:columns] << @company_target.revenue_1_percent
+      toprow_3[:styles] << (s.add_style bg_top.deep_merge(text_right).merge(bold).deep_merge(border).deep_merge(number))
+      sheet.add_row toprow_3[:columns], style: toprow_3[:styles]
+      
+      # add empty row
+      sheet.add_row ['']
+      
+      # header
+      header = {columns: [], styles: []}
+      subheader = {columns: [], styles: []}
+      footer = {columns: [], styles: []}
+      header[:columns] = []
+      
+      header[:columns] << 'STT'
+      header[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
+      c = 0
+      
+      header[:columns] << 'Họ và tên nhân viên'
+      header[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
+      c += 1
+      
+      header[:columns] << 'Số tiền'
+      header[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
+      c += 1
+      
+      header[:columns] << 'Ký tên'
+      header[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
+      c += 1
+      
+      sheet.add_row header[:columns], style: header[:styles]
+      
+      r = 6
+      # rows
+      @employees.each_with_index do |employee,index|
+        row = {columns: [], styles: []}
+        row[:columns] = []
+        
+        row[:columns] << (index+1)
+        row[:styles] << (s.add_style text_center.deep_merge(border))
+        
+        row[:columns] << (employee.contact.present? ? employee.contact.name : employee.name)
+        row[:styles] << (s.add_style text_left.deep_merge(border))
+        
+        row[:columns] << @company_target.commission_amount
+        row[:styles] << (s.add_style text_right.deep_merge(border).deep_merge(number))
+        
+        row[:columns] << ''
+        row[:styles] << (s.add_style border)
+        
+        sheet.add_row row[:columns], style: row[:styles]
+      end
+    
+      # Setup
+      sheet.merge_cells("#{('A'.codepoints.first).chr}4:#{('A'.codepoints.first + c).chr}4")
+      sheet.merge_cells("#{('A'.codepoints.first).chr}5:#{('A'.codepoints.first + c).chr}5")
+      sheet.column_widths 8, 35, 20, 20
+    end
+  end
+end
