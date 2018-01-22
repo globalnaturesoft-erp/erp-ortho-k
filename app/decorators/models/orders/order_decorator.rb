@@ -368,4 +368,29 @@ Erp::Orders::Order.class_eval do
 
     Erp::Orders::Order.update_checking_order
   end
+
+  #
+  def import(file)
+    spreadsheet = Roo::Spreadsheet.open(file.path)
+    header = spreadsheet.row(1)
+    (2..spreadsheet.last_row).each do |i|
+      row = Hash[[header, spreadsheet.row(i)].transpose]
+
+      # Find product
+      p_name = "#{row["code"].to_s.strip}-#{row["diameter"].to_s.strip}-#{row["category"].to_s.strip}"
+      logger.info row
+      logger.info '--------------------------------------'
+      product = Erp::Products::Product.where('LOWER(name) = ?', p_name.strip.downcase).first
+      product_id = product.present? ? product.id : nil
+
+      if product.present?
+        self.order_details.build(
+          id: nil,
+          product_id: product_id,
+          quantity: row["quantity"],
+          serials: row["serials"],
+        )
+      end
+    end
+  end
 end

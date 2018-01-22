@@ -17,4 +17,26 @@ Erp::Orders::Backend::OrdersController.class_eval do
       end
     end
   end
+
+  # POST /deliveries/1
+  def import_file
+    if params[:id].present?
+      @order = Erp::Orders::Order.find(params[:id])
+      @order.assign_attributes(order_params)
+
+      if params[:import_file].present?
+        @order.import(params[:import_file])
+      end
+
+      render :edit
+    else
+      @order = Erp::Orders::Order.new(order_params)
+
+      if params[:import_file].present?
+        @order.import(params[:import_file])
+      end
+
+      render :new
+    end
+  end
 end

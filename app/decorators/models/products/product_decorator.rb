@@ -964,6 +964,7 @@ Erp::Products::Product.class_eval do
 
       ands = []
       ands << "erp_products_products.category_id = #{option[1]["category"]}"
+      ands << "erp_products_products.cache_properties LIKE '%[\"#{option[1]["diameter"]}\",%'"
 
       letter_pv_ids = defined?(option) ? (option[1]["letter"].reject { |c| c.empty? }) : [-1]
       number_pv_ids = defined?(option) ? (option[1]["number"].reject { |c| c.empty? }) : [-1]
@@ -1003,6 +1004,7 @@ Erp::Products::Product.class_eval do
 
       ands = []
       ands << "erp_products_products.category_id = #{option[1]["category"]}"
+      ands << "erp_products_products.cache_properties LIKE '%[\"#{option[1]["diameter"]}\",%'"
 
       letter_pv_ids = defined?(option) ? (option[1]["letter"].reject { |c| c.empty? }) : [-1]
       number_pv_ids = defined?(option) ? (option[1]["number"].reject { |c| c.empty? }) : [-1]
@@ -1048,6 +1050,7 @@ Erp::Products::Product.class_eval do
 
       ands = []
       ands << "erp_products_products.category_id = #{option[1]["category"]}"
+      ands << "erp_products_products.cache_properties LIKE '%[\"#{option[1]["diameter"]}\",%'"
 
       letter_pv_ids = defined?(option) ? (option[1]["letter"].reject { |c| c.empty? }) : [-1]
       number_pv_ids = defined?(option) ? (option[1]["number"].reject { |c| c.empty? }) : [-1]
@@ -1091,7 +1094,7 @@ Erp::Products::Product.class_eval do
           letter_pv_ids.each do |l|
             if self.cache_properties.include? "[\"#{l}\","
               number_pv_ids.each do |n|
-                if self.cache_properties.include? "[\"#{n}\","
+                if self.cache_properties.include? "[\"#{n}\"," and self.cache_properties.include? "[\"#{option[1]["diameter"].to_i}\","
                   return true
                 end
               end
@@ -1756,14 +1759,12 @@ Erp::Products::Product.class_eval do
     return stock
   end
 
-  # get alternative products
-  def get_alternative_products(options={})
-    a_products = []
+  # Get alternative array map
+  def get_alternative_array(options={})
 
     letter = self.get_letter
     number = self.get_number
     diameter = self.get_diameter
-    cat = self.category_name
 
     # letter array
     letters = ('A'..'T').to_a
@@ -1774,11 +1775,55 @@ Erp::Products::Product.class_eval do
     # alternative arr
     arr = []
 
-    arr << {number: number, letter: letter}
-    arr << {number: number, letter: letters[letters.index(letter)+1]} if letters.index(letter).present?
-    arr << {number: number, letter: letters[letters.index(letter)-1]} if letters.index(letter).present? and letters.index(letter) > 0
-    arr << {number: (number.to_i+1).to_s.rjust(2, '0'), letter: letter}
-    arr << {number: (number.to_i-1).to_s.rjust(2, '0'), letter: letter}
+    # K15
+    arr << {index: 1, number: number, letter: letter}
+
+    # L15
+    lt = (letters.index(letter).present? ? letters[letters.index(letter)+1] : nil)
+    arr << {index: 2, number: number, letter: lt}
+
+    # M15
+    lt = (letters.index(letter).present? ? letters[letters.index(letter)+2] : nil)
+    arr << {index: 2, number: number, letter: lt}
+
+    # J15
+    lt = (letters.index(letter).present? and letters.index(letter) > 0) ? letters[letters.index(letter)-1] : nil
+    arr << {index: 3, number: number, letter: lt}
+
+    # I15
+    lt = (letters.index(letter).present? and letters.index(letter) > 0) ? letters[letters.index(letter)-2] : nil
+    arr << {index: 3, number: number, letter: lt}
+
+    # L14
+    lt = (letters.index(letter).present? ? letters[letters.index(letter)+1] : nil)
+    arr << {index: 2, number: (number.to_i-1).to_s.rjust(2, '0'), letter: lt}
+
+    # K14
+    arr << {index: 2, number: (number.to_i-1).to_s.rjust(2, '0'), letter: letter}
+
+    # K16
+    arr << {index: 2, number: (number.to_i+1).to_s.rjust(2, '0'), letter: letter}
+
+    # M16
+    lt = (letters.index(letter).present? ? letters[letters.index(letter)+2] : nil)
+    arr << {index: 2, number: (number.to_i-2).to_s.rjust(2, '0'), letter: letter}
+
+    # K13
+    arr << {index: 2, number: (number.to_i-2).to_s.rjust(2, '0'), letter: letter}
+
+    # K17
+    arr << {index: 2, number: (number.to_i+2).to_s.rjust(2, '0'), letter: letter}
+
+    return arr
+
+  end
+
+  # get alternative products
+  def get_alternative_products(options={})
+    a_products = []
+
+    arr = self.get_alternative_array(options)
+    cat = self.category_name
 
     # find
     arr.each do |item|

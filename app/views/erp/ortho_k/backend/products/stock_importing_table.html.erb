@@ -20,7 +20,7 @@
             <% if !@area.present? or (@area == area_type) %>
                 <tr>
                     <!--<td class="text-center"><%= index+1 %></td>-->
-                    <td class=""><%= product.code %> - <%= product.id %></td>
+                    <td class=""><%= product.code %></td>
                     <td class=""><%= product.get_diameter %></td>
                     <td class=""><%= product.category_name %></td>
                     <td class=""><%= t('.' + area_type) %></td>
