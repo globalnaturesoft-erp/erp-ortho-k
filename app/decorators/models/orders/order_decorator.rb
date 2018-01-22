@@ -393,4 +393,16 @@ Erp::Orders::Order.class_eval do
       end
     end
   end
+
+  after_save :update_cache_for_order_commission_amount
+  # update for order payment commission amount
+  def update_cache_for_order_commission_amount
+    self.done_receiced_payment_records.update_all(:cache_for_order_commission_amount => nil)
+
+    # First one
+    if self.payment_for == Erp::Orders::Order::PAYMENT_FOR_ORDER
+      first_one =  self.done_receiced_payment_records.order('payment_date asc').first
+      first_one.update_columns(cache_for_order_commission_amount: self.cache_commission_amount) if first_one.present?
+    end
+  end
 end

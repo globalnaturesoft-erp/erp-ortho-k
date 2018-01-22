@@ -5,7 +5,7 @@ Erp::Products::Category.class_eval do
 
     if keyword.present?
       keyword = keyword.strip.downcase
-      query = query.where('LOWER(name) LIKE ?', "%#{keyword}%")
+      query = query.where('LOWER(erp_products_categories.name) LIKE ?', "%#{keyword}%")
     end
 
     if params[:current_value].present?
