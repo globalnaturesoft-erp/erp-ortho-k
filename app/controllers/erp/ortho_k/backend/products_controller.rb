@@ -138,15 +138,22 @@ module Erp
         def stock_importing_table
           global_filters = params.to_unsafe_hash[:global_filter]
 
-          @warehouse = Erp::Warehouses::Warehouse.where(id: global_filters[:warehouse]).first
+          @warehouses = Erp::Warehouses::Warehouse.where(id: global_filters[:warehouses])
 
-          if @warehouse.present?
-            @products = Erp::Products::Product.get_stock_importing_product(filters: global_filters, warehouse: global_filters[:warehouse], state: global_filters[:state])
+          if @warehouses.present?
+            @stock_condition = (global_filters.present? and global_filters[:stock_condition].present? ? global_filters[:stock_condition].to_i : 0)
+            @side_quantity = (global_filters.present? and global_filters[:side_quantity].present? ? global_filters[:side_quantity].to_i : 0)
+            @central_quantity = (global_filters.present? and global_filters[:central_quantity].present? ? global_filters[:central_quantity].to_i : 0)
+
+            @products = Erp::Products::Product.get_stock_importing_product(
+                filters: global_filters,
+                warehouses: global_filters[:warehouses],
+                state: global_filters[:state],
+                stock_condition: @stock_condition,
+              )
               .joins(:category)
               .order("erp_products_categories.name, cache_diameter, code")
 
-            @side_quantity = (global_filters.present? and global_filters[:side_quantity].present? ? global_filters[:side_quantity].to_i : 0)
-            @central_quantity = (global_filters.present? and global_filters[:central_quantity].present? ? global_filters[:central_quantity].to_i : 0)
             @area = (global_filters.present? and global_filters[:area].present? ? global_filters[:area] : nil)
           end
 

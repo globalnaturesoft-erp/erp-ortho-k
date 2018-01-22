@@ -1,50 +1,62 @@
-<% if @warehouse.present? %>
-    <table class="table table-bordered table-advance order-column" id="">
-        <tr>
-            <!--<th class="bg-grey text-center" width="1%"><%= t('.number') %></th>-->
-            <th class="bg-grey"><%= t('.code') %></th>
-            <th class="bg-grey"><%= t('.diameter') %></th>
-            <th class="bg-grey"><%= t('.category') %></th>
-            <th class="bg-grey"><%= t('.area_type') %></th>
-            <th class="bg-grey text-center"><%= t('.import_quantity') %></th>
-        </tr>
-        <%
-            central_count = 0
-        %>
-        <% @products.each_with_index do |product,index| %>
+<% if @warehouses.present? %>
+    <form class="stock-importing-form" action="<%= erp_orders.new_type_backend_orders_path(type: Erp::Orders::Order::TYPE_PURCHASE_ORDER) %>" method="POST">
+        <table class="table table-bordered table-advance order-column" id="">
+            <tr>
+                <!--<th class="bg-grey text-center" width="1%"><%= t('.number') %></th>-->
+                <th class="bg-grey"><%= t('.code') %></th>
+                <th class="bg-grey"><%= t('.diameter') %></th>
+                <th class="bg-grey"><%= t('.category') %></th>
+                <th class="bg-grey"><%= t('.area_type') %></th>
+                <th class="bg-grey text-center">Tồn</th>
+                <th class="bg-grey text-center"><%= t('.import_quantity') %></th>
+            </tr>
             <%
-                area_type = product.is_in_central_area ? 'area_central' : 'area_side'
-                total_quantity = area_type == 'area_central' ? @central_quantity : @side_quantity
-                central_count += 1 if area_type == 'area_central'
+                central_count = 0
+                purchase_count = 0
             %>
-            <% if !@area.present? or (@area == area_type) %>
-                <tr>
-                    <!--<td class="text-center"><%= index+1 %></td>-->
-                    <td class=""><%= product.code %></td>
-                    <td class=""><%= product.get_diameter %></td>
-                    <td class=""><%= product.category_name %></td>
-                    <td class=""><%= t('.' + area_type) %></td>
-                    <td class="bg-warning text-center"><strong><%= total_quantity %></strong></td>
-                </tr>
+            <% @products.each_with_index do |product,index| %>
+                <%
+                    stock = product.get_cache_stock
+                    area_type = product.is_in_central_area ? 'area_central' : 'area_side'
+                    total_quantity = area_type == 'area_central' ? (@central_quantity - stock) : (@side_quantity - stock)
+                %>
+                <% if (!@area.present? or (@area == area_type)) and total_quantity > 0 %>
+                    <tr>
+                        <!--<td class="text-center"><%= index+1 %></td>-->
+                        <td class=""><%= product.code %></td>
+                        <td class=""><%= product.get_diameter %></td>
+                        <td class=""><%= product.category_name %></td>
+                        <td class=""><%= t('.' + area_type) %></td>
+                        <td class="text-center"><%= stock  %></td>
+                        <td class="bg-warning text-center">
+                            <input type="hidden" name='products[<%= product.id %>]' value="<%= total_quantity %>" />
+                            <strong><%= total_quantity %></strong>
+                        </td>
+                    </tr>
+                    <%
+                        purchase_count += 1
+                        central_count += 1 if area_type == 'area_central'
+                    %>
+                <% end %>
             <% end %>
-        <% end %>
-    </table>
-    <div class="portlet m-grid m-grid-demo">
-        <div class="m-grid-row">
-            <div class="m-grid-col m-grid-col-middle m-grid-col-center">
-                <label>Tổng nhập</label><br/>
-                <strong><%= @products.count %></strong>
-            </div>
-            <div class="m-grid-col m-grid-col-middle m-grid-col-center">
-                <label>Số lượng Vùng rìa</label><br/>
-                <strong><%= @products.count - central_count %></strong>
-            </div>
-            <div class="m-grid-col m-grid-col-middle m-grid-col-center">
-                <label>Số lượng Vùng Trung Tâm</label><br/>
-                <strong><%= central_count %></strong>
+        </table>
+        <div class="portlet m-grid m-grid-demo">
+            <div class="m-grid-row">
+                <div class="m-grid-col m-grid-col-middle m-grid-col-center">
+                    <label>Tổng nhập</label><br/>
+                    <strong><%= purchase_count %></strong>
+                </div>
+                <div class="m-grid-col m-grid-col-middle m-grid-col-center">
+                    <label>Số lượng Vùng rìa</label><br/>
+                    <strong><%= purchase_count - central_count %></strong>
+                </div>
+                <div class="m-grid-col m-grid-col-middle m-grid-col-center">
+                    <label>Số lượng Vùng Trung Tâm</label><br/>
+                    <strong><%= central_count %></strong>
+                </div>
             </div>
         </div>
-    </div>
+    </form>
 <% else %>
     <div class="alert alert-warning">
         <p>Vui lòng chọn các tham số bắt buộc:

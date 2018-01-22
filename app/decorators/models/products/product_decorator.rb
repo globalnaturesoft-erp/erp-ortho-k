@@ -893,30 +893,8 @@ Erp::Products::Product.class_eval do
     return query
   end
 
-  def self.get_stock_importing_product(params={})
-    # open central settings
-    setting_file = 'setting_ortho_k.conf'
-    if File.file?(setting_file)
-      @options = YAML.load(File.read(setting_file))
-    else
-      return []
-    end
-
-    # filter from frontend
-    query = self.orthok_filters(params)
-
-    # only not-in-stock products
-    if params[:warehouse].present? or params[:state].present?
-      state_id = params[:state].present? ? params[:state] : nil
-      warehouse_id = params[:warehouse].present? ? params[:warehouse] : nil
-      query = query.joins(:cache_stocks)
-        .where(erp_products_cache_stocks: {state_id: state_id})
-        .where(erp_products_cache_stocks: {warehouse_id: warehouse_id})
-        .where(erp_products_cache_stocks: {stock: 0})
-    else
-      query = query.where(cache_stock: 0)
-    end
-
+  # Get products in purchase conditions area
+  def self.get_in_purchase_condition_products
     # need to purchase: @options["purchase_conditions"]
     ors = []
     @options["purchase_conditions"].each do |option|
@@ -944,7 +922,38 @@ Erp::Products::Product.class_eval do
       end
     end
 
-    query = query.where(ors.join(" OR "))
+    query = self.where(ors.join(" OR "))
+
+    return query
+  end
+
+  def self.get_stock_importing_product(params={})
+    # open central settings
+    setting_file = 'setting_ortho_k.conf'
+    if File.file?(setting_file)
+      @options = YAML.load(File.read(setting_file))
+    else
+      return []
+    end
+
+    # filter from frontend
+    query = self.orthok_filters(params)
+
+    # stock conditions
+    state_id = params[:state].present? ? params[:state] : nil
+    warehouse_ids = params[:warehouses].present? ? params[:warehouses] : nil
+
+    cs_ids = Erp::Products::CacheStock.select('erp_products_cache_stocks.product_id, SUM(erp_products_cache_stocks.stock) AS stock_count')
+      .group('erp_products_cache_stocks.product_id')
+      .where(state_id: state_id)
+      .where(warehouse_id: warehouse_ids)
+      .having('SUM(erp_products_cache_stocks.stock) <= ?', params[:stock_condition])
+      .map(&:product_id)
+
+    query = query.where(id: cs_ids)
+
+    # Get in purchase conditions area
+    query = query.get_in_purchase_condition_products
 
     return query
   end
@@ -1094,7 +1103,7 @@ Erp::Products::Product.class_eval do
           letter_pv_ids.each do |l|
             if self.cache_properties.include? "[\"#{l}\","
               number_pv_ids.each do |n|
-                if self.cache_properties.include? "[\"#{n}\"," and self.cache_properties.include? "[\"#{option[1]["diameter"].to_i}\","
+                if self.cache_properties.include? "[\"#{n}\"," and (self.cache_properties.include? "[\"#{option[1]["diameter"].to_i}\"," or !option[1]["diameter"].present?)
                   return true
                 end
               end
@@ -1898,5 +1907,10 @@ Erp::Products::Product.class_eval do
     else
       query = query.distinct.order(:name).limit(80).map{|product| {value: product.id, text: product.name} }
     end
+  end
+
+  # Get cache stock
+  def get_cache_stock(options={})
+    Erp::Products::CacheStock.get_stock(self.id, options)
   end
 end

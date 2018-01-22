@@ -24,4 +24,11 @@ function getNotification() {
 $(document).ready(function() {
     getNotification();
     // setInterval(function() {getNotification();}, 10000);
+
+    // Stock importing action
+    $(document).on('click', '.stock-importing-button', function(e) {
+        e.preventDefault();
+
+        $('.stock-importing-form').submit();
+    });
 });

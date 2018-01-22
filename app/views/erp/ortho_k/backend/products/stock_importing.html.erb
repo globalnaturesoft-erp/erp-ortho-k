@@ -17,12 +17,13 @@
     <div class="row">
         <div class="col-md-3">
             <%= erp_form_control("dataselect", {
-                name: 'warehouse',
+                name: 'warehouses',
                 value: '',
                 text: '',
                 label: t('.warehouse'),
                 placeholder: t('.all_warehouses'),
-                url: erp_warehouses.dataselect_backend_warehouses_path(format: 'json')
+                url: erp_warehouses.dataselect_backend_warehouses_path(format: 'json'),
+                multiple: true,
             }) %>
         </div>
         <div class="col-md-3">
@@ -73,11 +74,20 @@
     <div class="row">
         <div class="col-md-3">
             <%= erp_form_control("text", {
+                name: 'stock_condition',
+                value: '0',
+                text: '',
+                label: 'Điều kiện tồn (<=)',
+                placeholder: 'Điều kiện tồn'
+            }) %>
+        </div>
+        <div class="col-md-3">
+            <%= erp_form_control("text", {
                 name: 'side_quantity',
                 value: '1',
                 text: '',
-                label: t('.side_quantity'),
-                placeholder: t('.side_quantity')
+                label: 'Số lượng tối đa vùng rìa',
+                placeholder: 'Số lượng tối đa vùng rìa'
             }) %>
         </div>
         <div class="col-md-3">
@@ -85,13 +95,13 @@
                 name: 'central_quantity',
                 value: '2',
                 text: '',
-                label: t('.central_quantity'),
-                placeholder: t('.central_quantity')
+                label: 'Số lượng tối đa vùng TT',
+                placeholder: 'Số lượng tối đa vùng TT'
             }) %>
         </div>
-        <div class="col-md-6 text-right">
+        <div class="col-md-3 text-right">
             <label style="display: block" class="invisible">.</label>
-            <a class="btn btn-primary global_filter_action" href="<%= erp_orders.new_type_backend_orders_path(type: Erp::Orders::Order::TYPE_PURCHASE_ORDER) %>">
+            <a class="btn btn-primary stock-importing-button" href="<%= erp_orders.new_type_backend_orders_path(type: Erp::Orders::Order::TYPE_PURCHASE_ORDER) %>">
                 <i class="fa fa-share-square"></i> <%= t('.create_purchase_order') %>
             </a>
         </div>
@@ -124,6 +134,5 @@
     #    },
     #],
     columns: [
-    ],
-    header: 'dddddd'
+    ]
 ) %>
