@@ -30,6 +30,8 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
     end
     
     @employee = Erp::User.find(params[:employee_id])
+    @payment_for_order_sales_payment_records = @employee.payment_for_order_sales_payment_records(@options)
+    
     respond_to do |format|
       format.xlsx {
         response.headers['Content-Disposition'] = "attachment; filename='#{@employee.name} - hoa hong thu ban le.xlsx'"
@@ -39,7 +41,22 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
   
   # Commission with ForContact / Export excel
   def commission_with_for_contact_xlsx
+    @global_filters = params.to_unsafe_hash[:global_filter]
+
+    # if has period
+    if @global_filters[:period].present?
+      @period = Erp::Periods::Period.find(@global_filters[:period])
+    
+      @options = {
+        from_date: @period.from_date.beginning_of_day,
+        to_date: @period.to_date.end_of_day,
+        target_period: @period,
+      }
+    end
+    
     @employee = Erp::User.find(params[:employee_id])
+    @payment_for_contact_sales_payment_records = @employee.payment_for_contact_sales_payment_records(@options).order('payment_date')
+    
     respond_to do |format|
       format.xlsx {
         response.headers['Content-Disposition'] = "attachment; filename='#{@employee.name} - hoa hong thu cong no.xlsx'"
