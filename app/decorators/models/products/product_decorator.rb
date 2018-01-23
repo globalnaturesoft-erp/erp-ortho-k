@@ -878,7 +878,7 @@ Erp::Products::Product.class_eval do
         if !filters[:diameters].kind_of?(Array)
           query = query.where("erp_products_products.cache_properties LIKE '%[\"#{filters[:diameters]}\",%'")
         else
-          areas = defined?(option) ? (filters[:diameters].reject { |c| c.empty? }) : []
+          areas = filters[:diameters].reject { |c| c.empty? }
           if !areas.empty?
             qs = []
             filters[:diameters].each do |x|
@@ -1912,5 +1912,29 @@ Erp::Products::Product.class_eval do
   # Get cache stock
   def get_cache_stock(options={})
     Erp::Products::CacheStock.get_stock(self.id, options)
+  end
+
+  # update ordered code
+  after_save :update_ordered_code
+  def get_ordered_code
+    tmp = code
+    if !tmp.match('[A-Z]{2}[0-9]{2}').nil?
+      tmp[0] = 'Z'
+      return tmp
+    end
+
+    return code
+  end
+
+  def update_ordered_code
+    diameter = self.get_diameter
+
+    if diameter.present?
+      tmp = "#{category_name}-#{diameter}-#{self.get_ordered_code}"
+    else
+      tmp = nil
+    end
+
+    self.update_column(:ordered_code, tmp)
   end
 end

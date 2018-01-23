@@ -26,8 +26,8 @@ module Erp
           if global_filter.present? and global_filter[:row].present?
             row = global_filter[:row].split('-').first
             @rows = Erp::Products::PropertiesValue.where(
-                property_id: global_filter[:row]
-              )
+              property_id: global_filter[:row]
+            )
 
             # sub rows
             if global_filter[:row].split('-').count == 2
@@ -125,7 +125,7 @@ module Erp
             end
           end
 
-          @products = @products_query.order("code").paginate(:page => params[:page], :per_page => 50)
+          @products = @products_query.order("ordered_code").paginate(:page => params[:page], :per_page => 50)
           @warehouses = Erp::Warehouses::Warehouse.all.order("name")
 
           render layout: nil
@@ -152,7 +152,7 @@ module Erp
                 stock_condition: @stock_condition,
               )
               .joins(:category)
-              .order("erp_products_categories.name, cache_diameter, code")
+              .order("ordered_code")
 
             @area = (global_filters.present? and global_filters[:area].present? ? global_filters[:area] : nil)
           end
