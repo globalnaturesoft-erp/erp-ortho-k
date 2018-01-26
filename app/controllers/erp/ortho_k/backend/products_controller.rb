@@ -42,6 +42,48 @@ module Erp
           render layout: nil
         end
 
+        def matrix_report_xlsx
+          global_filter = params.to_unsafe_hash[:global_filter]
+          if global_filter.present? and global_filter[:column].present?
+            col = global_filter[:column].split('-').first
+            @columns = Erp::Products::PropertiesValue.where(
+              property_id: col
+            )
+
+            # sub columns
+            if global_filter[:column].split('-').count == 2
+              sub = global_filter[:column].split('-').last
+              @column_subs = Erp::Products::PropertiesValue.where(
+                property_id: sub
+              )
+            end
+          end
+
+          if global_filter.present? and global_filter[:row].present?
+            row = global_filter[:row].split('-').first
+            @rows = Erp::Products::PropertiesValue.where(
+              property_id: global_filter[:row]
+            )
+
+            # sub rows
+            if global_filter[:row].split('-').count == 2
+              sub = global_filter[:row].split('-').last
+              @row_subs = Erp::Products::PropertiesValue.where(
+                property_id: sub
+              )
+            end
+          end
+
+          @global_filter = global_filter
+          render layout: nil
+          
+          respond_to do |format|
+            format.xlsx {
+              response.headers['Content-Disposition'] = "attachment; filename='Ma tran ton kho tong hop.xlsx'"
+            }
+          end
+        end
+
         def tooltip_warehouse_info
 
           render layout: nil

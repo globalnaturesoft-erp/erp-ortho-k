@@ -81,11 +81,7 @@
     <%= erp_datalist(
         url: erp_ortho_k.matrix_report_table_backend_products_path,
         sortable: true,
-        keywords: [
-            {
-                text: t('.name'), name: 'erp_products_products.name'
-            },
-        ],
+        keywords: false,
         filters: [
             {
                 text: t('.show_virtual'), name: 'show_virtual', value: true, checked: false

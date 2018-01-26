@@ -57,6 +57,7 @@ Erp::OrthoK::Engine.routes.draw do
         collection do
           get 'matrix_report'
           post 'matrix_report_table'
+          get 'matrix_report_xlsx'
           get 'tooltip_warehouse_info'
           get 'delivery_report'
           get 'delivery_report_by_cate_diameter'

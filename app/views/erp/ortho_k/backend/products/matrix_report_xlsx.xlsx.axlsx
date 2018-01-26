@@ -1,0 +1,281 @@
+wb = xlsx_package.workbook
+xlsx_package.use_autowidth = true
+wb.styles do |s|
+  wb.styles.fonts.first.name = 'Calibri'
+  wb.add_worksheet(name: "Ma trận tổng hợp tồn kho") do |sheet|
+    # style
+    bg_info = {:bg_color => "e5e5e5", :fg_color => "00"}
+    bg_stock_0 = {:bg_color => "fbe1e3", :fg_color => "00"}
+    bg_stock_1 = {:bg_color => "f9e491", :fg_color => "00"}
+    bg_stock_2 = {:bg_color => "e0ebf9", :fg_color => "00"}
+    bg_general = {:bg_color => "a9d08e", :fg_color => "00"}
+    text_center = {alignment: { horizontal: :center }}
+    text_left = {alignment: { horizontal: :left }}
+    text_right = {alignment: { horizontal: :right }}
+    wrap_text = {alignment: { horizontal: :center, vertical: :center, wrap_text: true}}
+    number = {format_code: '#,##0'}
+    date_format = {format_code: 'DD/MM/YYYY'}
+    border = {border: { style: :thin, color: "aaaaaa", :edges => [:left, :right, :bottom, :top] }}
+    bold = {b: true}
+    italic = {i: true}
+    
+    # Top head
+    sheet.add_row ["CÔNG TY TNHH ORTHO-K VIỆT NAM"], b: true
+    sheet.add_row ["535 An Dương Vương, P.8, Q.5, TP. Hồ Chí Minh"], b: true
+    
+    # add empty row
+    sheet.add_row ['']
+    
+    sheet.add_row ['MA TRẬN BÁO CÁO TỔNG HỢP TỒN KHO'], sz: 16, b: true, bg_color: "ffc801", style: (s.add_style text_center)
+    row_num = 4
+    
+    sheet.add_row ['Loại:',
+      (@global_filter[:categories].present? ? Erp::Products::Category.where(id: @global_filter[:categories]).map(&:name).join(', ') : 'Tất cả')],
+      style: [(s.add_style text_left), (s.add_style text_left.deep_merge(bold))]
+    row_num += 1
+      
+    sheet.add_row ['Đường kính:',
+      (@global_filter[:diameters].present? ? Erp::Products::PropertiesValue.where(id: @global_filter[:diameters]).map(&:value).join(', ') : 'Tất cả')],
+      style: [(s.add_style text_left), (s.add_style text_left.deep_merge(bold))]
+    row_num += 1
+      
+    sheet.add_row ['Kho:',
+      (@global_filter[:warehouses].present? ? Erp::Warehouses::Warehouse.where(id: @global_filter[:warehouses]).map(&:name).join(', ') : 'Tất cả')],
+      style: [(s.add_style text_left), (s.add_style text_left.deep_merge(bold))]
+    row_num += 1
+      
+    sheet.add_row ['Trạng thái:',
+      (@global_filter[:states].present? ? Erp::Products::State.where(id: @global_filter[:states]).map(&:name).join(', ') : 'Tất cả')],
+      style: [(s.add_style text_left), (s.add_style text_left.deep_merge(bold))]
+    row_num += 1
+    
+    # add empty row
+    sheet.add_row ['']
+    row_num += 1
+    
+    # header
+    header = {columns: [], styles: []}
+    subheader = {columns: [], styles: []}
+    header[:columns] = []
+    
+    header[:columns] << ''
+    header[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
+    subheader[:columns] << ''
+    subheader[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
+    col_num = 0
+    
+    header[:columns] << ''
+    header[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
+    subheader[:columns] << ''
+    subheader[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
+    col_num += 1
+    
+    Erp::Products::Product.matrix_cols.each do |col|
+      header[:columns] << col[:degree]
+      header[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
+      subheader[:columns] << col[:letter]
+      subheader[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
+      col_num += 1
+    end
+    
+    sheet.add_row header[:columns], style: header[:styles]
+    row_num += 1
+    
+    sheet.add_row subheader[:columns], style: header[:styles]
+    row_num += 1
+    
+    Erp::Products::Product.matrix_rows.each do |rw|
+      
+      row = {columns: [], styles: []}
+      row[:columns] = []
+      
+      row[:columns] << rw[:degree_k]
+      row[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
+      
+      row[:columns] << rw[:number]
+      row[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
+      
+      Erp::Products::Product.matrix_cols.each do |col|
+        so_p = Erp::Products::Property.get_number
+        chu_p = Erp::Products::Property.get_letter
+
+        chu_pv = Erp::Products::PropertiesValue.where(property_id: chu_p.id, value: col[:letter]).first
+        so_pv = Erp::Products::PropertiesValue.where(property_id: so_p.id, value: rw[:number]).first
+
+        stock = Erp::Products::Product.get_stock(
+            properties_value_ids: [so_pv.id,chu_pv.id],
+            categories: @global_filter[:categories],
+            warehouses: @global_filter[:warehouses],
+            states: @global_filter[:states],
+            diameters: @global_filter[:diameters])
+        
+        row[:columns] << stock
+        if stock == 0
+          row[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(number).deep_merge(bg_stock_0))
+        elsif stock == 1
+          row[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(number).deep_merge(bg_stock_1))
+        elsif stock == 2
+          row[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(number).deep_merge(bg_stock_2))
+        else
+          row[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(number))
+        end
+      end
+      
+      sheet.add_row row[:columns], style: row[:styles]
+      row_num += 1
+    end
+    
+    # add empty row
+    sheet.add_row ['']
+    row_num += 1
+    sheet.add_row ['']
+    row_num += 1
+    
+    sheet.add_row ['THỐNG KÊ CHUNG'], sz: 14, b: true, style: (s.add_style wrap_text.deep_merge(bg_general))
+    row_num += 1
+    footer0_num = row_num
+    
+    sheet.add_row ['']
+    row_num += 1
+    
+    # footer
+    footer1 = {columns: [], styles: []}
+    footer2 = {columns: [], styles: []}
+    footer3 = {columns: [], styles: []}
+    footer4 = {columns: [], styles: []}
+    footer5 = {columns: [], styles: []}
+    footer6 = {columns: [], styles: []}
+    
+    footer1[:columns] << 'Tổng tồn kho:'
+    footer1[:styles] << (s.add_style text_left.deep_merge(bg_general))
+    c1 = 0
+    (1..3).each do |empty|
+      footer1[:columns] << ''
+      footer1[:styles] << (s.add_style bg_general)
+      c1 += 1
+    end
+    footer1[:columns] << Erp::Products::Product.get_stock(
+                          categories: @global_filter[:categories],
+                          warehouses: @global_filter[:warehouses],
+                          states: @global_filter[:states],
+                          diameters: @global_filter[:diameters])
+    footer1[:styles] << (s.add_style number.deep_merge(bold).deep_merge(text_center).deep_merge(bg_general))
+    
+    sheet.add_row footer1[:columns], style: footer1[:styles]
+    row_num += 1
+    sheet.merge_cells("#{('A'.codepoints.first).chr}#{row_num}:#{('A'.codepoints.first + c1).chr}#{row_num}")
+    c1 += 1
+    col_last_footer0 = (c1 + 3)
+    sheet.merge_cells("#{('A'.codepoints.first + c1).chr}#{row_num}:#{('A'.codepoints.first + (c1 + 3)).chr}#{row_num}")
+    
+    footer2[:columns] << 'Hết hàng:'
+    footer2[:styles] << (s.add_style text_left.deep_merge(bg_general))
+    c2 = 0
+    (1..3).each do |empty|
+      footer2[:columns] << ''
+      footer2[:styles] << (s.add_style bg_general)
+      c2 += 1
+    end
+    footer2[:columns] << Erp::Products::Product.count_stock(
+                          stock_operator: '<= 0',
+                          categories: @global_filter[:categories],
+                          warehouses: @global_filter[:warehouses],
+                          states: @global_filter[:states],
+                          diameters: @global_filter[:diameters])
+    footer2[:styles] << (s.add_style number.deep_merge(bold).deep_merge(text_center).deep_merge(bg_general))
+    sheet.add_row footer2[:columns], style: footer2[:styles]
+    row_num += 1
+    sheet.merge_cells("#{('A'.codepoints.first).chr}#{row_num}:#{('A'.codepoints.first + c2).chr}#{row_num}")
+    c2 += 1
+    sheet.merge_cells("#{('A'.codepoints.first + c2).chr}#{row_num}:#{('A'.codepoints.first + (c2 + 3)).chr}#{row_num}")
+    
+    footer3[:columns] << 'Hàng còn tồn 1:'
+    footer3[:styles] << (s.add_style text_left.deep_merge(bg_general))
+    c3 = 0
+    (1..3).each do |empty|
+      footer3[:columns] << ''
+      footer3[:styles] << (s.add_style bg_general)
+      c3 += 1
+    end
+    footer3[:columns] << Erp::Products::Product.count_stock(
+                          stock_operator: '= 1',
+                          categories: @global_filter[:categories],
+                          warehouses: @global_filter[:warehouses],
+                          states: @global_filter[:states],
+                          diameters: @global_filter[:diameters])
+    footer3[:styles] << (s.add_style number.deep_merge(bold).deep_merge(text_center).deep_merge(bg_general))
+    sheet.add_row footer3[:columns], style: footer3[:styles]
+    row_num += 1
+    sheet.merge_cells("#{('A'.codepoints.first).chr}#{row_num}:#{('A'.codepoints.first + c3).chr}#{row_num}")
+    c3 += 1
+    sheet.merge_cells("#{('A'.codepoints.first + c3).chr}#{row_num}:#{('A'.codepoints.first + (c3 + 3)).chr}#{row_num}")
+    
+    footer4[:columns] << 'Hàng còn tồn 2:'
+    footer4[:styles] << (s.add_style text_left.deep_merge(bg_general))
+    c4 = 0
+    (1..3).each do |empty|
+      footer4[:columns] << ''
+      footer4[:styles] << (s.add_style bg_general)
+      c4 += 1
+    end
+    footer4[:columns] << Erp::Products::Product.count_stock(
+                          stock_operator: '= 2',
+                          categories: @global_filter[:categories],
+                          warehouses: @global_filter[:warehouses],
+                          states: @global_filter[:states],
+                          diameters: @global_filter[:diameters])
+    footer4[:styles] << (s.add_style number.deep_merge(bold).deep_merge(text_center).deep_merge(bg_general))
+    sheet.add_row footer4[:columns], style: footer4[:styles]
+    row_num += 1
+    sheet.merge_cells("#{('A'.codepoints.first).chr}#{row_num}:#{('A'.codepoints.first + c4).chr}#{row_num}")
+    c4 += 1
+    sheet.merge_cells("#{('A'.codepoints.first + c4).chr}#{row_num}:#{('A'.codepoints.first + (c4 + 3)).chr}#{row_num}")
+    
+    footer5[:columns] << 'Hàng còn tồn 3:'
+    footer5[:styles] << (s.add_style text_left.deep_merge(bg_general))
+    c5 = 0
+    (1..3).each do |empty|
+      footer5[:columns] << ''
+      footer5[:styles] << (s.add_style bg_general)
+      c5 += 1
+    end
+    footer5[:columns] << Erp::Products::Product.count_stock(
+                          stock_operator: '= 3',
+                          categories: @global_filter[:categories],
+                          warehouses: @global_filter[:warehouses],
+                          states: @global_filter[:states],
+                          diameters: @global_filter[:diameters])
+    footer5[:styles] << (s.add_style number.deep_merge(bold).deep_merge(text_center).deep_merge(bg_general))
+    sheet.add_row footer5[:columns], style: footer5[:styles]
+    row_num += 1
+    sheet.merge_cells("#{('A'.codepoints.first).chr}#{row_num}:#{('A'.codepoints.first + c5).chr}#{row_num}")
+    c5 += 1
+    sheet.merge_cells("#{('A'.codepoints.first + c5).chr}#{row_num}:#{('A'.codepoints.first + (c5 + 3)).chr}#{row_num}")
+    
+    footer6[:columns] << 'Hàng còn tồn 4 trở lên:'
+    footer6[:styles] << (s.add_style text_left.deep_merge(bg_general))
+    c6 = 0
+    (1..3).each do |empty|
+      footer6[:columns] << ''
+      footer6[:styles] << (s.add_style bg_general)
+      c6 += 1
+    end
+    footer6[:columns] << Erp::Products::Product.count_stock(
+                          stock_operator: '>= 4',
+                          categories: @global_filter[:categories],
+                          warehouses: @global_filter[:warehouses],
+                          states: @global_filter[:states],
+                          diameters: @global_filter[:diameters])
+    footer6[:styles] << (s.add_style number.deep_merge(bold).deep_merge(text_center).deep_merge(bg_general))
+    sheet.add_row footer6[:columns], style: footer6[:styles]
+    row_num += 1
+    sheet.merge_cells("#{('A'.codepoints.first).chr}#{row_num}:#{('A'.codepoints.first + c6).chr}#{row_num}")
+    c6 += 1
+    sheet.merge_cells("#{('A'.codepoints.first + c6).chr}#{row_num}:#{('A'.codepoints.first + (c6 + 3)).chr}#{row_num}")
+    
+    # Setup
+    sheet.merge_cells("#{('A'.codepoints.first).chr}4:#{('A'.codepoints.first + 25).chr}4")
+    sheet.merge_cells("#{('A'.codepoints.first).chr}#{footer0_num}:#{('A'.codepoints.first + col_last_footer0).chr}#{footer0_num+1}")
+    sheet.column_widths 12, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5
+  end
+end
