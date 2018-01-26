@@ -21,6 +21,70 @@ function getNotification() {
     });
 }
 
+function checkSchecks() {
+    // Stock checks condistion
+    $('.scheck-row').each(function() {
+        var tr = $(this);
+        var numbers = [];
+        var letters = [];
+        var diameters = [];
+
+        tr.find('[name="numbers[]"]:checked').each(function() {
+            numbers.push($(this).val());
+        });
+
+        tr.find('[name="letters[]"]:checked').each(function() {
+            letters.push($(this).val());
+        });
+
+        tr.find('[name="diameters[]"]').each(function() {
+            if ($(this).val() != '') {
+                diameters.push($(this).val());
+            }
+        });
+
+        console.log(diameters);
+
+        // hide/show
+        tr.find('.scheck-item').hide();
+
+        tr.find('.scheck-item').each(function() {
+            var item = $(this);
+            var show_number = false;
+            var show_letter = false;
+            var show_diameter = false;
+
+            numbers.forEach(function(number) {
+                if (item.attr('data-number') == number) {
+                    show_number = true;
+                }
+            });
+
+            letters.forEach(function(letter) {
+                if (item.attr('data-letter') == letter) {
+                    show_letter = true;
+                }
+            });
+
+            diameters.forEach(function(diameter) {
+                if (item.attr('data-diameter') == diameter) {
+                    show_diameter = true;
+                }
+            });
+            if (diameters.length == 0) {
+                show_diameter = true;
+            }
+
+            if (show_number && show_letter && show_diameter) {
+                item.show();
+            } else {
+                item.hide();
+            }
+        });
+
+    });
+}
+
 $(document).ready(function() {
     getNotification();
     // setInterval(function() {getNotification();}, 10000);
@@ -30,5 +94,11 @@ $(document).ready(function() {
         e.preventDefault();
 
         $('.stock-importing-form').submit();
+    });
+
+    //
+    checkSchecks();
+    $(document).on('change', '[name="numbers[]"], [name="letters[]"], [name="diameters[]"]', function() {
+        checkSchecks();
     });
 });

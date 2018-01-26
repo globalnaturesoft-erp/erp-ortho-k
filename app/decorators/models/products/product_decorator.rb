@@ -40,6 +40,16 @@ Erp::Products::Product.class_eval do
   end
 
   # get diameter value
+  def get_pvid(property)
+    return nil if !property.present?
+
+    if self.cache_properties.present?
+      cache = JSON.parse(self.cache_properties)
+      return ((cache[property.id.to_s].present? and cache[property.id.to_s][0].present?) ? cache[property.id.to_s][0] : nil)
+    end
+  end
+
+  # get diameter value
   def get_properties_value(property)
     return nil if !property.present?
 
@@ -52,6 +62,9 @@ Erp::Products::Product.class_eval do
   # get diameter
   def get_diameter
     self.get_value(Erp::Products::Property.getByName(Erp::Products::Property::NAME_DUONG_KINH))
+  end
+  def get_diameter_id
+    self.get_pvid(Erp::Products::Property.getByName(Erp::Products::Property::NAME_DUONG_KINH))
   end
 
   # get diameter
@@ -1768,6 +1781,72 @@ Erp::Products::Product.class_eval do
     return stock
   end
 
+  # Get related numbers
+  def get_alternative_numbers(options={})
+
+    number = self.get_number.to_i
+
+    # alternative arr
+    arr = []
+
+    # 15
+    arr << number.to_s.rjust(2, '0')
+
+    # 14
+    arr << (number - 1).to_s.rjust(2, '0') if number > 1
+
+    # 16
+    arr << (number + 1).to_s.rjust(2, '0') if number < 33
+
+    # J
+    arr << (number - 2).to_s.rjust(2, '0') if number > 2
+
+     # 16
+    arr << (number + 2).to_s.rjust(2, '0') if number < 32
+
+    return arr
+  end
+
+  # Get related letter
+  def get_alternative_letters(options={})
+
+    letter = self.get_letter
+
+    # letter array
+    letters = ('A'..'T').to_a
+    ('C'..'U').each do |x|
+      letters << "H#{x}"
+    end
+
+    # alternative arr
+    arr = []
+
+    # K
+    arr << letter
+
+    # L
+    lt = (letters.index(letter).present? ? letters[letters.index(letter)+1] : nil)
+    arr << lt if lt.present?
+
+    # M
+    lt = (letters.index(letter).present? ? letters[letters.index(letter)+2] : nil)
+    arr << lt if lt.present?
+
+    # J
+    lt = (letters.index(letter).present? and letters.index(letter) > 0) ? letters[letters.index(letter)-1] : nil
+    arr << lt if lt.present?
+
+    # I
+    lt = (letters.index(letter).present? and letters.index(letter) > 0) ? letters[letters.index(letter)-2] : nil
+    arr << lt if lt.present?
+
+    # N
+    lt = (letters.index(letter).present? ? letters[letters.index(letter)+3] : nil)
+    arr << lt if lt.present?
+
+    return arr
+  end
+
   # Get alternative array map
   def get_alternative_array(options={})
 
@@ -1785,11 +1864,11 @@ Erp::Products::Product.class_eval do
     arr = []
 
     # K15
-    arr << {index: 1, number: number, letter: letter}
+    arr << {index: 0, number: number, letter: letter}
 
     # L15
     lt = (letters.index(letter).present? ? letters[letters.index(letter)+1] : nil)
-    arr << {index: 2, number: number, letter: lt}
+    arr << {index: 1, number: number, letter: lt}
 
     # M15
     lt = (letters.index(letter).present? ? letters[letters.index(letter)+2] : nil)
@@ -1801,30 +1880,37 @@ Erp::Products::Product.class_eval do
 
     # I15
     lt = (letters.index(letter).present? and letters.index(letter) > 0) ? letters[letters.index(letter)-2] : nil
-    arr << {index: 3, number: number, letter: lt}
+    arr << {index: 4, number: number, letter: lt}
 
     # L14
     lt = (letters.index(letter).present? ? letters[letters.index(letter)+1] : nil)
-    arr << {index: 2, number: (number.to_i-1).to_s.rjust(2, '0'), letter: lt}
+    arr << {index: 5, number: (number.to_i-1).to_s.rjust(2, '0'), letter: lt}
 
     # K14
-    arr << {index: 2, number: (number.to_i-1).to_s.rjust(2, '0'), letter: letter}
+    arr << {index: 6, number: (number.to_i-1).to_s.rjust(2, '0'), letter: letter}
 
     # K16
-    arr << {index: 2, number: (number.to_i+1).to_s.rjust(2, '0'), letter: letter}
+    arr << {index: 7, number: (number.to_i+1).to_s.rjust(2, '0'), letter: letter}
 
-    # M16
+    # M13
     lt = (letters.index(letter).present? ? letters[letters.index(letter)+2] : nil)
-    arr << {index: 2, number: (number.to_i-2).to_s.rjust(2, '0'), letter: letter}
+    arr << {index: 8, number: (number.to_i-2).to_s.rjust(2, '0'), letter: letter}
 
     # K13
-    arr << {index: 2, number: (number.to_i-2).to_s.rjust(2, '0'), letter: letter}
+    arr << {index: 9, number: (number.to_i-2).to_s.rjust(2, '0'), letter: letter}
 
     # K17
-    arr << {index: 2, number: (number.to_i+2).to_s.rjust(2, '0'), letter: letter}
+    arr << {index: 10, number: (number.to_i+2).to_s.rjust(2, '0'), letter: letter}
+
+    # N15
+    lt = (letters.index(letter).present? ? letters[letters.index(letter)+3] : nil)
+    arr << {index: 11, number: number.to_s.rjust(2, '0'), letter: lt}
+
+    # J16
+    lt = (letters.index(letter).present? ? letters[letters.index(letter)-1] : nil)
+    arr << {index: 12, number: (number.to_i+1).to_s.rjust(2, '0'), letter: lt}
 
     return arr
-
   end
 
   # get alternative products
@@ -1847,7 +1933,7 @@ Erp::Products::Product.class_eval do
         end
 
         products.each do |p|
-          a_products << p if p.cache_stock.to_i > 0
+          a_products << {product: p, index: item[:index]} if p.cache_stock.to_i > 0
         end
       end
     end
