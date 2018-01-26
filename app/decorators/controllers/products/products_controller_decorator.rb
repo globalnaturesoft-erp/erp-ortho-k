@@ -4,7 +4,7 @@ Erp::Products::Backend::ProductsController.class_eval do
     @warehouse = Erp::Warehouses::Warehouse.first
     @state = Erp::Products::State.get_new_state
   end
-  
+
   def do_split
     @product = Erp::Products::Product.find(params[:product_id])
     @warehouse = Erp::Warehouses::Warehouse.find(params[:warehouse_id])
@@ -18,7 +18,7 @@ Erp::Products::Backend::ProductsController.class_eval do
           user: current_user
         }
       )
-      
+
       respond_to do |format|
         format.html { redirect_to erp_products.backend_products_path, notice: t('.success') }
         format.json {
@@ -30,19 +30,19 @@ Erp::Products::Backend::ProductsController.class_eval do
       end
     #end
   end
-  
+
   def combine
     @product = params[:id].present? ? Erp::Products::Product.find(params[:id]) : nil
     @warehouse = Erp::Warehouses::Warehouse.first
     @state = Erp::Products::State.get_new_state
   end
-  
+
   def do_combine
     @product = Erp::Products::Product.find(params[:product_id])
     @warehouse = Erp::Warehouses::Warehouse.find(params[:warehouse_id])
     @state = Erp::Products::State.find(params[:state_id])
     @quantity = params[:quantity].to_i
-    
+
     @product.combine_parts(
       @quantity,
       { warehouse: @warehouse,
@@ -50,7 +50,7 @@ Erp::Products::Backend::ProductsController.class_eval do
         user: current_user
       }
     )
-    
+
     respond_to do |format|
       format.html { redirect_to erp_products.backend_products_path, notice: t('.success') }
       format.json {
@@ -61,40 +61,40 @@ Erp::Products::Backend::ProductsController.class_eval do
       }
     end
   end
-  
+
   def ajax_preview_split
     @product = Erp::Products::Product.where(id: params[:form_data][:product_id]).first
     @warehouse = Erp::Warehouses::Warehouse.where(id: params[:form_data][:warehouse_id]).first
     @state = Erp::Products::State.where(id: params[:form_data][:state_id]).first
     @quantity = params[:datas][0].to_i
-    
+
     render layout: false
   end
-  
+
   def ajax_preview_combine
     @product = Erp::Products::Product.where(id: params[:form_data][:product_id]).first
     @warehouse = Erp::Warehouses::Warehouse.where(id: params[:form_data][:warehouse_id]).first
     @state = Erp::Products::State.where(id: params[:form_data][:state_id]).first
     @quantity = params[:datas][0].to_i
-    
+
     render layout: false
   end
-  
+
   def ajax_split_quantity
     @product = Erp::Products::Product.where(id: params[:form_data][:product_id]).first
     @warehouse = Erp::Warehouses::Warehouse.where(id: params[:form_data][:warehouse_id]).first
     @state = Erp::Products::State.where(id: params[:form_data][:state_id]).first
     @max_quantity = @product.get_stock(warehouse: @warehouse, state: @state) if @product.present?
-    
+
     render layout: false
   end
-  
+
   def ajax_combine_quantity
     @product = Erp::Products::Product.where(id: params[:form_data][:product_id]).first
     @warehouse = Erp::Warehouses::Warehouse.where(id: params[:form_data][:warehouse_id]).first
     @state = Erp::Products::State.where(id: params[:form_data][:state_id]).first
     @max_quantity = @product.get_combine_max_quantity(warehouse: @warehouse, state: @state) if @product.present?
-    
+
     render layout: false
   end
 end

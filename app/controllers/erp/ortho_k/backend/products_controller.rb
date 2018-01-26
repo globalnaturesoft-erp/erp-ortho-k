@@ -261,9 +261,22 @@ module Erp
         end
 
         def import_export_report_table
-          global_filters = params.to_unsafe_hash[:global_filter]
-          @rows = Erp::Products::Product.import_export_report(global_filters)[:data].sort_by { |n| n[:voucher_date] }.reverse!
-          @totals = Erp::Products::Product.import_export_report(global_filters)[:total]
+          @global_filters = params.to_unsafe_hash[:global_filter]
+
+          # if has period
+          if @global_filters[:period].present?
+            @period = Erp::Periods::Period.find(@global_filters[:period])
+            @global_filters[:from_date] = @period.from_date
+            @global_filters[:to_date] = @period.to_date
+          end
+
+          @from_date = @global_filters[:from_date].to_date
+          @to_date = @global_filters[:to_date].to_date
+
+          if @from_date.present? and @to_date.present?
+            @rows = Erp::Products::Product.import_export_report(@global_filters)[:data].sort_by { |n| n[:voucher_date] }.reverse!
+            @totals = Erp::Products::Product.import_export_report(@global_filters)[:total]
+          end
 
           render layout: nil
         end
