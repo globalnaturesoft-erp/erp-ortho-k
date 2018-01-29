@@ -77,6 +77,9 @@ Erp::OrthoK::Engine.routes.draw do
 
           get 'import'
           post 'import'
+
+          get 'purchasing_export'
+          post 'purchasing_export'
         end
       end
       resources :central_areas do

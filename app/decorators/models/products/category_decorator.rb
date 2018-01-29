@@ -28,7 +28,7 @@ Erp::Products::Category.class_eval do
 
   # get LEN categories
   def self.get_lens
-    pid = self.get_len.present? ? self.get_len.id : -1
-    self.where("parent_id = ? OR id = ?", pid, pid)
+    pids = self.where(name: ['Len cứng','Len mềm','Custom']).map(&:id)
+    self.where(parent_id: pids)
   end
 end

@@ -1,6 +1,7 @@
 <li class="nav-item <%= "active open" if ["erp/purchase/backend/purchases"].include?(params[:controller]) ||
                                           ["erp/ortho_k/backend/setting"].include?(params[:controller]) ||
                                           (params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "stock_importing") ||
+                                          (params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "purchasing_export") ||
                                           (params[:controller] == "erp/prices/backend/supplier_prices" && (params[:action] == "index" || params[:action] == "update_contact")) ||
                                           (params[:controller] == "erp/prices/backend/supplier_prices" && (params[:action] == "general" || params[:action] == "general_update")) %>">
     <a href="javascript:;" class="nav-link nav-toggle">
@@ -24,6 +25,11 @@
         <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "stock_importing" %>">
             <a href="<%= erp_ortho_k.stock_importing_backend_products_path %>" class="nav-link ">
                 <span class="title">Dự toán mua hàng</span>
+            </a>
+        </li>
+        <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "purchasing_export" %>">
+            <a href="<%= erp_ortho_k.purchasing_export_backend_products_path %>" class="nav-link ">
+                <span class="title">Xuất tồn kho</span>
             </a>
         </li>
         <li class="nav-item <%= "active" if ["erp/ortho_k/backend/setting"].include?(params[:controller]) %>">

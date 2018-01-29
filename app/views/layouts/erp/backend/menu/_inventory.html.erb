@@ -25,6 +25,7 @@
     ["erp/purchase/backend/purchases"].include?(params[:controller]) ||
     ["erp/ortho_k/backend/setting"].include?(params[:controller]) ||
     (params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "stock_importing") ||
+    (params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "purchasing_export") ||
     (params[:controller] == "erp/prices/backend/supplier_prices" && (params[:action] == "index" || params[:action] == "update_contact")) ||
     (params[:controller] == "erp/prices/backend/supplier_prices" && (params[:action] == "general" || params[:action] == "general_update")) ||
 

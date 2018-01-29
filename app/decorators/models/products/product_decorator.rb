@@ -2023,4 +2023,20 @@ Erp::Products::Product.class_eval do
 
     self.update_column(:ordered_code, tmp)
   end
+
+  def self.dataselect_category_diameter
+    lens = Erp::Products::Category.get_lens
+    diameters = Erp::Products::PropertiesValue.diameter_values
+
+    arr = []
+    lens.each do |len|
+      diameters.each do |diameter|
+        if len.name != 'Custom'
+          arr << {value: "#{len.id}-#{diameter.id}", text: "#{len.name}-#{diameter.value}"}
+        end
+      end
+    end
+
+    arr
+  end
 end

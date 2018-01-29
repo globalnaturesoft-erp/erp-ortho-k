@@ -76,7 +76,7 @@ module Erp
 
           @global_filter = global_filter
           render layout: nil
-          
+
           respond_to do |format|
             format.xlsx {
               response.headers['Content-Disposition'] = "attachment; filename='Ma tran ton kho tong hop.xlsx'"
@@ -512,6 +512,15 @@ module Erp
             end
           end
         end
+
+        # Export purchasing list
+        def purchasing_export
+
+        end
+
+
+
+
       end
     end
   end

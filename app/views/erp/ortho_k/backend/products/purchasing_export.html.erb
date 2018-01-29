@@ -1,0 +1,38 @@
+<% content_for :title do %>
+    Xuất tồn kho
+<% end %>
+
+<% content_for :page_title do %>
+    <i class="fa fa-archive"></i> Xuất tồn kho
+<% end %>
+
+<form action="">
+    <input type="hidden" name="format" value="xlsx" />
+    <div class="row">
+        <div class="col-md-3">
+            <%= erp_form_control("dataselect", {
+                name: 'warehouse_ids[]',
+                value: '',
+                text: '',
+                label: 'Kho',
+                placeholder: 'Chọn kho',
+                url: erp_warehouses.dataselect_backend_warehouses_path(format: 'json'),
+                multiple: true,
+            }) %>
+        </div>
+        <div class="col-md-6">
+            <%= erp_form_control("select", {
+                name: 'category_diameters[]',
+                value: '',
+                text: '',
+                label: 'Loại hàng & Đường kính',
+                placeholder: 'Chọn loại hàng',
+                options: Erp::Products::Product.dataselect_category_diameter,
+                multiple: true
+            }) %>
+        </div>
+        <div class="col-md-3">
+            <button style="margin-top: 25px" class="btn btn-primary">Xuất file Excel</button>
+        </div>
+    </div>
+</form>

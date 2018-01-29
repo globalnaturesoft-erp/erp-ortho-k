@@ -1,0 +1,99 @@
+wb = xlsx_package.workbook
+xlsx_package.use_autowidth = true
+
+so_p = Erp::Products::Property.where(name: 'Số').first
+dok_p = Erp::Products::Property.where(name: 'Độ K').first
+chu_p = Erp::Products::Property.where(name: 'Chữ').first
+do_p = Erp::Products::Property.where(name: 'Độ').first
+dk_p = Erp::Products::Property.where(name: 'Đường kính').first
+
+warehouses = ((params[:warehouse_ids].select{|i| !i.empty?}).present? ? Erp::Warehouses::Warehouse.where(id: params[:warehouse_ids]) : Erp::Warehouses::Warehouse.all)
+wids = warehouses.map(&:id)
+
+wb.styles do |s|
+    wb.styles.fonts.first.name = 'Calibri'
+    wb.add_worksheet(name: "Tồn kho") do |sheet|
+        # style
+        bg_info = {:bg_color => "e5e5e5", :fg_color => "00"}
+        bg_stock_0 = {:bg_color => "fbe1e3", :fg_color => "00"}
+        bg_stock_1 = {:bg_color => "f9e491", :fg_color => "00"}
+        bg_stock_2 = {:bg_color => "e0ebf9", :fg_color => "00"}
+        bg_general = {:bg_color => "a9d08e", :fg_color => "00"}
+
+        # Top head
+        sheet.add_row ["TỒN KHO THEO LOẠI HÀNG - ĐƯỜNG KÍNH"], b: true
+
+        sheet.add_row ["KHO", "#{warehouses.map(&:name).join(', ')}"]
+
+        sheet.add_row []
+
+        head_rows = ['Mã hàng']
+
+        params[:category_diameters].each do |p|
+            category = Erp::Products::Category.find(p.split('-')[0])
+            diameter = Erp::Products::PropertiesValue.find(p.split('-')[1])
+
+            head_rows << "Tồn #{category.name} #{diameter.value}"
+        end
+
+        sheet.add_row head_rows
+
+        # orther rows
+        letters = ('A'..'T').to_a
+        ('C'..'U').each do |x|
+          letters << "H#{x}"
+        end
+
+        # array
+        arr = []
+        letters.each do |letter|
+            (1..29).each do |number|
+                arr << {number: number, letter: letter}
+            end
+        end
+        arr << {number: 1, letter: 'K'}
+        arr << {number: 2, letter: 'K'}
+        arr << {number: 3, letter: 'K'}
+        arr << {number: 4, letter: 'K'}
+        arr << {number: 30, letter: 'K'}
+        arr << {number: 31, letter: 'K'}
+        arr << {number: 32, letter: 'K'}
+        arr << {number: 33, letter: 'K'}
+        arr << {number: 34, letter: 'K'}
+        arr << {number: 35, letter: 'K'}
+        arr << {number: 36, letter: 'K'}
+
+        arr.each do |r|
+            query = Erp::Products::Product
+
+            number = Erp::Products::PropertiesValue.where(property_id: so_p.id, value: r[:number].to_s.rjust(2, '0')).first
+            letter = Erp::Products::PropertiesValue.where(property_id: chu_p.id, value: r[:letter]).first
+
+            # filter by letters
+            query = query.where("erp_products_products.cache_properties LIKE '%[\"#{number.id}\",%'")
+            # filter by numbers
+            query = query.where("erp_products_products.cache_properties LIKE '%[\"#{letter.id}\",%'")
+
+            # per row
+            row = ["#{letter.value}#{number.value}"]
+            params[:category_diameters].each do |p|
+                query_sub = query
+
+                category = Erp::Products::Category.find(p.split('-')[0])
+                diameter = Erp::Products::PropertiesValue.find(p.split('-')[1])
+
+                # filter by letter number
+                query_sub = query_sub.where(category_id: category.id)
+                # filter by diameters
+                query_sub = query_sub.where("erp_products_products.cache_properties LIKE '%[\"#{diameter.id}\",%'")
+
+                row << "#{query_sub.empty? ? 0 : Erp::Products::CacheStock.get_stock(query_sub.select(:id), {warehouse_id: wids})}"
+            end
+
+            sheet.add_row row
+        end
+
+
+        sheet.column_widths 12
+    end
+end
