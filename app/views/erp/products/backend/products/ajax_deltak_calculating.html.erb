@@ -1,0 +1,12 @@
+<% if @k.present? and @k2.present? %>
+  <table class="" width="100%">
+      <tr>
+          <td><span>DeltaK:</span></td>
+          <td class="text-right"><strong><%= (@deltak[0]*4).round(0).to_f/4 %></strong></td>
+      </tr>
+      <tr>
+          <td><span>Trung bình (SP):</span></td>
+          <td class="text-right"><strong><%= (@avg[0]*4).round(0).to_f/4 %></strong></td>
+      </tr>
+  </table>
+<% end %>

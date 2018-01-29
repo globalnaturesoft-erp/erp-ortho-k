@@ -4,6 +4,7 @@ Erp::Products::Property.class_eval do
   NAME_DO = 'Độ'
   NAME_SO = 'Số'
   NAME_DO_K = "Độ K"
+  NAME_DO_K2 = "Độ K2"
 
   def self.getByName(name)
     return self.where(name: name).first
@@ -55,5 +56,10 @@ Erp::Products::Property.class_eval do
   # get degree k property
   def self.get_degree_k
     self.where(name: NAME_DO_K).first
+  end
+
+  # get degree k property
+  def self.get_degree_k2
+    self.where(name: NAME_DO_K2).first
   end
 end

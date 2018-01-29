@@ -97,4 +97,17 @@ Erp::Products::Backend::ProductsController.class_eval do
 
     render layout: false
   end
+
+  def ajax_deltak_calculating
+    @k = Erp::Products::PropertiesValue.where(id: params[:form_data][:degree_ks]).first
+    @k2 = Erp::Products::PropertiesValue.where(id: params[:form_data][:degree_k2s]).first
+
+    if @k.present? and @k2.present?
+      @k = @k.value.split('/')
+      @k2 = @k2.value.split('/')
+
+      @deltak = [@k2[0].to_f - @k[0].to_f,@k2[1].to_f - @k[1].to_f]
+      @avg = [(@k2[0].to_f + @k[0].to_f)/2,(@k2[1].to_f + @k[1].to_f)/2]
+    end
+  end
 end

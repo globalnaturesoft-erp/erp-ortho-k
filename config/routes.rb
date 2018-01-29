@@ -16,6 +16,8 @@ Erp::Products::Engine.routes.draw do
           post 'do_combine'
           get 'ajax_combine_quantity'
           get 'ajax_preview_combine'
+
+          get 'ajax_deltak_calculating'
         end
       end
     end
