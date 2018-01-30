@@ -1,9 +1,9 @@
 <% content_for :title do %>
-    Đặt hàng (ma trận)
+    Lượng bán hàng (ma trận)
 <% end %>
 
 <% content_for :page_title do %>
-    <i class="fa fa-archive"></i> Đặt hàng (ma trận)
+    <i class="fa fa-archive"></i> Lượng bán hàng (ma trận)
 <% end %>
 
 <% content_for :global_filter do %>
@@ -89,12 +89,7 @@
     <%= erp_datalist(
         url: erp_ortho_k.report_product_ordered_table_backend_inventory_index_path,
         sortable: true,
-        keyword: true,
-        keywords: [
-            {
-                text: t('.name'), name: 'erp_products_products.name'
-            },
-        ],
+        keywords: false,
         columns: [
         ],
     ) %>

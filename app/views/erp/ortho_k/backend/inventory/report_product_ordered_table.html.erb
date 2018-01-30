@@ -2,36 +2,67 @@
         so_p = Erp::Products::Property.get_number
         chu_p = Erp::Products::Property.get_letter
     %>
-
-    <div class="custom-show text-center">
-        <h4 class="font-blue-madison bold uppercase mb-15">
-            Thông kê lượng đặt hàng
-            <% if @from_date.present? or @to_date.present? %>
-                <br>
-                <span class="font-sm">
-                    <% if !defined?(@period) %>
-                        (<%= 'Từ ' + @from_date.strftime('%d/%m/%Y') if !@from_date.nil? %> <%= ' Đến ' + @to_date.strftime('%d/%m/%Y') if !@to_date.nil? %>)
-                    <% else %>
-                        (<%= @period.name %>)
+    <div class="row">
+        <div class="col-md-10">
+            <div class="custom-show text-center">
+                <h4 class="font-blue-madison bold uppercase mb-15">
+                    Thống kê số lượng bán hàng
+                    <% if @from_date.present? or @to_date.present? %>
+                        <br>
+                        <span class="font-sm">
+                            <% if !defined?(@period) %>
+                                (<%= 'Từ ' + @from_date.strftime('%d/%m/%Y') if !@from_date.nil? %> <%= ' Đến ' + @to_date.strftime('%d/%m/%Y') if !@to_date.nil? %>)
+                            <% else %>
+                                (<%= @period.name %>)
+                            <% end %>
+                        </span>
                     <% end %>
-                </span>
-            <% end %>
-        </h4>
+                </h4>
+                <p class="text-center">
+                    Loại: <strong><%= @global_filters[:categories].present? ? Erp::Products::Category.where(id: @global_filters[:categories]).map(&:name).join(', ') : 'Tất cả' %></strong> |
+                    Đường kính: <strong><%= @global_filters[:diameters].present? ? Erp::Products::PropertiesValue.where(id: @global_filters[:diameters]).map(&:value).join(', ') : 'Tất cả' %></strong> |
+                    Kho: <strong><%= @global_filters[:warehouses].present? ? Erp::Warehouses::Warehouse.where(id: @global_filters[:warehouses]).map(&:name).join(', ') : 'Tất cả' %></strong> |
+                    Tình trạng: <strong><%= 'Mới' %></strong>
+                </p>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="text-right mb-10">
+                <a target="_blank"
+                    href="<%= erp_ortho_k.report_product_ordered_xlsx_backend_inventory_index_path(params.to_unsafe_hash.merge({format: 'xlsx'})) %>"
+                    target="_blank"
+                    class="btn btn-primary"
+                >Xuất excel</a>
+            </div>
+        </div>
     </div>
 
     <table class="table table-advance table-checkable order-column table-matrix" id="">
         <tr>
             <th class="bg-grey" width="6%"></th>
+            <th class="bg-grey" width="6%"></th>
             <% Erp::Products::Product.matrix_cols.each do |col| %>
                 <th class="text-center bg-grey" width="">
-                  <%= col[:degree] %><br><%= col[:letter] %>
+                  <%= col[:degree] %>
+                </th>
+            <% end %>
+        </tr>
+        <tr>
+            <th class="bg-grey" width="6%"></th>
+            <th class="bg-grey" width="6%"></th>
+            <% Erp::Products::Product.matrix_cols.each do |col| %>
+                <th class="text-center bg-grey" width="">
+                  <%= col[:letter] %>
                 </th>
             <% end %>
         </tr>
         <% Erp::Products::Product.matrix_rows.each do |row| %>
             <tr>
                 <th class="text-center bg-grey text-nowrap" style="width: 108px !important">
-                    <%= row[:degree_k] %>/<%= row[:number] %>
+                    <%= row[:degree_k] %>
+                </th>
+                <th class="text-center bg-grey text-nowrap" style="width: 108px !important">
+                    <%= row[:number] %>
                 </th>
                 <% Erp::Products::Product.matrix_cols.each do |col| %>
                     <%

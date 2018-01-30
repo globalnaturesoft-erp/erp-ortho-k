@@ -186,9 +186,11 @@ Erp::OrthoK::Engine.routes.draw do
 
 					get 'report_product_request'
           post 'report_product_request_table'
+          get 'report_product_request_xlsx'
 
           get 'report_product_ordered'
           post 'report_product_ordered_table'
+          get 'report_product_ordered_xlsx'
 				end
 			end
 

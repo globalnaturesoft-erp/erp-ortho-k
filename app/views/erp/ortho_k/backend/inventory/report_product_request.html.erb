@@ -89,13 +89,10 @@
     <%= erp_datalist(
         url: erp_ortho_k.report_product_request_table_backend_inventory_index_path,
         sortable: true,
-        keyword: true,
-        keywords: [
-            {
-                text: t('.name'), name: 'erp_products_products.name'
-            },
+        keywords: false,
+        filters: [
         ],
         columns: [
-        ],
+        ]
     ) %>
 </div>
