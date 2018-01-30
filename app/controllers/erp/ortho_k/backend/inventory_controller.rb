@@ -896,6 +896,7 @@ module Erp
           @rows = []
           # categories each
           if @global_filters[:categories].present? and @global_filters[:letters].present? and @global_filters[:numbers_diameters].present?
+            @global_filters[:categories] = @global_filters[:categories].kind_of?(Array) ? @global_filters[:categories] : [@global_filters[:categories]]
             @global_filters[:categories].each do |category_id|
               span = (@global_filters[:letters].count)
               row = {category: Erp::Products::Category.find(category_id), letter_groups: [], span: 0}
