@@ -6,7 +6,7 @@
       </p>
   </div>
 <% else %>
-  
+
   <div class="custom-show text-center">
       <h4 class="font-yellow bold uppercase mb-15">
           Báo cáo tồn kho
@@ -17,7 +17,7 @@
           <% end %>
       </h4>
   </div>
-  
+
   <div class="text-right mb-10">
       <a target="_blank"
           href="<%= erp_ortho_k.report_central_area_xlsx_backend_inventory_index_path(params.to_unsafe_hash.merge({format: 'xlsx'})) %>"
@@ -25,92 +25,92 @@
           class="btn btn-primary"
       >Xuất excel</a>
   </div>
-  
+
   <table class="table table-bordered table-advance order-column">
-    <tr>
-      <% product_ids = @central_query.select('id') %>
-      <% product_ids = nil if product_ids.count == 0 %>
-      <% filters = @global_filters.clone.merge({product_id: product_ids}) %>
+      <tr>
+        <% product_ids = @central_query.select('id') %>
+        <% product_ids = nil if product_ids.count == 0 %>
+        <% filters = @global_filters.clone.merge({product_id: product_ids}) %>
 
-      <th colspan="3" class="text-right bg-success">Tổng cộng</th>
+        <th colspan="3" class="text-right bg-success">Tổng cộng</th>
 
-      <td class="text-center bg-success text-bold">
-        <%
-            begin_params = filters.clone
-            begin_params[:to_date] = filters[:from_date]
-            begin_params[:from_date] = nil
-        %>
-        <% in_begin = Erp::Products::Product.get_stock_real(begin_params) %>
-        <%= in_begin %>
-      </td>
+        <td class="text-center bg-success text-bold">
+          <%
+              begin_params = filters.clone
+              begin_params[:to_date] = filters[:from_date]
+              begin_params[:from_date] = nil
+          %>
+          <% in_begin = Erp::Products::Product.get_stock_real(begin_params) %>
+          <%= in_begin %>
+        </td>
 
-      <td class="text-center bg-success text-bold">
-        <%
-            end_params = filters.clone
-            end_params[:from_date] = nil
-        %>
-        <% in_end = Erp::Products::Product.get_stock_real(end_params) %>
-        <%= in_end %>
-      </td>
+        <td class="text-center bg-success text-bold">
+          <%
+              end_params = filters.clone
+              end_params[:from_date] = nil
+          %>
+          <% in_end = Erp::Products::Product.get_stock_real(end_params) %>
+          <%= in_end %>
+        </td>
 
-      <% product_ids = @not_central_query.select('id') %>
-      <% product_ids = nil if product_ids.count == 0 %>
-      <% filters = @global_filters.clone.merge(product_id: product_ids) %>
+        <% product_ids = @not_central_query.select('id') %>
+        <% product_ids = nil if product_ids.count == 0 %>
+        <% filters = @global_filters.clone.merge(product_id: product_ids) %>
 
-      <td class="text-center bg-success text-bold">
-        <%
-            begin_params = filters.clone
-            begin_params[:to_date] = filters[:from_date]
-            begin_params[:from_date] = nil
-        %>
-        <% not_begin = Erp::Products::Product.get_stock_real(begin_params) %>
-        <%= not_begin %>
-      </td>
+        <td class="text-center bg-success text-bold">
+          <%
+              begin_params = filters.clone
+              begin_params[:to_date] = filters[:from_date]
+              begin_params[:from_date] = nil
+          %>
+          <% not_begin = Erp::Products::Product.get_stock_real(begin_params) %>
+          <%= not_begin %>
+        </td>
 
-      <td class="text-center bg-success text-bold">
-        <%
-            end_params = filters.clone
-            end_params[:from_date] = nil
-        %>
-        <% not_end = Erp::Products::Product.get_stock_real(end_params) %>
-        <%= not_end %>
-      </td>
+        <td class="text-center bg-success text-bold">
+          <%
+              end_params = filters.clone
+              end_params[:from_date] = nil
+          %>
+          <% not_end = Erp::Products::Product.get_stock_real(end_params) %>
+          <%= not_end %>
+        </td>
 
-    </tr>
+      </tr>
 
-    <tr>
-      <th colspan="3" class="text-right bg-danger">Chênh lệch</th>
-      <td colspan="2" class="text-center bg-danger text-bold">
-        <%= in_end - in_begin %>
-      </td>
-      <td colspan="2" class="text-center bg-danger text-bold">
-        <%= not_end - not_begin %>
-      </td>
-    </tr>
+      <tr>
+        <th colspan="3" class="text-right bg-danger">Chênh lệch</th>
+        <td colspan="2" class="text-center bg-danger text-bold">
+          <%= in_end - in_begin %>
+        </td>
+        <td colspan="2" class="text-center bg-danger text-bold">
+          <%= not_end - not_begin %>
+        </td>
+      </tr>
 
-    <tr>
-      <th rowspan="2" class="text-center bg-primary">Kho</th>
-      <th rowspan="2" class="text-center bg-primary">Loại hàng</th>
-      <th rowspan="2" class="text-center bg-primary">Đường kính</th>
-      <th colspan="2" class="text-center bg-primary">Trong vùng Trung tâm</th>
-      <th colspan="2" class="text-center bg-primary">Ngoài vùng Trung tâm</th>
-    </tr>
-    <tr>
-      <th class="text-center bg-primary">Đầu kỳ</th>
-      <th class="text-center bg-primary">Cuối kỳ</th>
-      <th class="text-center bg-primary">Đầu kỳ</th>
-      <th class="text-center bg-primary">Cuối kỳ</th>
-    </tr>
-
-    <tr>
-      <td class="text-bold" rowspan="<%= @categories.count * @diameters.count + @categories.count + 1 %>">
-        <% if @warehouses.count > 0 %>
-          <%= @warehouses.map(&:name).join('<br />').html_safe %>
-        <% else %>
-          Tất cả kho
-        <% end %>
-      </td>
-    </tr>
+      <tr>
+        <th rowspan="2" class="text-center bg-primary">Kho</th>
+        <th rowspan="2" class="text-center bg-primary">Loại hàng</th>
+        <th rowspan="2" class="text-center bg-primary">Đường kính</th>
+        <th colspan="2" class="text-center bg-primary">Trong vùng Trung tâm</th>
+        <th colspan="2" class="text-center bg-primary">Ngoài vùng Trung tâm</th>
+      </tr>
+      <tr>
+        <th class="text-center bg-primary">Đầu kỳ</th>
+        <th class="text-center bg-primary">Cuối kỳ</th>
+        <th class="text-center bg-primary">Đầu kỳ</th>
+        <th class="text-center bg-primary">Cuối kỳ</th>
+      </tr>
+  
+      <tr>
+        <td class="text-bold" rowspan="<%= @categories.count * @diameters.count + @categories.count + 1 %>">
+          <% if @warehouses.count > 0 %>
+            <%= @warehouses.map(&:name).join('<br />').html_safe %>
+          <% else %>
+            Tất cả kho
+          <% end %>
+        </td>
+      </tr>
 
     <% @categories.each_with_index do |category,category_index| %>
       <% @diameters.each_with_index do |diameter,diameter_index| %>

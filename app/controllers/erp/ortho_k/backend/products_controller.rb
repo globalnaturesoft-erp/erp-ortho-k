@@ -293,7 +293,7 @@ module Erp
             end
           end
 
-          @products = @product_query.limit(100)
+          @products = @product_query
 
           render layout: nil
         end

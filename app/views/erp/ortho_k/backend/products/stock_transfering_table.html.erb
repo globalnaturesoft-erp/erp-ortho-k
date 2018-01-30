@@ -12,6 +12,7 @@
             <th class="bg-grey text-center">Kho nhập: <%= @to_warehouse.name %></th>
             <th class="bg-grey text-center"><%= t('.transfer_quantity') %></th>
         </tr>
+        <% num = 1 %>
         <% @products.each_with_index do |product,index| %>
             <%
                 if @condition == 'from_redundant'
@@ -34,7 +35,7 @@
             %>
             <% if transfer > 0 %>
                 <tr>
-                    <td class="text-center"><%= index+1 %></td>
+                    <td class="text-center"><%= num %></td>
                     <td class=""><%= product.code %></td>
                     <td class=""><%= product.name %></td>
                     <td class="text-center">
@@ -45,9 +46,18 @@
                         <%= transfer %>
                     </td>
                 </tr>
+                <% num += 1 %>
             <% end %>
         <% end %>
     </table>
+    <div class="portlet m-grid m-grid-demo">
+            <div class="m-grid-row">
+                <div class="m-grid-col m-grid-col-middle m-grid-col-center">
+                    <label>Tổng chuyển</label><br/>
+                    <strong><%= num %></strong>
+                </div>
+            </div>
+        </div>
 <% else %>
     <div class="alert alert-warning">
         <p>Vui lòng chọn các tham số bắt buộc:
@@ -55,7 +65,7 @@
             <br>- <strong>Kho nhập</strong>
             <br>- <strong>Trạng thái</strong>
             <br>- <strong>Điều kiện, tham số chuyển kho</strong>
-            <br>- <strong>Số lượng chyuển</strong>
+            <br>- <strong>Số lượng chuyển</strong>
         </p>
     </div>
 <% end %>

@@ -62,18 +62,18 @@
                 title: 'Thống kê tồn kho theo vùng trung tâm'
             %>
         </li>
-        <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/inventory" && params[:action] == "report_custom_area" %>">
+        <!--<li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/inventory" && params[:action] == "report_custom_area" %>">
             <%= link_to "Thống kê theo vùng",
                 erp_ortho_k.report_custom_area_backend_inventory_index_path,
                 class: "nav-link ",
                 title: 'Thống kê tồn tùy chọn theo vùng'
             %>
-        </li>
+        </li>-->
         <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/inventory" && params[:action] == "report_custom_area_v2" %>">
-            <%= link_to "Thống kê theo vùng / v2",
+            <%= link_to "Thống kê theo vùng",
                 erp_ortho_k.report_custom_area_v2_backend_inventory_index_path,
                 class: "nav-link ",
-                title: 'Thống kê tồn tùy chọn theo vùng - loại 2'
+                title: 'Thống kê tồn tùy chọn theo vùng'
             %>
         </li>
         <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/inventory" && params[:action] == "report_outside_product" %>">

@@ -125,10 +125,12 @@ $(document).ready(function() {
     setInterval(function() {getNotification(true);}, 5000);
 
     // Stock importing action
-    $(document).on('click', '.stock-importing-button', function(e) {
+    $(document).on('click', '.custom-submit-button', function(e) {
         e.preventDefault();
 
-        $('.stock-importing-form').submit();
+        var form = $($(this).attr('data-form'));
+
+        form.submit();
     });
 
     //

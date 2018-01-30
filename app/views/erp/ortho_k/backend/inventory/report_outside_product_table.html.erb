@@ -1,4 +1,4 @@
-  
+
   <div class="custom-show text-center">
       <h4 class="font-yellow bold uppercase mb-15">
           Báo cáo tồn kho
@@ -9,7 +9,7 @@
           <% end %>
       </h4>
   </div>
-  
+
   <div class="text-right mb-10">
       <a target="_blank"
           href="<%= erp_ortho_k.report_outside_product_xlsx_backend_inventory_index_path(params.to_unsafe_hash.merge({format: 'xlsx'})) %>"
@@ -17,82 +17,85 @@
           class="btn btn-primary"
       >Xuất excel</a>
   </div>
-  
+
   <table class="table table-bordered table-advance order-column">
     <% product_ids = @product_query.select('id') %>
     <% product_ids = -1 if product_ids.count == 0 %>
     <% filters = @global_filters.clone.merge({product_id: product_ids}) %>
-    <tr>
-      <th colspan="2" class="text-right bg-grey">Tổng cộng</th>
+    <thead>
 
-      <td class="text-center bg-info text-bold">
-        <%
-            begin_params = filters.clone
-            begin_params[:to_date] = filters[:from_date]
-            begin_params[:from_date] = nil
-        %>
-        <%= Erp::Products::Product.get_stock_real(begin_params) %>
-      </td>
+        <tr>
+          <th colspan="2" class="text-right bg-grey">Tổng cộng</th>
 
-      <td class="text-center bg-grey text-bold">
-        <%
-          count = Erp::Products::Product.get_qdelivery_import(filters.clone.merge({
-              delivery_type: Erp::Qdeliveries::Delivery::TYPE_PURCHASE_IMPORT
-          }))
-        %>
-        <%= count %>
-      </td>
-      <td class="text-center bg-grey text-bold">
-        <%
-          count = Erp::Products::Product.get_qdelivery_import(filters.clone.merge({
-              delivery_type: [
-                Erp::Qdeliveries::Delivery::TYPE_CUSTOM_IMPORT,
-                Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT
-              ]
-          }))
-        %>
-        <%= count %>
-      </td>
-      <td class="text-center bg-grey text-bold">
-        <%
-          count = Erp::Products::Product.get_qdelivery_export(filters.clone.merge({
-              delivery_type: [
-                Erp::Qdeliveries::Delivery::TYPE_CUSTOM_EXPORT,
-                Erp::Qdeliveries::Delivery::TYPE_SALES_EXPORT
-              ]
-          }))
-          count += Erp::Products::Product.get_gift_given_export(filters)
-        %>
-        <%= count %>
-      </td>
-      <td class="text-center bg-grey text-bold">
-        <%
-            count = Erp::Products::Product.get_damage_record_export(filters)
-            count += Erp::Products::Product.get_stock_check_export(filters)
-        %>
-        <%= count %>
-      </td>
-      <td class="text-center bg-info text-bold">
-        <%
-            end_params = filters.clone
-            end_params[:from_date] = nil
-        %>
-        <%= Erp::Products::Product.get_stock_real(end_params) %>
-      </td>
-      <td class="text-center bg-grey text-bold"></td>
-    </tr>
+          <td class="text-center bg-info text-bold">
+            <%
+                begin_params = filters.clone
+                begin_params[:to_date] = filters[:from_date]
+                begin_params[:from_date] = nil
+            %>
+            <%= Erp::Products::Product.get_stock_real(begin_params) %>
+          </td>
 
-    <tr>
-      <th class="text-center bg-primary">Sản phẩm</th>
-      <th class="text-center bg-primary">Đơn vị</th>
-      <th class="text-center bg-primary">Dư đầu</th>
-      <th class="text-center bg-primary" title="Nhập NCC">Nhập NCC</th>
-      <th class="text-center bg-primary" title="Khách trả; Ký gửi trả">Hoàn kho</th>
-      <th class="text-center bg-primary" title="Xuất bán; Cho mượn/Ký gửi; Tặng quà">Xuất</th>
-      <th class="text-center bg-primary" title="Hủy kho; Kiểm kho">Hư/Mất</th>
-      <th class="text-center bg-primary">Dư cuối</th>
-      <th class="text-left bg-primary">Ngày nhập</th>
-    </tr>
+          <td class="text-center bg-grey text-bold">
+            <%
+              count = Erp::Products::Product.get_qdelivery_import(filters.clone.merge({
+                  delivery_type: Erp::Qdeliveries::Delivery::TYPE_PURCHASE_IMPORT
+              }))
+            %>
+            <%= count %>
+          </td>
+          <td class="text-center bg-grey text-bold">
+            <%
+              count = Erp::Products::Product.get_qdelivery_import(filters.clone.merge({
+                  delivery_type: [
+                    Erp::Qdeliveries::Delivery::TYPE_CUSTOM_IMPORT,
+                    Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT
+                  ]
+              }))
+            %>
+            <%= count %>
+          </td>
+          <td class="text-center bg-grey text-bold">
+            <%
+              count = Erp::Products::Product.get_qdelivery_export(filters.clone.merge({
+                  delivery_type: [
+                    Erp::Qdeliveries::Delivery::TYPE_CUSTOM_EXPORT,
+                    Erp::Qdeliveries::Delivery::TYPE_SALES_EXPORT
+                  ]
+              }))
+              count += Erp::Products::Product.get_gift_given_export(filters)
+            %>
+            <%= count %>
+          </td>
+          <td class="text-center bg-grey text-bold">
+            <%
+                count = Erp::Products::Product.get_damage_record_export(filters)
+                count += Erp::Products::Product.get_stock_check_export(filters)
+            %>
+            <%= count %>
+          </td>
+          <td class="text-center bg-info text-bold">
+            <%
+                end_params = filters.clone
+                end_params[:from_date] = nil
+            %>
+            <%= Erp::Products::Product.get_stock_real(end_params) %>
+          </td>
+          <td class="text-center bg-grey text-bold"></td>
+        </tr>
+
+        <tr>
+          <th class="text-center bg-primary">Sản phẩm</th>
+          <th class="text-center bg-primary">Đơn vị</th>
+          <th class="text-center bg-primary">Dư đầu</th>
+          <th class="text-center bg-primary" title="Nhập NCC">Nhập NCC</th>
+          <th class="text-center bg-primary" title="Khách trả; Ký gửi trả">Hoàn kho</th>
+          <th class="text-center bg-primary" title="Xuất bán; Cho mượn/Ký gửi; Tặng quà">Xuất</th>
+          <th class="text-center bg-primary" title="Hủy kho; Kiểm kho">Hư/Mất</th>
+          <th class="text-center bg-primary">Dư cuối</th>
+          <th class="text-left bg-primary">Ngày nhập</th>
+        </tr>
+    </thead>
 
     <% @products.each do |product| %>
       <% filters = @global_filters.clone.merge(product_id: product.id) %>
