@@ -237,8 +237,6 @@
     <div class="col-md-6">
         <%= erp_datalist(
             url: erp_products.list_split_list_backend_products_path,
-            sortable: true,
-            keyword: true,
             global_filter: '.left-filter',
             actions: [
                 {
@@ -303,8 +301,6 @@
     <div class="col-md-6">
         <%= erp_datalist(
             url: erp_products.list_split_list_backend_products_path(alternative_only: true),
-            sortable: true,
-            keyword: true,
             global_filter: '.right-filter',
             actions: [
                 {
