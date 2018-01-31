@@ -18,6 +18,9 @@ Erp::Products::Engine.routes.draw do
           get 'ajax_preview_combine'
 
           get 'ajax_deltak_calculating'
+
+          get 'list_split'
+          post 'list_split_list'
         end
       end
     end

@@ -110,4 +110,14 @@ Erp::Products::Backend::ProductsController.class_eval do
       @avg = [(@k2[0].to_f + @k[0].to_f)/2,(@k2[1].to_f + @k[1].to_f)/2]
     end
   end
+
+  def list_split
+
+  end
+
+  def list_split_list
+    @products = Erp::Products::Product.search(params).paginate(:page => params[:page], :per_page => 20)
+
+    render layout: nil
+  end
 end

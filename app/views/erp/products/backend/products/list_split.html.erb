@@ -1,0 +1,369 @@
+<% content_for :title do %>
+    Tìm sản phẩm thay thế
+<% end %>
+
+<% content_for :page_title do %>
+    <i class="fa fa-archive"></i> Tìm sản phẩm thay thế
+<% end %>
+
+<% content_for :page_toolbar do %>
+    <%= erp_component('button/create', {
+        text: 'Thêm sản phẩm',
+        href: erp_products.new_backend_product_path,
+        class: 'btn-noborder'
+    }) %>
+    <% if Erp::Core.available?("ortho_k") %>
+        <%=
+            actions = []
+            actions << {
+                text: '<i class="fa fa-compress"></i> Ghép sản phẩm',
+                url: erp_products.combine_backend_products_path
+            }
+            actions << {
+                text: '<i class="fa fa-expand"></i> Tách sản phẩm',
+                url: erp_products.split_backend_products_path
+            }
+            erp_component('button/actions', {
+            actions: actions,
+            text: 'Ghép / Tách',
+            class: 'btn-noborder',
+            icon: 'fa fa-clone'
+        }) %>
+        <%= erp_component('button/primary', {
+            text: '<i class="glyphicon glyphicon-import"></i> Nhập từ excel'.html_safe,
+            href: erp_ortho_k.import_backend_products_path,
+            class: 'btn-noborder'
+        }) %>
+    <% end %>
+<% end %>
+
+<% content_for :top_page do %>
+<div class="row">
+    <div class="col-md-6">
+        <form class="left-filter">
+            <div class="row top-datalist">
+                <div class="col-md-3">
+                    <%= erp_form_control("dataselect", {
+                        name: 'categories',
+                        value: '',
+                        text: '',
+                        label: 'Loại hàng',
+                        placeholder: 'Chọn loại hàng',
+                        url: erp_products.dataselect_backend_categories_path(format: 'json'),
+                        #multiple: true
+                    }) %>
+                </div>
+                <% if Erp::Core.available?("ortho_k") %>
+                    <div class="col-md-3">
+                        <% diameter = Erp::Products::Property.where(name: "Đường kính").first %>
+                        <%= erp_form_control("dataselect", {
+                            name: 'diameters',
+                            value: '',
+                            text: '',
+                            label: 'Đường kính',
+                            placeholder: 'Chọn đường kính',
+                            url: erp_products.dataselect_backend_properties_values_path(format: 'json', property_id: diameter.id),
+                            #multiple: true
+                        }) %>
+                    </div>
+                    <div class="col-md-3">
+                        <% letter = Erp::Products::Property.where(name: "Chữ").first %>
+                        <%= erp_form_control("dataselect", {
+                            name: 'letters',
+                            value: '',
+                            text: '',
+                            label: 'Chữ',
+                            placeholder: letter.name,
+                            url: erp_products.dataselect_backend_properties_values_path(format: 'json', property_id: letter.id),
+                            #multiple: true
+                        }) %>
+                    </div>
+                    <div class="col-md-3">
+                        <% number = Erp::Products::Property.where(name: "Số").first %>
+                        <%= erp_form_control("dataselect", {
+                            name: 'numbers',
+                            value: '',
+                            text: '',
+                            label: 'Số',
+                            placeholder: number.name,
+                            url: erp_products.dataselect_backend_properties_values_path(format: 'json', property_id: number.id),
+                            #multiple: true
+                        }) %>
+                    </div>
+                </div>
+                <div class="row top-datalist">
+                    <div class="col-md-3">
+                        <% degree = Erp::Products::Property.where(name: "Độ").first %>
+                        <%= erp_form_control("dataselect", {
+                            name: 'degrees',
+                            value: '',
+                            text: '',
+                            label: 'Độ',
+                            placeholder: degree.name,
+                            url: erp_products.dataselect_backend_properties_values_path(format: 'json', property_id: degree.id),
+                            #multiple: true
+                        }) %>
+                    </div>
+                    <div class="col-md-3">
+                        <% degree_k = Erp::Products::Property.where(name: "Độ K").first %>
+                        <%= erp_form_control("dataselect", {
+                            name: 'degree_ks',
+                            value: '',
+                            text: '',
+                            label: 'Độ K1',
+                            placeholder: degree_k.name,
+                            url: erp_products.dataselect_backend_properties_values_path(format: 'json', property_id: degree_k.id),
+                            #multiple: true
+                        }) %>
+                    </div>
+                    <div class="col-md-3">
+                        <% degree_k2 = Erp::Products::Property.get_degree_k2 %>
+                        <%= erp_form_control("dataselect", {
+                            name: 'degree_k2s',
+                            value: '',
+                            text: '',
+                            label: 'Độ K2',
+                            placeholder: degree_k2.name,
+                            url: erp_products.dataselect_backend_properties_values_path(format: 'json', property_id: degree_k2.id),
+                            #multiple: true
+                        }) %>
+                    </div>
+                    <div class="col-md-3 mt-10">
+                        <div class="ajax-box" data-control="[name=degree_ks],[name=degree_k2s]" data-url="<%= erp_products.ajax_deltak_calculating_backend_products_path %>"></div>
+                    </div>
+                <% end %>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-6">
+        <form class="right-filter">
+            <div class="row top-datalist">
+                <div class="col-md-3">
+                    <%= erp_form_control("dataselect", {
+                        name: 'categories',
+                        value: '',
+                        text: '',
+                        label: 'Loại hàng',
+                        placeholder: 'Chọn loại hàng',
+                        url: erp_products.dataselect_backend_categories_path(format: 'json'),
+                        #multiple: true
+                    }) %>
+                </div>
+                <% if Erp::Core.available?("ortho_k") %>
+                    <div class="col-md-3">
+                        <% diameter = Erp::Products::Property.where(name: "Đường kính").first %>
+                        <%= erp_form_control("dataselect", {
+                            name: 'diameters',
+                            value: '',
+                            text: '',
+                            label: 'Đường kính',
+                            placeholder: 'Chọn đường kính',
+                            url: erp_products.dataselect_backend_properties_values_path(format: 'json', property_id: diameter.id),
+                            #multiple: true
+                        }) %>
+                    </div>
+                    <div class="col-md-3">
+                        <% letter = Erp::Products::Property.where(name: "Chữ").first %>
+                        <%= erp_form_control("dataselect", {
+                            name: 'letters',
+                            value: '',
+                            text: '',
+                            label: 'Chữ',
+                            placeholder: letter.name,
+                            url: erp_products.dataselect_backend_properties_values_path(format: 'json', property_id: letter.id),
+                            #multiple: true
+                        }) %>
+                    </div>
+                    <div class="col-md-3">
+                        <% number = Erp::Products::Property.where(name: "Số").first %>
+                        <%= erp_form_control("dataselect", {
+                            name: 'numbers',
+                            value: '',
+                            text: '',
+                            label: 'Số',
+                            placeholder: number.name,
+                            url: erp_products.dataselect_backend_properties_values_path(format: 'json', property_id: number.id),
+                            #multiple: true
+                        }) %>
+                    </div>
+                </div>
+                <div class="row top-datalist">
+                    <div class="col-md-3">
+                        <% degree = Erp::Products::Property.where(name: "Độ").first %>
+                        <%= erp_form_control("dataselect", {
+                            name: 'degrees',
+                            value: '',
+                            text: '',
+                            label: 'Độ',
+                            placeholder: degree.name,
+                            url: erp_products.dataselect_backend_properties_values_path(format: 'json', property_id: degree.id),
+                            #multiple: true
+                        }) %>
+                    </div>
+                    <div class="col-md-3">
+                        <% degree_k = Erp::Products::Property.where(name: "Độ K").first %>
+                        <%= erp_form_control("dataselect", {
+                            name: 'degree_ks',
+                            value: '',
+                            text: '',
+                            label: 'Độ K1',
+                            placeholder: degree_k.name,
+                            url: erp_products.dataselect_backend_properties_values_path(format: 'json', property_id: degree_k.id),
+                            #multiple: true
+                        }) %>
+                    </div>
+                    <div class="col-md-3">
+                        <% degree_k2 = Erp::Products::Property.get_degree_k2 %>
+                        <%= erp_form_control("dataselect", {
+                            name: 'degree_k2s',
+                            value: '',
+                            text: '',
+                            label: 'Độ K2',
+                            placeholder: degree_k2.name,
+                            url: erp_products.dataselect_backend_properties_values_path(format: 'json', property_id: degree_k2.id),
+                            #multiple: true
+                        }) %>
+                    </div>
+                    <div class="col-md-3 mt-10">
+                        <div class="ajax-box" data-control="[name=degree_ks],[name=degree_k2s]" data-url="<%= erp_products.ajax_deltak_calculating_backend_products_path %>"></div>
+                    </div>
+                <% end %>
+            </div>
+        </form>
+    </div>
+</div>
+<% end %>
+<div class="row">
+    <div class="col-md-6">
+        <%= erp_datalist(
+            url: erp_products.list_split_list_backend_products_path,
+            sortable: true,
+            keyword: true,
+            global_filter: '.left-filter',
+            actions: [
+                {
+                    text: '<i class="fa fa-ban"></i> '+t('archive'),
+                    url: erp_products.archive_all_backend_products_path,
+                    data_method: 'PUT',
+                    data_confirm: t('.archive_confirm')
+                },
+                {
+                    text: '<i class="fa fa-check"></i> '+t('unarchive'),
+                    url: erp_products.unarchive_all_backend_products_path,
+                    data_method: 'PUT',
+                    data_confirm: t('.unarchive_confirm')
+                },
+                {
+                    divider: true
+                },
+                {
+                    text: '<i class="fa fa-trash"></i> '+t('.delete'),
+                    url: erp_products.delete_all_backend_products_path,
+                    data_method: 'DELETE',
+                    data_confirm: t('.delete_confirm')
+                }
+            ],
+            filters: [
+                {
+                    text: t('.archived'), name: 'show_archived', value: true, checked: false
+                },
+                {
+                    divider: true
+                },
+                {
+                    text: 'Len ngoài bảng', name: 'is_outside', value: true, checked: false
+                },
+            ],
+            columns: [
+                {
+                    text: t('.code'), name: 'code', value: true, checked: false
+                },
+                {
+                    text: t('.name'), name: 'name', value: true, checked: true
+                },
+                {
+                    text: t('.category'), name: 'category', value: true, checked: true
+                },
+                {
+                    text: t('.on_hand'), name: 'on_hand', value: true, checked: true
+                },
+                {
+                    text: t('status'), name: 'status', value: true, checked: true
+                },
+                {
+                    text: t('creator'), name: 'creator', value: true, checked: false
+                },
+                {
+                    text: t('created_at'), name: 'created_at', value: true, checked: false
+                }
+            ],
+            sort: { sort_by: 'erp_products_products.created_at', sort_direction: 'desc' }
+        ) %>
+    </div>
+    <div class="col-md-6">
+        <%= erp_datalist(
+            url: erp_products.list_split_list_backend_products_path(alternative_only: true),
+            sortable: true,
+            keyword: true,
+            global_filter: '.right-filter',
+            actions: [
+                {
+                    text: '<i class="fa fa-ban"></i> '+t('archive'),
+                    url: erp_products.archive_all_backend_products_path,
+                    data_method: 'PUT',
+                    data_confirm: t('.archive_confirm')
+                },
+                {
+                    text: '<i class="fa fa-check"></i> '+t('unarchive'),
+                    url: erp_products.unarchive_all_backend_products_path,
+                    data_method: 'PUT',
+                    data_confirm: t('.unarchive_confirm')
+                },
+                {
+                    divider: true
+                },
+                {
+                    text: '<i class="fa fa-trash"></i> '+t('.delete'),
+                    url: erp_products.delete_all_backend_products_path,
+                    data_method: 'DELETE',
+                    data_confirm: t('.delete_confirm')
+                }
+            ],
+            filters: [
+                {
+                    text: t('.archived'), name: 'show_archived', value: true, checked: false
+                },
+                {
+                    divider: true
+                },
+                {
+                    text: 'Len ngoài bảng', name: 'is_outside', value: true, checked: false
+                },
+            ],
+            columns: [
+                {
+                    text: t('.code'), name: 'code', value: true, checked: false
+                },
+                {
+                    text: t('.name'), name: 'name', value: true, checked: true
+                },
+                {
+                    text: t('.category'), name: 'category', value: true, checked: true
+                },
+                {
+                    text: t('.on_hand'), name: 'on_hand', value: true, checked: true
+                },
+                {
+                    text: t('status'), name: 'status', value: true, checked: true
+                },
+                {
+                    text: t('creator'), name: 'creator', value: true, checked: false
+                },
+                {
+                    text: t('created_at'), name: 'created_at', value: true, checked: false
+                }
+            ],
+            sort: { sort_by: 'erp_products_products.created_at', sort_direction: 'desc' }
+        ) %>
+    </div>
+</div>
