@@ -24,18 +24,20 @@ function getNotification(show_alert) {
                     current_bagde = '';
                 }
 
-                if ((current_bagde.trim() == '' && new_badge.trim() != '') || (new_badge != '' && current_bagde != '' && parseInt(new_badge) > parseInt(current_bagde))) {
-                    if (cl == 'notification-inventory_stock_checking_orders_count') {
-                        msg = 'Có đơn hàng mới cần kiểm tra';
-                    }
+                if (current_bagde.length) {
+                    if ((current_bagde.trim() == '' && new_badge.trim() != '') || (new_badge != '' && current_bagde != '' && parseInt(new_badge) > parseInt(current_bagde))) {
+                        if (cl == 'notification-inventory_stock_checking_orders_count') {
+                            msg = 'Có đơn hàng mới cần kiểm tra';
+                        }
 
-                    if (cl == 'notification-sales_get_waiting_sales_orders') {
-                        msg = 'Có đơn hàng đã được kiểm tra';
-                    }
+                        if (cl == 'notification-sales_get_waiting_sales_orders') {
+                            msg = 'Có đơn hàng đã được kiểm tra';
+                        }
 
-                    if (msg && show_alert) {
-                        showAlert('success', msg, 'Thông báo');
-                        new_noti = true;
+                        if (msg && show_alert) {
+                            showAlert('success', msg, 'Thông báo');
+                            new_noti = true;
+                        }
                     }
                 }
             }
