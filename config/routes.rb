@@ -75,6 +75,7 @@ Erp::OrthoK::Engine.routes.draw do
           post 'stock_transfering_table'
           get 'import_export_report'
           post 'import_export_report_table'
+          get 'import_export_report_xlsx'
           get 'export_report'
           post 'export_report_table'
 

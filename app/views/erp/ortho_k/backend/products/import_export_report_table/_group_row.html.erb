@@ -1,0 +1,70 @@
+<%
+    group_name_colspan = (get_columns(params).include?("record_date") ? 1 : 0) +
+        (get_columns(params).include?("voucher_date") ? 1 : 0) +
+        (get_columns(params).include?("voucher_code") ? 1 : 0) +
+        (get_columns(params).include?("supplier_code") ? 1 : 0) +
+        (get_columns(params).include?("supplier_name") ? 1 : 0) +
+        (get_columns(params).include?("customer_code") ? 1 : 0) +
+        (get_columns(params).include?("customer_name") ? 1 : 0)
+%>
+
+<tr>
+    <%= "<td class=\"bold\" colspan='#{group_name_colspan}'>#{item[:group_name]}</td>".html_safe if group_name_colspan > 0 %>
+    <% if get_columns(params).include?("code") %>
+    <td class="text-left text-nowrap"></td>
+    <% end %>
+    <% if get_columns(params).include?("diameter") %>
+    <td class="text-left text-nowrap"></td>
+    <% end %>
+    <% if get_columns(params).include?("category") %>
+    <td class="text-left text-nowrap"></td>
+    <% end %>
+    <% if get_columns(params).include?("product_name") %>
+    <td class="text-left text-nowrap"></td>
+    <% end %>
+    <% if get_columns(params).include?("description") %>
+    <td class="text-left text-nowrap"></td>
+    <% end %>
+    <% if get_columns(params).include?("status") %>
+    <td class="text-left text-nowrap"></td>
+    <% end %>
+    <% if get_columns(params).include?("warehouse") %>
+    <td class="text-left text-nowrap"></td>
+    <% end %>
+    <% if get_columns(params).include?("unit") %>
+    <td class="text-left text-nowrap"></td>
+    <% end %>
+    <% if get_columns(params).include?("unknown_1") %>
+    <td class="text-right stock-num text-primary"></td>
+    <% end %>
+    <% if get_columns(params).include?("unknown_2") %>
+    <td class="text-right stock-num text-primary"></td>
+    <% end %>
+    <% if get_columns(params).include?("quantity") %>
+    <td class="text-center stock-num bg-warning"></td>
+    <% end %>
+    <% if get_columns(params).include?("p_price") %>
+    <td class="text-right stock-num text-primary"></td>
+    <% end %>
+    <% if get_columns(params).include?("tax_amount") %>
+    <td class="text-right stock-num font-green-seagreen"></td>
+    <% end %>
+    <% if get_columns(params).include?("other_fees") %>
+    <td class="text-right stock-num font-green-seagreen"></td>
+    <% end %>
+    <% if get_columns(params).include?("unknown_3") %>
+    <td class="text-right stock-num text-warning"></td>
+    <% end %>
+    <% if get_columns(params).include?("unknown_4") %>
+    <td class="text-right stock-num font-yellow-gold"></td>
+    <% end %>
+    <% if get_columns(params).include?("s_price") %>
+    <td class="text-right stock-num text-primary"></td>
+    <% end %>
+    <% if get_columns(params).include?("unknown_5") %>
+    <td class="text-right stock-num font-yellow-gold"></td>
+    <% end %>
+    <% if get_columns(params).include?("note") %>
+    <td class="text-left text-nowrap"></td>
+    <% end %>
+</tr>

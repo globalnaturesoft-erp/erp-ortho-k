@@ -7,7 +7,92 @@
 <% end %>
 
 <% content_for :global_filter do %>
-    
+    <div class="row">
+        <div class="col-md-2">
+            <%= erp_form_control('date', {
+                label: t('.from_date'),
+                name: 'from_date',
+                placeholder: t('.select_from_date')
+            }) %>
+        </div>
+        <div class="col-md-2">
+            <%= erp_form_control('date', {
+                label: t('.to_date'),
+                name: 'to_date',
+                placeholder: t('.select_to_date')
+            }) %>
+        </div>
+        <div class="col-md-2">
+            <%= erp_form_control("dataselect", {
+                name: 'period',
+                label: 'Thời gian cố định',
+                placeholder: 'Chọn lọc theo ngày chứng từ',
+                url: erp_periods.dataselect_backend_periods_path(format: 'json')
+            }) %>
+        </div>
+        <div class="col-md-2">
+            <%= erp_form_control('select', {
+                name: 'sort_by',
+                label: 'Sắp xếp',
+                placeholder: 'Chọn sắp xếp theo...',
+                options: Erp::Products::Product.sort_by_dates
+            }) %>
+        </div>
+        <div class="col-md-2">
+            <%= erp_form_control('select', {
+                name: 'order_direction',
+                label: 'Hướng (Tăng/Giảm)',
+                placeholder: 'Chọn hướng sắp xếp...',
+                options: Erp::Products::Product.get_order_direction
+            }) %>
+        </div>
+        <div class="col-md-2">
+            <%= erp_form_control('select', {
+                name: 'grouped_by',
+                label: 'Nhóm theo',
+                placeholder: 'Chọn nhóm theo...',
+                options: Erp::Products::Product.get_grouped_bys
+            }) %>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2">
+            <%= erp_form_control("dataselect", {
+                name: 'customer_id',
+                label: t('.filter_customer'),
+                placeholder: t('.chooose_customer'),
+                url: erp_contacts.dataselect_backend_contacts_path(format: 'json', is_customer: true),
+                multiple: true
+            }) %>
+        </div>
+        <div class="col-md-2">
+            <%= erp_form_control("dataselect", {
+                name: 'warehouse_id',
+                label: t('.filter_warehouse'),
+                placeholder: t('.choose_warehouse'),
+                url: erp_warehouses.dataselect_backend_warehouses_path(format: 'json'),
+                multiple: true
+            }) %>
+        </div>
+        <div class="col-md-2">
+            <%= erp_form_control("dataselect", {
+                name: 'category_id',
+                label: t('.filter_category'),
+                placeholder: t('.choose_category'),
+                url: erp_products.dataselect_backend_categories_path(format: 'json'),
+                multiple: true
+            }) %>
+        </div>
+        <div class="col-md-3">
+            <%= erp_form_control("dataselect", {
+                name: 'product_id',
+                label: t('.filter_product'),
+                placeholder: t('.chooose_product'),
+                url: erp_products.dataselect_backend_products_path(format: 'json'),
+                multiple: true
+            }) %>
+        </div>
+    </div>
 <% end %>
 
 <%= erp_datalist(

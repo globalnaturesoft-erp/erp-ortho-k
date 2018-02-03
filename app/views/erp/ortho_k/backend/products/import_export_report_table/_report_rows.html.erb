@@ -1,0 +1,90 @@
+<% rows.each_with_index do |row,index| %>
+    <tr>
+        <% if get_columns(params).include?("record_date") %>
+        <td class="text-left text-nowrap"><%= format_date(row[:record_date]) %></td>
+        <% end %>
+        <% if get_columns(params).include?("voucher_date") %>
+        <td class="text-left text-nowrap"><%= format_date(row[:voucher_date]) %></td>
+        <% end %>
+        <% if get_columns(params).include?("voucher_code") %>
+        <td class="text-left text-nowrap"><%= row[:voucher_code] %></td>
+        <% end %>
+        <% if get_columns(params).include?("supplier_code") %>
+        <td class="text-<%= row[:supplier_code].present? ? 'left' : 'center' %> text-nowrap">
+            <%= row[:supplier_code].present? ? row[:supplier_code] : '--' %>
+        </td>
+        <% end %>
+        <% if get_columns(params).include?("supplier_name") %>
+        <td class="text-<%= row[:supplier_name].present? ? 'left' : 'center' %> text-nowrap">
+            <%= row[:supplier_name].present? ? row[:supplier_name] : '--' %>
+        </td>
+        <% end %>
+        <% if get_columns(params).include?("customer_code") %>
+        <td class="text-<%= row[:customer_code].present? ? 'left' : 'center' %> text-nowrap">
+            <%= row[:customer_code].present? ? row[:customer_code] : '--' %>
+        </td>
+        <% end %>
+        <% if get_columns(params).include?("customer_name") %>
+        <td class="text-<%= row[:customer_name].present? ? 'left' : 'center' %> text-nowrap">
+            <%= row[:customer_name].present? ? row[:customer_name] : '--' %>
+        </td>
+        <% end %>
+        <% if get_columns(params).include?("code") %>
+        <td class="text-left text-nowrap"><%= row[:product_code] %></td>
+        <% end %>
+        <% if get_columns(params).include?("diameter") %>
+        <td class="text-left text-nowrap"><%= row[:diameter] %></td>
+        <% end %>
+        <% if get_columns(params).include?("category") %>
+        <td class="text-left text-nowrap"><%= row[:category] %></td>
+        <% end %>
+        <% if get_columns(params).include?("product_name") %>
+        <td class="text-left text-nowrap"><%= row[:product_name] %></td>
+        <% end %>
+        <% if get_columns(params).include?("description") %>
+        <td class="text-left text-nowrap"><%= t(".#{row[:record_type]}") %></td>
+        <% end %>
+        <% if get_columns(params).include?("status") %>
+        <td class="text-left text-nowrap"><%= row[:state] %></td>
+        <% end %>
+        <% if get_columns(params).include?("warehouse") %>
+        <td class="text-left text-nowrap"><%= row[:warehouse] %></td>
+        <% end %>
+        <% if get_columns(params).include?("unit") %>
+        <td class="text-left text-nowrap"><%= row[:unit] %></td>
+        <% end %>
+        <% if get_columns(params).include?("unknown_1") %>
+        <td class="text-right stock-num text-primary"><%= '?' %></td><!--format_number((100..500).to_a.sample*1000)-->
+        <% end %>
+        <% if get_columns(params).include?("unknown_2") %>
+        <td class="text-right stock-num text-primary"><%= '?' %></td>
+        <% end %>
+        <% if get_columns(params).include?("quantity") %>
+        <td class="text-center stock-num bg-warning"><%= row[:quantity] %></td>
+        <% end %>
+        <% if get_columns(params).include?("p_price") %>
+        <td class="text-right stock-num text-primary"><%= '?' %></td>
+        <% end %>
+        <% if get_columns(params).include?("tax_amount") %>
+        <td class="text-right stock-num font-green-seagreen"><%= '?' %></td>
+        <% end %>
+        <% if get_columns(params).include?("other_fees") %>
+        <td class="text-right stock-num font-green-seagreen"><%= '?' %></td>
+        <% end %>
+        <% if get_columns(params).include?("unknown_3") %>
+        <td class="text-right stock-num text-warning"><%= '?' %></td>
+        <% end %>
+        <% if get_columns(params).include?("unknown_4") %>
+        <td class="text-right stock-num font-yellow-gold"><%= '?' %></td>
+        <% end %>
+        <% if get_columns(params).include?("s_price") %>
+        <td class="text-right stock-num text-primary"><%= '?' %></td>
+        <% end %>
+        <% if get_columns(params).include?("unknown_5") %>
+        <td class="text-right stock-num font-yellow-gold"><%= '?' %></td>
+        <% end %>
+        <% if get_columns(params).include?("note") %>
+        <td class="text-left text-nowrap"><%= row[:description] %></td>
+        <% end %>
+    </tr>
+<% end %>

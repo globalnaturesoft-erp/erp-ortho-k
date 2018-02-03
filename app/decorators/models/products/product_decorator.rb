@@ -96,6 +96,17 @@ Erp::Products::Product.class_eval do
   TYPE_DAMAGE_RECORD = 'damage_record'
   TYPE_STOCK_CHECK = 'stock_check'
   TYPE_STATE_CHECK = 'state_check'
+  
+  SORT_BY_RECORD_DATE = 'record_date'
+  SORT_BY_VOUCHER_DATE = 'voucher_date'
+  
+  ORDER_BY_DESC = 'desc'
+  ORDER_BY_ASC = 'asc'
+  
+  GROUPED_BY_DEFAULT = 'grouped_by_default'
+  GROUPED_BY_CUSTOMER = 'grouped_by_customer'
+  GROUPED_BY_PRODUCT_CODE = 'grouped_by_product_code'
+  GROUPED_BY_PRODUCT_CATEGORY = 'grouped_by_product_category'
 
   def self.get_import_export_type_options()
     [
@@ -114,10 +125,123 @@ Erp::Products::Product.class_eval do
       {text: I18n.t('state_check'), value: Erp::Products::Product::TYPE_STATE_CHECK}
     ]
   end
+  
+  def self.sort_by_dates()
+    [
+      {
+        text: I18n.t('erp.ortho_k.backend.products.import_export_report.record_date'),
+        value: Erp::Products::Product::SORT_BY_RECORD_DATE
+      },
+      {
+        text: I18n.t('erp.ortho_k.backend.products.import_export_report.voucher_date'),
+        value: Erp::Products::Product::SORT_BY_VOUCHER_DATE
+      }
+    ]
+  end
+  
+  def self.get_order_direction()
+    [
+      {text: I18n.t('descending'), value: Erp::Products::Product::ORDER_BY_DESC},
+      {text: I18n.t('ascending'), value: Erp::Products::Product::ORDER_BY_ASC}
+    ]
+  end
+  
+  def self.get_grouped_bys()
+    [
+      {
+        text: I18n.t('default'),
+        value: Erp::Products::Product::GROUPED_BY_DEFAULT
+      },
+      {
+        text: I18n.t('erp.ortho_k.backend.products.import_export_report.customer'),
+        value: Erp::Products::Product::GROUPED_BY_CUSTOMER
+      },
+      {
+        text: I18n.t('erp.ortho_k.backend.products.import_export_report.product_code'),
+        value: Erp::Products::Product::GROUPED_BY_PRODUCT_CODE
+      },
+      {
+        text: I18n.t('erp.ortho_k.backend.products.import_export_report.category'),
+        value: Erp::Products::Product::GROUPED_BY_PRODUCT_CATEGORY
+      },
+    ]
+  end
 
   # get import report
   def import_export_report(params={})
     return Erp::Products::Product.import_export_report(params.merge({product_id: self.id}))
+  end
+  
+  # group import export
+  def self.group_import_export(params={}, limit=nil)
+    rows = self.import_export_report(params, limit)[:data]
+    
+    col_value = :record_date
+    col_text = :record_date
+    
+    sort_value
+    
+    if params[:group_by] == Erp::Products::Product::GROUPED_BY_DEFAULT
+      col_value = :record_date
+      col_text = :record_date
+    end
+    
+    if params[:group_by] == Erp::Products::Product::GROUPED_BY_CUSTOMER
+      col_value = :customer_code
+      col_text = :customer_name
+    end
+    
+    if params[:group_by] == Erp::Products::Product::GROUPED_BY_PRODUCT_CODE
+      col_value = :product_code
+      col_text = :product_code
+    end
+    
+    if params[:group_by] == Erp::Products::Product::GROUPED_BY_PRODUCT_CATEGORY
+      col_value = :customer_code
+      col_text = :customer_name
+    end
+    
+    if params[:sort_by] == Erp::Products::Product::SORT_BY_RECORD_DATE
+      col_value = :record_date
+    end
+    
+    if params[:sort_by] == Erp::Products::Product::SORT_BY_VOUCHER_DATE
+      col_value = :voucher_date
+    end
+    
+    rows = rows.sort_by! {|a| a[col_value].to_s}
+    rows.each_with_index do |row, index|
+      rows[index][col_value] = nil if !row[col_value].present?
+    end
+    # grouping
+    i_code = -1
+    grouped_rows = []
+    item = nil
+    rows.each do |row|
+      if i_code != row[col_value]
+        ## Finish group
+        if !item.nil?
+          # sorts rows
+          if params[:order_by] == Erp::Products::Product::ORDER_BY_ASC
+            item[:rows] = item[:rows].sort_by! {|a| a[col_value].to_s}
+          elsif params[:order_by] == Erp::Products::Product::ORDER_BY_DESC
+            item[:rows] = item[:rows].sort_by! {|a| a[col_value].to_s}.reverse!
+          end
+          grouped_rows << item.clone
+        end
+        
+        # new group
+        item = {}
+        item[:group_name] = row[col_text].present? ? row[col_text] : I18n.t('erp.ortho_k.backend.products.import_export_report.others')
+        item[:sort_code] = row[col_text].present? ? row[col_text] : 'zzz'
+        item[:rows] = [row]
+      else
+        item[:rows] << row
+      end
+      i_code = row[col_value]
+    end
+    
+    return grouped_rows.sort_by! {|a| a[:sort_code].to_s}
   end
 
   # get import report

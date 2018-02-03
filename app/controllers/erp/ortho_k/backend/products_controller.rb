@@ -363,10 +363,16 @@ module Erp
 
           @from_date = @global_filters[:from_date].to_date
           @to_date = @global_filters[:to_date].to_date
+          
+          @group_by = @global_filters[:group_by]
 
           if @from_date.present? and @to_date.present?
-            @rows = Erp::Products::Product.import_export_report(@global_filters)[:data].sort_by { |n| n[:voucher_date] }.reverse!
-            @totals = Erp::Products::Product.import_export_report(@global_filters)[:total]
+            if @group_by.present? and !@group_by.include?(Erp::Products::Product::GROUPED_BY_DEFAULT)
+              @groups = Erp::Products::Product.group_import_export(@global_filters)
+            else
+              @rows = Erp::Products::Product.import_export_report(@global_filters)[:data].sort_by { |n| n[:voucher_date] }.reverse!
+              @totals = Erp::Products::Product.import_export_report(@global_filters)[:total]
+            end
           end
 
           render layout: nil

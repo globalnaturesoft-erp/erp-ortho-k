@@ -1,329 +1,363 @@
-<%
-    total_colspan_1 = (get_columns(params).include?("record_date") ? 1 : 0) +
-        (get_columns(params).include?("voucher_date") ? 1 : 0) +
-        (get_columns(params).include?("voucher_code") ? 1 : 0) +
-        (get_columns(params).include?("supplier_code") ? 1 : 0) +
-        (get_columns(params).include?("supplier_name") ? 1 : 0) +
-        (get_columns(params).include?("customer_code") ? 1 : 0) +
-        (get_columns(params).include?("customer_name") ? 1 : 0) +
-        (get_columns(params).include?("product_name") ? 1 : 0) +
-        (get_columns(params).include?("description") ? 1 : 0) +
-        (get_columns(params).include?("status") ? 1 : 0) +
-        (get_columns(params).include?("warehouse") ? 1 : 0) +
-        (get_columns(params).include?("unit") ? 1 : 0)
-    total_colspan_2 = (get_columns(params).include?("p_price") ? 1 : 0)
-    total_colspan_3 = (get_columns(params).include?("s_price") ? 1 : 0)
-    total_colspan_4 = (get_columns(params).include?("patient_name") ? 1 : 0) +
-        (get_columns(params).include?("patient_state") ? 1 : 0) +
-        (get_columns(params).include?("eye_info") ? 1 : 0) +
-        (get_columns(params).include?("salesperson_name") ? 1 : 0) +
-        (get_columns(params).include?("salesperson_percent") ? 1 : 0)
-    total_colspan_5 = (get_columns(params).include?("goods_discount_percent") ? 1 : 0)
+<% if @from_date.present? and @to_date.present? %>
+    <%
+        total_colspan_1 = (get_columns(params).include?("record_date") ? 1 : 0) +
+            (get_columns(params).include?("voucher_date") ? 1 : 0) +
+            (get_columns(params).include?("voucher_code") ? 1 : 0) +
+            (get_columns(params).include?("supplier_code") ? 1 : 0) +
+            (get_columns(params).include?("supplier_name") ? 1 : 0) +
+            (get_columns(params).include?("customer_code") ? 1 : 0) +
+            (get_columns(params).include?("customer_name") ? 1 : 0) +
+            (get_columns(params).include?("product_name") ? 1 : 0) +
+            (get_columns(params).include?("description") ? 1 : 0) +
+            (get_columns(params).include?("status") ? 1 : 0) +
+            (get_columns(params).include?("warehouse") ? 1 : 0) +
+            (get_columns(params).include?("unit") ? 1 : 0)
+        total_colspan_2 = (get_columns(params).include?("p_price") ? 1 : 0)
+        total_colspan_3 = (get_columns(params).include?("s_price") ? 1 : 0)
+        total_colspan_4 = (get_columns(params).include?("patient_name") ? 1 : 0) +
+            (get_columns(params).include?("patient_state") ? 1 : 0) +
+            (get_columns(params).include?("eye_info") ? 1 : 0) +
+            (get_columns(params).include?("salesperson_name") ? 1 : 0) +
+            (get_columns(params).include?("salesperson_percent") ? 1 : 0)
+        total_colspan_5 = (get_columns(params).include?("goods_discount_percent") ? 1 : 0)
+        
+        customer_colspan = (get_columns(params).include?("customer_code") ? 1 : 0) +
+            (get_columns(params).include?("customer_name") ? 1 : 0)
+        purchase_price_colspan = (get_columns(params).include?("p_price") ? 1 : 0) +
+            (get_columns(params).include?("tax_amount") ? 1 : 0) +
+            (get_columns(params).include?("other_fees") ? 1 : 0) +
+            (get_columns(params).include?("unknown_3") ? 1 : 0) +
+            (get_columns(params).include?("unknown_4") ? 1 : 0)
+        sales_price_colspan = (get_columns(params).include?("s_price") ? 1 : 0) +
+            (get_columns(params).include?("unknown_5") ? 1 : 0)
+    %>
     
-    customer_colspan = (get_columns(params).include?("customer_code") ? 1 : 0) +
-        (get_columns(params).include?("customer_name") ? 1 : 0)
-    purchase_price_colspan = (get_columns(params).include?("p_price") ? 1 : 0) +
-        (get_columns(params).include?("tax_amount") ? 1 : 0) +
-        (get_columns(params).include?("other_fees") ? 1 : 0) +
-        (get_columns(params).include?("unknown_3") ? 1 : 0) +
-        (get_columns(params).include?("unknown_4") ? 1 : 0)
-    sales_price_colspan = (get_columns(params).include?("s_price") ? 1 : 0) +
-        (get_columns(params).include?("unknown_5") ? 1 : 0)
-%>
-
-<div class="table-scrollable">
-    <table class="table table-bordered table-advance order-column" id="">
-        <tr>
-            <%= "<td colspan='#{total_colspan_1}'></td>".html_safe if total_colspan_1 > 0 %>
-            <% if get_columns(params).include?("unknown_1") %>
-            <td class="text-right stock-num text-bold text-primary"><%= format_number((400..999).to_a.sample*1000) %></td>
-            <% end %>
-            <% if get_columns(params).include?("unknown_2") %>
-            <td class="text-right stock-num text-bold text-primary"><%= format_number((400..999).to_a.sample*1000) %></td>
-            <% end %>
-            <% if get_columns(params).include?("quantity") %>
-            <td class="text-center stock-num text-bold bg-warning"><%= @totals[:quantity] %></td>
-            <% end %>
-            <%= "<td colspan='#{total_colspan_2}'></td>".html_safe if total_colspan_2 > 0 %>
-            <% if get_columns(params).include?("tax_amount") %>
-            <td class="text-right stock-num text-bold font-green-seagreen"><%= format_number((50..500).to_a.sample*1000) %></td>
-            <% end %>
-            <% if get_columns(params).include?("other_fees") %>
-            <td class="text-right stock-num text-bold font-green-seagreen"><%= format_number((50..500).to_a.sample*1000) %></td>
-            <% end %>
-            <% if get_columns(params).include?("unknown_3") %>
-            <td class="text-right stock-num text-bold text-warning"><%= format_number((400..999).to_a.sample*1000) %></td>
-            <% end %>
-            <% if get_columns(params).include?("unknown_4") %>
-            <td class="text-right stock-num text-bold font-yellow-gold"><%= format_number((400..999).to_a.sample*1000) %></td>
-            <% end %>
-            <% if get_columns(params).include?("s_price") %>
-            <%= "<td colspan='#{total_colspan_3}'></td>".html_safe if total_colspan_3 > 0 %>
-            <% end %>
-            <% if get_columns(params).include?("unknown_5") %>
-            <td class="text-right stock-num text-bold font-yellow-gold"><%= format_number(@totals[:sales_total_amount]) %></td>
-            <% end %>
-            <%= "<td colspan='#{total_colspan_4}'></td>".html_safe if total_colspan_4 > 0 %>
-            <% if get_columns(params).include?("salesperson_commission_amount") %>
-            <td class="text-right stock-num text-bold font-yellow-gold"><%= format_number((400..999).to_a.sample*1000) %></td>
-            <% end %>
-            <%= "<td colspan='#{total_colspan_5}'></td>".html_safe if total_colspan_5 > 0 %>
-            <% if get_columns(params).include?("goods_discount_amount") %>
-            <td class="text-right stock-num text-bold font-yellow-gold"><%= format_number((400..999).to_a.sample*1000) %></td>
-            <% end %>
-            <% if get_columns(params).include?("customer_commission") %>
-            <td class="text-right stock-num text-bold font-yellow-gold"><%= format_number((400..999).to_a.sample*1000) %></td>
-            <% end %>
-            <% if get_columns(params).include?("note") %>
-            <td></td>
-            <% end %>
-        </tr>
-        <tr>
-            <% if get_columns(params).include?("record_date") %>
-                <th class="bg-yellow-mint bg-font-yellow-mint text-nowrap text-center" rowspan="2"><%= t('.record_date') %></th>
-            <% end %>
-            <% if get_columns(params).include?("voucher_date") %>
-                <th class="bg-yellow-mint bg-font-yellow-mint text-nowrap text-center" rowspan="2"><%= t('.voucher_date') %></th>
-            <% end %>
-            <% if get_columns(params).include?("voucher_code") %>
-                <th class="bg-yellow-mint bg-font-yellow-mint text-nowrap text-center" rowspan="2"><%= t('.voucher_code') %></th>
-            <% end %>
-            <% if get_columns(params).include?("customer_code") or get_columns(params).include?("customer_name") %>
-                <th class="bg-yellow-mint bg-font-yellow-mint text-nowrap text-center" colspan="<%= customer_colspan %>"><%= t('.customer') %></th>
-            <% end %>
-            <% if get_columns(params).include?("product_name") %>
-                <th class="bg-yellow-mint bg-font-yellow-mint text-nowrap text-center" rowspan="2" width="7%"><%= t('.product_name') %></th>
-            <% end %>
-            <% if get_columns(params).include?("description") %>
-                <th class="bg-yellow-mint bg-font-yellow-mint text-nowrap text-center" rowspan="2" width="7%"><%= t('.description') %></th>
-            <% end %>
-            <% if get_columns(params).include?("status") %>
-                <th class="bg-yellow-mint bg-font-yellow-mint text-nowrap text-center" rowspan="2" width="7%"><%= t('.status') %></th>
-            <% end %>
-            <% if get_columns(params).include?("warehouse") %>
-                <th class="bg-yellow-mint bg-font-yellow-mint text-nowrap text-center" rowspan="2" width="7%"><%= t('.warehouse') %></th>
-            <% end %>
-            <% if get_columns(params).include?("unit") %>
-                <th class="bg-yellow-mint bg-font-yellow-mint text-nowrap text-center" rowspan="2" width="7%"><%= t('.unit') %></th>
-            <% end %>
-            <% if get_columns(params).include?("unknown_1") %>
-                <th class="bg-yellow-mint bg-font-yellow-mint text-nowrap text-center" rowspan="2" width="7%"><%= t('.unknown_1') %></th>
-            <% end %>
-            <% if get_columns(params).include?("unknown_2") %>
-                <th class="bg-yellow-mint bg-font-yellow-mint text-nowrap text-center" rowspan="2" width="7%"><%= t('.unknown_2') %></th>
-            <% end %>
-            <% if get_columns(params).include?("quantity") %>
-                <th class="bg-yellow-mint bg-font-yellow-mint text-nowrap text-center" rowspan="2" width="7%"><%= t('.quantity') %></th>
-            <% end %>
-            <% if get_columns(params).include?("p_price") or get_columns(params).include?("tax_amount") or
-                get_columns(params).include?("other_fees") or get_columns(params).include?("unknown_3") or get_columns(params).include?("unknown_4") %>
-                <th class="bg-yellow-mint bg-font-yellow-mint text-nowrap text-center" colspan="<%= purchase_price_colspan %>"><%= t('.purchase_price') %></th>
-            <% end %>
-            <% if get_columns(params).include?("s_price") or get_columns(params).include?("unknown_5") %>
-                <th class="bg-yellow-mint bg-font-yellow-mint text-nowrap text-center" colspan="<%= sales_price_colspan %>"><%= t('.sales_price') %></th>
-            <% end %>
-            <% if get_columns(params).include?("patient_name") or get_columns(params).include?("patient_state") or get_columns(params).include?("eye_info") %>
-                <th class="bg-yellow-mint bg-font-yellow-mint text-nowrap text-center" colspan="3"><%= t('.patient') %></th>
-            <% end %>
-            <% if get_columns(params).include?("salesperson_name") or get_columns(params).include?("salesperson_percent") or get_columns(params).include?("salesperson_commission_amount") %>
-                <th class="bg-yellow-mint bg-font-yellow-mint text-nowrap text-center" colspan="3"><%= t('.salesperson') %></th>
-            <% end %>
-            <% if get_columns(params).include?("goods_discount_percent") or get_columns(params).include?("goods_discount_amount") %>
-                <th class="bg-yellow-mint bg-font-yellow-mint text-nowrap text-center" colspan="2"><%= t('.goods') %></th>
-            <% end %>
-            <% if get_columns(params).include?("customer_commission") %>
-                <th class="bg-yellow-mint bg-font-yellow-mint text-nowrap text-center" rowspan="2" width="7%"><%= t('.customer_commission') %></th>
-            <% end %>
-            <% if get_columns(params).include?("note") %>
-                <th class="bg-yellow-mint bg-font-yellow-mint text-nowrap text-center" rowspan="2" width="7%"><%= t('.note') %></th>
-            <% end %>
-        </tr>
-        <tr>
-            <% if get_columns(params).include?("customer_code") %>
-            <th class="bg-yellow-mint bg-font-yellow-mint text-nowrap text-center" width="7%"><%= t('.customer_code') %></th>
-            <% end %>
-            <% if get_columns(params).include?("customer_name") %>
-            <th class="bg-yellow-mint bg-font-yellow-mint text-nowrap text-center" width="7%"><%= t('.customer_name') %></th>
-            <% end %>
-            <% if get_columns(params).include?("p_price") %>
-            <th class="bg-yellow-mint bg-font-yellow-mint text-nowrap text-center" width="7%"><%= t('.p_price') %></th>
-            <% end %>
-            <% if get_columns(params).include?("tax_amount") %>
-            <th class="bg-yellow-mint bg-font-yellow-mint text-nowrap text-center" width="7%"><%= t('.tax_amount') %></th>
-            <% end %>
-            <% if get_columns(params).include?("other_fees") %>
-            <th class="bg-yellow-mint bg-font-yellow-mint text-nowrap text-center" width="7%"><%= t('.other_fees') %></th>
-            <% end %>
-            <% if get_columns(params).include?("unknown_3") %>
-            <th class="bg-yellow-mint bg-font-yellow-mint text-nowrap text-center" width="7%"><%= t('.unknown_3') %></th>
-            <% end %>
-            <% if get_columns(params).include?("unknown_4") %>
-            <th class="bg-yellow-mint bg-font-yellow-mint text-nowrap text-center" width="7%"><%= t('.unknown_4') %></th>
-            <% end %>
-            <% if get_columns(params).include?("s_price") %>
-            <th class="bg-yellow-mint bg-font-yellow-mint text-nowrap text-center" width="7%"><%= t('.s_price') %></th>
-            <% end %>
-            <% if get_columns(params).include?("unknown_5") %>
-            <th class="bg-yellow-mint bg-font-yellow-mint text-nowrap text-center" width="7%"><%= t('.unknown_5') %></th>
-            <% end %>
-            <% if get_columns(params).include?("patient_name") %>
-            <th class="bg-yellow-mint bg-font-yellow-mint text-nowrap text-center" width="7%"><%= t('.patient_name') %></th>
-            <% end %>
-            <% if get_columns(params).include?("patient_state") %>
-            <th class="bg-yellow-mint bg-font-yellow-mint text-nowrap text-center" width="7%"><%= t('.patient_state') %></th>
-            <% end %>
-            <% if get_columns(params).include?("eye_info") %>
-            <th class="bg-yellow-mint bg-font-yellow-mint text-nowrap text-center" width="7%"><%= t('.eye_info') %></th>
-            <% end %>
-            <% if get_columns(params).include?("salesperson_name") %>
-            <th class="bg-yellow-mint bg-font-yellow-mint text-nowrap text-center" width="7%"><%= t('.salesperson_name') %></th>
-            <% end %>
-            <% if get_columns(params).include?("salesperson_percent") %>
-            <th class="bg-yellow-mint bg-font-yellow-mint text-nowrap text-center" width="7%"><%= t('.salesperson_percent') %></th>
-            <% end %>
-            <% if get_columns(params).include?("salesperson_commission_amount") %>
-            <th class="bg-yellow-mint bg-font-yellow-mint text-nowrap text-center" width="7%"><%= t('.salesperson_commission_amount') %></th>
-            <% end %>
-            <% if get_columns(params).include?("goods_discount_percent") %>
-            <th class="bg-yellow-mint bg-font-yellow-mint text-nowrap text-center" width="7%"><%= t('.goods_discount_percent') %></th>
-            <% end %>
-            <% if get_columns(params).include?("goods_discount_amount") %>
-            <th class="bg-yellow-mint bg-font-yellow-mint text-nowrap text-center" width="7%"><%= t('.goods_discount_amount') %></th>
-            <% end %>
-        </tr>
-        <% @rows.each_with_index do |row,index| %>
+    <div class="row">
+        <div class="col-md-10">
+            <div class="custom-show text-center">
+                <h4 class="font-blue-madison bold uppercase mb-15">
+                    Sổ chi tiết bán hàng <br>
+                    <span class="font-sm">
+                        <% if @period.present? %>
+                            (<%= @period.name %>)
+                        <% else %>
+                            (<%= 'Từ ' + @from_date.strftime('%d/%m/%Y') if !@from_date.nil? %> <%= ' Đến ' + @to_date.strftime('%d/%m/%Y') if !@to_date.nil? %>)
+                        <% end %>
+                    </span>
+                </h4>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="text-right mb-10">
+                <a target="_blank"
+                    href="<%= erp_ortho_k.report_sales_details_xlsx_backend_sales_path(params.to_unsafe_hash.merge({format: 'xlsx'})) %>"
+                    target="_blank"
+                    class="btn btn-primary"
+                >Xuất excel</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="table-scrollable">
+        <table class="table table-bordered table-advance order-column" id="">
             <tr>
-                <% if get_columns(params).include?("record_date") %>
-                <td class="text-left"><%= format_date(row[:record_date]) %></td>
-                <% end %>
-                <% if get_columns(params).include?("voucher_date") %>
-                <td class="text-left"><%= format_date(row[:voucher_date]) %></td>
-                <% end %>
-                <% if get_columns(params).include?("voucher_code") %>
-                <td class="text-left text-nowrap"><%= row[:voucher_code] %></td>
-                <% end %>
-                <% if get_columns(params).include?("customer_code") %>
-                <td class="text-left text-nowrap"><%= row[:customer_code] %></td>
-                <% end %>
-                <% if get_columns(params).include?("customer_name") %>
-                <td class="text-left text-nowrap"><%= row[:customer_name] %></td>
-                <% end %>
-                <% if get_columns(params).include?("product_name") %>
-                <td class="text-left text-nowrap"><%= row[:product_name] %></td>
-                <% end %>
-                <% if get_columns(params).include?("description") %>
-                <td class="text-left"><%= row[:description] %></td>
-                <% end %>
-                <% if get_columns(params).include?("status") %>
-                <td class="text-left first-letter-uppercase"><%= row[:state] %></td>
-                <% end %>
-                <% if get_columns(params).include?("warehouse") %>
-                <td class="text-left"><%= row[:warehouse] %></td>
-                <% end %>
-                <% if get_columns(params).include?("unit") %>
-                <td class="text-left"><%= row[:unit] %></td>
-                <% end %>
+                <%= "<td colspan='#{total_colspan_1}'></td>".html_safe if total_colspan_1 > 0 %>
                 <% if get_columns(params).include?("unknown_1") %>
-                <td class="text-right text-primary">
-                    <%= '??' %>
-                </td>
+                <td class="text-right stock-num text-bold text-primary"><%= format_number((400..999).to_a.sample*1000) %></td>
                 <% end %>
                 <% if get_columns(params).include?("unknown_2") %>
-                <td class="text-right text-primary">
-                    <%= '??' %>
-                </td>
+                <td class="text-right stock-num text-bold text-primary"><%= format_number((400..999).to_a.sample*1000) %></td>
                 <% end %>
                 <% if get_columns(params).include?("quantity") %>
-                <td class="text-center bg-warning">
-                    <%= format_number(row[:quantity]) %>
-                </td>
+                <td class="text-center stock-num text-bold bg-warning"><%= @totals[:quantity] %></td>
                 <% end %>
-                <% if get_columns(params).include?("p_price") %>
-                <td class="text-primary text-<%= row[:purchase_price].present? ? 'left' : 'center' %>">
-                    <%= row[:purchase_price].present? ? row[:purchase_price] : '??' %>
-                </td>
-                <% end %>
+                <%= "<td colspan='#{total_colspan_2}'></td>".html_safe if total_colspan_2 > 0 %>
                 <% if get_columns(params).include?("tax_amount") %>
-                <td class="font-green-seagreen text-<%= row[:tax_amount].present? ? 'left' : 'center' %>">
-                    <%= row[:tax_amount].present? ? row[:tax_amount] : '??' %>
-                </td>
+                <td class="text-right stock-num text-bold font-green-seagreen"><%= format_number((50..500).to_a.sample*1000) %></td>
                 <% end %>
                 <% if get_columns(params).include?("other_fees") %>
-                <td class="font-green-seagreen text-<%= row[:other_fees].present? ? 'left' : 'center' %>">
-                    <%= row[:other_fees].present? ? row[:other_fees] : '??' %>
-                </td>
+                <td class="text-right stock-num text-bold font-green-seagreen"><%= format_number((50..500).to_a.sample*1000) %></td>
                 <% end %>
                 <% if get_columns(params).include?("unknown_3") %>
-                <td class="text-right text-warning">
-                    <%= '??' %>
-                </td>
+                <td class="text-right stock-num text-bold text-warning"><%= format_number((400..999).to_a.sample*1000) %></td>
                 <% end %>
                 <% if get_columns(params).include?("unknown_4") %>
-                <td class="text-right font-yellow-gold">
-                    <%= '??' %>
-                </td>
+                <td class="text-right stock-num text-bold font-yellow-gold"><%= format_number((400..999).to_a.sample*1000) %></td>
                 <% end %>
                 <% if get_columns(params).include?("s_price") %>
-                <td class="text-right text-primary">
-                    <%= format_number(row[:sales_price]) %>
-                </td>
+                <%= "<td colspan='#{total_colspan_3}'></td>".html_safe if total_colspan_3 > 0 %>
                 <% end %>
                 <% if get_columns(params).include?("unknown_5") %>
-                <td class="text-right font-yellow-gold">
-                    <%= format_number(row[:sales_total_amount]) %>
-                </td>
+                <td class="text-right stock-num text-bold font-yellow-gold"><%= format_number(@totals[:sales_total_amount]) %></td>
                 <% end %>
-                <% if get_columns(params).include?("patient_name") %>
-                <td class="text-<%= row[:patient_name].present? ? 'left' : 'center' %> text-nowrap">
-                    <%= row[:patient_name].present? ? row[:patient_name] : '--' %>
-                </td>
-                <% end %>
-                <% if get_columns(params).include?("patient_state") %>
-                <td class="text-<%= row[:patient_state].present? ? 'left' : 'center' %>">
-                    <%= row[:patient_state].present? ? row[:patient_state] : '--' %>
-                </td>
-                <% end %>
-                <% if get_columns(params).include?("eye_info") %>
-                <td class="text-center font-yellow-gold">
-                    <%= '-?-' %>
-                </td>
-                <% end %>
-                <% if get_columns(params).include?("salesperson_name") %>
-                <td class="text-<%= row[:salesperson_name].present? ? 'left' : 'center' %> text-nowrap">
-                    <%= row[:salesperson_name].present? ? row[:salesperson_name] : '--' %>
-                </td>
-                <% end %>
-                <% if get_columns(params).include?("salesperson_percent") %>
-                <td class="text-center font-yellow-gold">
-                    <%= '?%' %>
-                </td>
-                <% end %>
+                <%= "<td colspan='#{total_colspan_4}'></td>".html_safe if total_colspan_4 > 0 %>
                 <% if get_columns(params).include?("salesperson_commission_amount") %>
-                <td class="font-yellow-gold text-<%= row[:salesperson_commission_amount].present? ? 'right' : 'center' %>">
-                    <%= row[:salesperson_commission_amount].present? ? format_number(row[:salesperson_commission_amount]) : '--' %>
-                </td>
+                <td class="text-right stock-num text-bold font-yellow-gold"><%= format_number((400..999).to_a.sample*1000) %></td>
                 <% end %>
-                <% if get_columns(params).include?("goods_discount_percent") %>
-                <td class="text-center font-yellow-gold">
-                    <%= '?%' %>
-                </td>
-                <% end %>
+                <%= "<td colspan='#{total_colspan_5}'></td>".html_safe if total_colspan_5 > 0 %>
                 <% if get_columns(params).include?("goods_discount_amount") %>
-                <td class="text-right font-yellow-gold">
-                    <%= '??' %>
-                </td>
+                <td class="text-right stock-num text-bold font-yellow-gold"><%= format_number((400..999).to_a.sample*1000) %></td>
                 <% end %>
                 <% if get_columns(params).include?("customer_commission") %>
-                <td class="text-right font-yellow-gold">
-                    <%= '??' %>
-                </td>
+                <td class="text-right stock-num text-bold font-yellow-gold"><%= format_number((400..999).to_a.sample*1000) %></td>
                 <% end %>
                 <% if get_columns(params).include?("note") %>
-                <td class="text-<%= row[:note].present? ? 'left' : 'center' %>">
-                    <%= row[:note] %>
-                </td>
+                <td></td>
                 <% end %>
             </tr>
-        <% end %>
-    </table>
-</div>
+            <tr>
+                <% if get_columns(params).include?("record_date") %>
+                    <th class="bg-yellow-mint bg-font-yellow-mint text-nowrap text-center" rowspan="2"><%= t('.record_date') %></th>
+                <% end %>
+                <% if get_columns(params).include?("voucher_date") %>
+                    <th class="bg-yellow-mint bg-font-yellow-mint text-nowrap text-center" rowspan="2"><%= t('.voucher_date') %></th>
+                <% end %>
+                <% if get_columns(params).include?("voucher_code") %>
+                    <th class="bg-yellow-mint bg-font-yellow-mint text-nowrap text-center" rowspan="2"><%= t('.voucher_code') %></th>
+                <% end %>
+                <% if get_columns(params).include?("customer_code") or get_columns(params).include?("customer_name") %>
+                    <th class="bg-yellow-mint bg-font-yellow-mint text-nowrap text-center" colspan="<%= customer_colspan %>"><%= t('.customer') %></th>
+                <% end %>
+                <% if get_columns(params).include?("product_name") %>
+                    <th class="bg-yellow-mint bg-font-yellow-mint text-nowrap text-center" rowspan="2" width="7%"><%= t('.product_name') %></th>
+                <% end %>
+                <% if get_columns(params).include?("description") %>
+                    <th class="bg-yellow-mint bg-font-yellow-mint text-nowrap text-center" rowspan="2" width="7%"><%= t('.description') %></th>
+                <% end %>
+                <% if get_columns(params).include?("status") %>
+                    <th class="bg-yellow-mint bg-font-yellow-mint text-nowrap text-center" rowspan="2" width="7%"><%= t('.status') %></th>
+                <% end %>
+                <% if get_columns(params).include?("warehouse") %>
+                    <th class="bg-yellow-mint bg-font-yellow-mint text-nowrap text-center" rowspan="2" width="7%"><%= t('.warehouse') %></th>
+                <% end %>
+                <% if get_columns(params).include?("unit") %>
+                    <th class="bg-yellow-mint bg-font-yellow-mint text-nowrap text-center" rowspan="2" width="7%"><%= t('.unit') %></th>
+                <% end %>
+                <% if get_columns(params).include?("unknown_1") %>
+                    <th class="bg-yellow-mint bg-font-yellow-mint text-nowrap text-center" rowspan="2" width="7%"><%= t('.unknown_1') %></th>
+                <% end %>
+                <% if get_columns(params).include?("unknown_2") %>
+                    <th class="bg-yellow-mint bg-font-yellow-mint text-nowrap text-center" rowspan="2" width="7%"><%= t('.unknown_2') %></th>
+                <% end %>
+                <% if get_columns(params).include?("quantity") %>
+                    <th class="bg-yellow-mint bg-font-yellow-mint text-nowrap text-center" rowspan="2" width="7%"><%= t('.quantity') %></th>
+                <% end %>
+                <% if get_columns(params).include?("p_price") or get_columns(params).include?("tax_amount") or
+                    get_columns(params).include?("other_fees") or get_columns(params).include?("unknown_3") or get_columns(params).include?("unknown_4") %>
+                    <th class="bg-yellow-mint bg-font-yellow-mint text-nowrap text-center" colspan="<%= purchase_price_colspan %>"><%= t('.purchase_price') %></th>
+                <% end %>
+                <% if get_columns(params).include?("s_price") or get_columns(params).include?("unknown_5") %>
+                    <th class="bg-yellow-mint bg-font-yellow-mint text-nowrap text-center" colspan="<%= sales_price_colspan %>"><%= t('.sales_price') %></th>
+                <% end %>
+                <% if get_columns(params).include?("patient_name") or get_columns(params).include?("patient_state") or get_columns(params).include?("eye_info") %>
+                    <th class="bg-yellow-mint bg-font-yellow-mint text-nowrap text-center" colspan="3"><%= t('.patient') %></th>
+                <% end %>
+                <% if get_columns(params).include?("salesperson_name") or get_columns(params).include?("salesperson_percent") or get_columns(params).include?("salesperson_commission_amount") %>
+                    <th class="bg-yellow-mint bg-font-yellow-mint text-nowrap text-center" colspan="3"><%= t('.salesperson') %></th>
+                <% end %>
+                <% if get_columns(params).include?("goods_discount_percent") or get_columns(params).include?("goods_discount_amount") %>
+                    <th class="bg-yellow-mint bg-font-yellow-mint text-nowrap text-center" colspan="2"><%= t('.goods') %></th>
+                <% end %>
+                <% if get_columns(params).include?("customer_commission") %>
+                    <th class="bg-yellow-mint bg-font-yellow-mint text-nowrap text-center" rowspan="2" width="7%"><%= t('.customer_commission') %></th>
+                <% end %>
+                <% if get_columns(params).include?("note") %>
+                    <th class="bg-yellow-mint bg-font-yellow-mint text-nowrap text-center" rowspan="2" width="7%"><%= t('.note') %></th>
+                <% end %>
+            </tr>
+            <tr>
+                <% if get_columns(params).include?("customer_code") %>
+                <th class="bg-yellow-mint bg-font-yellow-mint text-nowrap text-center" width="7%"><%= t('.customer_code') %></th>
+                <% end %>
+                <% if get_columns(params).include?("customer_name") %>
+                <th class="bg-yellow-mint bg-font-yellow-mint text-nowrap text-center" width="7%"><%= t('.customer_name') %></th>
+                <% end %>
+                <% if get_columns(params).include?("p_price") %>
+                <th class="bg-yellow-mint bg-font-yellow-mint text-nowrap text-center" width="7%"><%= t('.p_price') %></th>
+                <% end %>
+                <% if get_columns(params).include?("tax_amount") %>
+                <th class="bg-yellow-mint bg-font-yellow-mint text-nowrap text-center" width="7%"><%= t('.tax_amount') %></th>
+                <% end %>
+                <% if get_columns(params).include?("other_fees") %>
+                <th class="bg-yellow-mint bg-font-yellow-mint text-nowrap text-center" width="7%"><%= t('.other_fees') %></th>
+                <% end %>
+                <% if get_columns(params).include?("unknown_3") %>
+                <th class="bg-yellow-mint bg-font-yellow-mint text-nowrap text-center" width="7%"><%= t('.unknown_3') %></th>
+                <% end %>
+                <% if get_columns(params).include?("unknown_4") %>
+                <th class="bg-yellow-mint bg-font-yellow-mint text-nowrap text-center" width="7%"><%= t('.unknown_4') %></th>
+                <% end %>
+                <% if get_columns(params).include?("s_price") %>
+                <th class="bg-yellow-mint bg-font-yellow-mint text-nowrap text-center" width="7%"><%= t('.s_price') %></th>
+                <% end %>
+                <% if get_columns(params).include?("unknown_5") %>
+                <th class="bg-yellow-mint bg-font-yellow-mint text-nowrap text-center" width="7%"><%= t('.unknown_5') %></th>
+                <% end %>
+                <% if get_columns(params).include?("patient_name") %>
+                <th class="bg-yellow-mint bg-font-yellow-mint text-nowrap text-center" width="7%"><%= t('.patient_name') %></th>
+                <% end %>
+                <% if get_columns(params).include?("patient_state") %>
+                <th class="bg-yellow-mint bg-font-yellow-mint text-nowrap text-center" width="7%"><%= t('.patient_state') %></th>
+                <% end %>
+                <% if get_columns(params).include?("eye_info") %>
+                <th class="bg-yellow-mint bg-font-yellow-mint text-nowrap text-center" width="7%"><%= t('.eye_info') %></th>
+                <% end %>
+                <% if get_columns(params).include?("salesperson_name") %>
+                <th class="bg-yellow-mint bg-font-yellow-mint text-nowrap text-center" width="7%"><%= t('.salesperson_name') %></th>
+                <% end %>
+                <% if get_columns(params).include?("salesperson_percent") %>
+                <th class="bg-yellow-mint bg-font-yellow-mint text-nowrap text-center" width="7%"><%= t('.salesperson_percent') %></th>
+                <% end %>
+                <% if get_columns(params).include?("salesperson_commission_amount") %>
+                <th class="bg-yellow-mint bg-font-yellow-mint text-nowrap text-center" width="7%"><%= t('.salesperson_commission_amount') %></th>
+                <% end %>
+                <% if get_columns(params).include?("goods_discount_percent") %>
+                <th class="bg-yellow-mint bg-font-yellow-mint text-nowrap text-center" width="7%"><%= t('.goods_discount_percent') %></th>
+                <% end %>
+                <% if get_columns(params).include?("goods_discount_amount") %>
+                <th class="bg-yellow-mint bg-font-yellow-mint text-nowrap text-center" width="7%"><%= t('.goods_discount_amount') %></th>
+                <% end %>
+            </tr>
+            <% @rows.each_with_index do |row,index| %>
+                <tr>
+                    <% if get_columns(params).include?("record_date") %>
+                    <td class="text-left"><%= format_date(row[:record_date]) %></td>
+                    <% end %>
+                    <% if get_columns(params).include?("voucher_date") %>
+                    <td class="text-left"><%= format_date(row[:voucher_date]) %></td>
+                    <% end %>
+                    <% if get_columns(params).include?("voucher_code") %>
+                    <td class="text-left text-nowrap"><%= row[:voucher_code] %></td>
+                    <% end %>
+                    <% if get_columns(params).include?("customer_code") %>
+                    <td class="text-left text-nowrap"><%= row[:customer_code] %></td>
+                    <% end %>
+                    <% if get_columns(params).include?("customer_name") %>
+                    <td class="text-left text-nowrap"><%= row[:customer_name] %></td>
+                    <% end %>
+                    <% if get_columns(params).include?("product_name") %>
+                    <td class="text-left text-nowrap"><%= row[:product_name] %></td>
+                    <% end %>
+                    <% if get_columns(params).include?("description") %>
+                    <td class="text-left"><%= row[:description] %></td>
+                    <% end %>
+                    <% if get_columns(params).include?("status") %>
+                    <td class="text-left first-letter-uppercase"><%= row[:state] %></td>
+                    <% end %>
+                    <% if get_columns(params).include?("warehouse") %>
+                    <td class="text-left"><%= row[:warehouse] %></td>
+                    <% end %>
+                    <% if get_columns(params).include?("unit") %>
+                    <td class="text-left"><%= row[:unit] %></td>
+                    <% end %>
+                    <% if get_columns(params).include?("unknown_1") %>
+                    <td class="text-right text-primary">
+                        <%= '??' %>
+                    </td>
+                    <% end %>
+                    <% if get_columns(params).include?("unknown_2") %>
+                    <td class="text-right text-primary">
+                        <%= '??' %>
+                    </td>
+                    <% end %>
+                    <% if get_columns(params).include?("quantity") %>
+                    <td class="text-center bg-warning">
+                        <%= format_number(row[:quantity]) %>
+                    </td>
+                    <% end %>
+                    <% if get_columns(params).include?("p_price") %>
+                    <td class="text-primary text-<%= row[:purchase_price].present? ? 'left' : 'center' %>">
+                        <%= row[:purchase_price].present? ? row[:purchase_price] : '??' %>
+                    </td>
+                    <% end %>
+                    <% if get_columns(params).include?("tax_amount") %>
+                    <td class="font-green-seagreen text-<%= row[:tax_amount].present? ? 'left' : 'center' %>">
+                        <%= row[:tax_amount].present? ? row[:tax_amount] : '??' %>
+                    </td>
+                    <% end %>
+                    <% if get_columns(params).include?("other_fees") %>
+                    <td class="font-green-seagreen text-<%= row[:other_fees].present? ? 'left' : 'center' %>">
+                        <%= row[:other_fees].present? ? row[:other_fees] : '??' %>
+                    </td>
+                    <% end %>
+                    <% if get_columns(params).include?("unknown_3") %>
+                    <td class="text-right text-warning">
+                        <%= '??' %>
+                    </td>
+                    <% end %>
+                    <% if get_columns(params).include?("unknown_4") %>
+                    <td class="text-right font-yellow-gold">
+                        <%= '??' %>
+                    </td>
+                    <% end %>
+                    <% if get_columns(params).include?("s_price") %>
+                    <td class="text-right text-primary">
+                        <%= format_number(row[:sales_price]) %>
+                    </td>
+                    <% end %>
+                    <% if get_columns(params).include?("unknown_5") %>
+                    <td class="text-right font-yellow-gold">
+                        <%= format_number(row[:sales_total_amount]) %>
+                    </td>
+                    <% end %>
+                    <% if get_columns(params).include?("patient_name") %>
+                    <td class="text-<%= row[:patient_name].present? ? 'left' : 'center' %> text-nowrap">
+                        <%= row[:patient_name].present? ? row[:patient_name] : '--' %>
+                    </td>
+                    <% end %>
+                    <% if get_columns(params).include?("patient_state") %>
+                    <td class="text-<%= row[:patient_state].present? ? 'left' : 'center' %>">
+                        <%= row[:patient_state].present? ? row[:patient_state] : '--' %>
+                    </td>
+                    <% end %>
+                    <% if get_columns(params).include?("eye_info") %>
+                    <td class="text-center font-yellow-gold">
+                        <%= '-?-' %>
+                    </td>
+                    <% end %>
+                    <% if get_columns(params).include?("salesperson_name") %>
+                    <td class="text-<%= row[:salesperson_name].present? ? 'left' : 'center' %> text-nowrap">
+                        <%= row[:salesperson_name].present? ? row[:salesperson_name] : '--' %>
+                    </td>
+                    <% end %>
+                    <% if get_columns(params).include?("salesperson_percent") %>
+                    <td class="text-center font-yellow-gold">
+                        <%= '?%' %>
+                    </td>
+                    <% end %>
+                    <% if get_columns(params).include?("salesperson_commission_amount") %>
+                    <td class="font-yellow-gold text-<%= row[:salesperson_commission_amount].present? ? 'right' : 'center' %>">
+                        <%= row[:salesperson_commission_amount].present? ? format_number(row[:salesperson_commission_amount]) : '--' %>
+                    </td>
+                    <% end %>
+                    <% if get_columns(params).include?("goods_discount_percent") %>
+                    <td class="text-center font-yellow-gold">
+                        <%= '?%' %>
+                    </td>
+                    <% end %>
+                    <% if get_columns(params).include?("goods_discount_amount") %>
+                    <td class="text-right font-yellow-gold">
+                        <%= '??' %>
+                    </td>
+                    <% end %>
+                    <% if get_columns(params).include?("customer_commission") %>
+                    <td class="text-right font-yellow-gold">
+                        <%= '??' %>
+                    </td>
+                    <% end %>
+                    <% if get_columns(params).include?("note") %>
+                    <td class="text-<%= row[:note].present? ? 'left' : 'center' %>">
+                        <%= row[:note] %>
+                    </td>
+                    <% end %>
+                </tr>
+            <% end %>
+        </table>
+    </div>
+<% else %>
+    <div class="alert alert-warning">
+        <p>Vui lòng chọn các tham số bắt buộc:
+            <br>- <strong>Thời gian báo cáo (Từ ngày/Đến ngày hoặc thời gian cố định)</strong>
+        </p>
+    </div>
+<% end %>

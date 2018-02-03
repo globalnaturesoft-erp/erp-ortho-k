@@ -47,8 +47,22 @@ module Erp
 
         # So chi tiet ban hang
         def report_sales_details_table
-          @rows = Erp::Orders::Order.sales_details_report(params)[:data]
-          @totals = Erp::Orders::Order.sales_details_report(params)[:total]
+          @global_filters = params.to_unsafe_hash[:global_filter]
+
+          # if has period
+          if @global_filters[:period].present?
+            @period = Erp::Periods::Period.find(@global_filters[:period])
+            @global_filters[:from_date] = @period.from_date
+            @global_filters[:to_date] = @period.to_date
+          end
+
+          @from_date = @global_filters[:from_date].to_date
+          @to_date = @global_filters[:to_date].to_date
+
+          if @from_date.present? and @to_date.present?
+            @rows = Erp::Orders::Order.sales_details_report(params)[:data]
+            @totals = Erp::Orders::Order.sales_details_report(params)[:total]
+          end
 
           render layout: nil
         end

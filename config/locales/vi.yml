@@ -215,6 +215,9 @@ vi:
   left_eye: "MT"
   right_eye: "MP"
   both_eyes: "MT/MP"
+  descending: "Giảm dần"
+  ascending: "Tăng dần"
+  default: "Mặc định"
   erp:
     ortho_k:
       backend:
@@ -414,6 +417,7 @@ vi:
             chooose_customer: "Chọn khách hàng"
             filter_product: "Sản phẩm"
             chooose_product: "Chọn sản phẩm cần lọc"
+            others: "Khác"
             record_date: "Ngày ghi sổ"
             voucher_date: "Ngày chứng từ"
             voucher_code: "Số chứng từ"
@@ -932,6 +936,19 @@ vi:
             no_matching_records_found: "Nội dung báo cáo không được tìm thấy. Vui lòng chọn các điều kiện khác để xem."
           report_sales_details:
             report_sales_details: "Báo cáo - Sổ chi tiết bán hàng"
+            from_date: "Từ ngày"
+            select_from_date: "Từ ngày (YYYY-MM-DD)"
+            to_date: "Đến ngày"
+            select_to_date: "Đến ngày (YYYY-MM-DD)"
+            filter_customer: "Khách hàng"
+            chooose_customer: "Chọn khách hàng"
+            filter_warehouse: "Kho"
+            choose_warehouse: "Chọn kho"
+            filter_category: "Mã nhóm / Loại hàng"
+            choose_category: "Chọn mã nhóm"
+            filter_product: "Sản phẩm"
+            chooose_product: "Chọn sản phẩm"
+            
             record_date: "Ngày ghi sổ"
             voucher_date: "Ngày chứng từ"
             voucher_code: "Số chứng từ"

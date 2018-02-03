@@ -8,6 +8,48 @@ Erp::Orders::Order.class_eval do
   POSITION_LEFT = 'left'
   POSITION_RIGHT = 'right'
   POSITION_BOTH = 'both'
+  
+  SORT_BY_RECORD_DATE = 'record_date'
+  SORT_BY_VOUCHER_DATE = 'voucher_date'
+  
+  ORDER_BY_DESC = 'desc'
+  ORDER_BY_ASC = 'asc'
+  
+  GROUPED_BY_DEFAULT = 'grouped_by_default'
+  GROUPED_BY_CUSTOMER = 'grouped_by_customer'
+  
+  def self.sort_by_dates()
+    [
+      {
+        text: I18n.t('erp.ortho_k.backend.sales.report_sales_details.record_date'),
+        value: Erp::Products::Product::SORT_BY_RECORD_DATE
+      },
+      {
+        text: I18n.t('erp.ortho_k.backend.sales.report_sales_details.voucher_date'),
+        value: Erp::Products::Product::SORT_BY_VOUCHER_DATE
+      }
+    ]
+  end
+  
+  def self.get_order_direction()
+    [
+      {text: I18n.t('descending'), value: Erp::Products::Product::ORDER_BY_DESC},
+      {text: I18n.t('ascending'), value: Erp::Products::Product::ORDER_BY_ASC}
+    ]
+  end
+  
+  def self.get_grouped_bys()
+    [
+      {
+        text: I18n.t('default'),
+        value: Erp::Products::Product::GROUPED_BY_DEFAULT
+      },
+      {
+        text: I18n.t('erp.ortho_k.backend.sales.report_sales_details.customer'),
+        value: Erp::Products::Product::GROUPED_BY_CUSTOMER
+      }
+    ]
+  end
 
   # get type options for contact
   def self.get_eye_positions()
@@ -82,7 +124,7 @@ Erp::Orders::Order.class_eval do
         customer_name: order_detail.order.customer_name,
         product_name: order_detail.product_name,
         description: order_detail.description,
-        state: 'Hàng mới',
+        state: 'Mới',
         warehouse: order_detail.order.warehouse_name,
         unit: order_detail.product.unit_name,
         quantity: order_detail.quantity,
