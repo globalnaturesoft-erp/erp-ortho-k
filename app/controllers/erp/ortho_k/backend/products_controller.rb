@@ -39,6 +39,31 @@ module Erp
           end
 
           @global_filter = global_filter
+
+          # product query
+          @product_query = Erp::Products::Product
+          @product_query = @product_query.where(category_id: @global_filter[:categories]) if @global_filter[:categories].present?
+
+          # get diameters
+          diameter_ids = @global_filter[:diameters].present? ? @global_filter[:diameters] : nil
+          @diameters = Erp::Products::PropertiesValue.where(id: diameter_ids)
+          # filter by diameters
+          if diameter_ids.present?
+            if !diameter_ids.kind_of?(Array)
+              @product_query = @product_query.where("erp_products_products.cache_properties LIKE '%[\"#{diameter_ids}\",%'")
+            else
+              diameter_ids = (diameter_ids.reject { |c| c.empty? })
+              if !diameter_ids.empty?
+                qs = []
+                diameter_ids.each do |x|
+                  qs << "(erp_products_products.cache_properties LIKE '%[\"#{x}\",%')"
+                end
+                @product_query = @product_query.where("(#{qs.join(" OR ")})")
+              end
+            end
+          end
+
+
           render layout: nil
         end
 
@@ -85,6 +110,30 @@ module Erp
         end
 
         def tooltip_warehouse_info
+          @global_filter = params.to_unsafe_hash
+
+          # product query
+          @product_query = Erp::Products::Product
+          @product_query = @product_query.where(category_id: @global_filter[:categories]) if @global_filter[:categories].present?
+
+          # get diameters
+          diameter_ids = @global_filter[:diameters].present? ? @global_filter[:diameters] : nil
+          @diameters = Erp::Products::PropertiesValue.where(id: diameter_ids)
+          # filter by diameters
+          if diameter_ids.present?
+            if !diameter_ids.kind_of?(Array)
+              @product_query = @product_query.where("erp_products_products.cache_properties LIKE '%[\"#{diameter_ids}\",%'")
+            else
+              diameter_ids = (diameter_ids.reject { |c| c.empty? })
+              if !diameter_ids.empty?
+                qs = []
+                diameter_ids.each do |x|
+                  qs << "(erp_products_products.cache_properties LIKE '%[\"#{x}\",%')"
+                end
+                @product_query = @product_query.where("(#{qs.join(" OR ")})")
+              end
+            end
+          end
 
           render layout: nil
         end

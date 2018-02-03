@@ -23,7 +23,7 @@
             </div>
         </div>
     </div>
-    
+
     <table class="table table-advance table-checkable order-column table-matrix" id="">
         <tr>
             <th class="bg-grey" width="6%"></th>
@@ -59,20 +59,18 @@
                         chu_pv = Erp::Products::PropertiesValue.where(property_id: chu_p.id, value: col[:letter]).first
                         so_pv = Erp::Products::PropertiesValue.where(property_id: so_p.id, value: row[:number]).first
 
-                        stock = Erp::Products::Product.get_stock(
-                            properties_value_ids: [chu_pv.id,so_pv.id],
-                            categories: @global_filter[:categories],
-                            warehouses: @global_filter[:warehouses],
-                            states: @global_filter[:states],
-                            diameters: @global_filter[:diameters])
+                        product_ids = @product_query.find_by_properties_value_ids([chu_pv.id,so_pv.id]).select('id')
+                        product_ids = -1 if product_ids.count == 0
+                        filters = @global_filter.clone.merge({product_id: product_ids, state_ids: @global_filter[:states], warehouse_ids: @global_filter[:warehouses]})
+                        stock = Erp::Products::Product.get_stock_real(filters)
                     %>
 
                     <td class="text-center stock-num stock-num-<%= stock %>"
                         data-tooltip-url="<%= erp_ortho_k.tooltip_warehouse_info_backend_products_path(
                                                     properties_value_ids: [chu_pv.id,so_pv.id],
                                                     categories: @global_filter[:categories],
-                                                    warehouses: @global_filter[:warehouses],
-                                                    states: @global_filter[:states],
+                                                    warehouse_ids: @global_filter[:warehouses],
+                                                    state_ids: @global_filter[:states],
                                                     diameters: @global_filter[:diameters]) %>"
                     >
                         <%= stock %>

@@ -15,7 +15,7 @@ wb.styles do |s|
     number = {format_code: '#,##0'}
     border = {border: { style: :thin, color: "00", :edges => [:top, :right, :bottom, :left] }}
     bold = {b: true}
-    
+
     if @from_date.present? or @to_date.present?
       if !defined?(@period)
         date = "(#{'TỪ ' + @from_date.strftime('%d/%m/%Y') if !@from_date.nil?}#{' ĐẾN ' + @to_date.strftime('%d/%m/%Y') if !@to_date.nil?})"
@@ -25,7 +25,7 @@ wb.styles do |s|
     else
       date = "(TÍNH ĐẾN #{Time.now.strftime('%d/%m/%Y')})"
     end
-    
+
     # Top head
     sheet.add_row ["CÔNG TY TNHH ORTHO-K VIỆT NAM"], b: true
     sheet.add_row ["535 An Dương Vương, P.8, Q.5, TP. Hồ Chí Minh"], b: true
@@ -38,15 +38,15 @@ wb.styles do |s|
     # Title 1
     sheet.add_row ['THỐNG KÊ TỒN KHO THEO VÙNG TÙY CHỌN'], sz: 16, b: true, bg_color: "ffc801", style: (s.add_style text_center)
     row_num += 1
-    
+
     sheet.add_row [date], sz: 14, bg_color: "ffc801", style: (s.add_style text_center)
     row_num += 1
-    
+
     sheet.add_row ['Kho:',
       (@global_filters[:warehouse_ids].present? ? Erp::Warehouses::Warehouse.where(id: @global_filters[:warehouse_ids]).map(&:name).join(', ') : 'Tất cả')],
       style: [(s.add_style text_left), (s.add_style text_left.deep_merge(bold))]
     row_num += 1
-    
+
     sheet.add_row ['Tình trạng:',
       (@global_filters[:state_ids].present? ? Erp::Warehouses::Warehouse.where(id: @global_filters[:state_ids]).map(&:name).join(', ') : 'Tất cả')],
       style: [(s.add_style text_left), (s.add_style text_left.deep_merge(bold))]
@@ -60,7 +60,7 @@ wb.styles do |s|
     header = {columns: [], styles: []}
     subheader = {columns: [], styles: []}
     header[:columns] = []
-    
+
     header_row_num = row_num + 1
     subheader_row_num = header_row_num + 1
 
@@ -121,7 +121,7 @@ wb.styles do |s|
     col_num += 1
     nhap_last = col_num
     sheet.merge_cells("#{('A'.codepoints.first+ nhap_first).chr}#{header_row_num}:#{('A'.codepoints.first+ nhap_last).chr}#{header_row_num}")
-    
+
     hoankho_first = 0
     hoankho_last = 0
     @states.each_with_index do |state,index|
@@ -145,13 +145,13 @@ wb.styles do |s|
     subheader[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(border).merge(bold))
     col_num += 1
     xuat_first = col_num
-    
+
     header[:columns] << ''
     header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
     subheader[:columns] << 'Kiểm kho'
     subheader[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(border).merge(bold))
     col_num += 1
-    
+
     header[:columns] << ''
     header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
     subheader[:columns] << 'Ktra tr.thái'
@@ -159,14 +159,14 @@ wb.styles do |s|
     col_num += 1
     xuat_last = col_num
     sheet.merge_cells("#{('A'.codepoints.first + xuat_first).chr}#{header_row_num}:#{('A'.codepoints.first + xuat_last).chr}#{header_row_num}")
-    
+
     header[:columns] << 'Dư cuối'
     header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
     subheader[:columns] << ''
     subheader[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(border).merge(bold))
     col_num += 1
     sheet.merge_cells("#{('A'.codepoints.first+ col_num).chr}#{header_row_num}:#{('A'.codepoints.first+ col_num).chr}#{subheader_row_num}")
-    
+
     last_col_num = col_num
 
     sheet.add_row header[:columns], style: header[:styles]
@@ -181,7 +181,7 @@ wb.styles do |s|
       counts[rw[:category].name] = {}
       rw[:letter_groups].each_with_index do |lg,index2|
         lg[:numbers_diameters].each_with_index do |nd,index3|
-          
+
           query = @product_query
           # filter by properties
           [nd[:diameter_ids], lg[:letter_ids], nd[:number_ids]].each do |ids|
@@ -202,50 +202,54 @@ wb.styles do |s|
           end
 
           product_ids = query.select('id').where(category_id: rw[:category].id)
-          
+
           product_ids = -1 if product_ids.count == 0
           filters = @global_filters.clone.merge({product_id: product_ids})
-          
+
           # Add rows
           row = {columns: [], styles: []}
           row[:columns] = []
-  
+
           row[:columns] << (rw[:category].name if index2 == 0 and index3 == 0)
           row[:styles] << (s.add_style text_center.deep_merge(middle_align).deep_merge(border).deep_merge(wrap).deep_merge(bold))
-          
-          
+
+
           values = Erp::Products::PropertiesValue.where(id: lg[:letter_ids]).map(&:value)
           row[:columns] << ("#{values.first} đến #{values.last}" if index3 == 0)
           row[:styles] << (s.add_style text_center.deep_merge(middle_align).deep_merge(border).deep_merge(wrap).deep_merge(bold))
-          
+
           values = Erp::Products::PropertiesValue.where(id: nd[:number_ids]).map(&:value)
           row[:columns] << "#{values.first} đến #{values.last}"
           row[:styles] << (s.add_style text_center.deep_merge(middle_align).deep_merge(border).deep_merge(wrap))
-          
+
           values = Erp::Products::PropertiesValue.where(id: nd[:diameter_ids]).map(&:value)
           row[:columns] << "#{values.first} đến #{values.last}"
           row[:styles] << (s.add_style text_center.deep_merge(middle_align).deep_merge(border).deep_merge(wrap))
-          
+
           begin_params = filters.clone
           begin_params[:to_date] = filters[:from_date]
           begin_params[:from_date] = nil
-          row[:columns] << (counts[rw[:category].name][0] = Erp::Products::Product.get_stock_real(begin_params))
+          row[:columns] << (counts[rw[:category].name][0] = counts[rw[:category].name][0].to_i + Erp::Products::Product.get_stock_real(begin_params))
           row[:styles] << (s.add_style text_center.deep_merge(middle_align).deep_merge(border).deep_merge(wrap).deep_merge(bold))
-          
+
           count = Erp::Products::Product.get_qdelivery_import(filters.clone.merge({
               delivery_type: Erp::Qdeliveries::Delivery::TYPE_PURCHASE_IMPORT
           }))
-          row[:columns] << (counts[rw[:category].name][1] = count)
+          row[:columns] << (counts[rw[:category].name][1] = counts[rw[:category].name][1].to_i + count)
           row[:styles] << (s.add_style text_center.deep_merge(middle_align).deep_merge(border).deep_merge(wrap))
-          
+
           count = Erp::Products::Product.get_stock_check_import(filters)
-          row[:columns] << (counts[rw[:category].name][2] = count)
+          row[:columns] << (counts[rw[:category].name][2] = counts[rw[:category].name][2].to_i + count)
           row[:styles] << (s.add_style text_center.deep_merge(middle_align).deep_merge(border).deep_merge(wrap))
-          
+
           count = (filters[:state_ids].present? ? Erp::Products::Product.get_state_check_import(filters) : '--')
-          row[:columns] << (counts[rw[:category].name][8] = count)
+          if filters[:state_ids].present?
+            row[:columns] << (counts[rw[:category].name][8] = counts[rw[:category].name][8].to_i + count)
+          else
+            row[:columns] << (count)
+          end
           row[:styles] << (s.add_style text_center.deep_merge(middle_align).deep_merge(border).deep_merge(wrap))
-          
+
           counts[rw[:category].name][3] = {}
           @states.each do |state|
             count = Erp::Products::Product.get_qdelivery_import(filters.clone.merge({
@@ -258,7 +262,7 @@ wb.styles do |s|
             row[:columns] << (counts[rw[:category].name][3][state.id] = count)
             row[:styles] << (s.add_style text_center.deep_merge(middle_align).deep_merge(border).deep_merge(wrap))
           end
-          
+
           count = Erp::Products::Product.get_qdelivery_export(filters.clone.merge({
             delivery_type: [
               Erp::Qdeliveries::Delivery::TYPE_CUSTOM_EXPORT,
@@ -266,79 +270,83 @@ wb.styles do |s|
             ]
           }))
           count += Erp::Products::Product.get_gift_given_export(filters)
-          row[:columns] << (counts[rw[:category].name][4] = count)
+          row[:columns] << (counts[rw[:category].name][4] = counts[rw[:category].name][4].to_i + count)
           row[:styles] << (s.add_style text_center.deep_merge(middle_align).deep_merge(border).deep_merge(wrap))
-          
+
           count = Erp::Products::Product.get_damage_record_export(filters)
           count += Erp::Products::Product.get_stock_check_export(filters)
-          row[:columns] << (counts[rw[:category].name][5] = count)
+          row[:columns] << (counts[rw[:category].name][5] = counts[rw[:category].name][5].to_i + count)
           row[:styles] << (s.add_style text_center.deep_merge(middle_align).deep_merge(border).deep_merge(wrap))
-          
+
           count = (filters[:state_ids].present? ? Erp::Products::Product.get_state_check_export(filters) : '--')
-          row[:columns] << (counts[rw[:category].name][6] = count)
+          if filters[:state_ids].present?
+            row[:columns] << (counts[rw[:category].name][6] = counts[rw[:category].name][6].to_i + count)
+          else
+            row[:columns] << (count)
+          end
           row[:styles] << (s.add_style text_center.deep_merge(middle_align).deep_merge(border).deep_merge(wrap))
-          
+
           end_params = filters.clone
           end_params[:from_date] = nil
-          row[:columns] << (counts[rw[:category].name][7] = Erp::Products::Product.get_stock_real(end_params))
+          row[:columns] << (counts[rw[:category].name][7] = counts[rw[:category].name][7].to_i + Erp::Products::Product.get_stock_real(end_params))
           row[:styles] << (s.add_style text_center.deep_merge(middle_align).deep_merge(border).deep_merge(wrap).deep_merge(bold))
-          
+
           sheet.add_row row[:columns], style: row[:styles]
           row_num += 1
         end
       end
-      
+
       query = @product_query
       product_ids = query.select('id').where(category_id: rw[:category].id)
 
       product_ids = -1 if product_ids.count == 0
       filters = @global_filters.clone.merge({product_id: product_ids})
-      
+
       # Add sub-rows
       subrow = {columns: [], styles: []}
       subrow[:columns] = []
-    
+
       subrow[:columns] << 'Tổng cộng'
       subrow[:styles] << (s.add_style bg_subrow.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).deep_merge(wrap).deep_merge(bold))
-      
+
       subrow[:columns] << ''
       subrow[:styles] << (s.add_style bg_subrow.deep_merge(text_center).deep_merge(border))
-      
+
       subrow[:columns] << ''
       subrow[:styles] << (s.add_style bg_subrow.deep_merge(text_center).deep_merge(border))
-      
+
       subrow[:columns] << ''
       subrow[:styles] << (s.add_style bg_subrow.deep_merge(text_center).deep_merge(border))
-      
+
       subrow[:columns] << counts[rw[:category].name][0]
       subrow[:styles] << (s.add_style bg_subrow.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).deep_merge(wrap).deep_merge(bold))
-      
+
       subrow[:columns] << counts[rw[:category].name][1]
       subrow[:styles] << (s.add_style bg_subrow.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).deep_merge(wrap).deep_merge(bold))
-      
+
       subrow[:columns] << counts[rw[:category].name][2]
       subrow[:styles] << (s.add_style bg_subrow.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).deep_merge(wrap).deep_merge(bold))
-      
+
       subrow[:columns] << counts[rw[:category].name][8]
       subrow[:styles] << (s.add_style bg_subrow.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).deep_merge(wrap).deep_merge(bold))
-      
+
       @states.each do |state|
         subrow[:columns] << counts[rw[:category].name][3][state.id]
         subrow[:styles] << (s.add_style bg_subrow.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).deep_merge(wrap).deep_merge(bold))
       end
-      
+
       subrow[:columns] << counts[rw[:category].name][4]
       subrow[:styles] << (s.add_style bg_subrow.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).deep_merge(wrap).deep_merge(bold))
-      
+
       subrow[:columns] << counts[rw[:category].name][5]
       subrow[:styles] << (s.add_style bg_subrow.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).deep_merge(wrap).deep_merge(bold))
-      
+
       subrow[:columns] << counts[rw[:category].name][6]
       subrow[:styles] << (s.add_style bg_subrow.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).deep_merge(wrap).deep_merge(bold))
-      
+
       subrow[:columns] << counts[rw[:category].name][7]
       subrow[:styles] << (s.add_style bg_subrow.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).deep_merge(wrap).deep_merge(bold))
-      
+
       sheet.add_row subrow[:columns], style: subrow[:styles]
       row_num += 1
       sheet.merge_cells("#{('A'.codepoints.first+ loaihang_col_num).chr}#{row_num}:#{('A'.codepoints.first+ duongkinh_col_num).chr}#{row_num}")

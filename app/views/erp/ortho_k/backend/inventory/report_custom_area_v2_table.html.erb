@@ -103,7 +103,7 @@
                             begin_params[:to_date] = filters[:from_date]
                             begin_params[:from_date] = nil
                         %>
-                        <%= counts[row[:category].name][0] = Erp::Products::Product.get_stock_real(begin_params) %>
+                        <%= counts[row[:category].name][0] = counts[row[:category].name][0].to_i + Erp::Products::Product.get_stock_real(begin_params) %>
                     </td>
                     <td class="text-center">
                         <%
@@ -111,19 +111,23 @@
                                 delivery_type: Erp::Qdeliveries::Delivery::TYPE_PURCHASE_IMPORT
                             }))
                         %>
-                        <%= counts[row[:category].name][1] = count %>
+                        <%= counts[row[:category].name][1] = counts[row[:category].name][1].to_i + count %>
                     </td>
                     <td class="text-center">
                         <%
                             count = Erp::Products::Product.get_stock_check_import(filters)
                         %>
-                        <%= counts[row[:category].name][2] = count %>
+                        <%= counts[row[:category].name][2] = counts[row[:category].name][2].to_i + count %>
                     </td>
                     <td class="text-center">
                         <%
                           count = (filters[:state_ids].present? ? Erp::Products::Product.get_state_check_import(filters) : '--')
                         %>
-                        <%= counts[row[:category].name][8] = count %>
+                        <% if filters[:state_ids].present? %>
+                          <%= counts[row[:category].name][8] = counts[row[:category].name][8].to_i + count %>
+                        <% else %>
+                          <%= count %>
+                        <% end %>
                     </td>
                     <% counts[row[:category].name][3] = {} %>
                     <% @states.each do |state| %>
@@ -137,7 +141,7 @@
                                     state: state
                               }))
                             %>
-                            <%= counts[row[:category].name][3][state.id] = count %>
+                            <%= counts[row[:category].name][3][state.id] = counts[row[:category].name][3][state.id].to_i + count %>
                         </td>
                     <% end %>
                     <td class="text-center">
@@ -150,27 +154,31 @@
                             }))
                             count += Erp::Products::Product.get_gift_given_export(filters)
                         %>
-                        <%= counts[row[:category].name][4] = count %>
+                        <%= counts[row[:category].name][4] = counts[row[:category].name][4].to_i + count %>
                     </td>
                     <td class="text-center">
                         <%
                             count = Erp::Products::Product.get_damage_record_export(filters)
                             count += Erp::Products::Product.get_stock_check_export(filters)
                         %>
-                        <%= counts[row[:category].name][5] = count %>
+                        <%= counts[row[:category].name][5] = counts[row[:category].name][5].to_i + count %>
                     </td>
                     <td class="text-center">
                         <%
                           count = (filters[:state_ids].present? ? Erp::Products::Product.get_state_check_export(filters) : '--')
                         %>
-                        <%= counts[row[:category].name][6] = count %>
+                        <% if filters[:state_ids].present? %>
+                          <%= counts[row[:category].name][6] = counts[row[:category].name][6].to_i + count %>
+                        <% else %>
+                          <%= count %>
+                        <% end %>
                     </td>
                     <td class="text-center text-bold">
                         <%
                             end_params = filters.clone
                             end_params[:from_date] = nil
                         %>
-                        <%= counts[row[:category].name][7] = Erp::Products::Product.get_stock_real(end_params) %>
+                        <%= counts[row[:category].name][7] = counts[row[:category].name][7].to_i + Erp::Products::Product.get_stock_real(end_params) %>
                     </td>
                 </tr>
             <% end %>

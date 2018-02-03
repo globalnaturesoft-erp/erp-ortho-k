@@ -2039,4 +2039,13 @@ Erp::Products::Product.class_eval do
 
     arr
   end
+
+  # Get by properties values
+  def self.find_by_properties_value_ids(arr=[])
+    query = self
+    arr.each do |x|
+      query = query.where("erp_products_products.cache_properties LIKE ?", "%[\"#{x}\",%") if x.present?
+    end
+    query
+  end
 end
