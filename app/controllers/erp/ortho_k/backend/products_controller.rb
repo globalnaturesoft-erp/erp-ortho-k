@@ -1,3 +1,5 @@
+require "yaml"
+
 module Erp
   module OrthoK
     module Backend
@@ -7,38 +9,7 @@ module Erp
         end
 
         def matrix_report_table
-          global_filter = params.to_unsafe_hash[:global_filter]
-          if global_filter.present? and global_filter[:column].present?
-            col = global_filter[:column].split('-').first
-            @columns = Erp::Products::PropertiesValue.where(
-              property_id: col
-            )
-
-            # sub columns
-            if global_filter[:column].split('-').count == 2
-              sub = global_filter[:column].split('-').last
-              @column_subs = Erp::Products::PropertiesValue.where(
-                property_id: sub
-              )
-            end
-          end
-
-          if global_filter.present? and global_filter[:row].present?
-            row = global_filter[:row].split('-').first
-            @rows = Erp::Products::PropertiesValue.where(
-              property_id: global_filter[:row]
-            )
-
-            # sub rows
-            if global_filter[:row].split('-').count == 2
-              sub = global_filter[:row].split('-').last
-              @row_subs = Erp::Products::PropertiesValue.where(
-                property_id: sub
-              )
-            end
-          end
-
-          @global_filter = global_filter
+          @global_filter = params.to_unsafe_hash[:global_filter]
 
           # product query
           @product_query = Erp::Products::Product
@@ -64,47 +35,101 @@ module Erp
           end
 
 
+          # matrix
+          @matrix = []
+          # total
+          @summary = {
+            total: 0,
+            out_of_stock: 0,
+            equal_1: 0,
+            equal_2: 0,
+            equal_3: 0,
+            from_4: 0
+          }
+
+          # row 1
+          @matrix[0] = []
+          @matrix[0][0] = {value: ''}
+          @matrix[0][1] = {value: ''}
+          Erp::Products::Product.matrix_cols.each do |col|
+              @matrix[0] << {value: col[:degree]}
+          end
+
+          # row 2
+          @matrix[1] = []
+          @matrix[1][0] = {value: ''}
+          @matrix[1][1] = {value: ''}
+          Erp::Products::Product.matrix_cols.each do |col|
+              @matrix[1] << {value: col[:letter]}
+          end
+
+          # rows and cols
+          Erp::Products::Product.matrix_rows.each_with_index do |row, index|
+            row_index = index + 2
+            @matrix[row_index] = []
+
+            @matrix[row_index][0] = {value: row[:degree_k]}
+            @matrix[row_index][1] = {value: row[:number]}
+
+            Erp::Products::Product.matrix_cols.each do |col|
+
+              so_p = Erp::Products::Property.get_number
+              chu_p = Erp::Products::Property.get_letter
+
+              chu_pv = Erp::Products::PropertiesValue.where(property_id: chu_p.id, value: col[:letter]).first
+              so_pv = Erp::Products::PropertiesValue.where(property_id: so_p.id, value: row[:number]).first
+
+              product_ids = @product_query.find_by_properties_value_ids([chu_pv.id,so_pv.id]).select('id')
+              product_ids = -1 if product_ids.count == 0
+              filters = @global_filter.clone.merge({product_id: product_ids, state_ids: @global_filter[:states], warehouse_ids: @global_filter[:warehouses]})
+              stock = Erp::Products::Product.get_stock_real(filters)
+
+              @matrix[row_index] << {
+                value: stock,
+                url_data: {
+                  properties_value_ids: [chu_pv.id,so_pv.id],
+                  categories: @global_filter[:categories],
+                  warehouse_ids: @global_filter[:warehouses],
+                  state_ids: @global_filter[:states],
+                  diameters: @global_filter[:diameters]
+                }
+              }
+
+              # sumary
+              @summary[:total] += stock
+
+              if stock == 0
+                @summary[:out_of_stock] += stock
+              elsif stock == 1
+                @summary[:equal_1] += stock
+              elsif stock == 2
+                @summary[:equal_2] += stock
+              elsif stock == 3
+                @summary[:equal_3] += stock
+              elsif stock >= 4
+                @summary[:from_4] += stock
+              end
+            end
+          end
+
+          # Write file
+          File.open("tmp/matrix_report.yml", "w+") do |f|
+            f.write({global_filter: @global_filter,matrix: @matrix, summary: @summary}.to_yaml)
+          end
+
           render layout: nil
         end
 
         def matrix_report_xlsx
-          global_filter = params.to_unsafe_hash[:global_filter]
-          if global_filter.present? and global_filter[:column].present?
-            col = global_filter[:column].split('-').first
-            @columns = Erp::Products::PropertiesValue.where(
-              property_id: col
-            )
+          data = YAML.load_file("tmp/matrix_report.yml")
 
-            # sub columns
-            if global_filter[:column].split('-').count == 2
-              sub = global_filter[:column].split('-').last
-              @column_subs = Erp::Products::PropertiesValue.where(
-                property_id: sub
-              )
-            end
-          end
-
-          if global_filter.present? and global_filter[:row].present?
-            row = global_filter[:row].split('-').first
-            @rows = Erp::Products::PropertiesValue.where(
-              property_id: global_filter[:row]
-            )
-
-            # sub rows
-            if global_filter[:row].split('-').count == 2
-              sub = global_filter[:row].split('-').last
-              @row_subs = Erp::Products::PropertiesValue.where(
-                property_id: sub
-              )
-            end
-          end
-
-          @global_filter = global_filter
-          render layout: nil
+          @global_filter = data[:global_filter]
+          @matrix = data[:matrix]
+          @summary = data[:summary]
 
           respond_to do |format|
             format.xlsx {
-              response.headers['Content-Disposition'] = "attachment; filename='Ma tran ton kho tong hop.xlsx'"
+              response.headers['Content-Disposition'] = "attachment; filename=Ma_tran_ton_kho_tong_hop.xlsx"
             }
           end
         end
@@ -363,7 +388,7 @@ module Erp
 
           @from_date = @global_filters[:from_date].to_date
           @to_date = @global_filters[:to_date].to_date
-          
+
           @group_by = @global_filters[:group_by]
 
           if @from_date.present? and @to_date.present?
