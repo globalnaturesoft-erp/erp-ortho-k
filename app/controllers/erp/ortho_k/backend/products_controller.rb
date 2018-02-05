@@ -99,15 +99,15 @@ module Erp
               @summary[:total] += stock
 
               if stock == 0
-                @summary[:out_of_stock] += stock
+                @summary[:out_of_stock] += 1
               elsif stock == 1
-                @summary[:equal_1] += stock
+                @summary[:equal_1] += 1
               elsif stock == 2
-                @summary[:equal_2] += stock
+                @summary[:equal_2] += 1
               elsif stock == 3
-                @summary[:equal_3] += stock
+                @summary[:equal_3] += 1
               elsif stock >= 4
-                @summary[:from_4] += stock
+                @summary[:from_4] += 1
               end
             end
           end

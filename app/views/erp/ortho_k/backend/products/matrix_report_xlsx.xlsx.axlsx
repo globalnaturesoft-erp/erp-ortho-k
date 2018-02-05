@@ -150,7 +150,7 @@ wb.styles do |s|
     c2 += 1
     sheet.merge_cells("#{('A'.codepoints.first + c2).chr}#{row_num}:#{('A'.codepoints.first + (c2 + 3)).chr}#{row_num}")
 
-    footer3[:columns] << 'Hàng còn tồn 1:'
+    footer3[:columns] << 'Tồn 1:'
     footer3[:styles] << (s.add_style text_left.deep_merge(bg_general))
     c3 = 0
     (1..3).each do |empty|
@@ -166,7 +166,7 @@ wb.styles do |s|
     c3 += 1
     sheet.merge_cells("#{('A'.codepoints.first + c3).chr}#{row_num}:#{('A'.codepoints.first + (c3 + 3)).chr}#{row_num}")
 
-    footer4[:columns] << 'Hàng còn tồn 2:'
+    footer4[:columns] << 'Tồn 2:'
     footer4[:styles] << (s.add_style text_left.deep_merge(bg_general))
     c4 = 0
     (1..3).each do |empty|
@@ -182,7 +182,7 @@ wb.styles do |s|
     c4 += 1
     sheet.merge_cells("#{('A'.codepoints.first + c4).chr}#{row_num}:#{('A'.codepoints.first + (c4 + 3)).chr}#{row_num}")
 
-    footer5[:columns] << 'Hàng còn tồn 3:'
+    footer5[:columns] << 'Tồn 3:'
     footer5[:styles] << (s.add_style text_left.deep_merge(bg_general))
     c5 = 0
     (1..3).each do |empty|
@@ -198,7 +198,7 @@ wb.styles do |s|
     c5 += 1
     sheet.merge_cells("#{('A'.codepoints.first + c5).chr}#{row_num}:#{('A'.codepoints.first + (c5 + 3)).chr}#{row_num}")
 
-    footer6[:columns] << 'Hàng còn tồn 4 trở lên:'
+    footer6[:columns] << 'Tồn 4 trở lên:'
     footer6[:styles] << (s.add_style text_left.deep_merge(bg_general))
     c6 = 0
     (1..3).each do |empty|
