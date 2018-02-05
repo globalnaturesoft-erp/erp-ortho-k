@@ -4,12 +4,9 @@ module Erp
   module OrthoK
     module Backend
       class ProductsController < Erp::Backend::BackendController
-        # Matrix report
-        def matrix_report
-        end
-
-        def matrix_report_table
-          @global_filter = params.to_unsafe_hash[:global_filter]
+        # get matrix group
+        def get_matrix_group(filter)
+          @global_filter = filter
 
           # product query
           @product_query = Erp::Products::Product
@@ -112,20 +109,30 @@ module Erp
             end
           end
 
-          # Write file
+          return {filter: @global_filter, matrix: @matrix, summary: @summary}
+        end
+
+        # Matrix report
+        def matrix_report
+        end
+
+        def matrix_report_table
+          @matrixes = []
+
+          filters = params.to_unsafe_hash[:global_filter][:filters]
+          filters.each do |m|
+            @matrixes << self.get_matrix_group(m[1])
+          end
+
           File.open("tmp/matrix_report.yml", "w+") do |f|
-            f.write({global_filter: @global_filter,matrix: @matrix, summary: @summary}.to_yaml)
+            f.write(@matrixes.to_yaml)
           end
 
           render layout: nil
         end
 
         def matrix_report_xlsx
-          data = YAML.load_file("tmp/matrix_report.yml")
-
-          @global_filter = data[:global_filter]
-          @matrix = data[:matrix]
-          @summary = data[:summary]
+          @matrixes = YAML.load_file("tmp/matrix_report.yml")
 
           respond_to do |format|
             format.xlsx {

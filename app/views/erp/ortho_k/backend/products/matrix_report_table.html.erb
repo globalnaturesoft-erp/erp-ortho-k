@@ -1,4 +1,110 @@
-<% if @matrix %>
+<% if @matrixes.present? %>
+    <div class="row">
+        <div class="col-md-10">
+            <div class="custom-show text-center">
+                <h4 class="font-blue-madison bold uppercase mb-15">
+                    Ma trận báo cáo tổng hợp tồn kho
+                </h4>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="text-right mb-10">
+                <a target="_blank"
+                    href="<%= erp_ortho_k.matrix_report_xlsx_backend_products_path(params.to_unsafe_hash.merge({format: 'xlsx'})) %>"
+                    target="_blank"
+                    class="btn btn-primary"
+                >Xuất excel</a>
+            </div>
+        </div>
+    </div>
+    <% @matrixes.each do |m| %>
+        <%
+            @global_filter = m[:filter]
+            @matrix = m[:matrix]
+            @summary = m[:summary]
+        %>
+
+        <div class="row">
+            <div class="col-md-10">
+                <div class="custom-show text-center">
+                    <p class="text-center">
+                        Loại: <strong><%= @global_filter[:categories].present? ? Erp::Products::Category.where(id: @global_filter[:categories]).map(&:name).join(', ') : 'Tất cả' %></strong> |
+                        Đường kính: <strong><%= @global_filter[:diameters].present? ? Erp::Products::PropertiesValue.where(id: @global_filter[:diameters]).map(&:value).join(', ') : 'Tất cả' %></strong> |
+                        Kho: <strong><%= @global_filter[:warehouses].present? ? Erp::Warehouses::Warehouse.where(id: @global_filter[:warehouses]).map(&:name).join(', ') : 'Tất cả' %></strong> |
+                        Trạng thái: <strong><%= @global_filter[:states].present? ? Erp::Products::State.where(id: @global_filter[:states]).map(&:name).join(', ') : 'Tất cả' %></strong>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <table class="table table-advance table-checkable order-column table-matrix" id="">
+            <% @matrix.each_with_index do |row, y| %>
+                <tr>
+                    <% row.each_with_index do |cell, x| %>
+                        <% if x < 2 or y < 2 %>
+                            <th class="text-center bg-grey">
+                        <% else %>
+                            <td class="text-center stock-num stock-num-<%= cell[:value] %>"
+                                data-tooltip-url="<%= erp_ortho_k.tooltip_warehouse_info_backend_products_path(cell[:url_data]) %>"
+                            >
+                        <% end %>
+                            <%= cell[:value] %>
+                        <% if x < 2 or y < 2 %>
+                            </th>
+                        <% else %>
+                            </td>
+                        <% end %>
+                    <% end %>
+                </tr>
+            <% end %>
+        </table>
+
+        <h3 class="mt-20"><%= t('.summary') %></h3>
+        <div class="portlet m-grid m-grid-demo">
+            <div class="m-grid-row">
+                <div class="m-grid-col m-grid-col-middle m-grid-col-center">
+                    <label><%= t('.total_stock') %></label><br/>
+                    <strong>
+                        <%= @summary[:total] %>
+                    </strong>
+                </div>
+                <div class="m-grid-col m-grid-col-middle m-grid-col-center">
+                    <label>Hết hàng</label><br/>
+                    <strong>
+                        <%= @summary[:out_of_stock] %>
+                    </strong>
+                </div>
+                <div class="m-grid-col m-grid-col-middle m-grid-col-center">
+                    <label>Tồn 1</label><br/>
+                    <strong>
+                        <%= @summary[:equal_1] %>
+                    </strong>
+                </div>
+                <div class="m-grid-col m-grid-col-middle m-grid-col-center">
+                    <label>Tồn 2</label><br/>
+                    <strong>
+                        <%= @summary[:equal_2] %>
+                    </strong>
+                </div>
+                <div class="m-grid-col m-grid-col-middle m-grid-col-center">
+                    <label>Tồn 3</label><br/>
+                    <strong>
+                        <%= @summary[:equal_3] %>
+                    </strong>
+                </div>
+                <div class="m-grid-col m-grid-col-middle m-grid-col-center">
+                    <label>Tồn trên 4</label><br/>
+                    <strong>
+                        <%= @summary[:from_4] %>
+                    </strong>
+                </div>
+            </div>
+        </div>
+        <hr />
+    <% end %>
+<% end %>
+
+<% if false and @matrix %>
     <div class="row">
         <div class="col-md-10">
             <div class="custom-show text-center">
