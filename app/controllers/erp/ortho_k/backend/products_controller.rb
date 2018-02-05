@@ -60,6 +60,9 @@ module Erp
               @matrix[1] << {value: col[:letter]}
           end
 
+          so_p = Erp::Products::Property.get_number
+          chu_p = Erp::Products::Property.get_letter
+
           # rows and cols
           Erp::Products::Product.matrix_rows.each_with_index do |row, index|
             row_index = index + 2
@@ -69,9 +72,6 @@ module Erp
             @matrix[row_index][1] = {value: row[:number]}
 
             Erp::Products::Product.matrix_cols.each do |col|
-
-              so_p = Erp::Products::Property.get_number
-              chu_p = Erp::Products::Property.get_letter
 
               chu_pv = Erp::Products::PropertiesValue.where(property_id: chu_p.id, value: col[:letter]).first
               so_pv = Erp::Products::PropertiesValue.where(property_id: so_p.id, value: row[:number]).first

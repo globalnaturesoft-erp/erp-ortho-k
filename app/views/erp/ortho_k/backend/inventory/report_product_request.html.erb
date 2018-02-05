@@ -71,17 +71,9 @@
                 multiple: true
             }) %>
         </div>
-        <!--<div class="col-md-3">
-            <%= erp_form_control("dataselect", {
-                name: 'states',
-                value: '',
-                text: '',
-                label: 'Trạng thái',
-                placeholder: 'Tất cả trạng thái',
-                url: erp_products.dataselect_backend_states_path(format: 'json'),
-                multiple: true
-            }) %>
-        </div>-->
+        <div class="col-md-2">
+            <a href="#" class="btn btn-primary global-filter-button mt-25">Kiểm kho</a>
+        </div>
     </div>
 <% end %>
 
@@ -90,9 +82,11 @@
         url: erp_ortho_k.report_product_request_table_backend_inventory_index_path,
         sortable: true,
         keywords: false,
+        autoload: false,
         filters: [
         ],
         columns: [
-        ]
+        ],
+        placeholder: 'Vui lòng chọn vùng cần xem và nhấn Kiểm kho'
     ) %>
 </div>

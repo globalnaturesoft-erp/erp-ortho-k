@@ -981,164 +981,296 @@ module Erp
           end
         end
 
+        # get product request matrixes
+        def get_product_request_matrixes(filter)
+          @global_filter = filter
+
+          if @global_filter[:period].present?
+            @period = Erp::Periods::Period.find(@global_filter[:period])
+            @global_filter[:from_date] = @period.from_date
+            @global_filter[:to_date] = @period.to_date
+          end
+
+          @from_date = @global_filter[:from_date].to_date
+          @to_date = @global_filter[:to_date].to_date
+
+          # product query
+          @product_query = Erp::Products::Product
+          @product_query = @product_query.where(category_id: @global_filter[:categories]) if @global_filter[:categories].present?
+
+          # get diameters
+          diameter_ids = @global_filter[:diameters].present? ? @global_filter[:diameters] : nil
+          @diameters = Erp::Products::PropertiesValue.where(id: diameter_ids)
+          # filter by diameters
+          if diameter_ids.present?
+            if !diameter_ids.kind_of?(Array)
+              @product_query = @product_query.where("erp_products_products.cache_properties LIKE '%[\"#{diameter_ids}\",%'")
+            else
+              diameter_ids = (diameter_ids.reject { |c| c.empty? })
+              if !diameter_ids.empty?
+                qs = []
+                diameter_ids.each do |x|
+                  qs << "(erp_products_products.cache_properties LIKE '%[\"#{x}\",%')"
+                end
+                @product_query = @product_query.where("(#{qs.join(" OR ")})")
+              end
+            end
+          end
+
+
+          # matrix
+          @matrix = []
+          # total
+          @summary = {
+            total: 0,
+            out_of_stock: 0,
+            equal_1: 0,
+            equal_2: 0,
+            equal_3: 0,
+            from_4: 0
+          }
+
+          # row 1
+          @matrix[0] = []
+          @matrix[0][0] = {value: ''}
+          @matrix[0][1] = {value: ''}
+          Erp::Products::Product.matrix_cols.each do |col|
+              @matrix[0] << {value: col[:degree]}
+          end
+
+          # row 2
+          @matrix[1] = []
+          @matrix[1][0] = {value: ''}
+          @matrix[1][1] = {value: ''}
+          Erp::Products::Product.matrix_cols.each do |col|
+              @matrix[1] << {value: col[:letter]}
+          end
+
+          so_p = Erp::Products::Property.get_number
+          chu_p = Erp::Products::Property.get_letter
+
+          # rows and cols
+          Erp::Products::Product.matrix_rows.each_with_index do |row, index|
+            row_index = index + 2
+            @matrix[row_index] = []
+
+            @matrix[row_index][0] = {value: row[:degree_k]}
+            @matrix[row_index][1] = {value: row[:number]}
+
+            Erp::Products::Product.matrix_cols.each do |col|
+              chu_pv = Erp::Products::PropertiesValue.where(property_id: chu_p.id, value: col[:letter]).first
+              so_pv = Erp::Products::PropertiesValue.where(property_id: so_p.id, value: row[:number]).first
+
+              # @product_query.count
+              query = @product_query
+              query = query.find_by_properties_value_ids([chu_pv.id,so_pv.id])
+              product_ids = query.select('erp_products_products.id')
+              product_ids = -1 if query.count == 0
+              # stock
+              stock = Erp::Products::Product.get_order_request_count(
+                  product_id: product_ids,
+                  warehouse_ids: @global_filter[:warehouses],
+                  state_ids: @global_filter[:states],
+                  from_date: @from_date,
+                  to_date: @to_date,
+              )
+
+              @matrix[row_index] << {
+                value: stock
+              }
+
+              # sumary
+              @summary[:total] += stock
+
+              if stock <= 0
+                @summary[:out_of_stock] += 1
+              elsif stock == 1
+                @summary[:equal_1] += 1
+              elsif stock == 2
+                @summary[:equal_2] += 1
+              elsif stock == 3
+                @summary[:equal_3] += 1
+              elsif stock >= 4
+                @summary[:from_4] += 1
+              end
+            end
+          end
+
+          return {filter: @global_filter, matrix: @matrix, summary: @summary, period: @period, from_date: @from_date, to_date: @to_date}
+        end
+
         def report_product_request
         end
 
         def report_product_request_table
-          @global_filters = params.to_unsafe_hash[:global_filter]
+          filters = params.to_unsafe_hash[:global_filter]
 
-          # if has period
-          if @global_filters[:period].present?
-            @period = Erp::Periods::Period.find(@global_filters[:period])
-            @global_filters[:from_date] = @period.from_date
-            @global_filters[:to_date] = @period.to_date
+          @matrixes = []
+
+          # filters.each do |m|
+            @matrixes << self.get_product_request_matrixes(filters)
+          # end
+
+          File.open("tmp/report_product_request.yml", "w+") do |f|
+            f.write(@matrixes.to_yaml)
           end
 
-          @from_date = @global_filters[:from_date].to_date
-          @to_date = @global_filters[:to_date].to_date
-
-          @product_query = Erp::Products::Product
-
-          # catgories
-          @product_query = @product_query.where(category_id: @global_filters[:categories]) if @global_filters[:categories].present?
-
-          # diameters
-          diameter_ids = @global_filters[:diameters].present? ? @global_filters[:diameters] : nil
-          if diameter_ids.present?
-            if !diameter_ids.kind_of?(Array)
-              @product_query = @product_query.where("erp_products_products.cache_properties LIKE '%[\"#{diameter_ids}\",%'")
-            else
-              diameter_ids = (diameter_ids.reject { |c| c.empty? })
-              if !diameter_ids.empty?
-                qs = []
-                diameter_ids.each do |x|
-                  qs << "(erp_products_products.cache_properties LIKE '%[\"#{x}\",%')"
-                end
-                @product_query = @product_query.where("(#{qs.join(" OR ")})")
-              end
-            end
-          end
+          render layout: nil
         end
-        
+
         def report_product_request_xlsx
-          @global_filters = params.to_unsafe_hash[:global_filter]
+          @matrixes = YAML.load_file("tmp/report_product_request.yml")
 
-          # if has period
-          if @global_filters[:period].present?
-            @period = Erp::Periods::Period.find(@global_filters[:period])
-            @global_filters[:from_date] = @period.from_date
-            @global_filters[:to_date] = @period.to_date
-          end
-
-          @from_date = @global_filters[:from_date].to_date
-          @to_date = @global_filters[:to_date].to_date
-
-          @product_query = Erp::Products::Product
-
-          # catgories
-          @product_query = @product_query.where(category_id: @global_filters[:categories]) if @global_filters[:categories].present?
-
-          # diameters
-          diameter_ids = @global_filters[:diameters].present? ? @global_filters[:diameters] : nil
-          if diameter_ids.present?
-            if !diameter_ids.kind_of?(Array)
-              @product_query = @product_query.where("erp_products_products.cache_properties LIKE '%[\"#{diameter_ids}\",%'")
-            else
-              diameter_ids = (diameter_ids.reject { |c| c.empty? })
-              if !diameter_ids.empty?
-                qs = []
-                diameter_ids.each do |x|
-                  qs << "(erp_products_products.cache_properties LIKE '%[\"#{x}\",%')"
-                end
-                @product_query = @product_query.where("(#{qs.join(" OR ")})")
-              end
-            end
-          end
-          
           respond_to do |format|
             format.xlsx {
-              response.headers['Content-Disposition'] = "attachment; filename='Ma tran nhu cau mua hang.xlsx'"
+              response.headers['Content-Disposition'] = "attachment; filename=Ma_tran_nhu_cau_mua.xlsx"
             }
           end
+        end
+
+        # get product request matrixes
+        def get_product_ordered_matrixes(filter)
+          @global_filter = filter
+
+          if @global_filter[:period].present?
+            @period = Erp::Periods::Period.find(@global_filter[:period])
+            @global_filter[:from_date] = @period.from_date
+            @global_filter[:to_date] = @period.to_date
+          end
+
+          @from_date = @global_filter[:from_date].to_date
+          @to_date = @global_filter[:to_date].to_date
+
+          # product query
+          @product_query = Erp::Products::Product
+          @product_query = @product_query.where(category_id: @global_filter[:categories]) if @global_filter[:categories].present?
+
+          # get diameters
+          diameter_ids = @global_filter[:diameters].present? ? @global_filter[:diameters] : nil
+          @diameters = Erp::Products::PropertiesValue.where(id: diameter_ids)
+          # filter by diameters
+          if diameter_ids.present?
+            if !diameter_ids.kind_of?(Array)
+              @product_query = @product_query.where("erp_products_products.cache_properties LIKE '%[\"#{diameter_ids}\",%'")
+            else
+              diameter_ids = (diameter_ids.reject { |c| c.empty? })
+              if !diameter_ids.empty?
+                qs = []
+                diameter_ids.each do |x|
+                  qs << "(erp_products_products.cache_properties LIKE '%[\"#{x}\",%')"
+                end
+                @product_query = @product_query.where("(#{qs.join(" OR ")})")
+              end
+            end
+          end
+
+
+          # matrix
+          @matrix = []
+          # total
+          @summary = {
+            total: 0,
+            out_of_stock: 0,
+            equal_1: 0,
+            equal_2: 0,
+            equal_3: 0,
+            from_4: 0
+          }
+
+          # row 1
+          @matrix[0] = []
+          @matrix[0][0] = {value: ''}
+          @matrix[0][1] = {value: ''}
+          Erp::Products::Product.matrix_cols.each do |col|
+              @matrix[0] << {value: col[:degree]}
+          end
+
+          # row 2
+          @matrix[1] = []
+          @matrix[1][0] = {value: ''}
+          @matrix[1][1] = {value: ''}
+          Erp::Products::Product.matrix_cols.each do |col|
+              @matrix[1] << {value: col[:letter]}
+          end
+
+          so_p = Erp::Products::Property.get_number
+          chu_p = Erp::Products::Property.get_letter
+
+          # rows and cols
+          Erp::Products::Product.matrix_rows.each_with_index do |row, index|
+            row_index = index + 2
+            @matrix[row_index] = []
+
+            @matrix[row_index][0] = {value: row[:degree_k]}
+            @matrix[row_index][1] = {value: row[:number]}
+
+            Erp::Products::Product.matrix_cols.each do |col|
+              chu_pv = Erp::Products::PropertiesValue.where(property_id: chu_p.id, value: col[:letter]).first
+              so_pv = Erp::Products::PropertiesValue.where(property_id: so_p.id, value: row[:number]).first
+
+              # @product_query.count
+              query = @product_query
+              query = query.find_by_properties_value_ids([chu_pv.id,so_pv.id])
+              product_ids = query.select('erp_products_products.id')
+              product_ids = -1 if query.count == 0
+              # stock
+              stock = Erp::Products::Product.get_order_export(
+                  product_id: product_ids,
+                  warehouse_ids: @global_filter[:warehouses],
+                  state_ids: @global_filter[:states],
+                  from_date: @from_date,
+                  to_date: @to_date,
+              )
+
+              @matrix[row_index] << {
+                value: stock
+              }
+
+              # sumary
+              @summary[:total] += stock
+
+              if stock <= 0
+                @summary[:out_of_stock] += 1
+              elsif stock == 1
+                @summary[:equal_1] += 1
+              elsif stock == 2
+                @summary[:equal_2] += 1
+              elsif stock == 3
+                @summary[:equal_3] += 1
+              elsif stock >= 4
+                @summary[:from_4] += 1
+              end
+            end
+          end
+
+          return {filter: @global_filter, matrix: @matrix, summary: @summary, period: @period, from_date: @from_date, to_date: @to_date}
         end
 
         def report_product_ordered
         end
 
         def report_product_ordered_table
-          @global_filters = params.to_unsafe_hash[:global_filter]
+          filters = params.to_unsafe_hash[:global_filter]
 
-          # if has period
-          if @global_filters[:period].present?
-            @period = Erp::Periods::Period.find(@global_filters[:period])
-            @global_filters[:from_date] = @period.from_date
-            @global_filters[:to_date] = @period.to_date
+          @matrixes = []
+
+          # filters.each do |m|
+            @matrixes << self.get_product_ordered_matrixes(filters)
+          # end
+
+          File.open("tmp/report_product_ordered.yml", "w+") do |f|
+            f.write(@matrixes.to_yaml)
           end
 
-          @from_date = @global_filters[:from_date].to_date
-          @to_date = @global_filters[:to_date].to_date
-
-          @product_query = Erp::Products::Product
-
-          # catgories
-          @product_query = @product_query.where(category_id: @global_filters[:categories]) if @global_filters[:categories].present?
-
-          # diameters
-          diameter_ids = @global_filters[:diameters].present? ? @global_filters[:diameters] : nil
-          if diameter_ids.present?
-            if !diameter_ids.kind_of?(Array)
-              @product_query = @product_query.where("erp_products_products.cache_properties LIKE '%[\"#{diameter_ids}\",%'")
-            else
-              diameter_ids = (diameter_ids.reject { |c| c.empty? })
-              if !diameter_ids.empty?
-                qs = []
-                diameter_ids.each do |x|
-                  qs << "(erp_products_products.cache_properties LIKE '%[\"#{x}\",%')"
-                end
-                @product_query = @product_query.where("(#{qs.join(" OR ")})")
-              end
-            end
-          end
+          render layout: nil
         end
-        
+
         def report_product_ordered_xlsx
-          @global_filters = params.to_unsafe_hash[:global_filter]
+          @matrixes = YAML.load_file("tmp/report_product_ordered.yml")
 
-          # if has period
-          if @global_filters[:period].present?
-            @period = Erp::Periods::Period.find(@global_filters[:period])
-            @global_filters[:from_date] = @period.from_date
-            @global_filters[:to_date] = @period.to_date
-          end
-
-          @from_date = @global_filters[:from_date].to_date
-          @to_date = @global_filters[:to_date].to_date
-
-          @product_query = Erp::Products::Product
-
-          # catgories
-          @product_query = @product_query.where(category_id: @global_filters[:categories]) if @global_filters[:categories].present?
-
-          # diameters
-          diameter_ids = @global_filters[:diameters].present? ? @global_filters[:diameters] : nil
-          if diameter_ids.present?
-            if !diameter_ids.kind_of?(Array)
-              @product_query = @product_query.where("erp_products_products.cache_properties LIKE '%[\"#{diameter_ids}\",%'")
-            else
-              diameter_ids = (diameter_ids.reject { |c| c.empty? })
-              if !diameter_ids.empty?
-                qs = []
-                diameter_ids.each do |x|
-                  qs << "(erp_products_products.cache_properties LIKE '%[\"#{x}\",%')"
-                end
-                @product_query = @product_query.where("(#{qs.join(" OR ")})")
-              end
-            end
-          end
-          
           respond_to do |format|
             format.xlsx {
-              response.headers['Content-Disposition'] = "attachment; filename='Ma tran so luong ban hang.xlsx'"
+              response.headers['Content-Disposition'] = "attachment; filename=Ma_tran_ban_hang.xlsx"
             }
           end
         end
