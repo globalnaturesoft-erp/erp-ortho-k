@@ -95,7 +95,7 @@ module Erp
               # sumary
               @summary[:total] += stock
 
-              if stock == 0
+              if stock <= 0
                 @summary[:out_of_stock] += 1
               elsif stock == 1
                 @summary[:equal_1] += 1

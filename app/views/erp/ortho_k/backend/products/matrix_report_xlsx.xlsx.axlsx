@@ -23,6 +23,7 @@ wb.styles do |s|
           bg_stock_0 = {:bg_color => "fbe1e3", :fg_color => "00"}
           bg_stock_1 = {:bg_color => "f9e491", :fg_color => "00"}
           bg_stock_2 = {:bg_color => "e0ebf9", :fg_color => "00"}
+          bg_stock_3 = {:bg_color => "ed6b75", :fg_color => "ff"}
           bg_general = {:bg_color => "a9d08e", :fg_color => "00"}
           text_center = {alignment: { horizontal: :center }}
           text_left = {alignment: { horizontal: :left }}
@@ -99,6 +100,8 @@ wb.styles do |s|
                           row[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(number).deep_merge(bg_stock_1))
                       elsif cell[:value] == 2
                           row[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(number).deep_merge(bg_stock_2))
+                      elsif cell[:value] < 0
+                          row[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(number).deep_merge(bg_stock_3))
                       else
                           row[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(number))
                       end
