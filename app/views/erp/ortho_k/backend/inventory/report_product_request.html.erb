@@ -7,12 +7,17 @@
 <% end %>
 
 <% content_for :global_filter do %>
+    <% dfilters = current_user.get_filters(request.path+"_table").present? ? current_user.get_filters(request.path+"_table") : {}  %>
     <div class="row">
         <div class="col-md-3">
             <%= erp_form_control('date', {
                 label: 'Từ ngày',
                 name: 'from_date',
-                value: @from_date,
+                value: (
+                    (dfilters["from_date"].present? and !@from_date.present?) ?
+                    dfilters["from_date"].to_date
+                    : @from_date
+                ),
                 placeholder: 'Chọn ngày đầu kỳ'
             }) %>
         </div>
@@ -20,7 +25,11 @@
             <%= erp_form_control('date', {
                 label: 'Đến ngày',
                 name: 'to_date',
-                value: @to_date,
+                value: (
+                    (dfilters["to_date"].present? and !@to_date.present?) ?
+                    dfilters["to_date"].to_date
+                    : @to_date
+                ),
                 placeholder: 'Chọn ngày cuối kỳ'
             }) %>
         </div>
@@ -28,8 +37,16 @@
             <%= erp_form_control('dataselect', {
                 label: 'Mốc thời gian',
                 name: 'period',
-                value: (@period.present? ? @period.id : ''),
-                text: (@period.present? ? @period.name : ''),
+                value: (
+                    (dfilters["period"].present? and !@period.present?) ?
+                    Erp::Periods::Period.find(dfilters["period"]).id
+                    : (@period.present? ? @period.id : '')
+                ),
+                text: (
+                    (dfilters["period"].present? and !@period.present?) ?
+                    Erp::Periods::Period.find(dfilters["period"]).name
+                    : (@period.present? ? @period.name : '')
+                ),
                 placeholder: 'Chọn khoảng thời gian',
                 url: erp_periods.dataselect_backend_periods_path(format: 'json'),
             }) %>
@@ -39,8 +56,11 @@
         <div class="col-md-3">
             <%= erp_form_control("dataselect", {
                 name: 'categories',
-                value: '',
-                text: '',
+                values: (
+                    dfilters["categories"].present? ?
+                    (Erp::Products::Category.where(id: dfilters["categories"]).map{|i| {text: i.name, value: i.id}})
+                    : nil
+                ),
                 label: 'Loại hàng',
                 placeholder: 'Tất cả loại',
                 url: erp_products.dataselect_backend_categories_path(format: 'json'),
@@ -51,8 +71,11 @@
             <% diameter = Erp::Products::Property.where(name: "Đường kính").first %>
             <%= erp_form_control("dataselect", {
                 name: 'diameters',
-                value: '',
-                text: '',
+                values: (
+                    dfilters["diameters"].present? ?
+                    (Erp::Products::PropertiesValue.where(id: dfilters["diameters"]).map{|i| {text: i.value, value: i.id}})
+                    : nil
+                ),
                 label: 'Đường kính',
                 placeholder: diameter.name,
                 url: erp_products.dataselect_backend_properties_values_path(format: 'json', property_id: diameter.id),
@@ -63,8 +86,11 @@
         <div class="col-md-3">
             <%= erp_form_control("dataselect", {
                 name: 'warehouses',
-                value: '',
-                text: '',
+                values: (
+                    dfilters["warehouses"].present? ?
+                    (Erp::Warehouses::Warehouse.where(id: dfilters["warehouses"]).map{|i| {text: i.name, value: i.id}})
+                    : nil
+                ),
                 label: 'Kho',
                 placeholder: 'Tất cả kho',
                 url: erp_warehouses.dataselect_backend_warehouses_path(format: 'json'),
