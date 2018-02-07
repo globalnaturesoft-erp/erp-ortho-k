@@ -58,10 +58,17 @@ module Erp
 
           @from_date = @global_filters[:from_date].to_date
           @to_date = @global_filters[:to_date].to_date
-
-          if @from_date.present? and @to_date.present?
-            @rows = Erp::Orders::Order.sales_details_report(params)[:data]
-            @totals = Erp::Orders::Order.sales_details_report(params)[:total]
+          
+          @group_by = @global_filters[:group_by]
+          
+          if @from_date.present? and @to_date.present?            
+            if @group_by.present? and !@group_by.include?(Erp::Orders::Order::GROUPED_BY_DEFAULT)
+              @groups = Erp::Orders::Order.group_sales_details_report(@global_filters)[:groups]
+              @totals = Erp::Orders::Order.group_sales_details_report(@global_filters)[:totals]
+            else              
+              @rows = Erp::Orders::Order.sales_details_report(@global_filters)[:data].sort_by { |n| n[:voucher_date] }.reverse!
+              @totals = Erp::Orders::Order.sales_details_report(@global_filters)[:total]
+            end
           end
 
           render layout: nil

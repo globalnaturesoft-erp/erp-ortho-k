@@ -17,24 +17,27 @@ Erp::Orders::Order.class_eval do
   
   GROUPED_BY_DEFAULT = 'grouped_by_default'
   GROUPED_BY_CUSTOMER = 'grouped_by_customer'
+  GROUPED_BY_PRODUCT_CODE = 'grouped_by_product_code'
+  GROUPED_BY_PRODUCT_CATEGORY = 'grouped_by_warehouse'
+  GROUPED_BY_WAREHOUSE = 'grouped_by_warehouse'
   
   def self.sort_by_dates()
     [
       {
         text: I18n.t('erp.ortho_k.backend.sales.report_sales_details.record_date'),
-        value: Erp::Products::Product::SORT_BY_RECORD_DATE
+        value: Erp::Orders::Order::SORT_BY_RECORD_DATE
       },
       {
         text: I18n.t('erp.ortho_k.backend.sales.report_sales_details.voucher_date'),
-        value: Erp::Products::Product::SORT_BY_VOUCHER_DATE
+        value: Erp::Orders::Order::SORT_BY_VOUCHER_DATE
       }
     ]
   end
   
   def self.get_order_direction()
     [
-      {text: I18n.t('descending'), value: Erp::Products::Product::ORDER_BY_DESC},
-      {text: I18n.t('ascending'), value: Erp::Products::Product::ORDER_BY_ASC}
+      {text: I18n.t('descending'), value: Erp::Orders::Order::ORDER_BY_DESC},
+      {text: I18n.t('ascending'), value: Erp::Orders::Order::ORDER_BY_ASC}
     ]
   end
   
@@ -42,11 +45,23 @@ Erp::Orders::Order.class_eval do
     [
       {
         text: I18n.t('default'),
-        value: Erp::Products::Product::GROUPED_BY_DEFAULT
+        value: Erp::Orders::Order::GROUPED_BY_DEFAULT
       },
       {
         text: I18n.t('erp.ortho_k.backend.sales.report_sales_details.customer'),
-        value: Erp::Products::Product::GROUPED_BY_CUSTOMER
+        value: Erp::Orders::Order::GROUPED_BY_CUSTOMER
+      },
+      {
+        text: I18n.t('erp.ortho_k.backend.sales.report_sales_details.product_code'),
+        value: Erp::Orders::Order::GROUPED_BY_PRODUCT_CODE
+      },
+      {
+        text: I18n.t('erp.ortho_k.backend.sales.report_sales_details.product_category'),
+        value: Erp::Orders::Order::GROUPED_BY_PRODUCT_CATEGORY
+      },
+      {
+        text: I18n.t('erp.ortho_k.backend.sales.report_sales_details.warehouse'),
+        value: Erp::Orders::Order::GROUPED_BY_WAREHOUSE
       }
     ]
   end
@@ -90,31 +105,221 @@ Erp::Orders::Order.class_eval do
       state: self.is_new_patient ? 'mới' : 'đổi len'
     }
   end
+  
+  # group import export
+  def self.group_sales_details_report(params={}, limit=nil)
+    rows = self.sales_details_report(params, limit)[:data]
+    
+    group_value = :record_date
+    group_text = :record_date
+    sort_value = :record_date
+    
+    # Grouped by
+    if params[:group_by] == Erp::Orders::Order::GROUPED_BY_DEFAULT
+      group_value = :record_date
+      group_text = :record_date
+    end
+    
+    if params[:group_by] == Erp::Orders::Order::GROUPED_BY_CUSTOMER
+      group_value = :customer_code
+      group_text = :customer_name
+    end
+    
+    if params[:group_by] == Erp::Orders::Order::GROUPED_BY_PRODUCT_CODE
+      group_value = :product_code
+      group_text = :product_code
+    end
+    
+    if params[:group_by] == Erp::Orders::Order::GROUPED_BY_PRODUCT_CATEGORY
+      group_value = :product_category
+      group_text = :product_category
+    end
+    
+    if params[:group_by] == Erp::Orders::Order::GROUPED_BY_WAREHOUSE
+      group_value = :warehouse
+      group_text = :warehouse
+    end
+    
+    # Sort by
+    if params[:sort_by] == Erp::Orders::Order::SORT_BY_RECORD_DATE
+      sort_value = :record_date
+    end
+    
+    if params[:sort_by] == Erp::Orders::Order::SORT_BY_VOUCHER_DATE
+      sort_value = :voucher_date
+    end
+    
+    rows = rows.sort_by! {|a| a[group_value].to_s}
+    rows.each_with_index do |row, index|
+      rows[index][group_value] = nil if !row[group_value].present?
+    end
+    # grouping
+    i_code = -1
+    grouped_rows = []
+    item = nil
+    rows.each_with_index do |row, index|
+      
+      # finish a group
+      if i_code != row[group_value] and !item.nil?
+        # sorts rows
+        if params[:order_by] == Erp::Orders::Order::ORDER_BY_ASC
+          item[:rows] = item[:rows].sort_by! {|a| a[sort_value].to_s}
+        elsif params[:order_by] == Erp::Orders::Order::ORDER_BY_DESC
+          item[:rows] = item[:rows].sort_by! {|a| a[sort_value].to_s}.reverse!
+        end
+        
+        # quantity
+        item[:quantity] = (item[:rows].map {|i| i[:quantity].to_i}).sum
+        
+        # purchase_tax_amount
+        item[:purchase_tax_amount] = (item[:rows].map {|i| i[:purchase_tax_amount].to_f}).sum
+        
+        # purchase_total_amount
+        item[:purchase_total_amount] = (item[:rows].map {|i| i[:purchase_total_amount].to_f}).sum
+        
+        # sales_tax_amount
+        item[:sales_tax_amount] = (item[:rows].map {|i| i[:sales_tax_amount].to_f}).sum
+        
+        # sales_discount
+        item[:sales_discount] = (item[:rows].map {|i| i[:sales_discount].to_f}).sum
+        
+        # sales_total_amount
+        item[:sales_total_amount] = (item[:rows].map {|i| i[:sales_total_amount].to_f}).sum
+        
+        # salesperson_commission_amount
+        item[:salesperson_commission_amount] = (item[:rows].map {|i| i[:salesperson_commission_amount].to_f}).sum
+        
+        # customer_commission_amount
+        item[:customer_commission_amount] = (item[:rows].map {|i| i[:customer_commission_amount].to_f}).sum
+        
+        grouped_rows << item.clone
+      end
+      
+      if i_code != row[group_value]
+        # new group
+        item = {}
+        item[:group_name] = row[group_text].present? ? row[group_text] : I18n.t('erp.ortho_k.backend.products.import_export_report.others')
+        item[:group_sort_code] = row[group_text].present? ? row[group_text] : 'zzz'
+        item[:rows] = [row]
+      else
+        item[:rows] << row
+      end
+      
+      # finish group
+      if !item.nil? and rows.count == (index + 1)
+        # sorts rows
+        if params[:order_by] == Erp::Products::Product::ORDER_BY_ASC
+          item[:rows] = item[:rows].sort_by! {|a| a[sort_value].to_s}
+        elsif params[:order_by] == Erp::Products::Product::ORDER_BY_DESC
+          item[:rows] = item[:rows].sort_by! {|a| a[sort_value].to_s}.reverse!
+        end
+        
+        # quantity
+        item[:quantity] = (item[:rows].map {|i| i[:quantity].to_i}).sum
+        
+        # purchase_tax_amount
+        item[:purchase_tax_amount] = (item[:rows].map {|i| i[:purchase_tax_amount].to_f}).sum
+        
+        # purchase_total_amount
+        item[:purchase_total_amount] = (item[:rows].map {|i| i[:purchase_total_amount].to_f}).sum
+        
+        # sales_tax_amount
+        item[:sales_tax_amount] = (item[:rows].map {|i| i[:sales_tax_amount].to_f}).sum
+        
+        # sales_discount
+        item[:sales_discount] = (item[:rows].map {|i| i[:sales_discount].to_f}).sum
+        
+        # sales_total_amount
+        item[:sales_total_amount] = (item[:rows].map {|i| i[:sales_total_amount].to_f}).sum
+        
+        # salesperson_commission_amount
+        item[:salesperson_commission_amount] = (item[:rows].map {|i| i[:salesperson_commission_amount].to_f}).sum
+        
+        # customer_commission_amount
+        item[:customer_commission_amount] = (item[:rows].map {|i| i[:customer_commission_amount].to_f}).sum
+        
+        grouped_rows << item.clone
+      end
+      
+      # loop
+      i_code = row[group_value]
+    end
+    
+    totals = {}
+    totals[:quantity] = (grouped_rows.map {|i| i[:quantity]}).sum
+    totals[:purchase_tax_amount] = (grouped_rows.map {|i| i[:purchase_tax_amount]}).sum
+    totals[:purchase_total_amount] = (grouped_rows.map {|i| i[:purchase_total_amount]}).sum
+    totals[:sales_tax_amount] = (grouped_rows.map {|i| i[:sales_tax_amount]}).sum
+    totals[:sales_discount] = (grouped_rows.map {|i| i[:sales_discount]}).sum
+    totals[:sales_total_amount] = (grouped_rows.map {|i| i[:sales_total_amount]}).sum
+    totals[:salesperson_commission_amount] = (grouped_rows.map {|i| i[:salesperson_commission_amount]}).sum
+    totals[:customer_commission_amount] = (grouped_rows.map {|i| i[:customer_commission_amount]}).sum
+    
+    return {
+      groups: grouped_rows.sort_by! {|a| a[:group_sort_code].to_s},
+      totals: totals,
+    }
+  end
 
   # get import report
-  def self.sales_details_report(params={})
+  def self.sales_details_report(params={}, limit=nil)
     result = []
 
     total = {
-      quantity: 0
+      quantity: 0,
+      sales_tax_amount: 0,
+      sales_discount: 0,
+      sales_total_amount: 0,
+      purchase_total_amount: 0,
+      salesperson_commission_amount: 0,
+      customer_commission_amount: 0
     }
 
     # Sales order
-    query = Erp::Orders::OrderDetail.joins(:order)
+    query = Erp::Orders::OrderDetail.joins(:order, :product)
             .where(erp_orders_orders: {supplier_id: Erp::Contacts::Contact.get_main_contact.id})
             .where(erp_orders_orders: {status: Erp::Orders::Order::STATUS_CONFIRMED})
 
     if params[:from_date].present?
-      query = query.where(erp_orders_orders: {'order_date >= ?': params[:from_date].to_date.beginning_of_day})
+      query = query.where('erp_orders_orders.order_date >= ?', params[:from_date].to_date.beginning_of_day)
     end
 
     if params[:to_date].present?
-      query = query.where(erp_orders_orders: {'order_date <= ?': params[:to_date].to_date.end_of_day})
+      query = query.where('erp_orders_orders.order_date <= ?', params[:to_date].to_date.end_of_day)
+    end
+    
+    if params[:period].present?
+      query = query.where('erp_orders_orders.order_date >= ? AND erp_orders_orders.order_date <= ?',
+        Erp::Periods::Period.find(params[:period]).from_date.beginning_of_day,
+				Erp::Periods::Period.find(params[:period]).to_date.end_of_day)
+    end
+    
+    if params[:customer_id].present?
+      query = query.where(erp_orders_orders: {customer_id: params[:customer_id]})
+    end
+    
+    if params[:warehouse_id].present?
+      query = query.where(erp_orders_orders: {warehouse_id: params[:warehouse_id]})
+    end
+    
+    if params[:category_id].present?
+      query = query.where(erp_products_products: {category_id: params[:category_id]})
+    end
+    
+    if params[:product_id].present?
+      query = query.where(product_id: params[:product_id])
     end
 
     query.each do |order_detail|
       qty = +order_detail.quantity
-      #sales_total_amount = delivery_detail.subtotal
+      sales_price = order_detail.price
+      sales_tax_amount = order_detail.tax_amount
+      sales_discount = order_detail.discount_amount
+      sales_total_amount = order_detail.total
+      salesperson_commission_amount = order_detail.commission
+      salesperson_percent = ((sales_total_amount != 0 and !salesperson_commission_amount.nil?) ? (salesperson_commission_amount.to_f/sales_total_amount.to_f)*100 : '')
+      customer_commission_amount = order_detail.customer_commission
+      customer_percent = ((sales_total_amount != 0 and !customer_commission_amount.nil?) ? (customer_commission_amount.to_f/sales_total_amount.to_f)*100 : '')
 
       result << {
         record_date: order_detail.order.created_at,
@@ -122,20 +327,34 @@ Erp::Orders::Order.class_eval do
         voucher_code: order_detail.order.code,
         customer_code: order_detail.order.customer_code,
         customer_name: order_detail.order.customer_name,
+        product_code: order_detail.product.code,
         product_name: order_detail.product_name,
+        product_category: order_detail.product.category_name,
         description: order_detail.description,
         state: 'Mới',
         warehouse: order_detail.order.warehouse_name,
         unit: order_detail.product.unit_name,
         quantity: order_detail.quantity,
-        sales_price: order_detail.price, # Gia ban
-        sales_total_amount: order_detail.subtotal,
+        sales_price: sales_price,
+        sales_tax_amount: sales_tax_amount,
+        sales_discount: sales_discount,
+        sales_total_amount: sales_total_amount,
+        eye_position: order_detail.display_eye_position,
         patient_name: order_detail.order.patient_name,
+        patient_state_name: order_detail.order.patient_state_name,
         salesperson_name: order_detail.order.customer.salesperson_name,
-        salesperson_commission_amount: order_detail.commission
+        salesperson_percent: salesperson_percent,
+        salesperson_commission_amount: salesperson_commission_amount,
+        customer_commission_percent: customer_percent,
+        customer_commission_amount: customer_commission_amount,
+        description: order_detail.description
       }
       total[:quantity] += qty
-      #total[:sales_total_amount] += sales_total_amount
+      total[:sales_tax_amount] += sales_tax_amount.to_f
+      total[:sales_discount] += sales_discount.to_f
+      total[:sales_total_amount] += sales_total_amount.to_f
+      total[:salesperson_commission_amount] += salesperson_commission_amount.to_f
+      total[:customer_commission_amount] += customer_commission_amount.to_f
     end
 
     # Qdelivery: Có Chứng Từ
@@ -143,18 +362,41 @@ Erp::Orders::Order.class_eval do
             .where.not(order_detail_id: nil)
             .where(erp_qdeliveries_deliveries: {status: Erp::Qdeliveries::Delivery::STATUS_DELIVERED})
             .where(erp_qdeliveries_deliveries: {delivery_type: Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT})
-
+    
     if params[:from_date].present?
-      query = query.where(erp_qdeliveries_deliveries: {'date >= ?': params[:from_date].to_date.beginning_of_day})
+      query = query.where('erp_qdeliveries_deliveries.date >= ?', params[:from_date].to_date.beginning_of_day)
     end
 
     if params[:to_date].present?
-      query = query.where(erp_qdeliveries_deliveries: {'date <= ?': params[:to_date].to_date.end_of_day})
+      query = query.where('erp_qdeliveries_deliveries.date <= ?', params[:to_date].to_date.end_of_day)
+    end
+    
+    if params[:period].present?
+      query = query.where('erp_qdeliveries_deliveries.date >= ? AND erp_qdeliveries_deliveries.date <= ?',
+        Erp::Periods::Period.find(params[:period]).from_date.beginning_of_day,
+				Erp::Periods::Period.find(params[:period]).to_date.end_of_day)
+    end
+    
+    if params[:customer_id].present?
+      query = query.where(erp_qdeliveries_deliveries: {customer_id: params[:customer_id]})
+    end
+    
+    if params[:warehouse_id].present?
+      query = query.where(warehouse_id: params[:warehouse_id])
+    end
+    
+    if params[:category_id].present?
+      query = query.where(erp_products_products: {category_id: params[:category_id]})
+    end
+    
+    if params[:product_id].present?
+      query = query.where(erp_orders_order_details: {product_id: params[:product_id]})
     end
 
     query.each do |delivery_detail|
-        qty = -delivery_detail.quantity
-        #sales_total_amount = -(delivery_detail.cache_total)
+      qty = -delivery_detail.quantity
+      purchase_price = delivery_detail.price
+      purchase_total_amount = delivery_detail.cache_total
 
       result << {
         record_date: delivery_detail.delivery.created_at,
@@ -162,17 +404,22 @@ Erp::Orders::Order.class_eval do
         voucher_code: delivery_detail.delivery.code,
         customer_code: delivery_detail.delivery.customer.code,
         customer_name: delivery_detail.delivery.customer_name,
+        product_code: delivery_detail.product_code,
         product_name: delivery_detail.product_name,
-        quantity: -(delivery_detail.quantity),
-        sales_price: -(delivery_detail.price), # Gia trả lại
-        sales_total_amount: -(delivery_detail.cache_total),
+        product_category: delivery_detail.product.category_name,
+        quantity: qty,
+        purchase_price: purchase_price, # Giá trả lại
+        purchase_total_amount: purchase_total_amount,
         description: delivery_detail.note,
         state: delivery_detail.state_name,
         warehouse: delivery_detail.warehouse_name,
-        unit: delivery_detail.order_detail.product.unit_name
+        unit: delivery_detail.order_detail.product.unit_name,
+        eye_position: delivery_detail.order_detail.display_eye_position,
+        patient_name: delivery_detail.order_detail.order.patient_name,
+        patient_state_name: delivery_detail.order_detail.order.patient_state_name,
       }
       total[:quantity] += qty
-      #total[:sales_total_amount] += sales_total_amount
+      total[:purchase_total_amount] += purchase_total_amount.to_f
     end
 
     # Qdelivery: Không Chứng Từ
@@ -180,18 +427,41 @@ Erp::Orders::Order.class_eval do
             .where(order_detail_id: nil)
             .where(erp_qdeliveries_deliveries: {status: Erp::Qdeliveries::Delivery::STATUS_DELIVERED})
             .where(erp_qdeliveries_deliveries: {delivery_type: Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT})
-
+    
     if params[:from_date].present?
-      query = query.where(erp_qdeliveries_deliveries: {'date >= ?': params[:from_date].to_date.beginning_of_day})
+      query = query.where('erp_qdeliveries_deliveries.date >= ?', params[:from_date].to_date.beginning_of_day)
     end
 
     if params[:to_date].present?
-      query = query.where(erp_qdeliveries_deliveries: {'date <= ?': params[:to_date].to_date.end_of_day})
+      query = query.where('erp_qdeliveries_deliveries.date <= ?', params[:to_date].to_date.end_of_day)
+    end
+    
+    if params[:period].present?
+      query = query.where('erp_qdeliveries_deliveries.date >= ? AND erp_qdeliveries_deliveries.date <= ?',
+        Erp::Periods::Period.find(params[:period]).from_date.beginning_of_day,
+				Erp::Periods::Period.find(params[:period]).to_date.end_of_day)
+    end
+    
+    if params[:customer_id].present?
+      query = query.where(erp_qdeliveries_deliveries: {customer_id: params[:customer_id]})
+    end
+    
+    if params[:warehouse_id].present?
+      query = query.where(warehouse_id: params[:warehouse_id])
+    end
+    
+    if params[:category_id].present?
+      query = query.where(erp_products_products: {category_id: params[:category_id]})
+    end
+    
+    if params[:product_id].present?
+      query = query.where(erp_orders_order_details: {product_id: params[:product_id]})
     end
 
     query.each do |delivery_detail|
       qty = -delivery_detail.quantity
-      #sales_total_amount = -(delivery_detail.cache_total)
+      purchase_price = delivery_detail.price
+      purchase_total_amount = delivery_detail.cache_total
 
       result << {
         record_date: delivery_detail.delivery.created_at,
@@ -199,17 +469,19 @@ Erp::Orders::Order.class_eval do
         voucher_code: delivery_detail.delivery.code,
         customer_code: delivery_detail.delivery.customer.code,
         customer_name: delivery_detail.delivery.customer_name,
+        product_code: delivery_detail.product_code,
         product_name: delivery_detail.product_name,
-        quantity: -(delivery_detail.quantity),
-        sales_price: -(delivery_detail.price), # Gia trả lại
-        sales_total_amount: -(delivery_detail.cache_total),
+        product_category: delivery_detail.product.category_name,
+        quantity: qty,
+        purchase_price: purchase_price, # Giá trả lại
+        purchase_total_amount: purchase_total_amount,
         description: delivery_detail.delivery.note,
         state: delivery_detail.state_name,
         warehouse: delivery_detail.warehouse_name,
         unit: delivery_detail.product.unit_name,
       }
       total[:quantity] += qty
-      #total[:sales_total_amount] += sales_total_amount
+      total[:purchase_total_amount] += purchase_total_amount.to_f
     end
 
     return {

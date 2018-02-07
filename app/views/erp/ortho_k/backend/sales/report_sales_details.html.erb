@@ -35,23 +35,23 @@
                 name: 'sort_by',
                 label: 'Sắp xếp',
                 placeholder: 'Chọn sắp xếp theo...',
-                options: Erp::Products::Product.sort_by_dates
+                options: Erp::Orders::Order.sort_by_dates
             }) %>
         </div>
         <div class="col-md-2">
             <%= erp_form_control('select', {
-                name: 'order_direction',
+                name: 'order_by',
                 label: 'Hướng (Tăng/Giảm)',
                 placeholder: 'Chọn hướng sắp xếp...',
-                options: Erp::Products::Product.get_order_direction
+                options: Erp::Orders::Order.get_order_direction
             }) %>
         </div>
         <div class="col-md-2">
             <%= erp_form_control('select', {
-                name: 'grouped_by',
+                name: 'group_by',
                 label: 'Nhóm theo',
                 placeholder: 'Chọn nhóm theo...',
-                options: Erp::Products::Product.get_grouped_bys
+                options: Erp::Orders::Order.get_grouped_bys
             }) %>
         </div>
     </div>
@@ -99,12 +99,7 @@
     url: erp_ortho_k.report_sales_details_table_backend_sales_path,
     sortable: true,
     filters: [
-        {
-            text: 'Hàng đã bán', name: '', value: true, checked: false
-        },
-        {
-            text: 'Hàng bán bị trả lại', name: '', value: true, checked: false
-        },
+        
     ],
     columns: [
         {
@@ -138,34 +133,28 @@
             text: t('.unit'), name: 'unit', value: true, checked: true
         },
         {
-            text: t('.unknown_1'), name: 'unknown_1', value: true, checked: true
-        },
-        {
-            text: t('.unknown_2'), name: 'unknown_2', value: true, checked: true
-        },
-        {
             text: t('.quantity'), name: 'quantity', value: true, checked: true
         },
         {
-            text: t('.s_price'), name: 's_price', value: true, checked: true
+            text: t('.purchase_price'), name: 'purchase_price', value: true, checked: true
         },
         {
-            text: t('.tax_amount'), name: 'tax_amount', value: true, checked: true
+            text: t('.purchase_tax_amount'), name: 'purchase_tax_amount', value: true, checked: true
         },
         {
-            text: t('.other_fees'), name: 'other_fees', value: true, checked: true
+            text: t('.purchase_total_amount'), name: 'purchase_total_amount', value: true, checked: true
         },
         {
-            text: t('.unknown_3'), name: 'unknown_3', value: true, checked: true
+            text: t('.sales_price'), name: 'sales_price', value: true, checked: true
         },
         {
-            text: t('.unknown_4'), name: 'unknown_4', value: true, checked: true
+            text: t('.sales_tax_amount'), name: 'sales_tax_amount', value: true, checked: true
         },
         {
-            text: t('.p_price'), name: 'p_price', value: true, checked: true
+            text: t('.sales_discount'), name: 'sales_discount', value: true, checked: true
         },
         {
-            text: t('.unknown_5'), name: 'unknown_5', value: true, checked: true
+            text: t('.sales_total_amount'), name: 'sales_total_amount', value: true, checked: true
         },
         {
             text: t('.patient_name'), name: 'patient_name', value: true, checked: true
@@ -186,13 +175,10 @@
             text: t('.salesperson_commission_amount'), name: 'salesperson_commission_amount', value: true, checked: true
         },
         {
-            text: t('.goods_discount_percent'), name: 'goods_discount_percent', value: true, checked: true
+            text: t('.customer_commission_percent'), name: 'customer_commission_percent', value: true, checked: true
         },
         {
-            text: t('.goods_discount_amount'), name: 'goods_discount_amount', value: true, checked: true
-        },
-        {
-            text: t('.customer_commission'), name: 'customer_commission', value: true, checked: true
+            text: t('.customer_commission_amount'), name: 'customer_commission_amount', value: true, checked: true
         },
         {
             text: t('.note'), name: 'note', value: true, checked: true

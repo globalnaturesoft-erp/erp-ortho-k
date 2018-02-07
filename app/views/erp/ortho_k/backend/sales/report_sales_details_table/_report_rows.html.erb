@@ -1,0 +1,129 @@
+<% rows.each_with_index do |row,index| %>
+    <tr>
+        <% if get_columns(params).include?("record_date") %>
+        <td class="text-left"><%= format_date(row[:record_date]) %></td>
+        <% end %>
+        <% if get_columns(params).include?("voucher_date") %>
+        <td class="text-left"><%= format_date(row[:voucher_date]) %></td>
+        <% end %>
+        <% if get_columns(params).include?("voucher_code") %>
+        <td class="text-left text-nowrap"><%= row[:voucher_code] %></td>
+        <% end %>
+        <% if get_columns(params).include?("customer_code") %>
+        <td class="text-left text-nowrap"><%= row[:customer_code] %></td>
+        <% end %>
+        <% if get_columns(params).include?("customer_name") %>
+        <td class="text-left text-nowrap"><%= row[:customer_name] %></td>
+        <% end %>
+        <% if get_columns(params).include?("product_name") %>
+        <td class="text-left text-nowrap"><%= row[:product_name] %></td>
+        <% end %>
+        <% if get_columns(params).include?("description") %>
+        <td class="text-left"><%= row[:description] %></td>
+        <% end %>
+        <% if get_columns(params).include?("status") %>
+        <td class="text-left first-letter-uppercase"><%= row[:state] %></td>
+        <% end %>
+        <% if get_columns(params).include?("warehouse") %>
+        <td class="text-left"><%= row[:warehouse] %></td>
+        <% end %>
+        <% if get_columns(params).include?("unit") %>
+        <td class="text-left"><%= row[:unit] %></td>
+        <% end %>
+        <% if get_columns(params).include?("unknown_1") %>
+        <td class="text-right text-primary">
+            <%= '?' %>
+        </td>
+        <% end %>
+        <% if get_columns(params).include?("unknown_2") %>
+        <td class="text-right text-primary">
+            <%= '?' %>
+        </td>
+        <% end %>
+        <% if get_columns(params).include?("quantity") %>
+        <td class="text-center bg-warning">
+            <%= format_number(row[:quantity]) %>
+        </td>
+        <% end %>
+        <% if get_columns(params).include?("purchase_price") %>
+        <td class="text-primary text-<%= row[:purchase_price].present? ? 'right' : 'center' %>">
+            <%= row[:purchase_price].present? ? format_number(row[:purchase_price]) : '--' %>
+        </td>
+        <% end %>
+        <% if get_columns(params).include?("purchase_tax_amount") %>
+        <td class="font-green-seagreen text-<%= row[:purchase_tax_amount].present? ? 'right' : 'center' %>">
+            <%= row[:purchase_tax_amount].present? ? format_number(row[:purchase_tax_amount]) : '--' %>
+        </td>
+        <% end %>
+        <% if get_columns(params).include?("purchase_total_amount") %>
+        <td class="font-yellow-gold text-<%= row[:purchase_total_amount].present? ? 'right' : 'center' %>">
+            <%= row[:purchase_total_amount].present? ? format_number(row[:purchase_total_amount]) : '--' %>
+        </td>
+        <% end %>
+        <% if get_columns(params).include?("sales_price") %>
+        <td class="text-primary text-<%= row[:sales_price].present? ? 'right' : 'center' %>">
+            <%= row[:sales_price].present? ? format_number(row[:sales_price]) : '--' %>
+        </td>
+        <% end %>
+        <% if get_columns(params).include?("sales_tax_amount") %>
+        <td class="font-green-seagreen text-<%= row[:sales_tax_amount].present? ? 'right' : 'center' %>">
+            <%= row[:sales_tax_amount].present? ? format_number(row[:sales_tax_amount]) : '--' %>
+        </td>
+        <% end %>
+        <% if get_columns(params).include?("sales_discount") %>
+        <td class="text-warning text-<%= row[:sales_discount].present? ? 'right' : 'center' %>">
+            <%= row[:sales_discount].present? ? format_number(row[:sales_discount]) : '--' %>
+        </td>
+        <% end %>
+        <% if get_columns(params).include?("sales_total_amount") %>
+        <td class="font-yellow-gold text-<%= row[:sales_total_amount].present? ? 'right' : 'center' %>">
+            <%= row[:sales_total_amount].present? ? format_number(row[:sales_total_amount]) : '--' %>
+        </td>
+        <% end %>
+        <% if get_columns(params).include?("patient_name") %>
+        <td class="text-<%= row[:patient_name].present? ? 'left' : 'center' %> text-nowrap">
+            <%= row[:patient_name].present? ? row[:patient_name] : '--' %>
+        </td>
+        <% end %>
+        <% if get_columns(params).include?("patient_state") %>
+        <td class="text-center text-nowrap">
+            <%= row[:patient_state_name].present? ? row[:patient_state_name] : '--' %>
+        </td>
+        <% end %>
+        <% if get_columns(params).include?("eye_info") %>
+        <td class="text-center text-nowrap">
+            <%= row[:eye_position].present? ? row[:eye_position] : '--' %>
+        </td>
+        <% end %>
+        <% if get_columns(params).include?("salesperson_name") %>
+        <td class="text-<%= row[:salesperson_name].present? ? 'left' : 'center' %> text-nowrap">
+            <%= row[:salesperson_name].present? ? row[:salesperson_name] : '--' %>
+        </td>
+        <% end %>
+        <% if get_columns(params).include?("salesperson_percent") %>
+        <td class="text-center font-yellow-gold">
+            <%= row[:salesperson_percent].present? ? "#{row[:salesperson_percent]}%" : '--' %>
+        </td>
+        <% end %>
+        <% if get_columns(params).include?("salesperson_commission_amount") %>
+        <td class="font-yellow-gold text-<%= row[:salesperson_commission_amount].present? ? 'right' : 'center' %>">
+            <%= row[:salesperson_commission_amount].present? ? format_number(row[:salesperson_commission_amount]) : '--' %>
+        </td>
+        <% end %>
+        <% if get_columns(params).include?("customer_commission_percent") %>
+        <td class="text-center font-yellow-gold">
+            <%= row[:customer_commission_percent].present? ? "#{row[:customer_commission_percent]}%" : '--' %>
+        </td>
+        <% end %>
+        <% if get_columns(params).include?("customer_commission_amount") %>
+        <td class="text-right font-yellow-gold">
+            <%= row[:customer_commission_amount].present? ? format_number(row[:customer_commission_amount]) : '--' %>
+        </td>
+        <% end %>
+        <% if get_columns(params).include?("note") %>
+        <td class="text-<%= row[:note].present? ? 'left' : 'center' %>">
+            <%= row[:description] %>
+        </td>
+        <% end %>
+    </tr>
+<% end %>

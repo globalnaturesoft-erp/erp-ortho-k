@@ -88,7 +88,7 @@
         </div>
         <div class="col-md-2">
             <%= erp_form_control("dataselect", {
-                name: 'product_id',
+                name: 'state_id',
                 label: 'Trạng thái sản phẩm',
                 placeholder: 'Lọc theo trạng thái sản phẩm',
                 url: erp_products.dataselect_backend_states_path(format: 'json'),
@@ -174,34 +174,28 @@
             text: t('.unit'), name: 'unit', value: true, checked: true
         },
         {
-            text: t('.unknown_1'), name: 'unknown_1', value: true, checked: true
-        },
-        {
-            text: t('.unknown_2'), name: 'unknown_2', value: true, checked: true
-        },
-        {
             text: t('.quantity'), name: 'quantity', value: true, checked: true
         },
         {
             text: t('.p_price'), name: 'p_price', value: true, checked: true
         },
         {
-            text: t('.tax_amount'), name: 'tax_amount', value: true, checked: true
+            text: t('.p_tax_amount'), name: 'p_tax_amount', value: true, checked: true
         },
         {
-            text: t('.other_fees'), name: 'other_fees', value: true, checked: true
-        },
-        {
-            text: t('.unknown_3'), name: 'unknown_3', value: true, checked: true
-        },
-        {
-            text: t('.unknown_4'), name: 'unknown_4', value: true, checked: true
+            text: t('.p_total'), name: 'p_total', value: true, checked: true
         },
         {
             text: t('.s_price'), name: 's_price', value: true, checked: true
         },
         {
-            text: t('.unknown_5'), name: 'unknown_5', value: true, checked: true
+            text: t('.s_tax_amount'), name: 's_tax_amount', value: true, checked: true
+        },
+        {
+            text: t('.s_discount'), name: 's_discount', value: true, checked: true
+        },
+        {
+            text: t('.s_total'), name: 's_total', value: true, checked: true
         },
         {
             text: t('.note'), name: 'note', value: true, checked: true

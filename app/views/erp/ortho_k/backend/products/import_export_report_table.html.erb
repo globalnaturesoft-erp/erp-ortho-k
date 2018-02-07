@@ -51,47 +51,51 @@
         (get_columns(params).include?("diameter") ? 1 : 0) +
         (get_columns(params).include?("category") ? 1 : 0)
     purchase_price_colspan = (get_columns(params).include?("p_price") ? 1 : 0) +
-        (get_columns(params).include?("tax_amount") ? 1 : 0) +
-        (get_columns(params).include?("other_fees") ? 1 : 0) +
-        (get_columns(params).include?("unknown_3") ? 1 : 0) +
-        (get_columns(params).include?("unknown_4") ? 1 : 0)
+        (get_columns(params).include?("p_tax_amount") ? 1 : 0) +
+        (get_columns(params).include?("p_total") ? 1 : 0)
     sales_price_colspan = (get_columns(params).include?("s_price") ? 1 : 0) +
-        (get_columns(params).include?("unknown_5") ? 1 : 0)
+        (get_columns(params).include?("s_tax_amount") ? 1 : 0) +
+        (get_columns(params).include?("s_discount") ? 1 : 0) +
+        (get_columns(params).include?("s_total") ? 1 : 0)
     %>
 
     <div class="table-scrollable">
         <table class="table table-bordered table-advance order-column" id="">
                 <tr>
                     <%= "<td colspan='#{total_colspan_1}'></td>".html_safe if total_colspan_1 > 0 %>
-                    <% if get_columns(params).include?("unknown_1") %>
-                    <td class="text-right stock-num text-bold text-primary"><%= '?' %></td>
-                    <% end %>
-                    <% if get_columns(params).include?("unknown_2") %>
-                    <td class="text-right stock-num text-bold text-primary"><%= '?' %></td>
-                    <% end %>
                     <% if get_columns(params).include?("quantity") %>
-                    <td class="text-center stock-num text-bold bg-warning">
-                        <!--= @totals[:quantity] %>-->
+                    <td class="text-center stock-num text-bold bg-warning">                        
+                        <%= @totals[:quantity] %>
                     </td>
                     <% end %>
                     <%= "<td colspan='#{total_colspan_2}'></td>".html_safe if total_colspan_2 > 0 %>
-                    <% if get_columns(params).include?("tax_amount") %>
-                    <td class="text-right stock-num text-bold font-green-seagreen"><%= '?' %></td>
+                    <% if get_columns(params).include?("p_tax_amount") %>
+                    <td class="text-right stock-num text-bold font-green-seagreen">
+                        <%= format_number(@totals[:purchase_tax_amount]) %>
+                    </td>
                     <% end %>
-                    <% if get_columns(params).include?("other_fees") %>
-                    <td class="text-right stock-num text-bold font-green-seagreen"><%= '?' %></td>
-                    <% end %>
-                    <% if get_columns(params).include?("unknown_3") %>
-                    <td class="text-right stock-num text-bold text-warning"><%= '?' %></td>
-                    <% end %>
-                    <% if get_columns(params).include?("unknown_4") %>
-                    <td class="text-right stock-num text-bold font-yellow-gold"><%= '?' %></td>
+                    <% if get_columns(params).include?("p_total") %>
+                    <td class="text-right stock-num text-bold font-green-seagreen">
+                        <%= format_number(@totals[:purchase_total_amount]) %>
+                    </td>
                     <% end %>
                     <% if get_columns(params).include?("s_price") %>
-                    <td></td>
+                    <td class="text-right stock-num text-bold font-yellow-gold"></td>
                     <% end %>
-                    <% if get_columns(params).include?("unknown_5") %>
-                    <td class="text-right stock-num text-bold font-yellow-gold"><%= '?' %></td>
+                    <% if get_columns(params).include?("s_tax_amount") %>
+                    <td class="text-right stock-num text-bold font-yellow-gold">
+                        <%= format_number(@totals[:sales_tax_amount]) %>
+                    </td>
+                    <% end %>
+                    <% if get_columns(params).include?("s_discount") %>
+                    <td class="text-right stock-num text-bold font-yellow-gold">
+                        <%= format_number(@totals[:sales_discount]) %>
+                    </td>
+                    <% end %>
+                    <% if get_columns(params).include?("s_total") %>
+                    <td class="text-right stock-num text-bold font-yellow-gold">
+                        <%= format_number(@totals[:sales_total_amount]) %>
+                    </td>
                     <% end %>
                     <% if get_columns(params).include?("note") %>
                     <td></td>
@@ -131,20 +135,13 @@
                     <% if get_columns(params).include?("unit") %>
                         <th class="bg-grey text-center text-nowrap" rowspan="2" width="7%"><%= t('.unit') %></th>
                     <% end %>
-                    <% if get_columns(params).include?("unknown_1") %>
-                        <th class="bg-grey text-center text-nowrap" rowspan="2" width="7%"><%= t('.unknown_1') %></th>
-                    <% end %>
-                    <% if get_columns(params).include?("unknown_2") %>
-                        <th class="bg-grey text-center text-nowrap" rowspan="2" width="7%"><%= t('.unknown_2') %></th>
-                    <% end %>
                     <% if get_columns(params).include?("quantity") %>
                         <th class="bg-grey text-center text-nowrap" rowspan="2" width="7%"><%= t('.quantity') %></th>
                     <% end %>
-                    <% if get_columns(params).include?("currency") or get_columns(params).include?("rate") or get_columns(params).include?("p_price") or get_columns(params).include?("tax_amount") or
-                        get_columns(params).include?("other_fees") or get_columns(params).include?("unknown_3") or get_columns(params).include?("unknown_4") %>
+                    <% if get_columns(params).include?("p_price") or get_columns(params).include?("p_tax_amount") or get_columns(params).include?("p_total") %>
                         <th class="bg-blue-oleo bg-font-blue-oleo text-center text-nowrap" colspan="<%= purchase_price_colspan %>"><%= t('.purchase_price') %></th>
                     <% end %>
-                    <% if get_columns(params).include?("s_price") or get_columns(params).include?("unknown_5") %>
+                    <% if get_columns(params).include?("s_price") or get_columns(params).include?("s_tax_amount") or get_columns(params).include?("s_discount") or get_columns(params).include?("s_total") %>
                         <th class="bg-yellow-mint bg-font-yellow-mint text-center text-nowrap" colspan="<%= sales_price_colspan %>"><%= t('.sales_price') %></th>
                     <% end %>
                     <% if get_columns(params).include?("note") %>
@@ -176,23 +173,23 @@
                     <% if get_columns(params).include?("p_price") %>
                     <th class="bg-blue-oleo bg-font-blue-oleo text-center text-nowrap" width="7%"><%= t('.price') %></th>
                     <% end %>
-                    <% if get_columns(params).include?("tax_amount") %>
+                    <% if get_columns(params).include?("p_tax_amount") %>
                     <th class="bg-blue-oleo bg-font-blue-oleo text-center text-nowrap" width="7%"><%= t('.tax_amount') %></th>
                     <% end %>
-                    <% if get_columns(params).include?("other_fees") %>
-                    <th class="bg-blue-oleo bg-font-blue-oleo text-center text-nowrap" width="7%"><%= t('.other_fees') %></th>
-                    <% end %>
-                    <% if get_columns(params).include?("unknown_3") %>
-                    <th class="bg-blue-oleo bg-font-blue-oleo text-center text-nowrap" width="7%"><%= t('.unknown_3') %></th>
-                    <% end %>
-                    <% if get_columns(params).include?("unknown_4") %>
-                    <th class="bg-blue-oleo bg-font-blue-oleo text-center text-nowrap" width="7%"><%= t('.unknown_4') %></th>
+                    <% if get_columns(params).include?("p_total") %>
+                    <th class="bg-blue-oleo bg-font-blue-oleo text-center text-nowrap" width="7%"><%= t('.total_amount') %></th>
                     <% end %>
                     <% if get_columns(params).include?("s_price") %>
                     <th class="bg-yellow-mint bg-font-yellow-mint text-center text-nowrap" width="7%"><%= t('.price') %></th>
                     <% end %>
-                    <% if get_columns(params).include?("unknown_5") %>
-                    <th class="bg-yellow-mint bg-font-yellow-mint text-center text-nowrap" width="7%"><%= t('.unknown_5') %></th>
+                    <% if get_columns(params).include?("s_tax_amount") %>
+                    <th class="bg-yellow-mint bg-font-yellow-mint text-center text-nowrap" width="7%"><%= t('.tax_amount') %></th>
+                    <% end %>
+                    <% if get_columns(params).include?("s_discount") %>
+                    <th class="bg-yellow-mint bg-font-yellow-mint text-center text-nowrap" width="7%"><%= t('.discount') %></th>
+                    <% end %>
+                    <% if get_columns(params).include?("s_total") %>
+                    <th class="bg-yellow-mint bg-font-yellow-mint text-center text-nowrap" width="7%"><%= t('.total_amount') %></th>
                     <% end %>
                 </tr>
             

@@ -53,35 +53,43 @@
         <% if get_columns(params).include?("unit") %>
         <td class="text-left text-nowrap"><%= row[:unit] %></td>
         <% end %>
-        <% if get_columns(params).include?("unknown_1") %>
-        <td class="text-right stock-num text-primary"><%= '?' %></td><!--format_number((100..500).to_a.sample*1000)-->
-        <% end %>
-        <% if get_columns(params).include?("unknown_2") %>
-        <td class="text-right stock-num text-primary"><%= '?' %></td>
-        <% end %>
         <% if get_columns(params).include?("quantity") %>
-        <td class="text-center stock-num bg-warning"><%= row[:quantity] %></td>
+        <td class="text-center bg-warning"><%= row[:quantity] %></td>
         <% end %>
         <% if get_columns(params).include?("p_price") %>
-        <td class="text-right stock-num text-primary"><%= '?' %></td>
+        <td class="text-<%= row[:purchase_price].present? ? 'right' : 'center' %> text-nowrap font-green-seagreen">
+            <%= row[:purchase_price].present? ? format_number(row[:purchase_price]) : '--' %>
+        </td>
         <% end %>
-        <% if get_columns(params).include?("tax_amount") %>
-        <td class="text-right stock-num font-green-seagreen"><%= '?' %></td>
+        <% if get_columns(params).include?("p_tax_amount") %>
+        <td class="text-<%= row[:purchase_tax_amount].present? ? 'right' : 'center' %> text-nowrap font-green-seagreen">
+            <%= row[:purchase_tax_amount].present? ? format_number(row[:purchase_tax_amount]) : '--' %>
+        </td>
         <% end %>
-        <% if get_columns(params).include?("other_fees") %>
-        <td class="text-right stock-num font-green-seagreen"><%= '?' %></td>
-        <% end %>
-        <% if get_columns(params).include?("unknown_3") %>
-        <td class="text-right stock-num text-warning"><%= '?' %></td>
-        <% end %>
-        <% if get_columns(params).include?("unknown_4") %>
-        <td class="text-right stock-num font-yellow-gold"><%= '?' %></td>
+        <% if get_columns(params).include?("p_total") %>
+        <td class="text-<%= row[:purchase_total_amount].present? ? 'right' : 'center' %> text-nowrap font-green-seagreen">
+            <%= row[:purchase_total_amount].present? ? format_number(row[:purchase_total_amount]) : '--' %>
+        </td>
         <% end %>
         <% if get_columns(params).include?("s_price") %>
-        <td class="text-right stock-num text-primary"><%= '?' %></td>
+        <td class="text-<%= row[:sales_price].present? ? 'right' : 'center' %> text-nowrap font-yellow-gold">
+            <%= row[:sales_price].present? ? format_number(row[:sales_price]) : '--' %>
+        </td>
         <% end %>
-        <% if get_columns(params).include?("unknown_5") %>
-        <td class="text-right stock-num font-yellow-gold"><%= '?' %></td>
+        <% if get_columns(params).include?("s_tax_amount") %>
+        <td class="text-<%= row[:sales_tax_amount].present? ? 'right' : 'center' %> text-nowrap font-yellow-gold">
+            <%= row[:sales_tax_amount].present? ? format_number(row[:sales_tax_amount]) : '--' %>
+        </td>
+        <% end %>
+        <% if get_columns(params).include?("s_discount") %>
+        <td class="text-<%= row[:sales_discount].present? ? 'right' : 'center' %> text-nowrap font-yellow-gold">
+            <%= row[:sales_discount].present? ? format_number(row[:sales_discount]) : '--' %>
+        </td>
+        <% end %>
+        <% if get_columns(params).include?("s_total") %>
+        <td class="text-<%= row[:sales_total_amount].present? ? 'right' : 'center' %> text-nowrap font-yellow-gold">
+            <%= row[:sales_total_amount].present? ? format_number(row[:sales_total_amount]) : '--' %>
+        </td>
         <% end %>
         <% if get_columns(params).include?("note") %>
         <td class="text-left text-nowrap"><%= row[:description] %></td>

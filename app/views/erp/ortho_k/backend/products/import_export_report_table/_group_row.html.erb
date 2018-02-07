@@ -34,35 +34,41 @@
     <% if get_columns(params).include?("unit") %>
     <td class="text-left text-nowrap"></td>
     <% end %>
-    <% if get_columns(params).include?("unknown_1") %>
-    <td class="text-right stock-num text-primary"></td>
-    <% end %>
-    <% if get_columns(params).include?("unknown_2") %>
-    <td class="text-right stock-num text-primary"></td>
-    <% end %>
     <% if get_columns(params).include?("quantity") %>
-    <td class="text-center stock-num bg-warning"></td>
+    <td class="text-center stock-num bg-warning">
+        <%= item[:quantity] %>
+    </td>
     <% end %>
     <% if get_columns(params).include?("p_price") %>
     <td class="text-right stock-num text-primary"></td>
     <% end %>
-    <% if get_columns(params).include?("tax_amount") %>
-    <td class="text-right stock-num font-green-seagreen"></td>
+    <% if get_columns(params).include?("p_tax_amount") %>
+    <td class="text-right stock-num font-green-seagreen">
+        <%= format_number(item[:purchase_tax_amount]) %>
+    </td>
     <% end %>
-    <% if get_columns(params).include?("other_fees") %>
-    <td class="text-right stock-num font-green-seagreen"></td>
-    <% end %>
-    <% if get_columns(params).include?("unknown_3") %>
-    <td class="text-right stock-num text-warning"></td>
-    <% end %>
-    <% if get_columns(params).include?("unknown_4") %>
-    <td class="text-right stock-num font-yellow-gold"></td>
+    <% if get_columns(params).include?("p_total") %>
+    <td class="text-right stock-num font-green-seagreen">
+        <%= format_number(item[:purchase_total_amount]) %>
+    </td>
     <% end %>
     <% if get_columns(params).include?("s_price") %>
     <td class="text-right stock-num text-primary"></td>
     <% end %>
-    <% if get_columns(params).include?("unknown_5") %>
-    <td class="text-right stock-num font-yellow-gold"></td>
+    <% if get_columns(params).include?("s_tax_amount") %>
+    <td class="text-right stock-num text-primary">
+        <%= format_number(item[:sales_tax_amount]) %>
+    </td>
+    <% end %>
+    <% if get_columns(params).include?("s_discount") %>
+    <td class="text-right stock-num font-yellow-gold">
+        <%= format_number(item[:sales_discount]) %>
+    </td>
+    <% end %>
+    <% if get_columns(params).include?("s_total") %>
+    <td class="text-right stock-num font-yellow-gold">
+        <%= format_number(item[:sales_total_amount]) %>
+    </td>
     <% end %>
     <% if get_columns(params).include?("note") %>
     <td class="text-left text-nowrap"></td>
