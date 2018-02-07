@@ -43,6 +43,18 @@ Erp::Payments::Engine.routes.draw do
 	end
 end
 
+#Erp::StockTransfers::Engine.routes.draw do
+#  scope "(:locale)", locale: /en|vi/ do
+#		namespace :backend, module: "backend", path: "backend/stock_transfers" do
+#      resources :transfers do
+#        collection do
+#					post 'new', :to => "transfers#new"
+#        end
+#      end
+#    end
+#	end
+#end
+
 Erp::Orders::Engine.routes.draw do
   scope "(:locale)", locale: /en|vi/ do
 		namespace :backend, module: "backend", path: "orthok/backend" do

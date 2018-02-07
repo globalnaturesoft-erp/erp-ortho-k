@@ -3,54 +3,57 @@
         <p>Không tìm thấy hàng cần chuyển kho</p>
     </div>
 <% elsif @from_warehouse.present? and @to_warehouse.present? and @transfer_quantity.present? and @condition_value.present? and @state.present? %>
-    <table class="table table-bordered table-advance order-column" id="">
-        <tr>
-            <th class="bg-grey text-center" width="1%"><%= t('.number') %></th>
-            <th class="bg-grey"><%= t('.code') %></th>
-            <th class="bg-grey"><%= t('.name') %></th>
-            <th class="bg-grey text-center">Kho xuất: <%= @from_warehouse.name %></th>
-            <th class="bg-grey text-center">Kho nhập: <%= @to_warehouse.name %></th>
-            <th class="bg-grey text-center"><%= t('.transfer_quantity') %></th>
-        </tr>
-        <% num = 1 %>
-        <% @products.each_with_index do |product,index| %>
-            <%
-                if @condition == 'from_redundant'
-                    from = Erp::Products::CacheStock.where(product_id: product.id)
-                        .where(warehouse_id: @from_warehouse.id)
-                        .where(state_id: @state.id).first.stock
-                    to = Erp::Products::CacheStock.where(product_id: product.id)
-                        .where(warehouse_id: @to_warehouse.id)
-                        .where(state_id: @state.id).first.stock
-                    transfer = (@transfer_quantity.to_i > from ? from : @transfer_quantity.to_i)
-                else
-                    to = Erp::Products::CacheStock.where(product_id: product.id)
-                        .where(warehouse_id: @to_warehouse.id)
-                        .where(state_id: @state.id).first.stock
-                    from = Erp::Products::CacheStock.where(product_id: product.id)
-                        .where(warehouse_id: @from_warehouse.id)
-                        .where(state_id: @state.id).first.stock
-                    transfer = from > @transfer_quantity.to_i ? @transfer_quantity.to_i : from
-                end
-            %>
-            <% if transfer > 0 %>
-                <tr>
-                    <td class="text-center"><%= num %></td>
-                    <td class=""><%= product.code %></td>
-                    <td class=""><%= product.name %></td>
-                    <td class="text-center">
-                        <%= from %>
-                    </td>
-                    <td class="text-center"><%= to %></td>
-                    <td class="text-center bg-warning">
-                        <%= transfer %>
-                    </td>
-                </tr>
-                <% num += 1 %>
+    <form class="stock-transferring-form" action="<%= erp_stock_transfers.new_import_backend_transfers_path %>" method="POST">
+        <input type="hidden" name='state_id' value="<%= @state.id %>" />
+        <input type="hidden" name='from_warehouse_id' value="<%= @from_warehouse.id %>" />
+        <input type="hidden" name='to_warehouse_id' value="<%= @to_warehouse.id %>" />
+        <table class="table table-bordered table-advance order-column" id="">
+            <tr>
+                <th class="bg-grey text-center" width="1%"><%= t('.number') %></th>
+                <th class="bg-grey"><%= t('.code') %></th>
+                <th class="bg-grey"><%= t('.name') %></th>
+                <th class="bg-grey text-center">Kho xuất: <%= @from_warehouse.name %></th>
+                <th class="bg-grey text-center">Kho nhập: <%= @to_warehouse.name %></th>
+                <th class="bg-grey text-center"><%= t('.transfer_quantity') %></th>
+            </tr>
+            <% num = 1 %>
+            <% @products.each_with_index do |product,index| %>
+                <%
+                    from = Erp::Products::CacheStock.get_stock(product.id, {
+                        warehouse_id: @from_warehouse.id,
+                        state_id: @state.id
+                    })
+                    to = Erp::Products::CacheStock.get_stock(product.id, {
+                        warehouse_id: @to_warehouse.id,
+                        state_id: @state.id
+                    })
+                    if @condition == 'from_redundant'
+                        transfer = (@transfer_quantity.to_i > from ? from : @transfer_quantity.to_i)
+                    else
+                        transfer = from > @transfer_quantity.to_i ? @transfer_quantity.to_i : from
+                    end
+                %>
+                <% if transfer > 0 %>
+                    <tr>
+                        <td class="text-center"><%= num %></td>
+                        <td class="">
+                            <input type="hidden" name='products[<%= product.id %>]' value="<%= transfer %>" />
+                            <%= product.code %>
+                        </td>
+                        <td class=""><%= product.name %></td>
+                        <td class="text-center">
+                            <%= from %>
+                        </td>
+                        <td class="text-center"><%= to %></td>
+                        <td class="text-center bg-warning">
+                            <%= transfer %>
+                        </td>
+                    </tr>
+                    <% num += 1 %>
+                <% end %>
             <% end %>
-        <% end %>
-    </table>
-    <div class="portlet m-grid m-grid-demo">
+        </table>
+        <div class="portlet m-grid m-grid-demo">
             <div class="m-grid-row">
                 <div class="m-grid-col m-grid-col-middle m-grid-col-center">
                     <label>Tổng chuyển</label><br/>
@@ -58,6 +61,7 @@
                 </div>
             </div>
         </div>
+    </form>
 <% else %>
     <div class="alert alert-warning">
         <p>Vui lòng chọn các tham số bắt buộc:
