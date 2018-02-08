@@ -427,13 +427,13 @@ module Erp
           @group_by = @global_filters[:group_by]
 
           if @from_date.present? and @to_date.present?
-            if @group_by.present? and !@group_by.include?(Erp::Products::Product::GROUPED_BY_DEFAULT)
-              @groups = Erp::Products::Product.group_import_export(@global_filters)[:groups]
-              @totals = Erp::Products::Product.group_import_export(@global_filters)[:totals]
-            else
+            #if @group_by.present? and !@group_by.include?(Erp::Products::Product::GROUPED_BY_DEFAULT)
+            #  @groups = Erp::Products::Product.group_import_export(@global_filters)[:groups]
+            #  @totals = Erp::Products::Product.group_import_export(@global_filters)[:totals]
+            #else
               @rows = Erp::Products::Product.import_export_report(@global_filters)[:data].sort_by { |n| n[:voucher_date] }.reverse!
               @totals = Erp::Products::Product.import_export_report(@global_filters)[:total]
-            end
+            #end
           end
 
           respond_to do |format|
