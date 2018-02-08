@@ -515,139 +515,141 @@ Erp::Products::Product.class_eval do
     # @todo tạm thời không lọc lịch sử xuất nhập kho theo StockTransfer (trên chi tiết sản phẩm)
     if !(params[:not_filters].present? and params[:not_filters] == 'stock_transfer')
       if !params[:customer_id].present? and !params[:supplier_id].present?
-        if (params[:types].present? and params[:types].include?(Erp::Products::Product::TYPE_STOCK_TRANSFER)) or params[:types].nil?
-          # Transfer: Kho Chuyển Đến /Kho Đích
-          query = Erp::StockTransfers::TransferDetail.joins(:transfer, :product)
+        if params[:warehouse_id].present? or params[:source_warehouse_id].present? or params[:destination_warehouse_id].present?
+          if (params[:types].present? and params[:types].include?(Erp::Products::Product::TYPE_STOCK_TRANSFER)) or params[:types].nil?
+            # Transfer: Kho Chuyển Đến /Kho Đích
+            query = Erp::StockTransfers::TransferDetail.joins(:transfer, :product)
+                    .where(erp_stock_transfers_transfers: {status: Erp::StockTransfers::Transfer::STATUS_DELIVERED})
+                    .limit(limit)
+    
+            if params[:product_id].present?
+              query = query.where(product_id: params[:product_id])
+            end
+    
+            if params[:from_date].present?
+              query = query.where('erp_stock_transfers_transfers.received_at >= ?', params[:from_date].to_date.beginning_of_day)
+            end
+    
+            if params[:to_date].present?
+              query = query.where('erp_stock_transfers_transfers.received_at <= ?', params[:to_date].to_date.end_of_day)
+            end
+    
+            if params[:period_id].present?
+              query = query.where('erp_stock_transfers_transfers.received_at >= ? AND erp_stock_transfers_transfers.received_at <= ?',
+                Erp::Periods::Period.find(params[:period_id]).from_date.beginning_of_day,
+                Erp::Periods::Period.find(params[:period_id]).to_date.end_of_day)
+            end
+    
+            if params[:category_id].present?
+              query = query.where(erp_products_products: {category_id: params[:category_id]})
+            end
+    
+            if params[:warehouse_id].present? # @todo loc theo kho dich (tuy tung truong hop ma xet them kho nguon)
+              query = query.where('erp_stock_transfers_transfers.destination_warehouse_id IN (?)', params[:warehouse_id])
+            end
+    
+            if params[:source_warehouse_id].present?
+              query = query.where(erp_stock_transfers_transfers: {source_warehouse_id: params[:source_warehouse_id]})
+            end
+    
+            if params[:destination_warehouse_id].present?
+              query = query.where(erp_stock_transfers_transfers: {destination_warehouse_id: params[:destination_warehouse_id]})
+            end
+    
+            if params[:state_id].present?
+              query = query.where(state_id: params[:state_id])
+            end
+    
+            query.each do |transfer_detail|
+              qty = +transfer_detail.quantity
+              qty_export = transfer_detail.quantity
+              result << {
+                record_type: 'stock_transfer',
+                record_date: transfer_detail.transfer.created_at,
+                voucher_date: transfer_detail.transfer.received_at,
+                voucher_code: transfer_detail.transfer.code,
+                product_code: transfer_detail.product_code,
+                diameter: transfer_detail.product.get_diameter,
+                category: transfer_detail.product.category_name,
+                product_name: transfer_detail.product_name,
+                quantity: qty,
+                qty_export: qty_export,
+                description: transfer_detail.transfer.note,
+                state: transfer_detail.state_name,
+                source_warehouse: transfer_detail.transfer.source_warehouse_name,
+                destination_warehouse: transfer_detail.transfer.destination_warehouse_name,
+                warehouse: transfer_detail.transfer.destination_warehouse_name,
+                unit: transfer_detail.product.unit_name,
+              }
+              total[:quantity] += qty
+            end
+    
+            # Transfer: Kho Chuyển Đi /Kho Nguồn
+            query = Erp::StockTransfers::TransferDetail.joins(:transfer)
                   .where(erp_stock_transfers_transfers: {status: Erp::StockTransfers::Transfer::STATUS_DELIVERED})
                   .limit(limit)
-  
-          if params[:product_id].present?
-            query = query.where(product_id: params[:product_id])
-          end
-  
-          if params[:from_date].present?
-            query = query.where('erp_stock_transfers_transfers.received_at >= ?', params[:from_date].to_date.beginning_of_day)
-          end
-  
-          if params[:to_date].present?
-            query = query.where('erp_stock_transfers_transfers.received_at <= ?', params[:to_date].to_date.end_of_day)
-          end
-  
-          if params[:period_id].present?
-            query = query.where('erp_stock_transfers_transfers.received_at >= ? AND erp_stock_transfers_transfers.received_at <= ?',
-              Erp::Periods::Period.find(params[:period_id]).from_date.beginning_of_day,
-              Erp::Periods::Period.find(params[:period_id]).to_date.end_of_day)
-          end
-  
-          if params[:category_id].present?
-            query = query.where(erp_products_products: {category_id: params[:category_id]})
-          end
-  
-          if params[:warehouse_id].present? # @todo loc theo kho dich (tuy tung truong hop ma xet them kho nguon)
-            query = query.where('erp_stock_transfers_transfers.destination_warehouse_id IN (?)', params[:warehouse_id])
-          end
-  
-          if params[:source_warehouse_id].present?
-            query = query.where(erp_stock_transfers_transfers: {source_warehouse_id: params[:source_warehouse_id]})
-          end
-  
-          if params[:destination_warehouse_id].present?
-            query = query.where(erp_stock_transfers_transfers: {destination_warehouse_id: params[:destination_warehouse_id]})
-          end
-  
-          if params[:state_id].present?
-            query = query.where(state_id: params[:state_id])
-          end
-  
-          query.each do |transfer_detail|
-            qty = +transfer_detail.quantity
-            qty_export = transfer_detail.quantity
-            result << {
-              record_type: 'stock_transfer',
-              record_date: transfer_detail.transfer.created_at,
-              voucher_date: transfer_detail.transfer.received_at,
-              voucher_code: transfer_detail.transfer.code,
-              product_code: transfer_detail.product_code,
-              diameter: transfer_detail.product.get_diameter,
-              category: transfer_detail.product.category_name,
-              product_name: transfer_detail.product_name,
-              quantity: qty,
-              qty_export: qty_export,
-              description: transfer_detail.transfer.note,
-              state: transfer_detail.state_name,
-              source_warehouse: transfer_detail.transfer.source_warehouse_name,
-              destination_warehouse: transfer_detail.transfer.destination_warehouse_name,
-              warehouse: transfer_detail.transfer.destination_warehouse_name,
-              unit: transfer_detail.product.unit_name,
-            }
-            total[:quantity] += qty
-          end
-  
-          # Transfer: Kho Chuyển Đi /Kho Nguồn
-          quer = Erp::StockTransfers::TransferDetail.joins(:transfer)
-                .where(erp_stock_transfers_transfers: {status: Erp::StockTransfers::Transfer::STATUS_DELIVERED})
-                .limit(limit)
-  
-          if params[:product_id].present?
-            query = query.where(product_id: params[:product_id])
-          end
-  
-          if params[:from_date].present?
-            query = query.where('erp_stock_transfers_transfers.received_at >= ?', params[:from_date].to_date.beginning_of_day)
-          end
-  
-          if params[:to_date].present?
-            query = query.where('erp_stock_transfers_transfers.received_at <= ?', params[:to_date].to_date.end_of_day)
-          end
-  
-          if params[:period_id].present?
-            query = query.where('erp_stock_transfers_transfers.received_at >= ? AND erp_stock_transfers_transfers.received_at <= ?',
-              Erp::Periods::Period.find(params[:period_id]).from_date.beginning_of_day,
-              Erp::Periods::Period.find(params[:period_id]).to_date.end_of_day)
-          end
-  
-          if params[:category_id].present?
-            query = query.where(erp_products_products: {category_id: params[:category_id]})
-          end
-  
-          if params[:warehouse_id].present? # @todo loc theo kho nguon (tuy tung truong hop ma xet them kho dich)
-            query = query.where('erp_stock_transfers_transfers.source_warehouse_id IN (?)', params[:warehouse_id])
-          end
-  
-          if params[:source_warehouse_id].present?
-            query = query.where('erp_stock_transfers_transfers.source_warehouse_id = ?', params[:source_warehouse_id])
-          end
-  
-          if params[:destination_warehouse_id].present?
-            query = query.where('erp_stock_transfers_transfers.destination_warehouse_id = ?', params[:destination_warehouse_id])
-          end
-  
-          if params[:state_id].present?
-            query = query.where(state_id: params[:state_id])
-          end
-  
-          query.each do |transfer_detail|
-            qty = -transfer_detail.quantity
-            qty_import = transfer_detail.quantity
-            result << {
-              record_type: 'stock_transfer',
-              record_date: transfer_detail.transfer.created_at,
-              voucher_date: transfer_detail.transfer.received_at,
-              voucher_code: transfer_detail.transfer.code,
-              product_code: transfer_detail.product_code,
-              diameter: transfer_detail.product.get_diameter,
-              category: transfer_detail.product.category_name,
-              product_name: transfer_detail.product_name,
-              quantity: qty,
-              qty_import: qty_import,
-              description: transfer_detail.transfer.note,
-              state: transfer_detail.state_name,
-              source_warehouse: transfer_detail.transfer.source_warehouse_name,
-              destination_warehouse: transfer_detail.transfer.destination_warehouse_name,
-              warehouse: transfer_detail.transfer.source_warehouse_name,
-              unit: transfer_detail.product.unit_name,
-            }
-            total[:quantity] += qty
+    
+            if params[:product_id].present?
+              query = query.where(product_id: params[:product_id])
+            end
+    
+            if params[:from_date].present?
+              query = query.where('erp_stock_transfers_transfers.received_at >= ?', params[:from_date].to_date.beginning_of_day)
+            end
+    
+            if params[:to_date].present?
+              query = query.where('erp_stock_transfers_transfers.received_at <= ?', params[:to_date].to_date.end_of_day)
+            end
+    
+            if params[:period_id].present?
+              query = query.where('erp_stock_transfers_transfers.received_at >= ? AND erp_stock_transfers_transfers.received_at <= ?',
+                Erp::Periods::Period.find(params[:period_id]).from_date.beginning_of_day,
+                Erp::Periods::Period.find(params[:period_id]).to_date.end_of_day)
+            end
+    
+            if params[:category_id].present?
+              query = query.where(erp_products_products: {category_id: params[:category_id]})
+            end
+    
+            if params[:warehouse_id].present? # @todo loc theo kho nguon (tuy tung truong hop ma xet them kho dich)
+              query = query.where('erp_stock_transfers_transfers.source_warehouse_id IN (?)', params[:warehouse_id])
+            end
+    
+            if params[:source_warehouse_id].present?
+              query = query.where('erp_stock_transfers_transfers.source_warehouse_id = ?', params[:source_warehouse_id])
+            end
+    
+            if params[:destination_warehouse_id].present?
+              query = query.where('erp_stock_transfers_transfers.destination_warehouse_id = ?', params[:destination_warehouse_id])
+            end
+    
+            if params[:state_id].present?
+              query = query.where(state_id: params[:state_id])
+            end
+    
+            query.each do |transfer_detail|
+              qty = -transfer_detail.quantity
+              qty_import = transfer_detail.quantity
+              result << {
+                record_type: 'stock_transfer',
+                record_date: transfer_detail.transfer.created_at,
+                voucher_date: transfer_detail.transfer.received_at,
+                voucher_code: transfer_detail.transfer.code,
+                product_code: transfer_detail.product_code,
+                diameter: transfer_detail.product.get_diameter,
+                category: transfer_detail.product.category_name,
+                product_name: transfer_detail.product_name,
+                quantity: qty,
+                qty_import: qty_import,
+                description: transfer_detail.transfer.note,
+                state: transfer_detail.state_name,
+                source_warehouse: transfer_detail.transfer.source_warehouse_name,
+                destination_warehouse: transfer_detail.transfer.destination_warehouse_name,
+                warehouse: transfer_detail.transfer.source_warehouse_name,
+                unit: transfer_detail.product.unit_name,
+              }
+              total[:quantity] += qty
+            end
           end
         end
       end

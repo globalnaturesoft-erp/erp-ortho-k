@@ -1006,13 +1006,13 @@ vi:
             customer_code: "Mã đối tượng"
             customer_name: "Tên đối tượng"
             description: "Diễn giải"
-            status: "Tình trạng hàng hóa"
+            status: "Tình trạng"
             warehouse: "Kho"
             code: "Mã"
             diameter: "Đ.kính"
             category: "Nhóm"
             product_name: "Tên hàng hóa"
-            unit: "Đơn vị tính"
+            unit: "ĐVT"
             unknown_1: "Tk nợ"
             unknown_2: "Tk có"
             quantity: "Số lượng"
@@ -1037,6 +1037,9 @@ vi:
             goods_discount_amount: "Thành tiền"
             customer_commission: "Chiết khấu cho đối tượng"
             note: "Ghi chú"
+            report_rows:
+              sales_export: "Xuất bán hàng"
+              sales_import: "Hàng bị trả lại"
     products:
       backend:
         products:

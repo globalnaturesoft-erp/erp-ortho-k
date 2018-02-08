@@ -19,7 +19,7 @@
         <td class="text-left text-nowrap"><%= row[:product_name] %></td>
         <% end %>
         <% if get_columns(params).include?("description") %>
-        <td class="text-left"><%= row[:description] %></td>
+        <td class="text-left text-nowrap"><%= t(".#{row[:record_type]}") %></td>
         <% end %>
         <% if get_columns(params).include?("status") %>
         <td class="text-left first-letter-uppercase"><%= row[:state] %></td>

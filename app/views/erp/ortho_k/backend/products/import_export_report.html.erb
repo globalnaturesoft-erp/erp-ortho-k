@@ -8,21 +8,21 @@
 
 <% content_for :global_filter do %>
     <div class="row">
-        <div class="col-md-2">
+        <div class="col-md-3">
             <%= erp_form_control('date', {
                 label: t('.from_date'),
                 name: 'from_date',
                 placeholder: t('.select_from_date')
             }) %>
         </div>
-        <div class="col-md-2">
+        <div class="col-md-3">
             <%= erp_form_control('date', {
                 label: t('.to_date'),
                 name: 'to_date',
                 placeholder: t('.select_to_date')
             }) %>
         </div>
-        <div class="col-md-2">
+        <div class="col-md-3">
             <%= erp_form_control("dataselect", {
                 name: 'period',
                 label: 'Thời gian cố định',
@@ -30,6 +30,55 @@
                 url: erp_periods.dataselect_backend_periods_path(format: 'json')
             }) %>
         </div>
+        <div class="col-md-3">
+            <%= erp_form_control('select', {
+                name: 'types',
+                label: 'Loại xuất/nhập',
+                placeholder: 'Chọn loại phiếu xuất nhập',
+                options: Erp::Products::Product.get_import_export_type_options,
+                multiple: true
+            }) %>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <%= erp_form_control("dataselect", {
+                name: 'warehouse_id',
+                label: t('.filter_warehouse'),
+                placeholder: t('.choose_warehouse'),
+                url: erp_warehouses.dataselect_backend_warehouses_path(format: 'json'),
+                multiple: true
+            }) %>
+        </div>
+        <div class="col-md-3">
+            <%= erp_form_control("dataselect", {
+                name: 'category_id',
+                label: t('.filter_category'),
+                placeholder: t('.choose_category'),
+                url: erp_products.dataselect_backend_categories_path(format: 'json'),
+                multiple: true
+            }) %>
+        </div>
+        <div class="col-md-3">
+            <%= erp_form_control("dataselect", {
+                name: 'product_id',
+                label: t('.filter_product'),
+                placeholder: t('.chooose_product'),
+                url: erp_products.dataselect_backend_products_path(format: 'json'),
+                multiple: true
+            }) %>
+        </div>
+        <div class="col-md-3">
+            <%= erp_form_control("dataselect", {
+                name: 'state_id',
+                label: 'Trạng thái sản phẩm',
+                placeholder: 'Lọc theo trạng thái sản phẩm',
+                url: erp_products.dataselect_backend_states_path(format: 'json'),
+                multiple: true
+            }) %>
+        </div>
+    </div>
+    <div class="row">
         <div class="col-md-3">
             <%= erp_form_control("dataselect", {
                 name: 'customer_id',
@@ -48,55 +97,6 @@
                 multiple: true
             }) %>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-md-2">
-            <%= erp_form_control("dataselect", {
-                name: 'warehouse_id',
-                label: t('.filter_warehouse'),
-                placeholder: t('.choose_warehouse'),
-                url: erp_warehouses.dataselect_backend_warehouses_path(format: 'json'),
-                multiple: true
-            }) %>
-        </div>
-        <div class="col-md-3">
-            <%= erp_form_control('select', {
-                name: 'types',
-                label: 'Loại xuất/nhập',
-                placeholder: 'Chọn loại phiếu xuất nhập',
-                options: Erp::Products::Product.get_import_export_type_options,
-                multiple: true
-            }) %>
-        </div>
-        <div class="col-md-2">
-            <%= erp_form_control("dataselect", {
-                name: 'category_id',
-                label: t('.filter_category'),
-                placeholder: t('.choose_category'),
-                url: erp_products.dataselect_backend_categories_path(format: 'json'),
-                multiple: true
-            }) %>
-        </div>
-        <div class="col-md-3">
-            <%= erp_form_control("dataselect", {
-                name: 'product_id',
-                label: t('.filter_product'),
-                placeholder: t('.chooose_product'),
-                url: erp_products.dataselect_backend_products_path(format: 'json'),
-                multiple: true
-            }) %>
-        </div>
-        <div class="col-md-2">
-            <%= erp_form_control("dataselect", {
-                name: 'state_id',
-                label: 'Trạng thái sản phẩm',
-                placeholder: 'Lọc theo trạng thái sản phẩm',
-                url: erp_products.dataselect_backend_states_path(format: 'json'),
-                multiple: true
-            }) %>
-        </div>
-    </div>
-    <div class="row">
         <div class="col-md-2">
             <%= erp_form_control('select', {
                 name: 'sort_by',
