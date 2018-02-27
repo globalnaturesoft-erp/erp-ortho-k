@@ -74,6 +74,39 @@ module Erp
           render layout: nil
         end
         
+        # Xuat file excel //So chi tiet ban hang
+        def report_sales_details_xlsx
+          @global_filters = params.to_unsafe_hash[:global_filter]
+
+          # if has period
+          if @global_filters[:period].present?
+            @period = Erp::Periods::Period.find(@global_filters[:period])
+            @global_filters[:from_date] = @period.from_date
+            @global_filters[:to_date] = @period.to_date
+          end
+
+          @from_date = @global_filters[:from_date].to_date
+          @to_date = @global_filters[:to_date].to_date
+          
+          @group_by = @global_filters[:group_by]
+          
+          if @from_date.present? and @to_date.present?            
+            if @group_by.present? and !@group_by.include?(Erp::Orders::Order::GROUPED_BY_DEFAULT)
+              @groups = Erp::Orders::Order.group_sales_details_report(@global_filters)[:groups]
+              @totals = Erp::Orders::Order.group_sales_details_report(@global_filters)[:totals]
+            else              
+              @rows = Erp::Orders::Order.sales_details_report(@global_filters)[:data].sort_by { |n| n[:voucher_date] }.reverse!
+              @totals = Erp::Orders::Order.sales_details_report(@global_filters)[:total]
+            end
+          end
+
+          respond_to do |format|
+            format.xlsx {
+              response.headers['Content-Disposition'] = 'attachment; filename="So chi tiet ban hang.xlsx"'
+            }
+          end
+        end
+        
         # Bao cao so luong ban hang
         def report_product_sold_table
           glb = params.to_unsafe_hash[:global_filter]
