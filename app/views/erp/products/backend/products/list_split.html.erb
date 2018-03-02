@@ -117,14 +117,13 @@
                         }) %>
                     </div>
                     <div class="col-md-3">
-                        <% degree_k2 = Erp::Products::Property.get_degree_k2 %>
                         <%= erp_form_control("dataselect", {
                             name: 'degree_k2s',
                             value: '',
                             text: '',
                             label: 'Độ K2',
-                            placeholder: degree_k2.name,
-                            url: erp_products.dataselect_backend_properties_values_path(format: 'json', property_id: degree_k2.id),
+                            placeholder: degree_k.name,
+                            url: erp_products.dataselect_backend_properties_values_path(format: 'json', property_id: degree_k.id),
                             #multiple: true
                         }) %>
                     </div>
@@ -213,14 +212,13 @@
                         }) %>
                     </div>
                     <div class="col-md-3">
-                        <% degree_k2 = Erp::Products::Property.get_degree_k2 %>
                         <%= erp_form_control("dataselect", {
                             name: 'degree_k2s',
                             value: '',
                             text: '',
                             label: 'Độ K2',
-                            placeholder: degree_k2.name,
-                            url: erp_products.dataselect_backend_properties_values_path(format: 'json', property_id: degree_k2.id),
+                            placeholder: degree_k.name,
+                            url: erp_products.dataselect_backend_properties_values_path(format: 'json', property_id: degree_k.id),
                             #multiple: true
                         }) %>
                     </div>

@@ -145,7 +145,7 @@ wb.styles do |s|
           footer5 = {columns: [], styles: []}
           footer6 = {columns: [], styles: []}
 
-          footer1[:columns] << 'Tổng tồn kho:'
+          footer1[:columns] << 'Tổng nhu cầu:'
           footer1[:styles] << (s.add_style text_left.deep_merge(bg_general))
           c1 = 0
           (1..3).each do |empty|

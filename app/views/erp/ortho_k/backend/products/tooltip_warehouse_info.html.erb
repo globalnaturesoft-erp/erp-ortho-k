@@ -4,13 +4,14 @@
             <%= warehouse.short_name %>
         </div>
         <div class="col-md-6">
-            <%= Erp::Products::Product.get_stock(
-                properties_value_ids: params[:properties_value_ids],
-                categories: params[:categories],
-                warehouses: warehouse.id,
-                states: params[:states],
-                diameters: params[:diameters],
-            ) %>
+            <%
+                product_ids = @product_query.find_by_properties_value_ids(params[:properties_value_ids]).select('id')
+                product_ids = -1 if product_ids.count == 0
+                filters = @global_filter.clone.merge({product_id: product_ids, warehouse_ids: warehouse.id})
+
+                stock = Erp::Products::Product.get_stock_real(filters)
+            %>
+            <%= stock %>
         </div>
     </div>
 <% end %>

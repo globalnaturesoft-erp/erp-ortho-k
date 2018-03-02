@@ -145,7 +145,7 @@ wb.styles do |s|
           footer5 = {columns: [], styles: []}
           footer6 = {columns: [], styles: []}
 
-          footer1[:columns] << 'Tổng tồn kho:'
+          footer1[:columns] << 'Tổng bán:'
           footer1[:styles] << (s.add_style text_left.deep_merge(bg_general))
           c1 = 0
           (1..3).each do |empty|
@@ -163,7 +163,7 @@ wb.styles do |s|
           col_last_footer0 = (c1 + 3)
           sheet.merge_cells("#{('A'.codepoints.first + c1).chr}#{row_num}:#{('A'.codepoints.first + (c1 + 3)).chr}#{row_num}")
 
-          footer2[:columns] << 'Không bán được:'
+          footer2[:columns] << 'Chưa được đặt hàng:'
           footer2[:styles] << (s.add_style text_left.deep_merge(bg_general))
           c2 = 0
           (1..3).each do |empty|
