@@ -7,6 +7,13 @@
 <% end %>
 
 <% content_for :page_toolbar do %>
+    <% if Erp::Core.available?("ortho_k") %>
+        <%= erp_component('button/primary', {
+            text: 'Về trang danh sách',
+            href: erp_products.backend_products_path,
+            class: 'btn-noborder'
+        }) %>
+    <% end %>
     <%= erp_component('button/create', {
         text: 'Thêm sản phẩm',
         href: erp_products.new_backend_product_path,
