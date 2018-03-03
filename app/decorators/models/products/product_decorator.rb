@@ -2195,7 +2195,7 @@ Erp::Products::Product.class_eval do
       keyword = keyword.strip.downcase
       keyword.split(' ').each do |q|
         q = q.strip
-        query = query.where('LOWER(erp_products_products.name) LIKE ? OR LOWER(erp_products_products.name) LIKE ? OR LOWER(erp_products_products.name) LIKE ?', q+'%', ' '+q+'%', '%-'+q+'%')
+        query = query.where('LOWER(erp_products_products.cache_search) LIKE ? OR LOWER(erp_products_products.cache_search) LIKE ? OR LOWER(erp_products_products.cache_search) LIKE ?', q+'%', '% '+q+'%', '%-'+q+'%')
       end
     end
 
