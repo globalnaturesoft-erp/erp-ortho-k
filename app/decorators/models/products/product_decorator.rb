@@ -1538,9 +1538,9 @@ Erp::Products::Product.class_eval do
 
         # Save stock check record
         puts details.count
-        #self.transaction do
-        #  stock_check.save
-        #end
+        self.transaction do
+          stock_check.save
+        end
       end
 
 
