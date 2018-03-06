@@ -1460,153 +1460,93 @@ Erp::Products::Product.class_eval do
     xlsx.each_with_pagename do |name, sheet|
       cat_name = name.strip
 
-      # Check if sheet tab is LEN
-      if ["Standard","Premium","Toric","Express","SP", "SCL"].include?(cat_name)
-        # Stock check
-        stock_check = Erp::Products::StockCheck.new(
-          creator_id: user.id,
-          warehouse_id: warehouse.id,
-          adjustment_date: Time.now,
-          employee_id: user.id,
-          status: Erp::Products::StockCheck::STATUS_DONE,
-          adjustment_date: '2010-01-01'.to_date,
-          description: "Nhập tồn đầu: #{cat_name}"
-        )
-        details = []
-
-        # Header, first table row
-        headers = sheet.row(3)
-
-        # description
-        stock_check.description = "Nhập kho ban đầu: #{cat_name}"
-
-        headers.each_with_index do |header, index|
-          if ["10.4","10.5","10.6","10.8","11","11.2","11.4","16.4"].include?(header.to_s)
-            # diameter
-            diameter_p = Erp::Products::Property.get_diameter
-            diameter_ppv = Erp::Products::PropertiesValue.where(property_id: diameter_p.id, value: header.to_s).first
-
-            sheet.each_row_streaming do |row|
-              if !row[0].value.nil? and row[0].value != 'Ma Len' and row[index].present? and row[index].value.to_i > 0 and !["10.4","10.6","10.8","11","11.2","11.4","11.6","16.4"].include?(row[index].value.to_s)
-                lns = row[0].value.scan(/\d+|\D+/)
-
-                # quantity
-                stock = row[index].value
-
-                # letter
-                letter_p = Erp::Products::Property.get_letter
-                letter_ppv = Erp::Products::PropertiesValue.where(property_id: letter_p.id, value: lns[0]).first
-
-                # number
-                nn_v = lns[1]
-                nn_v = nn_v.rjust(2, '0') if nn_v != '0' and nn_v != '00'
-                number_p = Erp::Products::Property.get_number
-                number_ppv = Erp::Products::PropertiesValue.where(property_id: number_p.id, value: nn_v).first
-
-                if diameter_ppv.present? and letter_ppv.present? and number_ppv.present?
-                  pname = "#{letter_ppv.value}#{number_ppv.value}-#{diameter_ppv.value}-#{cat_name}"
-
-                  # Find product
-                  product = Erp::Products::Product
-                    .where(name: pname)
-                    .first
-
-                  # check if product exist
-                  if product.present?
-                    # add stock check detail
-                    details << stock_check.stock_check_details.build(
-                      product_id: product.id,
-                      quantity: stock,
-                      state_id: state.id
-                    )
-
-                    result = "SUCCESS::#{pname}: exist! checked! (#{stock})"
-                  else
-                    result = "ERROR::#{pname}: not exist! ignored! (#{stock})"
-                  end
-                else
-                  result = "ERROR::#{lns}: ppvs not exist! ignored! (#{stock})"
-                end
-
-                # Logging
-                puts result
-                File.open("tmp/import_init_stock-#{timestamp}.log", "a+") { |f| f << "#{result}\n"}
-              end
-            end
-          end
-        end
-
-        # Save stock check record
-        puts details.count
-        self.transaction do
-          stock_check.save
-        end
-      end
-
-
-
-      ################################################ SOFT OK LEN ###############################################
-      if ["Soft OK"].include?(cat_name)
-        # Stock check
-        stock_check = Erp::Products::StockCheck.new(
-          creator_id: user.id,
-          warehouse_id: warehouse.id,
-          adjustment_date: Time.now,
-          employee_id: user.id,
-          status: Erp::Products::StockCheck::STATUS_DONE,
-          adjustment_date: '2010-01-01'.to_date,
-          description: "Nhập tồn đầu: #{cat_name}"
-        )
-        details = []
-
-        # Header, first table row
-        headers = sheet.row(3)
-
-        sheet.each_row_streaming do |row|
-          if row[0].present? and row[0].value.present? and row[1].present? and row[1].value.to_i > 0
-            category = Erp::Products::Category.where(name: cat_name).first
-
-            # quantity
-            stock = row[1].value
-            pname = row[0].value
-
-            # Find product
-            product = Erp::Products::Product
-              .where(name: pname)
-              .first
-
-            # check if product exist
-            if product.present?
-              result = "SUCCESS::#{pname}: exist! checked! (#{stock})"
-
-              # add stock check detail
-              details << stock_check.stock_check_details.build(
-                product_id: product.id,
-                quantity: stock,
-                state_id: state.id
-              )
-            else
-              result = "ERROR::#{lns[0]}: ppvs not exist! ignored! (#{stock})"
-            end
-
-            # Logging
-            puts result
-            File.open("tmp/import_init_stock-#{timestamp}.log", "a+") { |f| f << "#{result}\n"}
-          end
-        end
-
-        # Save stock check record
-        puts details.count
-        self.transaction do
-          stock_check.save
-        end
-      end
-
-
-
-
-      ################################################# SẢN PHẨM KHÁC ###############################################
-      #if ["Sản phẩm khác"].include?(cat_name)
+      ## Check if sheet tab is LEN
+      #if ["Standard","Premium","Toric","Express","SP", "SCL"].include?(cat_name)
+      #  # Stock check
+      #  stock_check = Erp::Products::StockCheck.new(
+      #    creator_id: user.id,
+      #    warehouse_id: warehouse.id,
+      #    adjustment_date: Time.now,
+      #    employee_id: user.id,
+      #    status: Erp::Products::StockCheck::STATUS_DONE,
+      #    adjustment_date: '2010-01-01'.to_date,
+      #    description: "Nhập tồn đầu: #{cat_name}"
+      #  )
+      #  details = []
+      #
+      #  # Header, first table row
+      #  headers = sheet.row(3)
+      #
+      #  # description
+      #  stock_check.description = "Nhập kho ban đầu: #{cat_name}"
+      #
+      #  headers.each_with_index do |header, index|
+      #    if ["10.4","10.5","10.6","10.8","11","11.2","11.4","16.4"].include?(header.to_s)
+      #      # diameter
+      #      diameter_p = Erp::Products::Property.get_diameter
+      #      diameter_ppv = Erp::Products::PropertiesValue.where(property_id: diameter_p.id, value: header.to_s).first
+      #
+      #      sheet.each_row_streaming do |row|
+      #        if !row[0].value.nil? and row[0].value != 'Ma Len' and row[index].present? and row[index].value.to_i > 0 and !["10.4","10.6","10.8","11","11.2","11.4","11.6","16.4"].include?(row[index].value.to_s)
+      #          lns = row[0].value.scan(/\d+|\D+/)
+      #
+      #          # quantity
+      #          stock = row[index].value
+      #
+      #          # letter
+      #          letter_p = Erp::Products::Property.get_letter
+      #          letter_ppv = Erp::Products::PropertiesValue.where(property_id: letter_p.id, value: lns[0]).first
+      #
+      #          # number
+      #          nn_v = lns[1]
+      #          nn_v = nn_v.rjust(2, '0') if nn_v != '0' and nn_v != '00'
+      #          number_p = Erp::Products::Property.get_number
+      #          number_ppv = Erp::Products::PropertiesValue.where(property_id: number_p.id, value: nn_v).first
+      #
+      #          if diameter_ppv.present? and letter_ppv.present? and number_ppv.present?
+      #            pname = "#{letter_ppv.value}#{number_ppv.value}-#{diameter_ppv.value}-#{cat_name}"
+      #
+      #            # Find product
+      #            product = Erp::Products::Product
+      #              .where(name: pname)
+      #              .first
+      #
+      #            # check if product exist
+      #            if product.present?
+      #              # add stock check detail
+      #              details << stock_check.stock_check_details.build(
+      #                product_id: product.id,
+      #                quantity: stock,
+      #                state_id: state.id
+      #              )
+      #
+      #              result = "SUCCESS::#{pname}: exist! checked! (#{stock})"
+      #            else
+      #              result = "ERROR::#{pname}: not exist! ignored! (#{stock})"
+      #            end
+      #          else
+      #            result = "ERROR::#{lns}: ppvs not exist! ignored! (#{stock})"
+      #          end
+      #
+      #          # Logging
+      #          puts result
+      #          File.open("tmp/import_init_stock-#{timestamp}.log", "a+") { |f| f << "#{result}\n"}
+      #        end
+      #      end
+      #    end
+      #  end
+      #
+      #  # Save stock check record
+      #  puts details.count
+      #  self.transaction do
+      #    stock_check.save
+      #  end
+      #end
+      #
+      #
+      #
+      ################################################# SOFT OK LEN ###############################################
+      #if ["Soft OK"].include?(cat_name)
       #  # Stock check
       #  stock_check = Erp::Products::StockCheck.new(
       #    creator_id: user.id,
@@ -1623,66 +1563,30 @@ Erp::Products::Product.class_eval do
       #  headers = sheet.row(3)
       #
       #  sheet.each_row_streaming do |row|
-      #    if row[1].present? and row[1].value.present? and row[3].present? and row[3].value.to_i > 0
-      #      category_name = row[0].value
+      #    if row[0].present? and row[0].value.present? and row[1].present? and row[1].value.to_i > 0
+      #      category = Erp::Products::Category.where(name: cat_name).first
       #
-      #      # Properties
-      #      category = Erp::Products::Category.where(name: category_name).first
+      #      # quantity
+      #      stock = row[1].value
+      #      pname = row[0].value
       #
-      #      if category.present?
-      #        pname = row[1].value
-      #        stock = row[3].value.to_i
+      #      # Find product
+      #      product = Erp::Products::Product
+      #        .where(name: pname)
+      #        .first
       #
-      #        # Find product
-      #        product = Erp::Products::Product
-      #          .where(name: pname)
-      #          .first
+      #      # check if product exist
+      #      if product.present?
+      #        result = "SUCCESS::#{pname}: exist! checked! (#{stock})"
       #
-      #        # check if product exist
-      #        if product.present?
-      #          result = "SUCCESS::exist::#{pname}: checked! (#{stock})"
-      #        else
-      #          #user = Erp::User.first
-      #          #brand = Erp::Products::Brand.where(name: "Ortho-K").first
-      #          #unit_cai = Erp::Products::Unit.where(name: "Cái").first
-      #          #
-      #          #product = Erp::Products::Product.create(
-      #          #  code: "#{letter_ppv.value}#{number_ppv.value}",
-      #          #  name: pname,
-      #          #  category_id: category.id,
-      #          #  brand_id: brand.id,
-      #          #  creator_id: user.id,
-      #          #  unit_id: unit_cai.id,
-      #          #  price: nil, # rand(5..100)*10000,
-      #          #  is_outside: true
-      #          #)
-      #          #
-      #          #Erp::Products::ProductsValue.create(
-      #          #  product_id: product.id,
-      #          #  properties_value_id: diameter_ppv.id
-      #          #) if diameter_ppv.present?
-      #          #Erp::Products::ProductsValue.create(
-      #          #  product_id: product.id,
-      #          #  properties_value_id: letter_ppv.id
-      #          #) if letter_ppv.present?
-      #          #Erp::Products::ProductsValue.create(
-      #          #  product_id: product.id,
-      #          #  properties_value_id: number_ppv.id
-      #          #) if number_ppv.present?
-      #          #
-      #          #Erp::Products::Product.find(product.id).update_cache_properties
-      #
-      #          result = "SUCCESS::not exist::#{pname}: created! checked! (#{stock})"
-      #        end
-      #
-      #        ## add stock check detail
-      #        #details << stock_check.stock_check_details.build(
-      #        #  product_id: product.id,
-      #        #  quantity: stock,
-      #        #  state_id: state.id
-      #        #)
+      #        # add stock check detail
+      #        details << stock_check.stock_check_details.build(
+      #          product_id: product.id,
+      #          quantity: stock,
+      #          state_id: state.id
+      #        )
       #      else
-      #        result = "ERROR::#{row[1].value}: category not exist! ignored! (#{stock})"
+      #        result = "ERROR::#{lns[0]}: ppvs not exist! ignored! (#{stock})"
       #      end
       #
       #      # Logging
@@ -1693,10 +1597,107 @@ Erp::Products::Product.class_eval do
       #
       #  # Save stock check record
       #  puts details.count
-      #  #self.transaction do
-      #  #  stock_check.save
-      #  #end
+      #  self.transaction do
+      #    stock_check.save
+      #  end
       #end
+
+
+
+
+      ################################################ SẢN PHẨM KHÁC ###############################################
+      if ["Sản phẩm khác"].include?(cat_name)
+        # Stock check
+        stock_check = Erp::Products::StockCheck.new(
+          creator_id: user.id,
+          warehouse_id: warehouse.id,
+          adjustment_date: Time.now,
+          employee_id: user.id,
+          status: Erp::Products::StockCheck::STATUS_DONE,
+          adjustment_date: '2010-01-01'.to_date,
+          description: "Nhập tồn đầu: #{cat_name}"
+        )
+        details = []
+
+        # Header, first table row
+        headers = sheet.row(3)
+
+        sheet.each_row_streaming do |row|
+          if row[1].present? and row[1].value.present? and row[3].present? and row[3].value.to_i > 0
+            category_name = row[0].value
+
+            # Properties
+            category = Erp::Products::Category.where(name: category_name).first
+
+            if category.present?
+              pname = row[1].value
+              stock = row[3].value.to_i
+
+              # Find product
+              product = Erp::Products::Product
+                .where(name: pname)
+                .first
+
+              # check if product exist
+              if product.present?
+                result = "SUCCESS::exist::#{pname}: checked! (#{stock})"
+              else
+                user = Erp::User.first
+                brand = Erp::Products::Brand.where(name: "Ortho-K").first
+                unit_cai = Erp::Products::Unit.where(name: row[2].value).first
+
+                puts unit_cai.name
+
+                product = Erp::Products::Product.new(
+                  code: pname,
+                  name: pname,
+                  category_id: category.id,
+                  brand_id: brand.id,
+                  creator_id: user.id,
+                  unit_id: unit_cai.id,
+                  price: nil, # rand(5..100)*10000,
+                  is_outside: true
+                )
+
+                puts product.valid?
+
+                #product.save
+                #Erp::Products::Product.find(product.id).update_cache_properties
+
+                result = "SUCCESS::not exist::#{pname}: created! checked! (#{stock})"
+              end
+
+              # orther state
+              if row[4].present? and row[4].value.present? and row[4].value != 'TT'
+                state = Erp::Products::State.where(name: row[4].value).first
+              else
+                state = Erp::Products::State.first
+              end
+
+              # add stock check detail
+              details << stock_check.stock_check_details.build(
+                product_id: product.id,
+                quantity: stock,
+                state_id: state.id
+              )
+            else
+              result = "ERROR::#{row[1].value}: category not exist! ignored! (#{stock})"
+            end
+
+            # Logging
+            result = result + " ::#{state.name}"
+
+            puts result
+            File.open("tmp/import_init_stock-#{timestamp}.log", "a+") { |f| f << "#{result}\n"}
+          end
+        end
+
+        # Save stock check record
+        puts details.count
+        #self.transaction do
+        #  stock_check.save
+        #end
+      end
 
 
 
@@ -1813,6 +1814,130 @@ Erp::Products::Product.class_eval do
 
 
 
+    end
+  end
+
+
+  # import init stock from file
+  def self.set_product_parts(file)
+    # config
+    timestamp = Time.now.to_i
+    xlsx = Roo::Spreadsheet.open(file)
+    user = Erp::User.first
+    state = Erp::Products::State.first  # Mới
+    warehouse = Erp::Warehouses::Warehouse.first  # SG
+
+    # Read excel file. sheet tabs loop
+    xlsx.each_with_pagename do |name, sheet|
+      cat_name = name.strip
+
+      # Check if sheet tab is LEN
+      if ["các loại bộ sét"].include?(cat_name)
+
+        sheet.each_row_streaming do |row|
+
+          diameter_p = Erp::Products::Property.get_diameter
+          diameter_ppv = Erp::Products::PropertiesValue.where(property_id: diameter_p.id, value: row[1].value.split('-')[1]).first
+
+          # letter - number
+          lns = row[1].value.scan(/\d+|\D+/)
+
+          # letter
+          letter_p = Erp::Products::Property.get_letter
+          letter_ppv = Erp::Products::PropertiesValue.where(property_id: letter_p.id, value: lns[0]).first
+
+          # number
+          puts row[1].value
+          nn_v = lns[1]
+          nn_v = nn_v.rjust(2, '0') if nn_v != '0' and nn_v != '00'
+          number_p = Erp::Products::Property.get_number
+          number_ppv = Erp::Products::PropertiesValue.where(property_id: number_p.id, value: nn_v).first
+
+          puts letter_ppv.value
+          puts number_ppv.value
+
+        end
+
+        ## Stock check
+        #stock_check = Erp::Products::StockCheck.new(
+        #  creator_id: user.id,
+        #  warehouse_id: warehouse.id,
+        #  adjustment_date: Time.now,
+        #  employee_id: user.id,
+        #  status: Erp::Products::StockCheck::STATUS_DONE,
+        #  adjustment_date: '2010-01-01'.to_date,
+        #  description: "Nhập tồn đầu: #{cat_name}"
+        #)
+        #details = []
+        #
+        ## Header, first table row
+        #headers = sheet.row(3)
+        #
+        ## description
+        #stock_check.description = "Nhập kho ban đầu: #{cat_name}"
+        #
+        #headers.each_with_index do |header, index|
+        #  if ["10.4","10.5","10.6","10.8","11","11.2","11.4","16.4"].include?(header.to_s)
+        #    # diameter
+        #    diameter_p = Erp::Products::Property.get_diameter
+        #    diameter_ppv = Erp::Products::PropertiesValue.where(property_id: diameter_p.id, value: header.to_s).first
+        #
+        #    sheet.each_row_streaming do |row|
+        #      if !row[0].value.nil? and row[0].value != 'Ma Len' and row[index].present? and row[index].value.to_i > 0 and !["10.4","10.6","10.8","11","11.2","11.4","11.6","16.4"].include?(row[index].value.to_s)
+        #        lns = row[0].value.scan(/\d+|\D+/)
+        #
+        #        # quantity
+        #        stock = row[index].value
+        #
+        #        # letter
+        #        letter_p = Erp::Products::Property.get_letter
+        #        letter_ppv = Erp::Products::PropertiesValue.where(property_id: letter_p.id, value: lns[0]).first
+        #
+        #        # number
+        #        nn_v = lns[1]
+        #        nn_v = nn_v.rjust(2, '0') if nn_v != '0' and nn_v != '00'
+        #        number_p = Erp::Products::Property.get_number
+        #        number_ppv = Erp::Products::PropertiesValue.where(property_id: number_p.id, value: nn_v).first
+        #
+        #        if diameter_ppv.present? and letter_ppv.present? and number_ppv.present?
+        #          pname = "#{letter_ppv.value}#{number_ppv.value}-#{diameter_ppv.value}-#{cat_name}"
+        #
+        #          # Find product
+        #          product = Erp::Products::Product
+        #            .where(name: pname)
+        #            .first
+        #
+        #          # check if product exist
+        #          if product.present?
+        #            # add stock check detail
+        #            details << stock_check.stock_check_details.build(
+        #              product_id: product.id,
+        #              quantity: stock,
+        #              state_id: state.id
+        #            )
+        #
+        #            result = "SUCCESS::#{pname}: exist! checked! (#{stock})"
+        #          else
+        #            result = "ERROR::#{pname}: not exist! ignored! (#{stock})"
+        #          end
+        #        else
+        #          result = "ERROR::#{lns}: ppvs not exist! ignored! (#{stock})"
+        #        end
+        #
+        #        # Logging
+        #        puts result
+        #        File.open("tmp/import_init_stock-#{timestamp}.log", "a+") { |f| f << "#{result}\n"}
+        #      end
+        #    end
+        #  end
+        #end
+
+        # Save stock check record
+        # puts details.count
+        #self.transaction do
+        #  stock_check.save
+        #end
+      end
     end
   end
 
