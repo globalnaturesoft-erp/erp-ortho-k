@@ -16,7 +16,7 @@ Erp::Products::Category.class_eval do
       query = query.where.not(id: params[:remove_ids].split(','))
     end
 
-    query = query.includes(:children).where(children_erp_products_categories: {id: nil})
+    #query = query.includes(:children).where(children_erp_products_categories: {id: nil})
 
     query = query.limit(20).map{|category| {value: category.id, text: category.name} }
   end
