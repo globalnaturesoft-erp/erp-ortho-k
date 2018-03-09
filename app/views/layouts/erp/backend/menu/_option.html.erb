@@ -2,7 +2,8 @@
                                          (params[:controller] == "erp/backend/user_groups") ||
                                          (params[:controller] == "erp/targets/backend/targets") ||
                                          (params[:controller] == "erp/targets/backend/company_targets") ||
-                                         (params[:controller] == "erp/periods/backend/periods") %>">
+                                         (params[:controller] == "erp/periods/backend/periods") ||
+                                         (params[:controller] == "erp/areas/backend/countries") %>">
     <a href="javascript:;" class="nav-link nav-toggle">
         <i class="icon-settings"></i>
         <span class="title">Cài đặt dữ liệu</span>
@@ -10,7 +11,8 @@
               (params[:controller] == "erp/backend/user_groups") ||
               (params[:controller] == "erp/targets/backend/targets") ||
               (params[:controller] == "erp/targets/backend/company_targets") ||
-              (params[:controller] == "erp/periods/backend/periods") %>
+              (params[:controller] == "erp/periods/backend/periods") ||
+              (params[:controller] == "erp/areas/backend/countries") %>
             <span class="selected"></span>
             <span class="arrow open"></span>
         <% else %>
@@ -41,6 +43,14 @@
             <a href="<%= erp_periods.backend_periods_path %>" class="nav-link ">
                 <span class="title">Cấu hình mốc thời gian</span>
                 <% if ["erp/periods/backend/periods"].include?(params[:controller]) %>
+                <span class="selected"></span>
+                <% end %>
+            </a>
+        </li>
+        <li class="nav-item <%= "active open" if ["erp/areas/backend/countries"].include?(params[:controller]) %>">
+            <a href="<%= erp_areas.backend_countries_path %>" class="nav-link ">
+                <span class="title">Quốc gia/Vùng/Lãnh thổ</span>
+                <% if ["erp/areas/backend/areas"].include?(params[:controller]) %>
                 <span class="selected"></span>
                 <% end %>
             </a>
