@@ -35,10 +35,10 @@ rows.each_with_index do |rw,index|
   row[:columns] << rw[:product_code]
   row[:styles] << (s.add_style text_left.deep_merge(middle_align).deep_merge(border).deep_merge(wrap))
 
-  row[:columns] << rw[:diameter]
+  row[:columns] << rw[:product_diameter]
   row[:styles] << (s.add_style text_left.deep_merge(middle_align).deep_merge(border).deep_merge(wrap))
 
-  row[:columns] << rw[:category]
+  row[:columns] << rw[:product_category]
   row[:styles] << (s.add_style text_left.deep_merge(middle_align).deep_merge(border).deep_merge(wrap))
 
   row[:columns] << rw[:product_name]

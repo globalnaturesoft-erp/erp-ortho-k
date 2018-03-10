@@ -15,6 +15,15 @@
         <% if get_columns(params).include?("customer_name") %>
         <td class="text-left text-nowrap"><%= row[:customer_name] %></td>
         <% end %>
+        <% if get_columns(params).include?("code") %>
+        <td class="text-left text-nowrap"><%= row[:product_code] %></td>
+        <% end %>
+        <% if get_columns(params).include?("diameter") %>
+        <td class="text-left text-nowrap"><%= row[:product_diameter] %></td>
+        <% end %>
+        <% if get_columns(params).include?("category") %>
+        <td class="text-left text-nowrap"><%= row[:product_category] %></td>
+        <% end %>
         <% if get_columns(params).include?("product_name") %>
         <td class="text-left text-nowrap"><%= row[:product_name] %></td>
         <% end %>
@@ -112,7 +121,7 @@
         <% end %>
         <% if get_columns(params).include?("customer_commission_percent") %>
         <td class="text-center font-yellow-gold">
-            <%= row[:customer_commission_percent].present? ? "#{row[:customer_commission_percent]}%" : '--' %>
+            <%= row[:customer_commission_percent].present? ? "#{format_number(row[:customer_commission_percent])}%" : '--' %>
         </td>
         <% end %>
         <% if get_columns(params).include?("customer_commission_amount") %>
@@ -121,8 +130,8 @@
         </td>
         <% end %>
         <% if get_columns(params).include?("note") %>
-        <td class="text-<%= row[:note].present? ? 'left' : 'center' %>">
-            <%= row[:description] %>
+        <td class="text-<%= row[:note].present? ? 'left' : 'center' %> text-nowrap">
+            <%= row[:note] %>
         </td>
         <% end %>
     </tr>

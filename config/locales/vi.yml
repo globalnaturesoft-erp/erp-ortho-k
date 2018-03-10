@@ -966,7 +966,7 @@ vi:
             please_select_filter: "Vui lòng chọn thời gian trên bộ lọc"
             no_matching_records_found: "Nội dung báo cáo không được tìm thấy. Vui lòng chọn các điều kiện khác để xem."
           report_sales_details:
-            report_sales_details: "Báo cáo - Sổ chi tiết bán hàng"
+            report_sales_details: "Sổ chi tiết bán hàng"
             from_date: "Từ ngày"
             select_from_date: "Từ ngày (YYYY-MM-DD)"
             to_date: "Đến ngày"

@@ -339,10 +339,11 @@ Erp::Orders::Order.class_eval do
           voucher_code: order_detail.order.code,
           customer_code: order_detail.order.customer_code,
           customer_name: order_detail.order.customer_name,
-          product_code: order_detail.product.code,
-          product_name: order_detail.product_name,
+          product_code: order_detail.product_code,
+          product_diameter: order_detail.product.get_diameter,
           product_category: order_detail.product.category_name,
-          description: order_detail.description,
+          product_name: order_detail.product_name,
+          description: order_detail.order.note,
           state: 'Mới',
           warehouse: order_detail.order.warehouse_name,
           unit: order_detail.product.unit_name,
@@ -359,7 +360,7 @@ Erp::Orders::Order.class_eval do
           salesperson_commission_amount: salesperson_commission_amount,
           customer_commission_percent: customer_percent,
           customer_commission_amount: customer_commission_amount,
-          description: order_detail.description
+          note: order_detail.description
         }
         total[:quantity] += qty
         total[:sales_tax_amount] += sales_tax_amount.to_f
@@ -420,15 +421,17 @@ Erp::Orders::Order.class_eval do
           customer_code: delivery_detail.delivery.customer.code,
           customer_name: delivery_detail.delivery.customer_name,
           product_code: delivery_detail.product_code,
-          product_name: delivery_detail.product_name,
+          product_diameter: delivery_detail.product.get_diameter,
           product_category: delivery_detail.product.category_name,
+          product_name: delivery_detail.product_name,
           quantity: qty,
           purchase_price: purchase_price, # Giá trả lại
           purchase_total_amount: purchase_total_amount,
-          description: delivery_detail.note,
+          description: delivery_detail.delivery.note,
           state: delivery_detail.state_name,
           warehouse: delivery_detail.warehouse_name,
           unit: delivery_detail.order_detail.product.unit_name,
+          note: delivery_detail.note,
           eye_position: delivery_detail.order_detail.display_eye_position,
           patient_name: delivery_detail.order_detail.order.patient_name,
           patient_state_name: delivery_detail.order_detail.order.patient_state_name,
@@ -486,8 +489,9 @@ Erp::Orders::Order.class_eval do
           customer_code: delivery_detail.delivery.customer.code,
           customer_name: delivery_detail.delivery.customer_name,
           product_code: delivery_detail.product_code,
-          product_name: delivery_detail.product_name,
+          product_diameter: delivery_detail.product.get_diameter,
           product_category: delivery_detail.product.category_name,
+          product_name: delivery_detail.product_name,
           quantity: qty,
           purchase_price: purchase_price, # Giá trả lại
           purchase_total_amount: purchase_total_amount,
@@ -495,6 +499,7 @@ Erp::Orders::Order.class_eval do
           state: delivery_detail.state_name,
           warehouse: delivery_detail.warehouse_name,
           unit: delivery_detail.product.unit_name,
+          note: delivery_detail.note,
         }
         total[:quantity] += qty
         total[:purchase_total_amount] += purchase_total_amount.to_f
