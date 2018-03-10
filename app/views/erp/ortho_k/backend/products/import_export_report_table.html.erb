@@ -103,72 +103,72 @@
                 </tr>
                 <tr>
                     <% if get_columns(params).include?("record_date") %>
-                        <th class="bg-grey text-center text-nowrap" rowspan="2"><%= t('.record_date') %></th>
+                        <th class="bg-blue-oleo bg-font-blue-oleo text-center text-nowrap" rowspan="2"><%= t('.record_date') %></th>
                     <% end %>
                     <% if get_columns(params).include?("voucher_date") %>
-                        <th class="bg-grey text-center text-nowrap" rowspan="2"><%= t('.voucher_date') %></th>
+                        <th class="bg-blue-oleo bg-font-blue-oleo text-center text-nowrap" rowspan="2"><%= t('.voucher_date') %></th>
                     <% end %>
                     <% if get_columns(params).include?("voucher_code") %>
-                        <th class="bg-grey text-center text-nowrap" rowspan="2"><%= t('.voucher_code') %></th>
+                        <th class="bg-blue-oleo bg-font-blue-oleo text-center text-nowrap" rowspan="2"><%= t('.voucher_code') %></th>
                     <% end %>
                     <% if get_columns(params).include?("supplier_code") or get_columns(params).include?("supplier_name") %>
-                        <th class="bg-grey-silver bg-font-grey-silver text-center text-nowrap" colspan="<%= supplier_colspan %>"><%= t('.supplier') %></th>
+                        <th class="bg-blue-oleo bg-font-blue-oleo text-center text-nowrap" colspan="<%= supplier_colspan %>"><%= t('.supplier') %></th>
                     <% end %>
                     <% if get_columns(params).include?("customer_code") or get_columns(params).include?("customer_name") %>
-                        <th class="bg-grey-silver bg-font-grey-silver text-center text-nowrap" colspan="<%= customer_colspan %>"><%= t('.customer') %></th>
+                        <th class="bg-blue-oleo bg-font-blue-oleo text-center text-nowrap" colspan="<%= customer_colspan %>"><%= t('.customer') %></th>
                     <% end %>
                     <% if get_columns(params).include?("code") or get_columns(params).include?("diameter") or get_columns(params).include?("category") %>
-                        <th class="bg-green-sharp bg-font-green-sharp text-center text-nowrap" colspan="<%= product_code_colspan %>"><%= t('.product_code') %></th>
+                        <th class="bg-blue-oleo bg-font-blue-oleo text-center text-nowrap" colspan="<%= product_code_colspan %>"><%= t('.product_code') %></th>
                     <% end %>
                     <% if get_columns(params).include?("product_name") %>
-                        <th class="bg-grey text-center text-nowrap" rowspan="2" width="7%"><%= t('.product_name') %></th>
+                        <th class="bg-blue-oleo bg-font-blue-oleo text-center text-nowrap" rowspan="2" width="7%"><%= t('.product_name') %></th>
                     <% end %>
                     <% if get_columns(params).include?("description") %>
-                        <th class="bg-grey text-center text-nowrap" rowspan="2" width="7%"><%= t('.description') %></th>
+                        <th class="bg-blue-oleo bg-font-blue-oleo text-center text-nowrap" rowspan="2" width="7%"><%= t('.description') %></th>
                     <% end %>
                     <% if get_columns(params).include?("status") %>
-                        <th class="bg-grey text-center text-nowrap" rowspan="2" width="7%"><%= t('.status') %></th>
+                        <th class="bg-blue-oleo bg-font-blue-oleo text-center text-nowrap" rowspan="2" width="7%"><%= t('.status') %></th>
                     <% end %>
                     <% if get_columns(params).include?("warehouse") %>
-                        <th class="bg-grey text-center text-nowrap" rowspan="2" width="7%"><%= t('.warehouse') %></th>
+                        <th class="bg-blue-oleo bg-font-blue-oleo text-center text-nowrap" rowspan="2" width="7%"><%= t('.warehouse') %></th>
                     <% end %>
                     <% if get_columns(params).include?("unit") %>
-                        <th class="bg-grey text-center text-nowrap" rowspan="2" width="7%"><%= t('.unit') %></th>
+                        <th class="bg-blue-oleo bg-font-blue-oleo text-center text-nowrap" rowspan="2" width="7%"><%= t('.unit') %></th>
                     <% end %>
                     <% if get_columns(params).include?("quantity") %>
-                        <th class="bg-grey text-center text-nowrap" rowspan="2" width="7%"><%= t('.quantity') %></th>
+                        <th class="bg-blue-oleo bg-font-blue-oleo text-center text-nowrap" rowspan="2" width="7%"><%= t('.quantity') %></th>
                     <% end %>
                     <% if get_columns(params).include?("p_price") or get_columns(params).include?("p_tax_amount") or get_columns(params).include?("p_total") %>
                         <th class="bg-blue-oleo bg-font-blue-oleo text-center text-nowrap" colspan="<%= purchase_price_colspan %>"><%= t('.purchase_price') %></th>
                     <% end %>
                     <% if get_columns(params).include?("s_price") or get_columns(params).include?("s_tax_amount") or get_columns(params).include?("s_discount") or get_columns(params).include?("s_total") %>
-                        <th class="bg-yellow-mint bg-font-yellow-mint text-center text-nowrap" colspan="<%= sales_price_colspan %>"><%= t('.sales_price') %></th>
+                        <th class="bg-blue-oleo bg-font-blue-oleo text-center text-nowrap" colspan="<%= sales_price_colspan %>"><%= t('.sales_price') %></th>
                     <% end %>
                     <% if get_columns(params).include?("note") %>
-                        <th class="bg-grey text-center text-nowrap" rowspan="2" width="7%"><%= t('.note') %></th>
+                        <th class="bg-blue-oleo bg-font-blue-oleo text-center text-nowrap" rowspan="2" width="7%"><%= t('.note') %></th>
                     <% end %>
                 </tr>
                 <tr>
                     <% if get_columns(params).include?("supplier_code") %>
-                    <th class="bg-grey-silver bg-font-grey-silver text-center text-nowrap" width="7%"><%= t('.supplier_code') %></th>
+                    <th class="bg-blue-oleo bg-font-blue-oleo text-center text-nowrap" width="7%"><%= t('.supplier_code') %></th>
                     <% end %>
                     <% if get_columns(params).include?("supplier_name") %>
-                    <th class="bg-grey-silver bg-font-grey-silver text-center text-nowrap" width="7%"><%= t('.supplier_name') %></th>
+                    <th class="bg-blue-oleo bg-font-blue-oleo text-center text-nowrap" width="7%"><%= t('.supplier_name') %></th>
                     <% end %>
                     <% if get_columns(params).include?("customer_code") %>
-                    <th class="bg-grey-silver bg-font-grey-silver text-center text-nowrap" width="7%"><%= t('.customer_code') %></th>
+                    <th class="bg-blue-oleo bg-font-blue-oleo text-center text-nowrap" width="7%"><%= t('.customer_code') %></th>
                     <% end %>
                     <% if get_columns(params).include?("customer_name") %>
-                    <th class="bg-grey-silver bg-font-grey-silver text-center text-nowrap" width="7%"><%= t('.customer_name') %></th>
+                    <th class="bg-blue-oleo bg-font-blue-oleo text-center text-nowrap" width="7%"><%= t('.customer_name') %></th>
                     <% end %>
                     <% if get_columns(params).include?("code") %>
-                    <th class="bg-green-sharp bg-font-green-sharp text-center text-nowrap" width="7%"><%= t('.code') %></th>
+                    <th class="bg-blue-oleo bg-font-blue-oleo text-center text-nowrap" width="7%"><%= t('.code') %></th>
                     <% end %>
                     <% if get_columns(params).include?("diameter") %>
-                    <th class="bg-green-sharp bg-font-green-sharp text-center text-nowrap" width="7%"><%= t('.diameter') %></th>
+                    <th class="bg-blue-oleo bg-font-blue-oleo text-center text-nowrap" width="7%"><%= t('.diameter') %></th>
                     <% end %>
                     <% if get_columns(params).include?("category") %>
-                    <th class="bg-green-sharp bg-font-green-sharp text-center text-nowrap" width="7%"><%= t('.category') %></th>
+                    <th class="bg-blue-oleo bg-font-blue-oleo text-center text-nowrap" width="7%"><%= t('.category') %></th>
                     <% end %>
                     <% if get_columns(params).include?("p_price") %>
                     <th class="bg-blue-oleo bg-font-blue-oleo text-center text-nowrap" width="7%"><%= t('.price') %></th>
@@ -180,16 +180,16 @@
                     <th class="bg-blue-oleo bg-font-blue-oleo text-center text-nowrap" width="7%"><%= t('.total_amount') %></th>
                     <% end %>
                     <% if get_columns(params).include?("s_price") %>
-                    <th class="bg-yellow-mint bg-font-yellow-mint text-center text-nowrap" width="7%"><%= t('.price') %></th>
+                    <th class="bg-blue-oleo bg-font-blue-oleo text-center text-nowrap" width="7%"><%= t('.price') %></th>
                     <% end %>
                     <% if get_columns(params).include?("s_tax_amount") %>
-                    <th class="bg-yellow-mint bg-font-yellow-mint text-center text-nowrap" width="7%"><%= t('.tax_amount') %></th>
+                    <th class="bg-blue-oleo bg-font-blue-oleo text-center text-nowrap" width="7%"><%= t('.tax_amount') %></th>
                     <% end %>
                     <% if get_columns(params).include?("s_discount") %>
-                    <th class="bg-yellow-mint bg-font-yellow-mint text-center text-nowrap" width="7%"><%= t('.discount') %></th>
+                    <th class="bg-blue-oleo bg-font-blue-oleo text-center text-nowrap" width="7%"><%= t('.discount') %></th>
                     <% end %>
                     <% if get_columns(params).include?("s_total") %>
-                    <th class="bg-yellow-mint bg-font-yellow-mint text-center text-nowrap" width="7%"><%= t('.total_amount') %></th>
+                    <th class="bg-blue-oleo bg-font-blue-oleo text-center text-nowrap" width="7%"><%= t('.total_amount') %></th>
                     <% end %>
                 </tr>
             
