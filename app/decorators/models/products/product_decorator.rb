@@ -1192,19 +1192,35 @@ Erp::Products::Product.class_eval do
     state_id = params[:state].present? ? params[:state] : nil
     warehouse_ids = params[:warehouses].present? ? params[:warehouses] : nil
 
-    cs_ids = Erp::Products::CacheStock.select('erp_products_cache_stocks.product_id, SUM(erp_products_cache_stocks.stock) AS stock_count')
-      .group('erp_products_cache_stocks.product_id')
-      .where(state_id: state_id)
-      .where(warehouse_id: warehouse_ids)
-      .having('SUM(erp_products_cache_stocks.stock) <= ?', params[:stock_condition])
-      .map(&:product_id)
-
-    query = query.where(id: cs_ids)
-
+    #cs_ids = Erp::Products::CacheStock.select('erp_products_cache_stocks.product_id, SUM(erp_products_cache_stocks.stock) AS stock_count')
+    #  .group('erp_products_cache_stocks.product_id')
+    #  .where(state_id: state_id)
+    #  .where(warehouse_id: warehouse_ids)
+    #  .having('SUM(erp_products_cache_stocks.stock) <= ?', params[:stock_condition])
+    #  .map(&:product_id)
+    
+    #query = query.where(id: cs_ids)
+    
     # Get in purchase conditions area
     query = query.get_in_purchase_condition_products
+    
+    query = query.joins(:category)
+      .order("ordered_code")
+    
+    ## stock condition
+    #query = query.where('erp_products_products.cache_stock <= ?', params[:stock_condition])
+    
+    # state warehouse condition if existed
+    result = []
+    query.each_with_index do |p, index|
+      if p.get_stock(state_ids: state_id, warehouse_ids: warehouse_ids) <= params[:stock_condition]
+        result << p
+      end
+      
+      puts index
+    end
 
-    return query
+    return result
   end
 
   def self.get_in_central_area

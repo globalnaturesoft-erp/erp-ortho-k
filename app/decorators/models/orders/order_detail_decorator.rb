@@ -12,4 +12,30 @@ Erp::Orders::OrderDetail.class_eval do
       return ''
     end
   end
+
+  #
+  def delivered_quantity
+    if order.sales?
+      import_quantity = 0
+      #import_quantity = self.delivered_delivery_details
+      #                  .where(erp_qdeliveries_deliveries: {delivery_type: Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT})
+      #                  .sum('erp_qdeliveries_delivery_details.quantity')
+      export_quantity = self.delivered_delivery_details
+                        .where(erp_qdeliveries_deliveries: {delivery_type: Erp::Qdeliveries::Delivery::TYPE_SALES_EXPORT})
+                        .sum('erp_qdeliveries_delivery_details.quantity')
+      return export_quantity - import_quantity
+    elsif order.purchase?
+      import_quantity = self.delivered_delivery_details
+                        .where(erp_qdeliveries_deliveries: {delivery_type: Erp::Qdeliveries::Delivery::TYPE_PURCHASE_IMPORT})
+                        .sum('erp_qdeliveries_delivery_details.quantity')
+      export_quantity = 0
+      #export_quantity = self.delivered_delivery_details
+      #                  .where(erp_qdeliveries_deliveries: {delivery_type: Erp::Qdeliveries::Delivery::TYPE_PURCHASE_EXPORT})
+      #                  .sum('erp_qdeliveries_delivery_details.quantity')
+
+      return -export_quantity + import_quantity
+    else
+      return 0
+    end
+  end
 end

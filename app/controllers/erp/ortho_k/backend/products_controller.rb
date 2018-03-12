@@ -269,13 +269,11 @@ module Erp
             @central_quantity = (global_filters.present? and global_filters[:central_quantity].present? ? global_filters[:central_quantity].to_i : 0)
 
             @products = Erp::Products::Product.get_stock_importing_product(
-                filters: global_filters,
-                warehouses: global_filters[:warehouses],
-                state: global_filters[:state],
-                stock_condition: @stock_condition,
-              )
-              .joins(:category)
-              .order("ordered_code")
+              filters: global_filters,
+              warehouses: global_filters[:warehouses],
+              state: global_filters[:state],
+              stock_condition: @stock_condition,
+            )              
 
             @area = (global_filters.present? and global_filters[:area].present? ? global_filters[:area] : nil)
           end
@@ -423,7 +421,7 @@ module Erp
 
           @from_date = @global_filters[:from_date].to_date
           @to_date = @global_filters[:to_date].to_date
-          
+
           @group_by = @global_filters[:group_by]
 
           if @from_date.present? and @to_date.present?
@@ -477,10 +475,10 @@ module Erp
 
               # data raw
               data = {
-                name: row["Tên hàng"].to_s.strip.downcase,
+                name: row["Tên hàng"].to_s.strip,
                 category: row["Loại"].to_s.strip.downcase,
                 diameter: row["Đường kính"].to_s.strip.downcase,
-                letter: row["Chữ"].to_s.strip.downcase,
+                letter: row["Chữ"].to_s.strip,
                 degree: row["Độ"].to_s.strip.downcase,
                 number: (row["Số"].to_s.strip.downcase.present? ? row["Số"].to_s.strip.downcase.rjust(2, '0') : ''),
                 degree_k: row["Độ K"].to_s.strip.downcase,
@@ -514,7 +512,7 @@ module Erp
               letter_p = Erp::Products::Property.get_letter
               letter_pv = Erp::Products::PropertiesValue
                 .where(property_id: letter_p.id)
-                .where("LOWER(value) = ?", data[:letter]).first
+                .where("value = ?", data[:letter]).first
               if letter_pv.present?
                 # product.category = category
               else
@@ -591,7 +589,13 @@ module Erp
                 product.is_outside = data[:is_outside]
                 product.save
 
-                # logger.info product.errors.to_json
+                # Create if not exist
+                if !letter_pv.present?
+                  letter_pv = Erp::Products::PropertiesValue.create(
+                    property_id: letter_p.id,
+                    value: data[:letter]
+                  )
+                end
 
                 # properties
                 Erp::Products::ProductsValue.create(
