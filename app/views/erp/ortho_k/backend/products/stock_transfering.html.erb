@@ -7,6 +7,7 @@
 <% end %>
 
 <% content_for :global_filter do %>
+    <% dfilters = current_user.get_filters(request.path+"_table").present? ? current_user.get_filters(request.path+"_table") : {}  %>
     <div class="row">
         <div class="col-md-3">
             <%= erp_form_control("dataselect", {
@@ -46,20 +47,27 @@
         <div class="col-md-3">
             <%= erp_form_control("dataselect", {
                 name: 'categories',
-                value: '',
-                text: '',
+                values: (
+                    dfilters["categories"].present? ?
+                    (Erp::Products::Category.where(id: dfilters["categories"]).map{|i| {text: i.name, value: i.id}})
+                    : nil
+                ),
                 multiple: true,
                 label: t('.category'),
                 placeholder: t('.all_categories'),
                 url: erp_products.dataselect_backend_categories_path(format: 'json'),
+                required: true
             }) %>
         </div>
         <div class="col-md-3">
             <% diameter = Erp::Products::Property.where(name: "Đường kính").first %>
             <%= erp_form_control("dataselect", {
                 name: 'diameters',
-                value: '',
-                text: '',
+                values: (
+                    dfilters["diameters"].present? ?
+                    (Erp::Products::PropertiesValue.where(id: dfilters["diameters"]).map{|i| {text: i.value, value: i.id}})
+                    : nil
+                ),
                 label: Erp::Products::Property.where(name: "Đường kính").first().name,
                 placeholder: diameter.name,
                 url: erp_products.dataselect_backend_properties_values_path(format: 'json', property_id: diameter.id),
@@ -71,8 +79,11 @@
             <% letter = Erp::Products::Property.where(name: "Chữ").first %>
             <%= erp_form_control("dataselect", {
                 name: 'letters',
-                value: '',
-                text: '',
+                values: (
+                    dfilters["letters"].present? ?
+                    (Erp::Products::PropertiesValue.where(id: dfilters["letters"]).map{|i| {text: i.value, value: i.id}})
+                    : nil
+                ),
                 label: 'Chữ',
                 placeholder: letter.name,
                 url: erp_products.dataselect_backend_properties_values_path(format: 'json', property_id: letter.id),
@@ -84,8 +95,11 @@
             <% number = Erp::Products::Property.where(name: "Số").first %>
             <%= erp_form_control("dataselect", {
                 name: 'numbers',
-                value: '',
-                text: '',
+                values: (
+                    dfilters["numbers"].present? ?
+                    (Erp::Products::PropertiesValue.where(id: dfilters["numbers"]).map{|i| {text: i.value, value: i.id}})
+                    : nil
+                ),
                 label: 'Số',
                 placeholder: number.name,
                 url: erp_products.dataselect_backend_properties_values_path(format: 'json', property_id: number.id),
