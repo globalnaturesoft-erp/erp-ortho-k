@@ -131,6 +131,11 @@ $(document).ready(function() {
         e.preventDefault();
 
         var form = $($(this).attr('data-form'));
+        var action = $(this).attr('data-action');
+        
+        if(typeof(action) != 'undefined') {
+            form.attr('action', action);
+        }
 
         form.submit();
     });

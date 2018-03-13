@@ -120,4 +120,23 @@ Erp::Products::Backend::ProductsController.class_eval do
 
     render layout: nil
   end
+  
+  # export transfer list
+  def stock_transfer_export
+    # Import details list from stocking stransfering page
+    details = []
+    if params[:products].present?
+      params.to_unsafe_hash[:products].each do |row|
+        product = Erp::Products::Product.find(row[0])
+        
+        details << {product: product.name, quantity: row[1]}
+      end
+    end
+    
+    render helpers.export_partial,
+      locals: {
+        header: ["name", "quantity"],
+        rows: (details.map {|d| [d[:product], d[:quantity]] })
+      }
+  end
 end

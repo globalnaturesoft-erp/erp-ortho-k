@@ -713,10 +713,10 @@ Erp::Orders::Order.class_eval do
       row = Hash[[header, spreadsheet.row(i)].transpose]
 
       # Find product
-      p_name = "#{row["code"].to_s.strip}-#{row["diameter"].to_s.strip}-#{row["category"].to_s.strip}"
-      logger.info row
-      logger.info '--------------------------------------'
-      product = Erp::Products::Product.where('LOWER(name) = ?', p_name.strip.downcase).first
+      # p_name = "#{row["code"].to_s.strip}-#{row["diameter"].to_s.strip}-#{row["category"].to_s.strip}"
+      p_name = row["name"]
+
+      product = Erp::Products::Product.where('name = ?', p_name.strip).first
       product_id = product.present? ? product.id : nil
 
       if product.present?

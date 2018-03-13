@@ -2,7 +2,7 @@
     <div class="alert alert-warning">
         <p>Không tìm thấy hàng cần chuyển kho</p>
     </div>
-<% elsif @from_warehouse.present? and @to_warehouse.present? and @transfer_quantity.present? and @condition_value.present? and @state.present? %>
+<% elsif @categories.present? and @from_warehouse.present? and @to_warehouse.present? and @transfer_quantity.present? and @condition_value.present? and @state.present? %>
     <form class="stock-transferring-form" action="<%= erp_stock_transfers.new_import_backend_transfers_path %>" method="POST">
         <input type="hidden" name='state_id' value="<%= @state.id %>" />
         <input type="hidden" name='from_warehouse_id' value="<%= @from_warehouse.id %>" />
@@ -19,18 +19,21 @@
             <% num = 1 %>
             <% @products.each_with_index do |product,index| %>
                 <%
-                    from = Erp::Products::CacheStock.get_stock(product.id, {
-                        warehouse_id: @from_warehouse.id,
-                        state_id: @state.id
-                    })
-                    to = Erp::Products::CacheStock.get_stock(product.id, {
-                        warehouse_id: @to_warehouse.id,
-                        state_id: @state.id
-                    })
+                    from = product.get_stock(
+                        state: @state,
+                        warehouse: @from_warehouse
+                    )
+                    to = product.get_stock(
+                        state: @state,
+                        warehouse: @to_warehouse
+                    )
+                    logger.info "############################################################ #{index}"
                     if @condition == 'from_redundant'
                         transfer = (@transfer_quantity.to_i > from ? from : @transfer_quantity.to_i)
+                        transfer = 0 if @condition_value.to_i > from
                     else
                         transfer = from > @transfer_quantity.to_i ? @transfer_quantity.to_i : from
+                        transfer = 0 if @condition_value.to_i < to
                     end
                 %>
                 <% if transfer > 0 %>
@@ -67,6 +70,7 @@
         <p>Vui lòng chọn các tham số bắt buộc:
             <br>- <strong>Kho xuất</strong>
             <br>- <strong>Kho nhập</strong>
+            <br>- <strong>Loại hàng</strong>
             <br>- <strong>Trạng thái</strong>
             <br>- <strong>Điều kiện, tham số chuyển kho</strong>
             <br>- <strong>Số lượng chuyển</strong>

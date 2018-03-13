@@ -21,6 +21,8 @@ Erp::Products::Engine.routes.draw do
 
           get 'list_split'
           post 'list_split_list'
+          
+          post 'stock_transfer_export'
         end
       end
     end

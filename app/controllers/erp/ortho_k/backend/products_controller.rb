@@ -313,7 +313,7 @@ module Erp
           @numbers = Erp::Products::PropertiesValue.where(id: number_ids)
 
           # query
-          @product_query = Erp::Products::Product.joins(:cache_stocks)
+          @product_query = Erp::Products::Product
           @product_query = @product_query.where(category_id: category_ids) if category_ids.present?
           # filter by diameters
           if diameter_ids.present?
@@ -361,16 +361,15 @@ module Erp
             end
           end
 
-
-          if @to_warehouse.present? and @from_warehouse.present? and @state.present?
+          if @to_warehouse.present? and @from_warehouse.present? and @state.present? and @categories.present?
             if @condition == 'to_required'
-              @product_query = @product_query.where(erp_products_cache_stocks: {warehouse_id: @to_warehouse.id, state_id: @state.id})
-                .where("stock <= ?", @condition_value)
+              @product_query = @product_query.where("cache_stock <= ?", @condition_value)
             elsif @condition == 'from_redundant'
-              @product_query = @product_query.where(erp_products_cache_stocks: {warehouse_id: @from_warehouse.id, state_id: @state.id})
-                .where("stock >= ?", @condition_value)
+              @product_query = @product_query.where("cache_stock >= ?", @condition_value)
             end
           end
+          
+          
 
           @products = @product_query
 
