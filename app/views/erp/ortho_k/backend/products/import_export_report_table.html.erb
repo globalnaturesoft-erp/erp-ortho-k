@@ -24,7 +24,7 @@
             </div>
         </div>
     </div>
-    
+
     <%
     total_colspan_1 = (get_columns(params).include?("record_date") ? 1 : 0) +
         (get_columns(params).include?("voucher_date") ? 1 : 0) +
@@ -60,11 +60,11 @@
     %>
 
     <div class="table-scrollable">
-        <table class="table table-bordered table-advance order-column" id="">
+        <table class="table table-bordered table-advance order-column click-highlight" id="">
                 <tr>
                     <%= "<td colspan='#{total_colspan_1}'></td>".html_safe if total_colspan_1 > 0 %>
                     <% if get_columns(params).include?("quantity") %>
-                    <td class="text-center stock-num text-bold bg-warning">                        
+                    <td class="text-center stock-num text-bold bg-warning">
                         <%= @totals[:quantity] %>
                     </td>
                     <% end %>
@@ -192,7 +192,7 @@
                     <th class="bg-blue-oleo bg-font-blue-oleo text-center text-nowrap" width="7%"><%= t('.total_amount') %></th>
                     <% end %>
                 </tr>
-            
+
             <% if @group_by.present? and !@group_by.include?(Erp::Products::Product::GROUPED_BY_DEFAULT) %>
                 <% @groups.each do |item| %>
                     <%= render 'erp/ortho_k/backend/products/import_export_report_table/group_row', item: item %>

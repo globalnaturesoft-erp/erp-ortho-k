@@ -165,15 +165,17 @@ Erp::Contacts::Contact.class_eval do
       .select('customer_id')
       .where(payment_type_id: Erp::Payments::PaymentType.find_by_code(Erp::Payments::PaymentType::CODE_CUSTOMER).id)
       .where("payment_date >= ? AND payment_date <= ?", @from, @to)
-    
-    ids = [-1]
-    self.all.each do |c|
-      if c.sales_debt_amount > 0.0
-        ids << c.id
-      end
-    end
 
-    self.where("id IN (?) OR id IN (?) OR id IN (?) OR id IN (?)", order_query, product_return_query, payment_query, ids)
+    self.where("id IN (?) OR id IN (?) OR id IN (?)", order_query, product_return_query, payment_query)
+
+    #ids = [-1]
+    #self.all.each do |c|
+    #  if c.sales_debt_amount > 0.0
+    #    ids << c.id
+    #  end
+    #end
+    #
+    #self.where("id IN (?) OR id IN (?) OR id IN (?) OR id IN (?)", order_query, product_return_query, payment_query, ids)
   end
 
   # get contacts list for payment chasing
@@ -196,14 +198,16 @@ Erp::Contacts::Contact.class_eval do
       .select('supplier_id')
       .where(payment_type_id: Erp::Payments::PaymentType.find_by_code(Erp::Payments::PaymentType::CODE_SUPPLIER).id)
       .where("payment_date >= ? AND payment_date <= ?", @from, @to)
-    
-    ids = [-1]
-    self.all.each do |c|
-      if c.purchase_debt_amount > 0.0
-        ids << c.id
-      end
-    end
 
-    self.where("id IN (?) OR id IN (?) OR id IN (?) OR id IN (?)", order_query, product_return_query, payment_query, ids)
+    self.where("id IN (?) OR id IN (?) OR id IN (?)", order_query, product_return_query, payment_query)
+
+    #ids = [-1]
+    #self.all.each do |c|
+    #  if c.purchase_debt_amount > 0.0
+    #    ids << c.id
+    #  end
+    #end
+    #
+    #self.where("id IN (?) OR id IN (?) OR id IN (?) OR id IN (?)", order_query, product_return_query, payment_query, ids)
   end
 end

@@ -23,7 +23,7 @@
             (get_columns(params).include?("salesperson_name") ? 1 : 0) +
             (get_columns(params).include?("salesperson_percent") ? 1 : 0)
         total_colspan_5 = (get_columns(params).include?("customer_commission_percent") ? 1 : 0)
-        
+
         customer_colspan = (get_columns(params).include?("customer_code") ? 1 : 0) +
             (get_columns(params).include?("customer_name") ? 1 : 0)
         product_code_colspan = (get_columns(params).include?("code") ? 1 : 0) +
@@ -45,7 +45,7 @@
         customer_commission_colspan = (get_columns(params).include?("customer_commission_percent") ? 1 : 0) +
             (get_columns(params).include?("customer_commission_amount") ? 1 : 0)
     %>
-    
+
     <div class="row">
         <div class="col-md-10">
             <div class="custom-show text-center">
@@ -71,9 +71,9 @@
             </div>
         </div>
     </div>
-    
+
     <div class="table-scrollable">
-        <table class="table table-bordered table-advance order-column" id="">
+        <table class="table table-bordered table-advance order-column click-highlight" id="">
             <tr>
                 <%= "<td colspan='#{total_colspan_1}'></td>".html_safe if total_colspan_1 > 0 %>
                 <% if get_columns(params).include?("unknown_1") %>
