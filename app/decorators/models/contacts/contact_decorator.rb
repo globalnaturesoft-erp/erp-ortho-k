@@ -258,7 +258,7 @@ Erp::Contacts::Contact.class_eval do
           # Check if is BS/BV/BN
           if contact.name.include? "BV" or contact.name.include? "Bệnh viện"
             contact.contact_group = Erp::Contacts::ContactGroup.get_hospital
-          if contact.name.include? "BS" or contact.name.include? "Bác sĩ"
+          elsif contact.name.include? "BS" or contact.name.include? "Bác sĩ"
             contact.contact_group = Erp::Contacts::ContactGroup.get_doctor
           elsif contact.name.include?("PK")
             contact.contact_group = Erp::Contacts::ContactGroup.get_clinic
