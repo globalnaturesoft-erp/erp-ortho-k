@@ -291,4 +291,35 @@ Erp::Contacts::Contact.class_eval do
       end
     end
   end
+  
+  # get contacts list for payment chasing // Don hang ban le/PK
+  def self.get_sales_orders_tracking_payment_chasing_contacts(options={})
+    @from = options[:from_date]
+    @to = options[:to_date]
+
+    # Loc danh sach cac khach hang co phat sinh giao dich (thanh toan, cong no)
+    order_query = Erp::Orders::Order.all_confirmed
+      .sales_orders
+      .payment_for_order_orders(from_date: @from, to_date: @to)
+      .select('customer_id')
+
+    product_return_query = Erp::Qdeliveries::Delivery.all_delivered
+      .sales_import_deliveries
+      .get_deliveries_with_payment_for_order(from_date: @from, to_date: @to)
+      .select('customer_id')
+
+    payment_query = Erp::Payments::PaymentRecord.all_done
+      .select('customer_id')
+      .where(payment_type_id: Erp::Payments::PaymentType.find_by_code(Erp::Payments::PaymentType::CODE_SALES_ORDER).id)
+      .where("payment_date >= ? AND payment_date <= ?", @from, @to)
+    
+    #ids = [-1]
+    #self.all.each do |c|
+    #  if c.orders_tracking_sales_debt_amount > 0.0
+    #    ids << c.id
+    #  end
+    #end
+
+    self.where("id IN (?) OR id IN (?) OR id IN (?)", order_query, product_return_query, payment_query)
+  end
 end
