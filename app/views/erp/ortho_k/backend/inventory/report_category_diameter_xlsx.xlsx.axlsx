@@ -49,6 +49,7 @@ wb.styles do |s|
     toprow[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_toprow).deep_merge(bold))
 
     count = Erp::Products::Product.get_qdelivery_import(filters.clone.merge({
+          Erp::Qdeliveries::Delivery::TYPE_CUSTOM_IMPORT,
           delivery_type: Erp::Qdeliveries::Delivery::TYPE_PURCHASE_IMPORT
       }))
     toprow[:columns] << count
@@ -57,7 +58,6 @@ wb.styles do |s|
     @states.each do |state|
       count = Erp::Products::Product.get_qdelivery_import(filters.clone.merge({
           delivery_type: [
-            Erp::Qdeliveries::Delivery::TYPE_CUSTOM_IMPORT,
             Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT
           ],
           state: state
@@ -193,7 +193,10 @@ wb.styles do |s|
         row[:styles] << (s.add_style text_center.deep_merge(border))
 
         count = Erp::Products::Product.get_qdelivery_import(filters.clone.merge({
-            delivery_type: Erp::Qdeliveries::Delivery::TYPE_PURCHASE_IMPORT
+            delivery_type: [
+              Erp::Qdeliveries::Delivery::TYPE_CUSTOM_IMPORT,
+              Erp::Qdeliveries::Delivery::TYPE_PURCHASE_IMPORT
+            ]
         }))
         row[:columns] << count
         row[:styles] << (s.add_style text_center.deep_merge(border))
@@ -201,7 +204,6 @@ wb.styles do |s|
         @states.each do |state|
           count = Erp::Products::Product.get_qdelivery_import(filters.clone.merge({
               delivery_type: [
-                Erp::Qdeliveries::Delivery::TYPE_CUSTOM_IMPORT,
                 Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT
               ],
               state: state
@@ -256,7 +258,10 @@ wb.styles do |s|
       subrow[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_subrow).merge(bold))
 
       count = Erp::Products::Product.get_qdelivery_import(filters.clone.merge({
-          delivery_type: Erp::Qdeliveries::Delivery::TYPE_PURCHASE_IMPORT
+          delivery_type: [
+            Erp::Qdeliveries::Delivery::TYPE_CUSTOM_IMPORT,
+            Erp::Qdeliveries::Delivery::TYPE_PURCHASE_IMPORT
+          ]
       }))
       subrow[:columns] << count
       subrow[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_subrow).merge(bold))
@@ -264,7 +269,6 @@ wb.styles do |s|
       @states.each do |state|
         count = Erp::Products::Product.get_qdelivery_import(filters.clone.merge({
             delivery_type: [
-              Erp::Qdeliveries::Delivery::TYPE_CUSTOM_IMPORT,
               Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT
             ],
             state: state

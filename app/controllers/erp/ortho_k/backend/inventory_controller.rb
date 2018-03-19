@@ -144,7 +144,8 @@ module Erp
 
 
           # product query
-          @product_query = Erp::Products::Product.joins(:category).where(category_id: category_ids).order('erp_products_categories.name, erp_products_products.name')
+          @product_query = Erp::Products::Product.joins(:category).where(category_id: category_ids)
+            .order('erp_products_products.ordered_code')
           # single keyword
           if params.to_unsafe_hash[:keyword].present?
             keyword = params.to_unsafe_hash[:keyword].strip.downcase
@@ -200,7 +201,7 @@ module Erp
           end
 
           # products
-          @products = @product_query.order('erp_products_categories.name, erp_products_products.name').paginate(:page => params[:page], :per_page => 20)
+          @products = @product_query.order('erp_products_products.ordered_code').paginate(:page => params[:page], :per_page => 20)
 
           # state
           @states = Erp::Products::State.all_active
@@ -241,6 +242,7 @@ module Erp
 
           # product query
           @product_query = Erp::Products::Product.where(category_id: category_ids)
+            .order('erp_products_products.ordered_code')
           # single keyword
           if params.to_unsafe_hash[:keyword].present?
             keyword = params.to_unsafe_hash[:keyword].strip.downcase
