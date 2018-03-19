@@ -1,10 +1,12 @@
 <li class="nav-item <%= "active open" if
+  (params[:controller] == "erp/payments/backend/payment_records" && params[:action] == "sales_orders_tracking") ||
   (params[:controller] == "erp/payments/backend/payment_records" && params[:action] == "liabilities_tracking") ||
   (params[:controller] == "erp/payments/backend/payment_records" && params[:action] == "supplier_liabilities_tracking")
 %>">
     <a href="javascript:;" class="nav-link nav-toggle">
-        <span class="title">Công nợ</span>
+        <span class="title">Theo dõi công nợ</span>
         <% if
+          (params[:controller] == "erp/payments/backend/payment_records" && params[:action] == "sales_orders_tracking") ||
           (params[:controller] == "erp/payments/backend/payment_records" && params[:action] == "liabilities_tracking") ||
           (params[:controller] == "erp/payments/backend/payment_records" && params[:action] == "supplier_liabilities_tracking")
         %>
@@ -15,11 +17,17 @@
         <% end %>
     </a>
     <ul class="sub-menu" <% if
+        (params[:controller] == "erp/payments/backend/payment_records" && params[:action] == "sales_orders_tracking") ||
         (params[:controller] == "erp/payments/backend/payment_records" && params[:action] == "liabilities_tracking") ||
         (params[:controller] == "erp/payments/backend/payment_records" && params[:action] == "supplier_liabilities_tracking")
     %>
       style="display: block;"
     <% else %>style="display: none;"<% end %>>
+         <li class="nav-item <%= "active open" if (params[:controller] == "erp/payments/backend/payment_records" && params[:action] == "sales_orders_tracking") %>">
+            <a href="<%= erp_payments.sales_orders_tracking_backend_payment_records_path %>" class="nav-link ">
+                <span class="title">Bán lẻ/Phòng khám</span>
+            </a>
+        </li>
         <li class="nav-item <%= "active open" if (params[:controller] == "erp/payments/backend/payment_records" && params[:action] == "liabilities_tracking") %>">
             <a href="<%= erp_payments.liabilities_tracking_backend_payment_records_path %>" class="nav-link ">
                 <span class="title">Khách hàng</span>

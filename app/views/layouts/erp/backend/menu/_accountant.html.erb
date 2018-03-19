@@ -5,6 +5,7 @@
                                           "erp/payments/backend/accounts",
                                           "erp/payments/backend/payment_records",
                                           "erp/payments/backend/payment_types"].include?(params[:controller]) ||
+                                          (params[:controller] == "erp/payments/backend/payment_records" && params[:action] == "sales_orders_tracking") ||
                                           (params[:controller] == "erp/payments/backend/payment_records" && params[:action] == "liabilities_tracking") ||
                                           (params[:controller] == "erp/payments/backend/payment_records" && params[:action] == "supplier_liabilities_tracking") ||
                                           (params[:controller] == "erp/payments/backend/payment_records" && params[:action] == "commission") ||
@@ -19,6 +20,7 @@
               "erp/payments/backend/accounts",
               "erp/payments/backend/payment_records",
               "erp/payments/backend/payment_types"].include?(params[:controller]) ||
+              (params[:controller] == "erp/payments/backend/payment_records" && params[:action] == "sales_orders_tracking") ||
               (params[:controller] == "erp/payments/backend/payment_records" && params[:action] == "liabilities_tracking") ||
               (params[:controller] == "erp/payments/backend/payment_records" && params[:action] == "supplier_liabilities_tracking") ||
               (params[:controller] == "erp/payments/backend/payment_records" && params[:action] == "commission") ||
@@ -33,7 +35,7 @@
     <ul class="sub-menu">
         <li class="nav-item <%= "active open" if
             ["erp/payments/backend/payment_records"].include?(params[:controller]) &&
-            !["liabilities_tracking","supplier_liabilities_tracking","customer_commission","commission"].include?(params[:action])
+            !["sales_orders_tracking","liabilities_tracking","supplier_liabilities_tracking","customer_commission","commission"].include?(params[:action])
         %>">
             <a href="<%= erp_payments.backend_payment_records_path %>" class="nav-link ">
                 <span class="title"><%= t('.cash_book') %></span>
