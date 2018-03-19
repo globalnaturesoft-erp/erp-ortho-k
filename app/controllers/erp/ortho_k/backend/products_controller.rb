@@ -7,6 +7,15 @@ module Erp
         # get matrix group
         def get_matrix_group(filter)
           @global_filter = filter
+          
+          # period
+          @from = @global_filter[:from_date].present? ? @global_filter[:from_date].to_date : nil
+          @to = @global_filter[:to_date].present? ? @global_filter[:to_date].to_date : nil
+          if @global_filter[:period].present?
+            @period = Erp::Periods::Period.find(@global_filter[:period])
+            @from = @period.from_date
+            @to = @period.to_date
+          end
 
           # product query
           @product_query = Erp::Products::Product
@@ -78,7 +87,11 @@ module Erp
 
               product_ids = @product_query.find_by_properties_value_ids([chu_pv.id,so_pv.id]).select('id')
               product_ids = -1 if product_ids.count == 0
-              filters = @global_filter.clone.merge({product_id: product_ids, state_ids: @global_filter[:states], warehouse_ids: @global_filter[:warehouses]})
+              filters = @global_filter.clone.merge({
+                product_id: product_ids,
+                state_ids: @global_filter[:states],
+                warehouse_ids: @global_filter[:warehouses]
+              })
               stock = Erp::Products::Product.get_stock_real(filters)
 
               @matrix[row_index] << {

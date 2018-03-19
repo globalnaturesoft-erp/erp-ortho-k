@@ -233,7 +233,10 @@ wb.styles do |s|
           row[:styles] << (s.add_style text_center.deep_merge(middle_align).deep_merge(border).deep_merge(wrap).deep_merge(bold))
 
           count = Erp::Products::Product.get_qdelivery_import(filters.clone.merge({
-              delivery_type: Erp::Qdeliveries::Delivery::TYPE_PURCHASE_IMPORT
+              delivery_type: [
+                Erp::Qdeliveries::Delivery::TYPE_CUSTOM_IMPORT,
+                Erp::Qdeliveries::Delivery::TYPE_PURCHASE_IMPORT
+              ]
           }))
           row[:columns] << (counts[rw[:category].name][1] = counts[rw[:category].name][1].to_i + count)
           row[:styles] << (s.add_style text_center.deep_merge(middle_align).deep_merge(border).deep_merge(wrap))
@@ -253,8 +256,7 @@ wb.styles do |s|
           counts[rw[:category].name][3] = {}
           @states.each do |state|
             count = Erp::Products::Product.get_qdelivery_import(filters.clone.merge({
-              delivery_type: [
-                Erp::Qdeliveries::Delivery::TYPE_CUSTOM_IMPORT,
+              delivery_type: [                
                 Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT
               ],
               state: state

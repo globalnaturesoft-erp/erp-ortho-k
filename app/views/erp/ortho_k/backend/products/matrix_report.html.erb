@@ -10,7 +10,7 @@
     <% dfilters = current_user.get_filters(request.path+"_table").present? ? current_user.get_filters(request.path+"_table") : {}  %>
     <div class="row">
         <div class="col-md-10 addable-container">
-            <div class="addable-boxes" data-pattern=".patterns-matrix">
+            <div class="addable-boxes border-top" data-pattern=".patterns-matrix">
                 <% (0..20).each do |number| %>
                     <% if dfilters["filters[#{number}][categories]"].present? or
                         dfilters["filters[#{number}][diameters]"].present? or
@@ -18,6 +18,16 @@
                         dfilters["filters[#{number}][states]"].present?
                     %>
                         <div class="addable-box">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <%= erp_form_control('date', {
+                                        label: 'Đến ngày',
+                                        name: 'filters['+number.to_s+'][to_date]',
+                                        value: nil,
+                                        placeholder: 'Chọn ngày cuối kỳ'
+                                    }) %>
+                                </div>
+                            </div>
                             <div class="row">
                                 <div class="col-md-3">
                                     <%= erp_form_control("dataselect", {
@@ -114,6 +124,16 @@
 
 <div class="patterns-matrix" style="display: none">
     <div class="addable-box">
+        <div class="row">
+            <div class="col-md-3">
+                <%= erp_form_control('date', {
+                    label: 'Đến ngày',
+                    name: 'filters[<<index1>>][to_date]',
+                    value: @to_date,
+                    placeholder: 'Chọn ngày cuối kỳ'
+                }) %>
+            </div>
+        </div>
         <div class="row">
             <div class="col-md-3">
                 <%= erp_form_control("dataselect", {
