@@ -105,6 +105,7 @@ Erp::Products::Product.class_eval do
 
   GROUPED_BY_DEFAULT = 'grouped_by_default'
   GROUPED_BY_CUSTOMER = 'grouped_by_customer'
+  GROUPED_BY_VOUCHER_CODE = 'grouped_by_voucher_code'
   GROUPED_BY_PRODUCT_CODE = 'grouped_by_product_code'
   GROUPED_BY_PRODUCT_CATEGORY = 'grouped_by_product_category'
 
@@ -157,6 +158,10 @@ Erp::Products::Product.class_eval do
         value: Erp::Products::Product::GROUPED_BY_CUSTOMER
       },
       {
+        text: I18n.t('erp.ortho_k.backend.products.import_export_report.voucher_code'),
+        value: Erp::Products::Product::GROUPED_BY_VOUCHER_CODE
+      },
+      {
         text: I18n.t('erp.ortho_k.backend.products.import_export_report.product_code'),
         value: Erp::Products::Product::GROUPED_BY_PRODUCT_CODE
       },
@@ -189,6 +194,11 @@ Erp::Products::Product.class_eval do
     if params[:group_by] == Erp::Products::Product::GROUPED_BY_CUSTOMER
       group_value = :customer_code
       group_text = :customer_name
+    end
+
+    if params[:group_by] == Erp::Products::Product::GROUPED_BY_VOUCHER_CODE
+      group_value = :voucher_code
+      group_text = :voucher_code
     end
 
     if params[:group_by] == Erp::Products::Product::GROUPED_BY_PRODUCT_CODE

@@ -17,6 +17,7 @@ Erp::Orders::Order.class_eval do
 
   GROUPED_BY_DEFAULT = 'grouped_by_default'
   GROUPED_BY_CUSTOMER = 'grouped_by_customer'
+  GROUPED_BY_VOUCHER_CODE = 'grouped_by_voucher_code'
   GROUPED_BY_PRODUCT_CODE = 'grouped_by_product_code'
   GROUPED_BY_PRODUCT_CATEGORY = 'grouped_by_warehouse'
   GROUPED_BY_WAREHOUSE = 'grouped_by_warehouse'
@@ -53,6 +54,10 @@ Erp::Orders::Order.class_eval do
       {
         text: I18n.t('erp.ortho_k.backend.sales.report_sales_details.customer'),
         value: Erp::Orders::Order::GROUPED_BY_CUSTOMER
+      },
+      {
+        text: I18n.t('erp.ortho_k.backend.sales.report_sales_details.voucher_code'),
+        value: Erp::Orders::Order::GROUPED_BY_VOUCHER_CODE
       },
       {
         text: I18n.t('erp.ortho_k.backend.sales.report_sales_details.product_code'),
@@ -133,6 +138,11 @@ Erp::Orders::Order.class_eval do
     if params[:group_by] == Erp::Orders::Order::GROUPED_BY_CUSTOMER
       group_value = :customer_code
       group_text = :customer_name
+    end
+
+    if params[:group_by] == Erp::Orders::Order::GROUPED_BY_VOUCHER_CODE
+      group_value = :voucher_code
+      group_text = :voucher_code
     end
 
     if params[:group_by] == Erp::Orders::Order::GROUPED_BY_PRODUCT_CODE
