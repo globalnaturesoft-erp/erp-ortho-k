@@ -1,135 +1,147 @@
-<div class="col-md-12">
-    <div class="tabbable-custom ">
-        <ul class="nav nav-tabs ">
-            <li class="active">
-                <a href="#tab_5_1" data-toggle="tab">
-                    <i class="fa fa-navicon"></i>
-                    <%= t('.consignment_detail') %> <span class="text-lowercase"><%= t(".#{@consignment.consignment_type}") %></span>
-                </a>
-            </li>
-            <% if @consignment.cs_returns.count > 0 %>
-            <li>
-                <a href="#tab_5_2" data-toggle="tab">
-                    <i class="fa fa-navicon"></i>
-                    <%= t('.consignment_return_detail') %> <span class="text-lowercase"><%= t(".#{@consignment.consignment_type}") %></span>
-                </a>
-            </li>
+<% tabid = unique_id %>
+<div class="tabbable-custom ">
+    <ul class="nav nav-tabs ">
+        <li class="active">
+            <a href="#tab_<%= tabid %>_1" data-toggle="tab">
+                <i class="fa fa-file-text-o"></i>
+                <%= t('.consignment_detail') %> <span class="text-lowercase"><%= t(".#{@consignment.consignment_type}") %></span>
+            </a>
+        </li>
+        
+        <% if @consignment.cs_returns.count > 0 %>
+        <li>
+            <a href="#tab_<%= tabid %>_2" data-toggle="tab">
+                <i class="fa fa-reply-all"></i>
+                <%= t('.consignment_return_detail') %> <span class="text-lowercase"><%= t(".#{@consignment.consignment_type}") %></span>
+            </a>
+        </li>
+        <% end %>
+    </ul>
+    <div class="tab-content tab-consignment-details">
+        <div class="tab-pane active" id="tab_<%= tabid %>_1">
+            <% if (@consignment.is_draft? or @consignment.is_active?) and @consignment.check_stock == false %>
+                <div class="alert alert-warning-o">
+                    <i class="fa fa-warning"></i> <%= t("."+@consignment.consignment_type) %> không thể giao hàng do số lượng tồn kho không đủ!
+                </div>
             <% end %>
-        </ul>
-        <div class="tab-content tab-consignment-details">
-            <div class="tab-pane active" id="tab_5_1">
-                <% if (@consignment.is_draft? or @consignment.is_active?) and @consignment.check_stock == false %>
-                    <div class="alert alert-warning">
-                        <i class="fa fa-warning"></i> <%= t("."+@consignment.consignment_type) %> không thể giao hàng do số lượng tồn kho không đủ!
-                    </div>
-                <% end %>
-                <% colspan_total = 3 + ((@consignment.is_draft? or @consignment.is_active?) ? 1 : 0) %>
-                <table class="table table-bordered table-striped flip-content">
-                    <thead class="flip-content">
+            <% colspan_total = 3 + ((@consignment.is_draft? or @consignment.is_active?) ? 1 : 0) %>
+            <table class="table table-bordered table-striped flip-content">
+                <thead class="flip-content">
+                    <tr>
+                        <td colspan="<%= colspan_total %>" class="text-center bold">Tổng cộng</td>
+                        <td class="text-center bold"><%= @consignment.total_quantity %></td>
+                        <td class="text-center bold"><%= @consignment.total_returned_quantity %></td>
+                        <td class="text-center bold"><%= @consignment.total_remain_quantity %></td>
+                    </tr>
+                    <tr>
+                        <th class="bg-blue-madison bg-font-blue-madison border-blue-madison text-nowrap text-left">Sản phẩm</th>
+                        <th width="10%" class="bg-blue-madison bg-font-blue-madison border-blue-madison text-nowrap text-center">ĐVT</th>
+                        <th width="12%" class="bg-blue-madison bg-font-blue-madison border-blue-madison text-nowrap text-center">Tình trạng</th>
+                        <% if @consignment.is_draft? or @consignment.is_active? %>
+                            <th width="12%" class="bg-blue-madison bg-font-blue-madison border-blue-madison text-nowrap text-center"><%= 'Tồn kho' %></th>
+                        <% end %>
+                        <th width="12%" class="bg-blue-madison bg-font-blue-madison border-blue-madison text-nowrap text-center"><%= t('.quantity') %></th>
+                        <th width="12%" class="bg-blue-madison bg-font-blue-madison border-blue-madison text-nowrap text-center">SL đã trả</th>
+                        <th width="12%" class="bg-blue-madison bg-font-blue-madison border-blue-madison text-nowrap text-center">SL chưa trả</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% @consignment.consignment_details.each do |consignment_detail| %>
+                        <% stock = consignment_detail.product.get_stock(
+                            warehouse_ids: @consignment.warehouse_id,
+                            state_ids: consignment_detail.state_id
+                        ) %>
+                        <% qty = consignment_detail.quantity %>
                         <tr>
-                            <td colspan="<%= colspan_total %>" class="text-center bold">Tổng cộng</td>
-                            <td class="text-center bold"><%= @consignment.total_quantity %></td>
-                            <td class="text-center bold"><%= @consignment.total_returned_quantity %></td>
-                            <td class="text-center bold"><%= @consignment.total_remain_quantity %></td>
-                        </tr>
-                        <tr>
-                            <th class="text-left bg-yellow-mint bg-font-yellow-mint text-nowrap">Sản phẩm</th>
-                            <th width="10%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">ĐVT</th>
-                            <th width="12%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Tình trạng</th>
+                            <td class="text-left bold">
+                                <%= consignment_detail.get_product_name %>
+                            </td>
+                            <td class="text-center">
+                                <%= consignment_detail.get_product_unit %>
+                            </td>
+                            <td class="text-center">
+                                <%= consignment_detail.state_name %>
+                            </td>
                             <% if @consignment.is_draft? or @consignment.is_active? %>
-                                <th width="12%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap"><%= 'Tồn kho' %></th>
+                                <td class="text-center stock-num-<%= (qty > stock) ? 'false' : 'true' %>">
+                                    <%= stock %>
+                                </td>
                             <% end %>
-                            <th width="12%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap"><%= t('.quantity') %></th>
-                            <th width="12%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">SL đã trả</th>
-                            <th width="12%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">SL chưa trả</th>
+                            <td class="text-center">
+                                <%= qty %>
+                            </td>
+                            <td class="text-center">
+                                <%= consignment_detail.returned_quantity %>
+                            </td>
+                            <td class="text-center">
+                                <%= consignment_detail.remain_quantity %>
+                            </td>
+                        </tr>
+                    <% end %>
+                </tbody>
+            </table>
+        </div>
+        <% if @consignment.cs_returns.count > 0 %>
+            <div class="tab-pane" id="tab_<%= tabid %>_2">
+                <table class="table table-bordered table-advance order-column">
+                    <thead class="flip-content">
+                        <% if false %>
+                            <tr>
+                                <td class="text-center bold" colspan="6"></td>
+                                <td class="stock-num text-center bold font-red-thunderbird"></td>
+                                <td colspan="2"></td>
+                            </tr>
+                        <% end %>
+                        <tr>
+                            <th width="10%" class="bg-blue-madison bg-font-blue-madison border-blue-madison text-nowrap text-left">Mã phiếu trả</th>
+                            <th class="bg-blue-madison bg-font-blue-madison border-blue-madison text-nowrap text-left">Ngày trả hàng</th>
+                            <th class="bg-blue-madison bg-font-blue-madison border-blue-madison text-nowrap text-left">Đối tượng</th>
+                            <th class="bg-blue-madison bg-font-blue-madison border-blue-madison text-nowrap text-left">Sản phẩm</th>
+                            <th class="bg-blue-madison bg-font-blue-madison border-blue-madison text-nowrap text-center">ĐVT</th>
+                            <th class="bg-blue-madison bg-font-blue-madison border-blue-madison text-nowrap text-center">Tình trạng</th>
+                            <th class="bg-blue-madison bg-font-blue-madison border-blue-madison text-nowrap text-center">Số lượng</th>
+                            <th class="bg-blue-madison bg-font-blue-madison border-blue-madison text-nowrap text-left">Ghi chú</th>
+                            <th class="bg-blue-madison bg-font-blue-madison border-blue-madison text-nowrap text-center"><%= 'Tác vụ' %></th>
                         </tr>
                     </thead>
                     <tbody>
-                        <% @consignment.consignment_details.each do |consignment_detail| %>
-                            <% stock = consignment_detail.product.get_stock(
-                                warehouse_ids: @consignment.warehouse_id,
-                                state_ids: consignment_detail.state_id
-                            ) %>
-                            <% qty = consignment_detail.quantity %>
+                        <% @consignment.cs_returns.each do |cs_return| %>
                             <tr>
-                                <td class="text-left bold">
-                                    <%= consignment_detail.get_product_name %>
-                                </td>
-                                <td class="text-center">
-                                    <%= consignment_detail.get_product_unit %>
-                                </td>
-                                <td class="text-center">
-                                    <%= consignment_detail.state_name %>
-                                </td>
-                                <% if @consignment.is_draft? or @consignment.is_active? %>
-                                    <td class="text-center stock-num-<%= (qty > stock) ? 'false' : 'true' %>">
-                                        <%= stock %>
-                                    </td>
-                                <% end %>
-                                <td class="text-center">
-                                    <%= qty %>
-                                </td>
-                                <td class="text-center">
-                                    <%= consignment_detail.returned_quantity %>
-                                </td>
-                                <td class="text-center">
-                                    <%= consignment_detail.remain_quantity %>
+                                <td class="bg-grey bg-font-grey text-left text-nowrap bold"><%= cs_return.code %></td>
+                                <td class="bg-grey bg-font-grey text-left bold"><%= format_date(cs_return.return_date) %></td>
+                                <td class="bg-grey bg-font-grey text-left bold"><%= cs_return.contact_name %></td>
+                                <td class="bg-grey bg-font-grey text-center bold" colspan="3"></td>
+                                <td class="bg-grey bg-font-grey text-center bold"><%= cs_return.total_quantity %></td>
+                                <td class="bg-grey bg-font-grey text-left"><%= cs_return.note.html_safe if cs_return.note.present? %></td>
+                                <td class="bg-grey bg-font-grey text-left">
+                                    <%= erp_component('button/edit', {
+                                        href: erp_consignments.edit_backend_cs_return_path(cs_return),
+                                        class: 'btn-sm btn-noborder',
+                                        help: 'Chỉnh sửa'
+                                    }) %>
+                                    <%= erp_component('button/view', {
+                                        href: erp_consignments.backend_cs_return_path(cs_return),
+                                        help: 'Xem và In',
+                                        class: 'btn-sm btn-noborder',
+                                        icon: 'fa fa-print',
+                                        target: '_blank'
+                                    }) %>
                                 </td>
                             </tr>
+                            <% cs_return.return_details.each do |return_detail| %>
+                                <tr>
+                                    <td class="text-left" colspan="3"></td>
+                                    <td class="text-nowrap text-left"><%= return_detail.get_product_name %></td>
+                                    <td class="text-center"><%= return_detail.get_product_unit %></td>
+                                    <td class="text-center"><%= return_detail.state_name %></td>
+                                    <td class="text-center"><%= return_detail.quantity %></td>
+                                    <td class="text-left" colspan="2"></td>
+                                </tr>
+                            <% end %>
                         <% end %>
                     </tbody>
                 </table>
             </div>
-            <% if @consignment.cs_returns.count > 0 %>
-            <div class="tab-pane" id="tab_5_2">
-                <div class="portlet grey-cascade box">
-                    <div class="portlet-body">
-                        <div class="table-responsive">
-                            <table class="table table-bordered table-striped flip-content">
-                                <thead class="flip-content">
-                                    <tr>
-                                        <th width="20%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap"><%= t('.return_code') %></th>
-                                        <th class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap"><%= t('.contact_return') %></th>
-                                        <th class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap"><%= t('.date_return') %></th>
-                                        <th class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap"><%= t('.quantity') %></th>
-                                        <th width="20%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap"><%= t('.note') %></th>
-                                        <th width="10%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap"><%= t('.actions') %></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <% @consignment.cs_returns.each do |cs_return| %>
-                                        <tr class="odd gradeX has-child-table" data-url="<%= erp_consignments.return_details_backend_cs_returns_path(id: cs_return.id) %>">
-                                            <td width="15%" class="text-center">
-                                                <i class="fa fa-plus expand tr-expand-button child-tr-expand-button"></i>
-                                                <strong class="font-green-jungle sbold"><%= cs_return.code %></strong>
-                                            </td>
-                                            <td class="text-left"><%= cs_return.contact_name %></td>
-                                            <td class="text-left"><%= format_date(cs_return.return_date) %></td>
-                                            <td class="text-cetner"><strong><%= cs_return.total_quantity %></strong></td>
-                                            <td class="text-left"><%= cs_return.note.html_safe if cs_return.note.present? %></td>
-                                            <td>
-                                                <%= erp_component('button/edit', {
-                                                    href: erp_consignments.edit_backend_cs_return_path(cs_return),
-                                                    class: 'btn-sm btn-noborder',
-                                                    help: 'Chỉnh sửa'
-                                                }) %>
-                                                <%= erp_component('button/view', {
-                                                    href: erp_consignments.backend_cs_return_path(cs_return),
-                                                    help: 'Xem và In',
-                                                    class: 'btn-sm btn-noborder',
-                                                    icon: 'fa fa-print',
-                                                    target: '_blank'
-                                                }) %>
-                                            </td>
-                                        </tr>
-                                    <% end %>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <% end %>
-        </div>
+        <% end %>
     </div>
 </div>
