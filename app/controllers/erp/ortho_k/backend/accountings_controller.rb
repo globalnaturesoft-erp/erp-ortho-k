@@ -140,8 +140,8 @@ module Erp
             @to = (glb.present? and glb[:to_date].present?) ? glb[:to_date].to_date : nil
           end
           
-          @payables = Erp::Payments::PaymentType.get_custom_payment_types.payables
-          @receivables = Erp::Payments::PaymentType.get_custom_payment_types.receivables
+          @payables = Erp::Payments::PaymentType.get_custom_payment_types.payables.order('name ASC')
+          @receivables = Erp::Payments::PaymentType.get_custom_payment_types.receivables.order('name ASC')
         end
 
         def report_income_statement_xlsx
