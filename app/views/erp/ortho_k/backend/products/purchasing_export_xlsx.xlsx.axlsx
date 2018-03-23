@@ -1,0 +1,46 @@
+wb = xlsx_package.workbook
+xlsx_package.use_autowidth = true
+
+wb.styles do |s|
+    wb.styles.fonts.first.name = 'Calibri'
+    wb.add_worksheet(name: "Tồn kho") do |sheet|
+        # style
+        bg_info = {:bg_color => "e5e5e5", :fg_color => "00"}
+        bg_stock_0 = {:bg_color => "fbe1e3", :fg_color => "00"}
+        bg_stock_1 = {:bg_color => "f9e491", :fg_color => "00"}
+        bg_stock_2 = {:bg_color => "e0ebf9", :fg_color => "00"}
+        bg_general = {:bg_color => "a9d08e", :fg_color => "00"}
+
+        # Top head
+        sheet.add_row ["TỒN KHO THEO LOẠI HÀNG - ĐƯỜNG KÍNH"], b: true
+
+        # head 1
+        head_rows = ['']
+
+        @heads.each do |head|
+            head_rows << @totals[head]
+        end
+
+        sheet.add_row head_rows, style: (s.add_style bg_stock_0)
+
+
+        # head 2
+        head_rows = ['Mã hàng']
+
+        @heads.each do |head|
+            head_rows << head
+        end
+
+        sheet.add_row head_rows, style: (s.add_style bg_general)
+
+        @rows.each do |row|
+            r = [row[:code]]
+            @heads.each do |head|
+              r << row[head]
+            end
+            sheet.add_row r
+        end
+
+        sheet.column_widths 12, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24
+    end
+end

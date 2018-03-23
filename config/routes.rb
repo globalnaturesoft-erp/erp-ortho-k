@@ -21,7 +21,7 @@ Erp::Products::Engine.routes.draw do
 
           get 'list_split'
           post 'list_split_list'
-          
+
           post 'stock_transfer_export'
         end
       end
@@ -98,6 +98,8 @@ Erp::OrthoK::Engine.routes.draw do
 
           get 'purchasing_export'
           post 'purchasing_export'
+          post 'purchasing_export_list'
+          get 'purchasing_export_xlsx'
         end
       end
       resources :central_areas do

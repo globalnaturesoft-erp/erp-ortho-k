@@ -1208,25 +1208,25 @@ Erp::Products::Product.class_eval do
     #  .where(warehouse_id: warehouse_ids)
     #  .having('SUM(erp_products_cache_stocks.stock) <= ?', params[:stock_condition])
     #  .map(&:product_id)
-    
+
     #query = query.where(id: cs_ids)
-    
+
     # Get in purchase conditions area
     query = query.get_in_purchase_condition_products
-    
+
     query = query.joins(:category)
       .order("ordered_code")
-    
+
     ## stock condition
     #query = query.where('erp_products_products.cache_stock <= ?', params[:stock_condition])
-    
+
     # state warehouse condition if existed
     result = []
     query.each_with_index do |p, index|
       if p.get_stock(state_ids: state_id, warehouse_ids: warehouse_ids) <= params[:stock_condition]
         result << p
       end
-      
+
       puts index
     end
 
@@ -1499,41 +1499,41 @@ Erp::Products::Product.class_eval do
           employee_id: user.id
         )
         details = []
-      
+
         # Header, first table row
         headers = sheet.row(3)
-      
+
         headers.each_with_index do |header, index|
           if ["10.4","10.5","10.6","10.8","11","11.2","11.4","16.4"].include?(header.to_s)
             # diameter
             diameter_p = Erp::Products::Property.get_diameter
             diameter_ppv = Erp::Products::PropertiesValue.where(property_id: diameter_p.id, value: header.to_s).first
-      
+
             sheet.each_row_streaming do |row|
               if !row[0].value.nil? and row[0].value != 'Ma Len' and row[index].present? and row[index].value.to_i > 0 and !["10.4","10.6","10.8","11","11.2","11.4","11.6","16.4"].include?(row[index].value.to_s)
                 lns = row[0].value.scan(/\d+|\D+/)
-      
+
                 # quantity
                 stock = row[index].value
-      
+
                 # letter
                 letter_p = Erp::Products::Property.get_letter
                 letter_ppv = Erp::Products::PropertiesValue.where(property_id: letter_p.id, value: lns[0]).first
-      
+
                 # number
                 nn_v = lns[1]
                 nn_v = nn_v.rjust(2, '0') if nn_v != '0' and nn_v != '00'
                 number_p = Erp::Products::Property.get_number
                 number_ppv = Erp::Products::PropertiesValue.where(property_id: number_p.id, value: nn_v).first
-      
+
                 if diameter_ppv.present? and letter_ppv.present? and number_ppv.present?
                   pname = "#{letter_ppv.value}#{number_ppv.value}-#{diameter_ppv.value}-#{cat_name}"
-      
+
                   # Find product
                   product = Erp::Products::Product
                     .where(name: pname)
                     .first
-      
+
                   # check if product exist
                   if product.present?
                     # add stock check detail
@@ -1543,7 +1543,7 @@ Erp::Products::Product.class_eval do
                       state_id: state.id,
                       warehouse_id: warehouse.id
                     )
-      
+
                     result = "SUCCESS::exist::#{pname}: checked! (#{stock})"
                   else
                     result = "ERROR::not exist::#{pname}: ignored! (#{stock})"
@@ -1551,7 +1551,7 @@ Erp::Products::Product.class_eval do
                 else
                   result = "ERROR::ppvs not exist#{lns}: ignored! (#{stock})"
                 end
-      
+
                 # Logging
                 puts result
                 File.open("tmp/import_init_stock-#{timestamp}.log", "a+") { |f| f << "#{result}\n"}
@@ -1559,7 +1559,7 @@ Erp::Products::Product.class_eval do
             end
           end
         end
-      
+
         # Save delivery record
         puts details.count
         puts delivery.valid?
@@ -1567,9 +1567,9 @@ Erp::Products::Product.class_eval do
           delivery.save
         end
       end
-      
-      
-      
+
+
+
       ################################################ SOFT OK LEN ###############################################
       if ["Soft OK"].include?(cat_name)
         # Stock check
@@ -1583,27 +1583,27 @@ Erp::Products::Product.class_eval do
           employee_id: user.id
         )
         details = []
-      
+
         # Header, first table row
         headers = sheet.row(3)
-      
+
         sheet.each_row_streaming do |row|
           if row[0].present? and row[0].value.present? and row[1].present? and row[1].value.to_i > 0
             category = Erp::Products::Category.where(name: cat_name).first
-      
+
             # quantity
             stock = row[1].value
             pname = row[0].value
-      
+
             # Find product
             product = Erp::Products::Product
               .where(name: pname)
               .first
-      
+
             # check if product exist
             if product.present?
               result = "SUCCESS::exist::#{pname}: checked! (#{stock})"
-      
+
               # add stock check detail
               details << delivery.delivery_details.build(
                 product_id: product.id,
@@ -1614,15 +1614,15 @@ Erp::Products::Product.class_eval do
             else
               result = "ERROR::ppvs not exist::#{lns[0]}: ignored! (#{stock})"
             end
-      
+
             # Logging
             result = result + " ::#{state.name}"
-      
+
             puts result
             File.open("tmp/import_init_stock-#{timestamp}.log", "a+") { |f| f << "#{result}\n"}
           end
         end
-      
+
         # Save delivery record
         puts details.count
         puts delivery.valid?
@@ -1630,10 +1630,10 @@ Erp::Products::Product.class_eval do
           delivery.save
         end
       end
-      
-      
-      
-      
+
+
+
+
       ################################################ SẢN PHẨM KHÁC ###############################################
       if ["Sản phẩm khác"].include?(cat_name)
         # Stock check
@@ -1647,26 +1647,26 @@ Erp::Products::Product.class_eval do
           employee_id: user.id
         )
         details = []
-      
+
         # Header, first table row
         headers = sheet.row(3)
-      
+
         sheet.each_row_streaming do |row|
           if row[1].present? and row[1].value.present? and row[3].present? and row[3].value.to_i > 0
             category_name = row[0].value
-      
+
             # Properties
             category = Erp::Products::Category.where(name: category_name).first
-      
+
             if category.present?
               pname = row[1].value
               stock = row[3].value.to_i
-      
+
               # Find product
               product = Erp::Products::Product
                 .where(name: pname)
                 .first
-      
+
               # check if product exist
               if product.present?
                 result = "SUCCESS::exist::#{pname}: checked! (#{stock})"
@@ -1700,10 +1700,10 @@ Erp::Products::Product.class_eval do
                 #) if number_ppv.present?
                 #
                 #Erp::Products::Product.find(product.id).update_cache_properties
-      
+
                 result = "SUCCESS::not exist::#{pname}: created! checked! (#{stock})"
               end
-      
+
               # add stock check detail
               details << delivery.delivery_details.build(
                 product_id: product.id,
@@ -1714,13 +1714,13 @@ Erp::Products::Product.class_eval do
             else
               result = "ERROR::#{row[1].value}: category not exist! ignored! (#{stock})"
             end
-      
+
             # Logging
             puts result
             File.open("tmp/import_init_stock-#{timestamp}.log", "a+") { |f| f << "#{result}\n"}
           end
         end
-      
+
         # Save delivery record
         puts details.count
         puts delivery.valid?
@@ -1745,46 +1745,46 @@ Erp::Products::Product.class_eval do
           employee_id: user.id
         )
         details = []
-      
+
         # Header, first table row
         headers = sheet.row(3)
-      
+
         sheet.each_row_streaming do |row|
           if row[3].present? and row[3].value.to_i > 0
             cat_name = row[2].value
             category = Erp::Products::Category.where(name: cat_name).first
             lns = row[0].value.scan(/\d+|\D+/)
-      
+
             # diameter
             diameter_p = Erp::Products::Property.get_diameter
             diameter_ppv = Erp::Products::PropertiesValue.where(property_id: diameter_p.id, value: row[1].value).first
-      
+
             # quantity
             stock = row[3].value
-      
+
             # letter
             letter_p = Erp::Products::Property.get_letter
             letter_ppv = Erp::Products::PropertiesValue.where(property_id: letter_p.id, value: lns[0]).first
-      
+
             # number
             number_p = Erp::Products::Property.get_number
             number_ppv = Erp::Products::PropertiesValue.where(property_id: number_p.id, value: lns[1].to_i.to_s.rjust(2, '0')).first
-      
+
             if diameter_ppv.present? # and
-      
+
               if letter_ppv.present? and number_ppv.present?
                 pname = "#{letter_ppv.value}#{number_ppv.value}-#{diameter_ppv.value}-#{cat_name}"
-      
+
                 # Find product
                 product = Erp::Products::Product
                   .where(name: pname)
                   .first
               else
                 pname = "#{row[0].value}-#{diameter_ppv.value}-#{cat_name}"
-      
+
                 product = Erp::Products::Product.where(name: pname).first
               end
-      
+
               # check if product exist
               if product.present?
                 result = "SUCCESS::exist::#{pname}: checked! (#{stock})"
@@ -1818,13 +1818,13 @@ Erp::Products::Product.class_eval do
                 #) if number_ppv.present?
                 #
                 #Erp::Products::Product.find(product.id).update_cache_properties
-      
+
                 result = "SUCCESS::not exist::#{pname}: created! checked! (#{stock})"
               end
-      
+
               # Set is outside len
               product.update_attribute(:is_outside, true)
-              
+
               # add stock check detail
               details << delivery.delivery_details.build(
                 product_id: product.id,
@@ -1835,13 +1835,13 @@ Erp::Products::Product.class_eval do
             else
               result = "ERROR::not exist::#{row[0].value}: ppvs ignored! (#{stock})"
             end
-      
+
             # Logging
             puts result
             File.open("tmp/import_init_stock-#{timestamp}.log", "a+") { |f| f << "#{result}\n"}
           end
         end
-      
+
         # Save delivery record
         puts details.count
         puts delivery.valid?
@@ -2465,5 +2465,10 @@ Erp::Products::Product.class_eval do
       quantity: options[:quantity].to_i,
       type: 'purchase'
     )
+  end
+
+  # get all letter-number
+  def self.get_all_len_codes
+    ((self.all.order('ordered_code').map(&:name).select {|i| i.split('-').count == 3}).map {|i| i.split('-')[0]}).uniq
   end
 end
