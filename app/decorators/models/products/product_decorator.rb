@@ -2469,6 +2469,25 @@ Erp::Products::Product.class_eval do
 
   # get all letter-number
   def self.get_all_len_codes
-    ((self.all.order('ordered_code').map(&:name).select {|i| i.split('-').count == 3}).map {|i| i.split('-')[0]}).uniq
+    codes = ((self.all.order('ordered_code').map(&:name).select {|i| i.split('-').count == 3}).map {|i| i.split('-')[0]}).uniq
+    codes = codes.map {|code|
+      if !code.match('[A-Z]{3}[0-9]{2}').nil?
+        code = "Z1#{code}"
+      elsif !code.match('[A-Z]{2}[0-9]{2}').nil?
+        code = "Z0#{code}"
+      end
+      code
+    }
+
+    codes = codes.sort_by{|e| e}
+
+    codes = codes.map {|code|
+      if code[0] == 'Z'
+        code = code[2..-1]
+      end
+      code
+    }
+
+    codes
   end
 end
