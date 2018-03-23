@@ -34,11 +34,14 @@
             <th colspan="2" class="text-right bg-grey">Tổng cộng</th>
             <% @warehouses.each do |warehouse| %>
               <% filters = @global_filters.clone.merge({
+                product_id: @products.select('id'),
                 warehouse: warehouse,
               }) %>
               <th class="text-center bg-grey"><%= Erp::Products::Product.get_stock_real(filters) %></th>
             <% end %>
-            <% filters = @global_filters %>
+            <% filters = @global_filters.clone.merge({
+                product_id: @products.select('id')
+              }) %>
             <th class="text-center bg-grey"><%= Erp::Products::Product.get_stock_real(filters) %></th>
           </tr>
 
