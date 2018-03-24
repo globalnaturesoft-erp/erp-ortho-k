@@ -166,7 +166,7 @@ Erp::Contacts::Contact.class_eval do
       .where(payment_type_id: Erp::Payments::PaymentType.find_by_code(Erp::Payments::PaymentType::CODE_CUSTOMER).id)
       .where("payment_date >= ? AND payment_date <= ?", @from, @to)
 
-    self.where("id IN (?) OR id IN (?) OR id IN (?)", order_query, product_return_query, payment_query)
+    self.where("erp_contacts_contacts.id IN (?) OR erp_contacts_contacts.id IN (?) OR erp_contacts_contacts.id IN (?)", order_query, product_return_query, payment_query)
 
     #ids = [-1]
     #self.all.each do |c|
@@ -199,7 +199,7 @@ Erp::Contacts::Contact.class_eval do
       .where(payment_type_id: Erp::Payments::PaymentType.find_by_code(Erp::Payments::PaymentType::CODE_SUPPLIER).id)
       .where("payment_date >= ? AND payment_date <= ?", @from, @to)
 
-    self.where("id IN (?) OR id IN (?) OR id IN (?)", order_query, product_return_query, payment_query)
+    self.where("erp_contacts_contacts.id IN (?) OR erp_contacts_contacts.id IN (?) OR erp_contacts_contacts.id IN (?)", order_query, product_return_query, payment_query)
 
     #ids = [-1]
     #self.all.each do |c|
@@ -320,6 +320,6 @@ Erp::Contacts::Contact.class_eval do
     #  end
     #end
 
-    self.where("id IN (?) OR id IN (?) OR id IN (?)", order_query, product_return_query, payment_query)
+    self.where("erp_contacts_contacts.id IN (?) OR erp_contacts_contacts.id IN (?) OR erp_contacts_contacts.id IN (?)", order_query, product_return_query, payment_query)
   end
 end
