@@ -5,7 +5,6 @@
         </p>
     </div>
 <% else %>
-
     <div class="custom-show text-center">
         <h4 class="font-yellow bold uppercase mb-15">
             Báo cáo tồn kho
@@ -108,6 +107,11 @@
                     %>
                     <%= Erp::Products::Product.get_stock_real(end_params) %>
                   </td>
+                    <% if @is_set_type_selected %>
+                        <td class="text-center bg-grey text-bold">
+                            --
+                        </td>
+                    <% end %>
               </tr>
 
               <tr>
@@ -122,6 +126,11 @@
                   <th rowspan="2" class="text-center bg-primary" title="Hủy kho; Kiểm kho">Xuất KK</th>
                   <th rowspan="2" class="text-center bg-primary" title="Kiểm trạng thái">Xuất KTT</th>
                   <th rowspan="2" class="text-center bg-primary">Dư cuối</th>
+                  <% if @is_set_type_selected %>
+                    <td rowspan="2" class="text-center bg-primary">
+                        Bộ (ghép)
+                    </td>
+                  <% end %>
               </tr>
               <tr>
                   <% @states.each do |state| %>
@@ -209,6 +218,14 @@
                     %>
                     <%= Erp::Products::Product.get_stock_real(end_params) %>
                 </td>
+                <% if @is_set_type_selected %>
+                    <td class="text-center">
+                        <%= product.get_combine_max_quantity(
+                            warehouse_ids: @global_filters["warehouse_ids"],
+                            state_ids: @global_filters["state_ids"]
+                        ) %>
+                    </td>
+                <% end %>
             </tr>
         <% end %>
     </table>

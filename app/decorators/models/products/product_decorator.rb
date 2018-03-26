@@ -2101,7 +2101,7 @@ Erp::Products::Product.class_eval do
     return 0 if parts.empty?
     max = 1000
     self.products_parts.each do |pp|
-      amount = (pp.part.get_stock(state: options[:state], warehouse: options[:warehouse])/pp.quantity).to_i
+      amount = (pp.part.get_stock(options)/pp.quantity).to_i
       if amount < max
         max = amount
       end

@@ -31,4 +31,9 @@ Erp::Products::Category.class_eval do
     pids = self.where(name: ['Len cứng','Len mềm','Custom']).map(&:id)
     self.where(parent_id: pids)
   end
+
+  # get bo set category
+  def self.get_set
+    self.where(name: ['Bộ sét']).first
+  end
 end

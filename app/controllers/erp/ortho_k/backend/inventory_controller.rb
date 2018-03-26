@@ -116,6 +116,8 @@ module Erp
         def report_product_table
           @global_filters = params.to_unsafe_hash[:global_filter]
 
+          @is_set_type_selected = @global_filters[:categories].to_i == Erp::Products::Category.get_set.id
+
           # if has period
           if @global_filters[:period].present?
             @period = Erp::Periods::Period.find(@global_filters[:period])
@@ -212,6 +214,8 @@ module Erp
 
         def report_product_xlsx
           @global_filters = params.to_unsafe_hash[:global_filter]
+
+          @is_set_type_selected = @global_filters[:categories].to_i == Erp::Products::Category.get_set.id
 
           # if has period
           if @global_filters[:period].present?

@@ -65,7 +65,7 @@ wb.styles do |s|
 
     @states.each do |state|
         count = Erp::Products::Product.get_qdelivery_import(filters.clone.merge({
-            delivery_type: [                
+            delivery_type: [
                 Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT
             ],
             state: state
@@ -98,6 +98,11 @@ wb.styles do |s|
     end_params[:from_date] = nil
     toprow[:columns] << Erp::Products::Product.get_stock_real(end_params)
     toprow[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_toprow).deep_merge(bold))
+
+    if @is_set_type_selected
+      toprow[:columns] << '--'
+      toprow[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_toprow).deep_merge(bold))
+    end
 
     sheet.add_row toprow[:columns], style: toprow[:styles]
 
@@ -185,6 +190,15 @@ wb.styles do |s|
     kt += 1
     sheet.merge_cells("#{('A'.codepoints.first + kt).chr}5:#{('A'.codepoints.first + kt).chr}6")
 
+    if @is_set_type_selected
+      header[:columns] << 'Bộ (ghép)'
+      header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
+      subheader[:columns] << ''
+      subheader[:styles] << (s.add_style bg_info.deep_merge(text_right).deep_merge(border).merge(bold))
+      kt += 1
+      sheet.merge_cells("#{('A'.codepoints.first + kt).chr}5:#{('A'.codepoints.first + kt).chr}6")
+    end
+
     sheet.add_row header[:columns], style: header[:styles]
     sheet.add_row subheader[:columns], style: subheader[:styles]
 
@@ -225,7 +239,7 @@ wb.styles do |s|
 
         @states.each do |state|
           count = Erp::Products::Product.get_qdelivery_import(filters.clone.merge({
-              delivery_type: [                
+              delivery_type: [
                 Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT
               ],
               state: state
@@ -257,6 +271,15 @@ wb.styles do |s|
         end_params[:from_date] = nil
         row[:columns] << Erp::Products::Product.get_stock_real(end_params)
         row[:styles] << (s.add_style text_center.deep_merge(border))
+
+        if @is_set_type_selected
+          count = product.get_combine_max_quantity(
+              warehouse_ids: @global_filters["warehouse_ids"],
+              state_ids: @global_filters["state_ids"]
+          )
+          row[:columns] << count
+          row[:styles] << (s.add_style text_center.deep_merge(border))
+        end
 
         sheet.add_row row[:columns], style: row[:styles]
     end
