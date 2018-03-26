@@ -1,0 +1,139 @@
+wb = xlsx_package.workbook
+xlsx_package.use_autowidth = true
+wb.styles do |s|
+  wb.styles.fonts.first.name = 'Calibri'
+  wb.add_worksheet(name: 'Báo cáo BN-PK mới') do |sheet|
+    # style
+    bg_info = {:bg_color => "305496", :fg_color => "FF"}
+    bg_footer = {:bg_color => "dbdbdb", :fg_color => "3a3838"}
+    text_center = {alignment: { horizontal: :center }}
+    text_left = {alignment: { horizontal: :left }}
+    text_right = {alignment: { horizontal: :right }}
+    middle_align = {alignment: { vertical: :center }}
+    number = {format_code: '#,##0'}
+    border = {border: { style: :thin, color: "00", :edges => [:top, :right, :bottom, :left] }}
+    bold = {b: true}
+    wrap = { alignment: {wrap_text: true} }
+    if @period_name.nil?
+      date = "#{' TỪ ' + @from.strftime('%d/%m/%Y') if !@from.nil?}#{' ĐẾN ' + @to.strftime('%d/%m/%Y') if !@to.nil?}"
+    else
+      date = "#{@period_name}"
+    end
+    
+    # add empty row
+    sheet.add_row ['']
+
+    # Title
+    sheet.add_row ['DANH SÁCH SỐ LƯỢNG BỆNH NHÂN CỦA KHÁCH HÀNG / PHÒNG KHÁM'], sz: 16, b: true, bg_color: "ffc801", style: (s.add_style text_center)
+    #row_num += 1
+
+    sheet.add_row [date], sz: 14, bg_color: "ffc801", style: (s.add_style text_center)
+    #row_num += 1
+
+    # add empty row
+    sheet.add_row ['']
+
+    patient_states = Erp::OrthoK::PatientState.get_active
+    
+    # header
+    header = {columns: [], styles: []}
+    subheader = {columns: [], styles: []}
+    row_1 = {columns: [], styles: []}
+    row_2 = {columns: [], styles: []}
+    footer = {columns: [], styles: []}
+    
+    # Cột: Phân loại khách hàng/BN
+    header[:columns] << ''
+    header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
+    
+    subheader[:columns] << ''
+    subheader[:styles] << (s.add_style bg_info.deep_merge(text_right).deep_merge(border).merge(bold))
+    
+    row_1[:columns] << 'KHÁCH HÀNG CÔNG TY'
+    row_1[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(middle_align).deep_merge(bold))
+  
+    row_2[:columns] << 'PK ORTHO-K (BÁN LẺ)'
+    row_2[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(middle_align).deep_merge(bold))
+    
+    footer[:columns] << 'TỔNG CỘNG'
+    footer[:styles] << (s.add_style bg_footer.deep_merge(text_center).deep_merge(border).merge(bold))
+    
+    col_num = 0
+    sheet.merge_cells("#{('A'.codepoints.first + col_num).chr}5:#{('A'.codepoints.first + col_num).chr}6")
+    
+    # Cột: Số lượng bệnh nhân
+    ps_first = 0
+    ps_last = 0
+    col_widths = []
+    patient_states.each_with_index do |ps,index|
+      header[:columns] << (index==0 ? 'Số lượng BN' : '')
+      header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
+      subheader[:columns] << ps.name
+      subheader[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(border).merge(bold))
+      col_num += 1
+      ps_first = col_num if index==0
+      ps_last = col_num if (index+1) == patient_states.count
+      
+      liability_count = Erp::Contacts::Contact.get_patients_by_state(
+        payment_for: Erp::Orders::Order::PAYMENT_FOR_CONTACT,
+        patient_state_id: ps.id,
+        from: @from,
+        to: @to
+      ).count
+      row_1[:columns] << liability_count
+      row_1[:styles] << (s.add_style text_center.deep_merge(number).deep_merge(border).deep_merge(middle_align))
+      
+      retail_count = Erp::Contacts::Contact.get_patients_by_state(
+        payment_for: Erp::Orders::Order::PAYMENT_FOR_ORDER,
+        patient_state_id: ps.id,
+        from: @from,
+        to: @to
+      ).count
+      row_2[:columns] << retail_count
+      row_2[:styles] << (s.add_style text_center.deep_merge(number).deep_merge(border).deep_merge(middle_align))
+      
+      total_count = Erp::Contacts::Contact.get_patients_by_state(
+          patient_state_id: ps.id,
+          from: @from,
+          to: @to
+      ).count
+      footer[:columns] << total_count
+      footer[:styles] << (s.add_style bg_footer.deep_merge(text_center).deep_merge(border).deep_merge(bold))
+      
+      col_widths << 15
+    end
+    sheet.merge_cells("#{('A'.codepoints.first + ps_first).chr}5:#{('A'.codepoints.first + ps_last).chr}5")
+    
+    # Cột: Danh sách BN mới
+    header[:columns] << 'Danh sách BN mới'
+    header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
+    
+    subheader[:columns] << ''
+    subheader[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
+    
+    row_1[:columns] << (@liability_new_patients.map(&:name).map {|i| i.strip}).join(', ')
+    row_1[:styles] << (s.add_style text_left.deep_merge(border).deep_merge(wrap))
+    
+    row_2[:columns] << (@retail_new_patients.map(&:name).map {|i| i.strip}).join(', ')
+    row_2[:styles] << (s.add_style text_left.deep_merge(border).deep_merge(wrap))
+    
+    footer[:columns] << ''
+    footer[:styles] << (s.add_style bg_footer.deep_merge(border))
+    
+    col_num += 1
+    sheet.merge_cells("#{('A'.codepoints.first + col_num).chr}5:#{('A'.codepoints.first + col_num).chr}6")
+    
+    sheet.add_row header[:columns], style: header[:styles]
+    sheet.add_row subheader[:columns], style: subheader[:styles]
+    
+    sheet.add_row row_1[:columns], style: row_1[:styles]
+    sheet.add_row row_2[:columns], style: row_2[:styles]
+    
+    sheet.add_row footer[:columns], style: footer[:styles]
+    
+    # Setup
+    sheet.column_widths 20, *col_widths, 80
+    sheet.merge_cells("#{('A'.codepoints.first).chr}2:#{('A'.codepoints.first + col_num).chr}2")
+    sheet.merge_cells("#{('A'.codepoints.first).chr}3:#{('A'.codepoints.first + col_num).chr}3")
+  end
+end

@@ -210,37 +210,62 @@ module Erp
             @to = (glb.present? and glb[:to_date].present?) ? glb[:to_date].to_date : nil
           end
 
-          liability_patient_ids = Erp::Orders::Order.all_confirmed.where(payment_for: Erp::Orders::Order::PAYMENT_FOR_CONTACT)
-                                                    .where.not(patient_id: nil)
-                                                    .where(patient_state_id: Erp::OrthoK::PatientState.get_new_patient.id)
-          if @from.present?
-            liability_patient_ids = liability_patient_ids.where('order_date >= ?', @from.beginning_of_day)
-          end
-
-          if @to.present?
-            liability_patient_ids = liability_patient_ids.where('order_date <= ?', @to.end_of_day)
-          end
-
-          liability_patient_ids = liability_patient_ids.map(&:patient_id).uniq
+          liability_patient_ids = Erp::Contacts::Contact.get_patients_by_state(
+            payment_for: Erp::Orders::Order::PAYMENT_FOR_CONTACT,
+            patient_state_id: Erp::OrthoK::PatientState.get_new_patient.id,
+            from: @from,
+            to: @to
+          ).map(&:patient_id).uniq
 
 
-          retail_patient_ids = Erp::Orders::Order.all_confirmed.where(payment_for: Erp::Orders::Order::PAYMENT_FOR_ORDER)
-                                                    .where.not(patient_id: nil)
-                                                    .where(patient_state_id: Erp::OrthoK::PatientState.get_new_patient.id)
-
-          if @from.present?
-            retail_patient_ids = retail_patient_ids.where('order_date >= ?', @from.beginning_of_day)
-          end
-
-          if @to.present?
-            retail_patient_ids = retail_patient_ids.where('order_date <= ?', @to.end_of_day)
-          end
-
-          retail_patient_ids = retail_patient_ids.map(&:patient_id).uniq
+          retail_patient_ids = Erp::Contacts::Contact.get_patients_by_state(
+            payment_for: Erp::Orders::Order::PAYMENT_FOR_ORDER,
+            patient_state_id: Erp::OrthoK::PatientState.get_new_patient.id,
+            from: @from,
+            to: @to
+          ).map(&:patient_id).uniq
 
           @liability_new_patients = Erp::Contacts::Contact.where(id: liability_patient_ids)
           @retail_new_patients = Erp::Contacts::Contact.where(id: retail_patient_ids)
           @total_new_patient = @liability_new_patients.count + @retail_new_patients.count
+        end
+        
+        def report_new_patient_xlsx
+          glb = params.to_unsafe_hash[:global_filter]
+          if glb[:period].present?
+            @period_name = Erp::Periods::Period.find(glb[:period]).name
+            @from = Erp::Periods::Period.find(glb[:period]).from_date.beginning_of_day
+            @to = Erp::Periods::Period.find(glb[:period]).to_date.end_of_day
+          else
+            @period_name = nil
+            @from = (glb.present? and glb[:from_date].present?) ? glb[:from_date].to_date : nil
+            @to = (glb.present? and glb[:to_date].present?) ? glb[:to_date].to_date : nil
+          end
+
+          liability_patient_ids = Erp::Contacts::Contact.get_patients_by_state(
+            payment_for: Erp::Orders::Order::PAYMENT_FOR_CONTACT,
+            patient_state_id: Erp::OrthoK::PatientState.get_new_patient.id,
+            from: @from,
+            to: @to
+          ).map(&:patient_id).uniq
+
+
+          retail_patient_ids = Erp::Contacts::Contact.get_patients_by_state(
+            payment_for: Erp::Orders::Order::PAYMENT_FOR_ORDER,
+            patient_state_id: Erp::OrthoK::PatientState.get_new_patient.id,
+            from: @from,
+            to: @to
+          ).map(&:patient_id).uniq
+
+          @liability_new_patients = Erp::Contacts::Contact.where(id: liability_patient_ids)
+          @retail_new_patients = Erp::Contacts::Contact.where(id: retail_patient_ids)
+          @total_new_patient = @liability_new_patients.count + @retail_new_patients.count
+          
+          respond_to do |format|
+            format.xlsx {
+              response.headers['Content-Disposition'] = 'attachment; filename="Bao cao benh nhan phong kham moi.xlsx"'
+            }
+          end
         end
       end
     end

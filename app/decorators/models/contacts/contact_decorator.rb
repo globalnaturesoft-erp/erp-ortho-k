@@ -322,4 +322,22 @@ Erp::Contacts::Contact.class_eval do
 
     self.where("erp_contacts_contacts.id IN (?) OR erp_contacts_contacts.id IN (?) OR erp_contacts_contacts.id IN (?)", order_query, product_return_query, payment_query)
   end
+  
+  # Get patient by state and date
+  def self.get_patients_by_state(options={})
+    patient_ids = Erp::Orders::Order.all_confirmed
+    patient_ids = patient_ids.where(payment_for: options[:payment_for]) if options[:payment_for].present?
+    patient_ids = patient_ids.where.not(patient_id: nil)      
+    patient_ids = patient_ids.where(patient_state_id: options[:patient_state_id]) if options[:patient_state_id].present?
+    
+    if options[:from].present?
+      patient_ids = patient_ids.where('order_date >= ?', options[:from].beginning_of_day)
+    end
+
+    if options[:to].present?
+      patient_ids = patient_ids.where('order_date <= ?', options[:to].end_of_day)
+    end
+    
+    patient_ids
+  end
 end
