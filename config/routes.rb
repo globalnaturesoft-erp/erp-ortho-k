@@ -120,6 +120,8 @@ Erp::OrthoK::Engine.routes.draw do
         collection do
 					post 'list'
 					get 'dataselect'
+          put 'set_active'
+          put 'set_deleted'
 				end
 			end
 

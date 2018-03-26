@@ -1,6 +1,10 @@
 module Erp::OrthoK
   class PatientState < ApplicationRecord
-
+    
+    # class const
+    STATUS_ACTIVE = 'active'
+    STATUS_DELETED = 'deleted'
+    
     # Filters
     def self.filter(query, params)
       params = params.to_unsafe_hash
@@ -59,6 +63,27 @@ module Erp::OrthoK
       end
 
       query = query.limit(8).map{|ps| {value: ps.id, text: ps.name} }
+    end
+    
+    def set_active
+      update_columns(status: Erp::Periods::Period::STATUS_ACTIVE)
+    end
+
+    def set_deleted
+      update_columns(status: Erp::Periods::Period::STATUS_DELETED)
+    end
+    
+    def is_active?
+      return status == Erp::Periods::Period::STATUS_ACTIVE
+    end
+    
+    def is_deleted?
+      return status == Erp::Periods::Period::STATUS_DELETED
+    end
+    
+    # get patient state is active
+    def self.get_active
+      self.where(status: Erp::Periods::Period::STATUS_ACTIVE)
     end
 
     # get new patient recor

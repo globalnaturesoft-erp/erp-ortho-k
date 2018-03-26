@@ -21,12 +21,23 @@
             text: t('.name'), name: 'name'
         }
     ],
+    filters: [
+        {
+            text: t('.active'), name: 'erp_ortho_k_patient_states.status', value: Erp::OrthoK::PatientState::STATUS_ACTIVE, checked: true
+        },
+        {
+            text: t('.deleted'), name: 'erp_ortho_k_patient_states.status', value: Erp::OrthoK::PatientState::STATUS_DELETED, checked: false
+        }
+    ],
     columns: [
         {
             text: t('.name'), name: 'name', value: true, checked: true
         },
         {
             text: t('.description'), name: 'description', value: true, checked: true
+        },
+        {
+            text: t('.status'), name: 'status', value: true, checked: true
         },
         {
             text: t('.created_at'), name: 'created_at', value: true, checked: true

@@ -14,6 +14,11 @@
                     <%= t('.description') %>
                 </th>
             <% end %>
+            <% if get_columns(params).include?("status") %>
+                <th>
+                    <%= t('.status') %>
+                </th>
+            <% end %>
             <% if get_columns(params).include?("created_at") %>
                 <th>
                     <%= t('.created_at') %>
@@ -24,7 +29,7 @@
     </thead>
     <tbody>
         <% @patient_states.each do |patient_state| %>
-            <tr class="odd gradeX">
+            <tr class="<%= 'blurred' if patient_state.is_deleted? %> odd gradeX">
                 <td>
                     <%= erp_datalist_check_row(id: patient_state.id) %>
                 </td>
@@ -33,6 +38,9 @@
                 <% end %>
                 <% if get_columns(params).include?("description") %>
                     <td><%= raw patient_state.description %></td>
+                <% end %>
+                <% if get_columns(params).include?("status") %>
+                    <td><%= status_label(patient_state.status) %></td>
                 <% end %>
                 <% if get_columns(params).include?("created_at") %>
                     <td><%= patient_state.created_at.strftime("%d/%m/%Y") %></td>
@@ -43,6 +51,22 @@
                             {
                                 text: '<i class="fa fa-edit"></i> '+t('.edit'),
                                 href: erp_ortho_k.edit_backend_patient_state_path(patient_state)
+                            },
+                            {
+                                text: '<i class="fa fa-check"></i> '+t('.active'),
+                                url: erp_ortho_k.set_active_backend_patient_states_path(id: patient_state.id),
+                                data_method: 'PUT',
+                                data_confirm: t('.check_confirm'),
+                                class: 'ajax-link',
+                                hide: patient_state.is_active?
+                            },
+                            {
+                                text: '<i class="fa fa-trash"></i> '+t('.delete'),
+                                url: erp_ortho_k.set_deleted_backend_patient_states_path(id: patient_state.id),
+                                data_method: 'PUT',
+                                data_confirm: t('.delete_confirm'),
+                                class: 'ajax-link',
+                                hide: patient_state.is_deleted?
                             }
                         ]
                     ) %>
@@ -52,7 +76,7 @@
     </tbody>
 </table>
 <% if @patient_states.empty? %>
-    <div class="datalist-empty-line"><%= t('.no_matching_records_found') %></div>
+    <div class="datalist-empty-line"><%= t('no_matching_records_found') %></div>
 <% end %>
         
 <%= erp_datalist_pagination(@patient_states) %>

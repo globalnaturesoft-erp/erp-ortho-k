@@ -2,7 +2,7 @@ module Erp
   module OrthoK
     module Backend
       class PatientStatesController < Erp::Backend::BackendController
-        before_action :set_patient_state, only: [:show, :edit, :update, :destroy]
+        before_action :set_patient_state, only: [:show, :edit, :update, :set_active, :set_deleted]
     
         # GET /patient_states
         def index
@@ -33,6 +33,7 @@ module Erp
           @patient_state = PatientState.new(patient_state_params)
     
           if @patient_state.save
+            @patient_state.set_active
             if request.xhr?
               render json: {
                 status: 'success',
@@ -84,6 +85,34 @@ module Erp
             format.json {
               render json: PatientState.dataselect(params[:keyword], params)
             }
+          end
+        end
+        
+        # Active /patient_state/status?id=1
+        def set_active
+          @patient_state.set_active
+
+          respond_to do |format|
+          format.json {
+            render json: {
+            'message': t('.success'),
+            'type': 'success'
+            }
+          }
+          end
+        end
+    
+        # Delete /patient_state/status?id=1
+        def set_deleted
+          @patient_state.set_deleted
+
+          respond_to do |format|
+          format.json {
+            render json: {
+            'message': t('.success'),
+            'type': 'success'
+            }
+          }
           end
         end
     
