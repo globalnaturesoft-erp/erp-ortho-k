@@ -224,13 +224,18 @@ Erp::Contacts::Contact.class_eval do
 
       # data posistion
       i_num = 0
+      i_code = 1
       i_name = 2
-      i_phone = 3
-      i_address = 4
+      i_phone = 9
+      i_address = 6
+      i_group = 5
+      i_type_2 = 4
+      i_type = 3
+      i_parent = 11
 
       i_city = 5
       i_area = 6
-      i_group = 7
+
 
 
       row_count = 1
@@ -239,6 +244,7 @@ Erp::Contacts::Contact.class_eval do
         if row_count >= 3 and row[i_name].value.present?
           contact = self.new
           contact.name = row[i_name].value.strip
+          contact.code = row[i_code].value.strip
           contact.address = row[i_address].value.to_s.strip if row[i_address].present?
           contact.phone = row[i_phone].value.to_s.strip if row[i_phone].present?
           contact.creator = user
@@ -255,35 +261,51 @@ Erp::Contacts::Contact.class_eval do
           #state = Erp::Areas::State.where("LOWER(name) LIKE ? OR name LIKE ?", "%#{city_name.downcase}%", "%#{city_name}%").first
           #contact.state_id = state.id
 
-          # Check if is BS/BV/BN
-          if contact.name.include? "BV" or contact.name.include? "Bệnh viện"
-            contact.contact_group = Erp::Contacts::ContactGroup.get_hospital
-          elsif contact.name.include? "BS" or contact.name.include? "Bác sĩ"
-            contact.contact_group = Erp::Contacts::ContactGroup.get_doctor
-          elsif contact.name.include?("PK")
-            contact.contact_group = Erp::Contacts::ContactGroup.get_clinic
-          elsif contact.name.include?("CTY")
-            contact.contact_group = Erp::Contacts::ContactGroup.get_company
-          elsif contact.name.include?("NHÀ THUỐC")
-            contact.contact_group = Erp::Contacts::ContactGroup.get_pharmacy
-          elsif contact.name.include?("KHÁCH LẺ")
-            contact.contact_group = Erp::Contacts::ContactGroup.get_retail_customer
-          end
+          ## Check if is BS/BV/BN
+          #if contact.name.include? "BV" or contact.name.include? "Bệnh viện"
+          #  contact.contact_group = Erp::Contacts::ContactGroup.get_hospital
+          #elsif contact.name.include? "BS" or contact.name.include? "Bác sĩ"
+          #  contact.contact_group = Erp::Contacts::ContactGroup.get_doctor
+          #elsif contact.name.include?("PK")
+          #  contact.contact_group = Erp::Contacts::ContactGroup.get_clinic
+          #elsif contact.name.include?("CTY")
+          #  contact.contact_group = Erp::Contacts::ContactGroup.get_company
+          #elsif contact.name.include?("NHÀ THUỐC")
+          #  contact.contact_group = Erp::Contacts::ContactGroup.get_pharmacy
+          #elsif contact.name.include?("KHÁCH LẺ")
+          #  contact.contact_group = Erp::Contacts::ContactGroup.get_retail_customer
+          #else
+          #  contact.contact_group = Erp::Contacts::ContactGroup.get_company
+          #end
+
+          group = Erp::Contacts::ContactGroup.where("LOWER(name) = ? ", row[i_group].value.downcase.strip).first
+          contact.contact_group = group
 
           # KH or NCC
-          if contact.name.include?("NCC") or contact.name.include?("NV")
+          if row[i_type].value == 'Nhà cung cấp'
             contact.is_supplier = true
           else
             contact.is_customer = true
           end
 
+          # ca nhan or to chuc
+          if row[i_type_2].value == 'Cá nhân'
+            contact.contact_type = 'person'
+          else
+            contact.contact_type = 'company'
+          end
+
+          # parent
+          pa = self.where(code: row[i_parent].value).first
+          contact.parent = pa
+
           # puts contact.to_json
           exist = Erp::Contacts::Contact.where(name: contact.name).first
           if exist.nil?
-            # contact.save
-            printf "%-20s %-20s %-20s %-20s\n #{contact.contact_group_name}", row[0].value, "SUCCESS", contact.contact_group_name, contact.name
+            contact.save
+            printf "%-20s %-20s %-20s %-20s %-20s\n", contact.is_supplier, contact.contact_type, "SUCCESS", contact.contact_group_name, contact.name
           else
-            printf "%-20s %-20s %-20s %-20s\n", row[0].value, "EXIST", contact.contact_group_name, contact.name
+            printf "%-20s %-20s %-20s %-20s %-20s\n", contact.is_supplier, contact.contact_type, "EXIST", contact.contact_group_name, contact.name
           end
         end
 
