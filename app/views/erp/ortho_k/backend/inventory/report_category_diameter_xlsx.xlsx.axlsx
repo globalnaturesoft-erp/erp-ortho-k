@@ -49,8 +49,10 @@ wb.styles do |s|
     toprow[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_toprow).deep_merge(bold))
 
     count = Erp::Products::Product.get_qdelivery_import(filters.clone.merge({
-          Erp::Qdeliveries::Delivery::TYPE_CUSTOM_IMPORT,
-          delivery_type: Erp::Qdeliveries::Delivery::TYPE_PURCHASE_IMPORT
+          delivery_type: [
+            Erp::Qdeliveries::Delivery::TYPE_CUSTOM_IMPORT,
+            Erp::Qdeliveries::Delivery::TYPE_PURCHASE_IMPORT
+          ]
       }))
     toprow[:columns] << count
     toprow[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_toprow).deep_merge(bold))
