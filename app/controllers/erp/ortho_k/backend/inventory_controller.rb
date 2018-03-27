@@ -636,11 +636,11 @@ module Erp
           @categories = Erp::Products::Category.where(id: category_ids)
 
           # product query
-          @product_query = Erp::Products::Product.where(is_outside: true)
+          @product_query = Erp::Products::Product.get_active.where(is_outside: true)
           @product_query = @product_query.where(category_id: category_ids) if category_ids.present?
 
           # products
-          @products = @product_query.paginate(:page => params[:page], :per_page => 50)
+          @products = @product_query.order('ordered_code').paginate(:page => params[:page], :per_page => 50)
         end
 
         def report_outside_product_xlsx
