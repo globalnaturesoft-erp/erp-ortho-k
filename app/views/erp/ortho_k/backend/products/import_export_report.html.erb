@@ -7,11 +7,13 @@
 <% end %>
 
 <% content_for :global_filter do %>
+    <% dfilters = current_user.get_filters(request.path+"_table").present? ? current_user.get_filters(request.path+"_table") : {}  %>
     <div class="row">
         <div class="col-md-3">
             <%= erp_form_control('date', {
                 label: t('.from_date'),
                 name: 'from_date',
+                value: (dfilters["from_date"].present? ? dfilters["from_date"].to_date : nil),
                 placeholder: t('.select_from_date')
             }) %>
         </div>
@@ -19,6 +21,7 @@
             <%= erp_form_control('date', {
                 label: t('.to_date'),
                 name: 'to_date',
+                value: (dfilters["to_date"].present? ? dfilters["to_date"].to_date : nil),
                 placeholder: t('.select_to_date')
             }) %>
         </div>
@@ -27,6 +30,8 @@
                 name: 'period',
                 label: 'Thời gian cố định',
                 placeholder: 'Chọn lọc theo ngày chứng từ',
+                value: (dfilters["period"].present? ? Erp::Periods::Period.find(dfilters["period"]).id : nil),
+                text: (dfilters["period"].present? ? Erp::Periods::Period.find(dfilters["period"]).name : nil),
                 url: erp_periods.dataselect_backend_periods_path(format: 'json')
             }) %>
         </div>
@@ -34,6 +39,7 @@
             <%= erp_form_control('select', {
                 name: 'types',
                 label: 'Loại xuất/nhập',
+                values: (dfilters["types"].present? ? dfilters["types"] : nil),
                 placeholder: 'Chọn loại phiếu xuất nhập',
                 options: Erp::Products::Product.get_import_export_type_options,
                 multiple: true
@@ -46,6 +52,11 @@
                 name: 'warehouse_id',
                 label: t('.filter_warehouse'),
                 placeholder: t('.choose_warehouse'),
+                values: (
+                    dfilters["warehouse_id"].present? ?
+                    (Erp::Warehouses::Warehouse.where(id: dfilters["warehouse_id"]).map{|i| {text: i.name, value: i.id}})
+                    : nil
+                ),
                 url: erp_warehouses.dataselect_backend_warehouses_path(format: 'json'),
                 multiple: true
             }) %>
@@ -54,6 +65,11 @@
             <%= erp_form_control("dataselect", {
                 name: 'category_id',
                 label: t('.filter_category'),
+                values: (
+                    dfilters["category_id"].present? ?
+                    (Erp::Products::Category.where(id: dfilters["category_id"]).map{|i| {text: i.name, value: i.id}})
+                    : nil
+                ),
                 placeholder: t('.choose_category'),
                 url: erp_products.dataselect_backend_categories_path(format: 'json'),
                 multiple: true
@@ -63,6 +79,11 @@
             <%= erp_form_control("dataselect", {
                 name: 'product_id',
                 label: t('.filter_product'),
+                values: (
+                    dfilters["product_id"].present? ?
+                    (Erp::Products::Product.where(id: dfilters["product_id"]).map{|i| {text: i.name, value: i.id}})
+                    : nil
+                ),
                 placeholder: t('.chooose_product'),
                 url: erp_products.dataselect_backend_products_path(format: 'json'),
                 multiple: true
@@ -72,6 +93,11 @@
             <%= erp_form_control("dataselect", {
                 name: 'state_id',
                 label: 'Trạng thái sản phẩm',
+                values: (
+                    dfilters["state_id"].present? ?
+                    (Erp::Products::State.where(id: dfilters["state_id"]).map{|i| {text: i.name, value: i.id}})
+                    : nil
+                ),
                 placeholder: 'Lọc theo trạng thái sản phẩm',
                 url: erp_products.dataselect_backend_states_path(format: 'json'),
                 multiple: true
@@ -83,6 +109,11 @@
             <%= erp_form_control("dataselect", {
                 name: 'customer_id',
                 label: t('.filter_customer'),
+                values: (
+                    dfilters["customer_id"].present? ?
+                    (Erp::Contacts::Contact.where(id: dfilters["customer_id"]).map{|i| {text: i.name, value: i.id}})
+                    : nil
+                ),
                 placeholder: t('.chooose_customer'),
                 url: erp_contacts.dataselect_backend_contacts_path(format: 'json', is_customer: true),
                 multiple: true
@@ -92,6 +123,11 @@
             <%= erp_form_control("dataselect", {
                 name: 'supplier_id',
                 label: t('.filter_supplier'),
+                values: (
+                    dfilters["supplier_id"].present? ?
+                    (Erp::Contacts::Contact.where(id: dfilters["supplier_id"]).map{|i| {text: i.name, value: i.id}})
+                    : nil
+                ),
                 placeholder: t('.chooose_supplier'),
                 url: erp_contacts.dataselect_backend_contacts_path(format: 'json', is_supplier: true),
                 multiple: true
@@ -101,6 +137,7 @@
             <%= erp_form_control('select', {
                 name: 'sort_by',
                 label: 'Sắp xếp',
+                value: (dfilters["sort_by"].present? ? dfilters["sort_by"] : nil),
                 placeholder: 'Chọn sắp xếp theo...',
                 options: Erp::Products::Product.sort_by_dates
             }) %>
@@ -109,6 +146,7 @@
             <%= erp_form_control('select', {
                 name: 'order_by',
                 label: 'Hướng (Tăng/Giảm)',
+                value: (dfilters["order_by"].present? ? dfilters["order_by"] : nil),
                 placeholder: 'Chọn hướng sắp xếp...',
                 options: Erp::Products::Product.get_order_direction
             }) %>
@@ -117,6 +155,7 @@
             <%= erp_form_control('select', {
                 name: 'group_by',
                 label: 'Nhóm theo',
+                value: (dfilters["group_by"].present? ? dfilters["group_by"] : nil),
                 placeholder: 'Chọn nhóm theo...',
                 options: Erp::Products::Product.get_grouped_bys
             }) %>
