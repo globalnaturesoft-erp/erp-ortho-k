@@ -761,4 +761,12 @@ Erp::Orders::Order.class_eval do
       first_one.update_columns(cache_for_order_commission_amount: self.cache_commission_amount) if first_one.present?
     end
   end
+
+  def patient_name
+    patient.present? ? patient.name : ''
+  end
+
+  def doctor_name
+    doctor.present? ? doctor.name : ''
+  end
 end
