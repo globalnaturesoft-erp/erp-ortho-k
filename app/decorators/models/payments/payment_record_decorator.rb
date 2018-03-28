@@ -11,4 +11,8 @@ Erp::Payments::PaymentRecord.class_eval do
     str << description.to_s if description.present?
     return str.join(" - ")
   end
+  
+  def self.get_account_for_debt
+    Erp::Payments::Account.find_by_name('CÔNG NỢ ĐẦU KỲ')
+  end
 end
