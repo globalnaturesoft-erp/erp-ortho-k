@@ -166,7 +166,11 @@
     </tr>
     <tr>
         <th class="bg-primary text-center" rowspan="2">Loại</th>
-        <th class="bg-primary text-center" rowspan="2">Thuộc tính</th>
+        <th class="bg-primary text-center" rowspan="2">
+            <% if @group_by_property.present? %>
+                <%= Erp::Products::Property.find(@group_by_property).name %>
+            <% end %>
+        </th>
         <th class="bg-primary text-center" rowspan="2" width="7%">Đầu kỳ</th>
         <th class="bg-primary text-center" colspan="7">Nhập</th>
         <th class="bg-primary text-center text-center" colspan="9">Xuất</th>
