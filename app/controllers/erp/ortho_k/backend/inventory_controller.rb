@@ -33,7 +33,7 @@ module Erp
 
           # product query
           @product_query = Erp::Products::Product.where(category_id: category_ids)
-          
+
           # filter by diameters
           if !diameter_ids.kind_of?(Array)
             @product_query = @product_query.where("erp_products_products.cache_properties LIKE '%[\"#{diameter_ids}\",%'")
@@ -117,7 +117,7 @@ module Erp
         def report_product_table
           @global_filters = params.to_unsafe_hash[:global_filter]
 
-          @is_set_type_selected = @global_filters[:categories].to_i == Erp::Products::Category.get_set.id
+          @is_set_type_selected = @global_filters[:categories] == Erp::Products::Category.get_set.id.to_s
 
           # if has period
           if @global_filters[:period].present?
@@ -216,7 +216,7 @@ module Erp
         def report_product_xlsx
           @global_filters = params.to_unsafe_hash[:global_filter]
 
-          @is_set_type_selected = @global_filters[:categories].to_i == Erp::Products::Category.get_set.id
+          @is_set_type_selected = @global_filters[:categories] == Erp::Products::Category.get_set.id.to_s
 
           # if has period
           if @global_filters[:period].present?
@@ -303,7 +303,7 @@ module Erp
           end
 
           # products
-          @products = @product_query
+          @products = @product_query.order('erp_products_products.ordered_code')
 
           # state
           @states = Erp::Products::State.all_active
