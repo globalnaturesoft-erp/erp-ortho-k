@@ -117,7 +117,7 @@ Erp::Orders::Order.class_eval do
   def display_patient_info
     return  {
       name: self.patient.present? ? self.patient_name : '',
-      state: self.is_new_patient ? 'mới' : 'đổi len'
+      state: self.patient_state.present? ? self.patient_state.name : 'đổi len'
     }
   end
 

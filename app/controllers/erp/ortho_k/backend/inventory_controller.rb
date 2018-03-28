@@ -33,6 +33,7 @@ module Erp
 
           # product query
           @product_query = Erp::Products::Product.where(category_id: category_ids)
+          
           # filter by diameters
           if !diameter_ids.kind_of?(Array)
             @product_query = @product_query.where("erp_products_products.cache_properties LIKE '%[\"#{diameter_ids}\",%'")
