@@ -29,11 +29,13 @@
 <% end %>
 
 <% content_for :global_filter do %>
+    <% dfilters = current_user.get_filters(request.path+"_table").present? ? current_user.get_filters(request.path+"_table") : {}  %>
     <div class="row">
         <div class="col-md-3">
             <%= erp_form_control('date', {
                 label: t('.from_date'),
                 name: 'from_date',
+                value: (dfilters["from_date"].present? ? dfilters["from_date"].to_date : nil),
                 placeholder: t('.select_from_date')
             }) %>
         </div>
@@ -41,14 +43,15 @@
             <%= erp_form_control('date', {
                 label: t('.to_date'),
                 name: 'to_date',
+                value: (dfilters["to_date"].present? ? dfilters["to_date"].to_date : nil),
                 placeholder: t('.select_to_date')
             }) %>
         </div>
         <div class="col-md-3">
             <%= erp_form_control("dataselect", {
                 name: 'period',
-                value: '',
-                text: '',
+                value: (dfilters["period"].present? ? Erp::Periods::Period.find(dfilters["period"]).id : nil),
+                text: (dfilters["period"].present? ? Erp::Periods::Period.find(dfilters["period"]).name : nil),
                 label: t('.filter_period'),
                 placeholder: t('.choose_period'),
                 url: erp_periods.dataselect_backend_periods_path(format: 'json')
@@ -57,8 +60,8 @@
         <div class="col-md-3">
             <%= erp_form_control("dataselect", {
                 name: 'customer',
-                value: '',
-                text: '',
+                value: (dfilters["customer"].present? ? Erp::Contacts::Contact.find(dfilters["customer"]).id : nil),
+                text: (dfilters["customer"].present? ? Erp::Contacts::Contact.find(dfilters["customer"]).name : nil),
                 label: t('.filter_customer'),
                 placeholder: t('.choose_customer'),
                 url: erp_contacts.dataselect_backend_contacts_path(format: 'json',

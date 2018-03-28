@@ -29,11 +29,13 @@
 <% end %>
 
 <% content_for :global_filter do %>
+    <% dfilters = current_user.get_filters(request.path+"_table").present? ? current_user.get_filters(request.path+"_table") : {}  %>
     <div class="row">
         <div class="col-md-3">
             <%= erp_form_control('date', {
                 label: t('.to_date'),
                 name: 'to_date',
+                value: (dfilters["to_date"].present? ? dfilters["to_date"].to_date : nil),
                 placeholder: t('.select_to_date')
             }) %>
         </div>
