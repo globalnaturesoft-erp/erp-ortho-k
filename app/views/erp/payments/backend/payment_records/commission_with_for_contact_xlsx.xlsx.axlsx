@@ -81,6 +81,14 @@ wb.styles do |s|
     received_column = c
     sheet.merge_cells("#{('A'.codepoints.first + c).chr}9:#{('A'.codepoints.first + c).chr}10")
     
+    header[:columns] << 'Trừ chiết khấu'
+    header[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
+    subheader[:columns] << ''
+    subheader[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
+    c += 1
+    received_column = c
+    sheet.merge_cells("#{('A'.codepoints.first + c).chr}9:#{('A'.codepoints.first + c).chr}10")
+    
     header[:columns] << 'Hoa hồng'
     header[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))    
     subheader[:columns] << '% DS'
@@ -142,10 +150,13 @@ wb.styles do |s|
       row[:columns] << pr.amount
       row[:styles] << (s.add_style text_right.deep_merge(border).deep_merge(number))
       
+      row[:columns] << pr.calculate_commission_amount(@options)
+      row[:styles] << (s.add_style text_right.deep_merge(border).deep_merge(number))
+      
       row[:columns] << pr.customer_commission_percent.to_f
       row[:styles] << (s.add_style text_right.deep_merge(border))
       
-      row[:columns] << pr.for_contact_commission_amount
+      row[:columns] << pr.for_contact_commission_amount(@options)
       row[:styles] << (s.add_style text_right.deep_merge(border).deep_merge(number))
       
       row[:columns] << pr.new_account_commission_amount
@@ -164,6 +175,9 @@ wb.styles do |s|
     # footer
     footer[:columns] << 'Tổng cộng'
     footer[:styles] << (s.add_style bold.deep_merge(wrap_text).deep_merge(border))
+    
+    footer[:columns] << ''
+    footer[:styles] << (s.add_style bold.deep_merge(border))
     
     footer[:columns] << ''
     footer[:styles] << (s.add_style bold.deep_merge(border))
