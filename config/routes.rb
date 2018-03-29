@@ -71,7 +71,7 @@ end
 
 Erp::OrthoK::Engine.routes.draw do
   scope "(:locale)", locale: /en|vi/ do
-		namespace :backend, module: "backend", path: "orthok/backend/products" do
+		namespace :backend, module: "backend", path: "orthok/backend/ortho_k" do
       resources :products do
         collection do
           get 'matrix_report'
