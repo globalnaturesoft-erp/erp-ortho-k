@@ -70,35 +70,35 @@ module Erp
               @totals = Erp::Orders::Order.sales_details_report(@global_filters)[:total]
             end
           end
+          
+          File.open("tmp/report_sales_details_xlsx.yml", "w+") do |f|
+            f.write({
+              global_filters: @global_filters,
+              period: @period,
+              from_date: @from_date,
+              to_date: @to_date,
+              group_by: @group_by,
+              groups: @groups,
+              totals: @totals,
+              rows: @rows
+            }.to_yaml)
+          end
 
           render layout: nil
         end
         
         # Xuat file excel //So chi tiet ban hang
         def report_sales_details_xlsx
-          @global_filters = params.to_unsafe_hash[:global_filter]
-
-          # if has period
-          if @global_filters[:period].present?
-            @period = Erp::Periods::Period.find(@global_filters[:period])
-            @global_filters[:from_date] = @period.from_date
-            @global_filters[:to_date] = @period.to_date
-          end
-
-          @from_date = @global_filters[:from_date].to_date
-          @to_date = @global_filters[:to_date].to_date
+          data = YAML.load_file("tmp/report_sales_details_xlsx.yml")
           
-          @group_by = @global_filters[:group_by]
-          
-          if @from_date.present? and @to_date.present?            
-            if @group_by.present? and !@group_by.include?(Erp::Orders::Order::GROUPED_BY_DEFAULT)
-              @groups = Erp::Orders::Order.group_sales_details_report(@global_filters)[:groups]
-              @totals = Erp::Orders::Order.group_sales_details_report(@global_filters)[:totals]
-            else              
-              @rows = Erp::Orders::Order.sales_details_report(@global_filters)[:data].sort_by { |n| n[:voucher_date] }.reverse!
-              @totals = Erp::Orders::Order.sales_details_report(@global_filters)[:total]
-            end
-          end
+          @global_filters = data[:global_filters]
+          @period = data[:period]
+          @from_date = data[:from_date]
+          @to_date = data[:to_date]
+          @group_by = data[:group_by]
+          @groups = data[:groups]
+          @totals = data[:totals]
+          @rows = data[:rows]
 
           respond_to do |format|
             format.xlsx {

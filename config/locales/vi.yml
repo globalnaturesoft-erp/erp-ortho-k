@@ -459,6 +459,7 @@ vi:
             record_date: "Ngày ghi sổ"
             voucher_date: "Ngày chứng từ"
             voucher_code: "Số chứng từ"
+            related_order: "Chg.từ liên quan"
             customer: "Khách hàng"
             customer_code: "Mã KH"
             customer_name: "Tên KH"

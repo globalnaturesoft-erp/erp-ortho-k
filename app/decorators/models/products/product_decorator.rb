@@ -401,6 +401,8 @@ Erp::Products::Product.class_eval do
       end
 
       result << {
+        delivery: delivery_detail.delivery,
+        related_order: delivery_detail.order_detail.order,
         record_type: delivery_detail.delivery.delivery_type,
         record_date: delivery_detail.delivery.created_at,
         voucher_date: delivery_detail.delivery.date,
@@ -497,6 +499,7 @@ Erp::Products::Product.class_eval do
       end
 
       result << {
+        delivery: delivery_detail.delivery,
         record_type: delivery_detail.delivery.delivery_type,
         record_date: delivery_detail.delivery.created_at,
         voucher_date: delivery_detail.delivery.date,

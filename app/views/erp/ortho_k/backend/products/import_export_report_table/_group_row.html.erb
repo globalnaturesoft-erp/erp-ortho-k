@@ -2,6 +2,7 @@
     group_name_colspan = (get_columns(params).include?("record_date") ? 1 : 0) +
         (get_columns(params).include?("voucher_date") ? 1 : 0) +
         (get_columns(params).include?("voucher_code") ? 1 : 0) +
+        (get_columns(params).include?("related_order") ? 1 : 0) +
         (get_columns(params).include?("supplier_code") ? 1 : 0) +
         (get_columns(params).include?("supplier_name") ? 1 : 0) +
         (get_columns(params).include?("customer_code") ? 1 : 0) +

@@ -9,6 +9,11 @@
         <% if get_columns(params).include?("voucher_code") %>
         <td class="text-left text-nowrap"><%= row[:voucher_code] %></td>
         <% end %>
+        <% if get_columns(params).include?("related_order") %>
+        <td class="text-<%= row[:related_order].present? ? 'left' : 'center' %> text-nowrap">
+            <%= row[:related_order].present? ? order_link(row[:related_order]) : '--' %>
+        </td>
+        <% end %>
         <% if get_columns(params).include?("supplier_code") %>
         <td class="text-<%= row[:supplier_code].present? ? 'left' : 'center' %> text-nowrap">
             <%= row[:supplier_code].present? ? row[:supplier_code] : '--' %>

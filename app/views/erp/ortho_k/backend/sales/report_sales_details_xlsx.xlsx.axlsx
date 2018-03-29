@@ -17,7 +17,7 @@ wb.styles do |s|
     bold = {b: true}
 
     if @from_date.present? and @to_date.present?
-      if !defined?(@period)
+      if !defined?(@period) or !@period.present?
         date = "(#{'TỪ ' + @from_date.strftime('%d/%m/%Y') if !@from_date.nil?}#{' ĐẾN ' + @to_date.strftime('%d/%m/%Y') if !@to_date.nil?})"
       else
         date = "(#{@period.name})"

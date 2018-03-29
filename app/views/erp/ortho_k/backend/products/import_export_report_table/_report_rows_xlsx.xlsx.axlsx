@@ -26,6 +26,9 @@ rows.each_with_index do |rw,index|
   row[:columns] << rw[:voucher_code]
   row[:styles] << (s.add_style text_left.deep_merge(middle_align).deep_merge(border).deep_merge(wrap))
 
+  row[:columns] << (rw[:related_order].present? ? rw[:related_order].code : '')
+  row[:styles] << (s.add_style text_left.deep_merge(middle_align).deep_merge(border).deep_merge(wrap))
+
   row[:columns] << rw[:supplier_code]
   row[:styles] << (s.add_style text_left.deep_merge(middle_align).deep_merge(border).deep_merge(wrap))
 

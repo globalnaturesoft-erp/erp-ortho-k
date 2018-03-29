@@ -17,7 +17,7 @@ wb.styles do |s|
     bold = {b: true}
 
     if @from_date.present? and @to_date.present?
-      if !defined?(@period)
+      if !defined?(@period) or !@period.present?
         date = "(#{'TỪ ' + @from_date.strftime('%d/%m/%Y') if !@from_date.nil?}#{' ĐẾN ' + @to_date.strftime('%d/%m/%Y') if !@to_date.nil?})"
       else
         date = "(#{@period.name})"
@@ -53,6 +53,9 @@ wb.styles do |s|
     footer[:columns] << ''
     footer[:styles] << (s.add_style text_center.deep_merge(middle_align).deep_merge(border).deep_merge(wrap).deep_merge(bold).deep_merge(number).deep_merge(bg_footer))
 
+    footer[:columns] << ''
+    footer[:styles] << (s.add_style text_center.deep_merge(middle_align).deep_merge(border).deep_merge(wrap).deep_merge(bold).deep_merge(number).deep_merge(bg_footer))
+    
     footer[:columns] << ''
     footer[:styles] << (s.add_style text_center.deep_merge(middle_align).deep_merge(border).deep_merge(wrap).deep_merge(bold).deep_merge(number).deep_merge(bg_footer))
 
@@ -148,6 +151,13 @@ wb.styles do |s|
 
     header[:columns] << "Số chứng từ"
     header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
+    subheader[:columns] << ''
+    subheader[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(border).merge(bold))
+    col_num += 1
+    sheet.merge_cells("#{('A'.codepoints.first+ col_num).chr}#{header_row_num}:#{('A'.codepoints.first+ col_num).chr}#{subheader_row_num}")
+    
+    header[:columns] << "Chứng từ \r\nliên quan"
+    header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold).deep_merge(wrap))
     subheader[:columns] << ''
     subheader[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(border).merge(bold))
     col_num += 1
