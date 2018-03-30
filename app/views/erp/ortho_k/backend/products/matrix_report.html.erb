@@ -27,6 +27,38 @@
                                         placeholder: 'Chọn ngày cuối kỳ'
                                     }) %>
                                 </div>
+                                <div class="col-md-4">
+                                    <% letter = Erp::Products::Property.where(name: "Chữ").first %>
+                                    <%= erp_form_control("dataselect", {
+                                        name: 'filters['+number.to_s+'][letters]',
+                                        values: (
+                                            dfilters["filters[#{number}][letters]"].present? ?
+                                            (Erp::Products::PropertiesValue.where(id: dfilters["filters[#{number}][letters]"]).map{|i| {text: i.value, value: i.id}})
+                                            : nil
+                                        ),
+                                        label: 'Chữ',
+                                        placeholder: letter.name,
+                                        url: erp_products.dataselect_backend_properties_values_path(format: 'json', property_id: letter.id),
+                                        include_blank: 'Tất cả chữ',
+                                        multiple: true
+                                    }) %>
+                                </div>
+                                <div class="col-md-4">
+                                    <% number = Erp::Products::Property.where(name: "Số").first %>
+                                    <%= erp_form_control("dataselect", {
+                                        name: 'filters['+number.to_s+'][numbers]',
+                                        values: (
+                                            dfilters["filters[#{number}][numbers]"].present? ?
+                                            (Erp::Products::PropertiesValue.where(id: dfilters["filters[#{number}][numbers]"]).map{|i| {text: i.value, value: i.id}})
+                                            : nil
+                                        ),
+                                        label: 'Số',
+                                        placeholder: number.name,
+                                        url: erp_products.dataselect_backend_properties_values_path(format: 'json', property_id: number.id),
+                                        include_blank: 'Tất cả số',
+                                        multiple: true
+                                    }) %>
+                                </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-3">
@@ -131,6 +163,28 @@
                     name: 'filters[<<index1>>][to_date]',
                     value: @to_date,
                     placeholder: 'Chọn ngày cuối kỳ'
+                }) %>
+            </div>
+            <div class="col-md-4">
+                <% letter = Erp::Products::Property.where(name: "Chữ").first %>
+                <%= erp_form_control("dataselect", {
+                    name: 'filters[<<index1>>][letters]',
+                    label: 'Chữ',
+                    placeholder: letter.name,
+                    url: erp_products.dataselect_backend_properties_values_path(format: 'json', property_id: letter.id),
+                    include_blank: 'Tất cả chữ',
+                    multiple: true
+                }) %>
+            </div>
+            <div class="col-md-4">
+                <% number = Erp::Products::Property.where(name: "Số").first %>
+                <%= erp_form_control("dataselect", {
+                    name: 'filters[<<index1>>][numbers]',
+                    label: 'Số',
+                    placeholder: number.name,
+                    url: erp_products.dataselect_backend_properties_values_path(format: 'json', property_id: number.id),
+                    include_blank: 'Tất cả số',
+                    multiple: true
                 }) %>
             </div>
         </div>

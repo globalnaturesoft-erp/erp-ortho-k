@@ -24,6 +24,15 @@ module Erp
           # get diameters
           diameter_ids = @global_filter[:diameters].present? ? @global_filter[:diameters] : nil
           @diameters = Erp::Products::PropertiesValue.where(id: diameter_ids)
+          
+          # get numbers
+          number_ids = @global_filter[:numbers].present? ? @global_filter[:numbers] : nil
+          numbers = Erp::Products::PropertiesValue.where(id: number_ids).map(&:value)
+          
+          # get letter
+          letter_ids = @global_filter[:letters].present? ? @global_filter[:letters] : nil
+          letters = Erp::Products::PropertiesValue.where(id: letter_ids).map(&:value)
+          
           # filter by diameters
           if diameter_ids.present?
             if !diameter_ids.kind_of?(Array)
@@ -58,7 +67,9 @@ module Erp
           @matrix[0][0] = {value: ''}
           @matrix[0][1] = {value: ''}
           Erp::Products::Product.matrix_cols.each do |col|
+            if !letters.present? or letters.include?(col[:letter])
               @matrix[0] << {value: col[:degree]}
+            end
           end
 
           # row 2
@@ -66,58 +77,67 @@ module Erp
           @matrix[1][0] = {value: ''}
           @matrix[1][1] = {value: ''}
           Erp::Products::Product.matrix_cols.each do |col|
+            if !letters.present? or letters.include?(col[:letter])
               @matrix[1] << {value: col[:letter]}
+            end
           end
 
           so_p = Erp::Products::Property.get_number
           chu_p = Erp::Products::Property.get_letter
 
           # rows and cols
+          row_i = 0
           Erp::Products::Product.matrix_rows.each_with_index do |row, index|
-            row_index = index + 2
-            @matrix[row_index] = []
-
-            @matrix[row_index][0] = {value: row[:degree_k]}
-            @matrix[row_index][1] = {value: row[:number]}
-
-            Erp::Products::Product.matrix_cols.each do |col|
-
-              chu_pv = Erp::Products::PropertiesValue.where(property_id: chu_p.id, value: col[:letter]).first
-              so_pv = Erp::Products::PropertiesValue.where(property_id: so_p.id, value: row[:number]).first
-
-              product_ids = @product_query.find_by_properties_value_ids([chu_pv.id,so_pv.id]).select('id')
-              product_ids = -1 if product_ids.count == 0
-              filters = @global_filter.clone.merge({
-                product_id: product_ids,
-                state_ids: @global_filter[:states],
-                warehouse_ids: @global_filter[:warehouses]
-              })
-              stock = Erp::Products::Product.get_stock_real(filters)
-
-              @matrix[row_index] << {
-                value: stock,
-                url_data: {
-                  properties_value_ids: [chu_pv.id,so_pv.id],
-                  categories: @global_filter[:categories],
-                  warehouse_ids: @global_filter[:warehouses],
-                  state_ids: @global_filter[:states],
-                  diameters: @global_filter[:diameters]
-                }
-              }
-
-              # sumary
-              @summary[:total] += stock
-
-              if stock <= 0
-                @summary[:out_of_stock] += 1
-              elsif stock == 1
-                @summary[:equal_1] += 1
-              elsif stock == 2
-                @summary[:equal_2] += 1
-              elsif stock == 3
-                @summary[:equal_3] += 1
-              elsif stock >= 4
-                @summary[:from_4] += 1
+            if !numbers.present? or numbers.include?(row[:number])
+              row_index = row_i + 2
+              row_i += 1
+              
+              @matrix[row_index] = []
+  
+              @matrix[row_index][0] = {value: row[:degree_k]}
+              @matrix[row_index][1] = {value: row[:number]}
+  
+              Erp::Products::Product.matrix_cols.each do |col|
+                if !letters.present? or letters.include?(col[:letter])
+                  chu_pv = Erp::Products::PropertiesValue.where(property_id: chu_p.id, value: col[:letter]).first
+                  so_pv = Erp::Products::PropertiesValue.where(property_id: so_p.id, value: row[:number]).first
+    
+                  product_ids = @product_query.find_by_properties_value_ids([chu_pv.id,so_pv.id]).select('id')
+                  product_ids = -1 if product_ids.count == 0
+                  filters = @global_filter.clone.merge({
+                    product_id: product_ids,
+                    state_ids: @global_filter[:states],
+                    warehouse_ids: @global_filter[:warehouses]
+                  })
+                  stock = Erp::Products::Product.get_stock_real(filters)
+    
+                  @matrix[row_index] << {
+                    value: stock,
+                    url_data: {
+                      properties_value_ids: [chu_pv.id,so_pv.id],
+                      categories: @global_filter[:categories],
+                      warehouse_ids: @global_filter[:warehouses],
+                      state_ids: @global_filter[:states],
+                      diameters: @global_filter[:diameters]
+                    }
+                  }
+    
+                  # sumary
+                  @summary[:total] += stock
+    
+                  if stock <= 0
+                    @summary[:out_of_stock] += 1
+                  elsif stock == 1
+                    @summary[:equal_1] += 1
+                  elsif stock == 2
+                    @summary[:equal_2] += 1
+                  elsif stock == 3
+                    @summary[:equal_3] += 1
+                  elsif stock >= 4
+                    @summary[:from_4] += 1
+                  end
+                  
+                end
               end
             end
           end
