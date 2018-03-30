@@ -2,12 +2,13 @@ wb = xlsx_package.workbook
 xlsx_package.use_autowidth = true
 wb.styles do |s|
   wb.styles.fonts.first.name = 'Calibri'
-    @matrixes.each do |m|
+    @matrixes.each_with_index do |m,nnuumm|
         @global_filter = m[:filter]
         @matrix = m[:matrix]
         @summary = m[:summary]
-
-        sheet_name = @global_filter[:categories].present? ? Erp::Products::Category.where(id: @global_filter[:categories]).map(&:name).join(', ') : 'Tất cả'
+        
+        sheet_name = "(#{nnuumm+1}) "
+        sheet_name += @global_filter[:categories].present? ? Erp::Products::Category.where(id: @global_filter[:categories]).map(&:name).join(', ') : 'Tất cả'
         sheet_name += ' | '
         sheet_name += @global_filter[:diameters].present? ? Erp::Products::PropertiesValue.where(id: @global_filter[:diameters]).map(&:value).join(', ') : 'Tất cả'
         sheet_name += ' | '
