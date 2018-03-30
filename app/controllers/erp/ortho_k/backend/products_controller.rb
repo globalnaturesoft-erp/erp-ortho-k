@@ -18,7 +18,7 @@ module Erp
           end
 
           # product query
-          @product_query = Erp::Products::Product
+          @product_query = Erp::Products::Product.get_active
           @product_query = @product_query.where(category_id: @global_filter[:categories]) if @global_filter[:categories].present?
 
           # get diameters
@@ -158,7 +158,7 @@ module Erp
           @global_filter = params.to_unsafe_hash
 
           # product query
-          @product_query = Erp::Products::Product
+          @product_query = Erp::Products::Product.get_active
           @product_query = @product_query.where(category_id: @global_filter[:categories]) if @global_filter[:categories].present?
 
           # get diameters
@@ -213,7 +213,7 @@ module Erp
             end
           end
 
-          @products_query = Erp::Products::Product.search(params).delivery_report(filters: @global_filters)
+          @products_query = Erp::Products::Product.get_active.search(params).delivery_report(filters: @global_filters)
 
           if @group_by_category.present?
             @categories = @group_by_category == 'all' ? Erp::Products::Category.order('name') : Erp::Products::Category.where(id: @group_by_category)
@@ -326,7 +326,7 @@ module Erp
           @numbers = Erp::Products::PropertiesValue.where(id: number_ids)
 
           # query
-          @product_query = Erp::Products::Product
+          @product_query = Erp::Products::Product.get_active
           @product_query = @product_query.where(category_id: category_ids) if category_ids.present?
           # filter by diameters
           if diameter_ids.present?

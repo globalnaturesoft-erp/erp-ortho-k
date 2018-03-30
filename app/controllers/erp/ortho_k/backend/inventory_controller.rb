@@ -32,7 +32,7 @@ module Erp
           @diameters = Erp::Products::PropertiesValue.where(id: diameter_ids)
 
           # product query
-          @product_query = Erp::Products::Product.where(category_id: category_ids)
+          @product_query = Erp::Products::Product.get_active.where(category_id: category_ids)
 
           # filter by diameters
           if !diameter_ids.kind_of?(Array)
@@ -77,7 +77,7 @@ module Erp
           @diameters = Erp::Products::PropertiesValue.where(id: diameter_ids)
 
           # product query
-          @product_query = Erp::Products::Product.where(category_id: category_ids)
+          @product_query = Erp::Products::Product.get_active.where(category_id: category_ids)
           # filter by diameters
           if !diameter_ids.kind_of?(Array)
             @product_query = @product_query.where("erp_products_products.cache_properties LIKE '%[\"#{diameter_ids}\",%'")
@@ -147,7 +147,7 @@ module Erp
 
 
           # product query
-          @product_query = Erp::Products::Product.joins(:category).where(category_id: category_ids)
+          @product_query = Erp::Products::Product.get_active.joins(:category).where(category_id: category_ids)
             .order('erp_products_products.ordered_code')
           # single keyword
           if params.to_unsafe_hash[:keyword].present?
@@ -246,7 +246,7 @@ module Erp
 
 
           # product query
-          @product_query = Erp::Products::Product.where(category_id: category_ids)
+          @product_query = Erp::Products::Product.get_active.where(category_id: category_ids)
             .order('erp_products_products.ordered_code')
           # single keyword
           if params.to_unsafe_hash[:keyword].present?
@@ -348,7 +348,7 @@ module Erp
           @diameters = Erp::Products::PropertiesValue.where(id: diameter_ids)
 
           # product query
-          @product_query = Erp::Products::Product.where(category_id: category_ids)
+          @product_query = Erp::Products::Product.get_active.where(category_id: category_ids)
           # filter by diameters
           if !diameter_ids.kind_of?(Array)
             @product_query = @product_query.where("erp_products_products.cache_properties LIKE '%[\"#{diameter_ids}\",%'")
@@ -393,7 +393,7 @@ module Erp
           @diameters = Erp::Products::PropertiesValue.where(id: diameter_ids)
 
           # product query
-          @product_query = Erp::Products::Product.where(category_id: category_ids)
+          @product_query = Erp::Products::Product.get_active.where(category_id: category_ids)
           # filter by diameters
           if !diameter_ids.kind_of?(Array)
             @product_query = @product_query.where("erp_products_products.cache_properties LIKE '%[\"#{diameter_ids}\",%'")
@@ -450,7 +450,7 @@ module Erp
           @categories = (category_ids.empty? ? Erp::Products::Category.all : Erp::Products::Category.where(id: category_ids))
 
           # product query
-          @product_query = Erp::Products::Product.all
+          @product_query = Erp::Products::Product.get_active
           @product_query = @product_query.where(category_id: category_ids) if category_ids.present?
 
           # warehouses
@@ -475,7 +475,7 @@ module Erp
           @categories = (category_ids.empty? ? Erp::Products::Category.all : Erp::Products::Category.where(id: category_ids))
 
           # product query
-          @product_query = Erp::Products::Product.all
+          @product_query = Erp::Products::Product.get_active
           @product_query = @product_query.where(category_id: category_ids) if category_ids.present?
 
           # warehouses
@@ -531,7 +531,7 @@ module Erp
             end
           end
 
-          @product_query = Erp::Products::Product
+          @product_query = Erp::Products::Product.get_active
           # product query
           @product_query = @product_query.where(category_id: category_ids) if category_ids.present?
           # filter by diameters
@@ -583,7 +583,7 @@ module Erp
             end
           end
 
-          @product_query = Erp::Products::Product
+          @product_query = Erp::Products::Product.get_active
           # product query
           @product_query = @product_query.where(category_id: category_ids) if category_ids.present?
           # filter by diameters
@@ -715,10 +715,10 @@ module Erp
           @numbers = Erp::Products::PropertiesValue.where(id: number_ids)
 
           # warehouses
-          @warehouses = Erp::Warehouses::Warehouse.all
+          @warehouses = Erp::Warehouses::Warehouse
 
           # product query
-          @product_query = Erp::Products::Product.where(category_id: category_ids)
+          @product_query = Erp::Products::Product.get_active.where(category_id: category_ids)
           # single keyword
           if params.to_unsafe_hash[:keyword].present?
             keyword = params.to_unsafe_hash[:keyword].strip.downcase
@@ -807,10 +807,10 @@ module Erp
           @numbers = Erp::Products::PropertiesValue.where(id: number_ids)
 
           # warehouses
-          @warehouses = Erp::Warehouses::Warehouse.all
+          @warehouses = Erp::Warehouses::Warehouse
 
           # product query
-          @product_query = Erp::Products::Product.where(category_id: category_ids)
+          @product_query = Erp::Products::Product.get_active.where(category_id: category_ids)
           # single keyword
           if params.to_unsafe_hash[:keyword].present?
             keyword = params.to_unsafe_hash[:keyword].strip.downcase
@@ -925,7 +925,7 @@ module Erp
             end
           end
 
-          @product_query = Erp::Products::Product
+          @product_query = Erp::Products::Product.get_active
 
           # state
           @states = Erp::Products::State.all_active
@@ -973,7 +973,7 @@ module Erp
             end
           end
 
-          @product_query = Erp::Products::Product
+          @product_query = Erp::Products::Product.get_active
 
           # state
           @states = Erp::Products::State.all_active
@@ -1002,7 +1002,7 @@ module Erp
           @to_date = @global_filter[:to_date].to_date
 
           # product query
-          @product_query = Erp::Products::Product
+          @product_query = Erp::Products::Product.get_active
           @product_query = @product_query.where(category_id: @global_filter[:categories]) if @global_filter[:categories].present?
 
           # get diameters
@@ -1149,7 +1149,7 @@ module Erp
           @to_date = @global_filter[:to_date].to_date
 
           # product query
-          @product_query = Erp::Products::Product
+          @product_query = Erp::Products::Product.get_active
           @product_query = @product_query.where(category_id: @global_filter[:categories]) if @global_filter[:categories].present?
 
           # get diameters
