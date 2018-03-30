@@ -13,6 +13,8 @@
             <div class="addable-boxes border-top" data-pattern=".patterns-matrix">
                 <% (0..20).each do |number| %>
                     <% if dfilters["filters[#{number}][categories]"].present? or
+                        dfilters["filters[#{number}][numbers]"].present? or
+                        dfilters["filters[#{number}][letters]"].present? or
                         dfilters["filters[#{number}][diameters]"].present? or
                         dfilters["filters[#{number}][warehouses]"].present? or
                         dfilters["filters[#{number}][states]"].present?
@@ -44,7 +46,7 @@
                                     }) %>
                                 </div>
                                 <div class="col-md-4">
-                                    <% number = Erp::Products::Property.where(name: "Số").first %>
+                                    <% numm = Erp::Products::Property.where(name: "Số").first %>
                                     <%= erp_form_control("dataselect", {
                                         name: 'filters['+number.to_s+'][numbers]',
                                         values: (
@@ -53,8 +55,8 @@
                                             : nil
                                         ),
                                         label: 'Số',
-                                        placeholder: number.name,
-                                        url: erp_products.dataselect_backend_properties_values_path(format: 'json', property_id: number.id),
+                                        placeholder: numm.name,
+                                        url: erp_products.dataselect_backend_properties_values_path(format: 'json', property_id: numm.id),
                                         include_blank: 'Tất cả số',
                                         multiple: true
                                     }) %>
