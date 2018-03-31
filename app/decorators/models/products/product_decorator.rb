@@ -76,6 +76,16 @@ Erp::Products::Product.class_eval do
   def get_number
     self.get_value(Erp::Products::Property.getByName(Erp::Products::Property::NAME_SO))
   end
+  
+  # get degree K
+  def get_degree_k
+    self.get_value(Erp::Products::Property.getByName(Erp::Products::Property::NAME_DO_K))
+  end
+  
+  # get degree
+  def get_degree
+    self.get_value(Erp::Products::Property.getByName(Erp::Products::Property::NAME_DO))
+  end
 
   # get diameter
   def get_diameter_properties_value
@@ -2501,4 +2511,18 @@ Erp::Products::Product.class_eval do
 
     codes
   end
+  
+  # get all lens has: letter: K with number: ['01','02','03','04','30','31','32','33','34','35','36']
+  def self.get_k_lens_01_04_30_36
+    k_pv = Erp::Products::PropertiesValue.where(value: 'K').first
+    number_pvs = Erp::Products::PropertiesValue.where(value: ['01','02','03','04','30','31','32','33','34','35','36'])
+    
+    lens = []
+    number_pvs.each do |number_pv|
+      lens += Erp::Products::Product.find_by_properties_value_ids([number_pv.id, k_pv.id])
+    end
+    
+    lens
+  end
+  
 end
