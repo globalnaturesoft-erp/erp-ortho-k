@@ -2131,10 +2131,10 @@ Erp::Products::Product.class_eval do
   # Get matrix rows columns
   def self.matrix_rows
     [
-      {number: '01', degree_k: 'K1'},
-      {number: '02', degree_k: 'K2'},
-      {number: '03', degree_k: 'K3'},
-      {number: '04', degree_k: 'K4'},
+      {number: '01', degree_k: '47'},
+      {number: '02', degree_k: '46.75'},
+      {number: '03', degree_k: '46.50'},
+      {number: '04', degree_k: '46.25'},
       {number: '05', degree_k: '46.00/7.34'},
       {number: '06', degree_k: '45.75/7.37'},
       {number: '07', degree_k: '45.50/7.42'},
@@ -2160,13 +2160,13 @@ Erp::Products::Product.class_eval do
       {number: '27', degree_k: '40.50/8.33'},
       {number: '28', degree_k: '40.25/8.38'},
       {number: '29', degree_k: '40.00/8.44'},
-      {number: '30', degree_k: 'K30'},
-      {number: '31', degree_k: 'K31'},
-      {number: '32', degree_k: 'K32'},
-      {number: '33', degree_k: 'K33'},
-      {number: '34', degree_k: 'K34'},
-      {number: '35', degree_k: 'K35'},
-      {number: '36', degree_k: 'K36'},
+      {number: '30', degree_k: '39.75'},
+      {number: '31', degree_k: '39.50'},
+      {number: '32', degree_k: '39.25'},
+      {number: '33', degree_k: '39.00'},
+      {number: '34', degree_k: '38.75'},
+      {number: '35', degree_k: '38.50'},
+      {number: '36', degree_k: '38.25'},
     ]
   end
 
