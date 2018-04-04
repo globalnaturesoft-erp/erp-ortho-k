@@ -164,6 +164,10 @@
             </div>
         </div>
     </div>
+    <hr>
+    <div class="mb-10 text-right">
+        <a href="javascript:;" class="btn btn-danger global-filter-button">Kiểm kho</a>
+    </div>
 <% end %>
 
 <div class="patterns-lvl1" style="display: none">
@@ -254,6 +258,8 @@
 <%= erp_datalist(
     url: erp_ortho_k.report_custom_area_v2_table_backend_inventory_index_path,
     sortable: true,
+    autoload: false,
     columns: [
     ],
+    placeholder: 'Vui lòng chọn vùng cần xem và nhấn Kiểm kho'
 ) %>

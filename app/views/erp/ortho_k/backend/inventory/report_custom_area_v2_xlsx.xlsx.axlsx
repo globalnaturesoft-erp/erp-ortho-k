@@ -229,7 +229,9 @@ wb.styles do |s|
           begin_params = filters.clone
           begin_params[:to_date] = filters[:from_date]
           begin_params[:from_date] = nil
-          row[:columns] << (counts[rw[:category].name][0] = counts[rw[:category].name][0].to_i + Erp::Products::Product.get_stock_real(begin_params))
+          row[:columns] << Erp::Products::Product.get_stock_real(begin_params)
+          counts[rw[:category].name][0] = counts[rw[:category].name][0].to_i + Erp::Products::Product.get_stock_real(begin_params)
+          
           row[:styles] << (s.add_style text_center.deep_merge(middle_align).deep_merge(border).deep_merge(wrap).deep_merge(bold))
 
           count = Erp::Products::Product.get_qdelivery_import(filters.clone.merge({
@@ -242,12 +244,14 @@ wb.styles do |s|
           row[:styles] << (s.add_style text_center.deep_merge(middle_align).deep_merge(border).deep_merge(wrap))
 
           count = Erp::Products::Product.get_stock_check_import(filters)
-          row[:columns] << (counts[rw[:category].name][2] = counts[rw[:category].name][2].to_i + count)
+          row[:columns] << count
+          counts[rw[:category].name][2] = counts[rw[:category].name][2].to_i + count
           row[:styles] << (s.add_style text_center.deep_merge(middle_align).deep_merge(border).deep_merge(wrap))
 
           count = (filters[:state_ids].present? ? Erp::Products::Product.get_state_check_import(filters) : '--')
           if filters[:state_ids].present?
-            row[:columns] << (counts[rw[:category].name][8] = counts[rw[:category].name][8].to_i + count)
+            row[:columns] << count
+            counts[rw[:category].name][8] = counts[rw[:category].name][8].to_i + count
           else
             row[:columns] << (count)
           end
@@ -261,7 +265,9 @@ wb.styles do |s|
               ],
               state: state
             }))
-            row[:columns] << (counts[rw[:category].name][3][state.id] = count)
+            row[:columns] << count
+            counts[rw[:category].name][3][state.id] = count
+            
             row[:styles] << (s.add_style text_center.deep_merge(middle_align).deep_merge(border).deep_merge(wrap))
           end
 
@@ -272,17 +278,20 @@ wb.styles do |s|
             ]
           }))
           count += Erp::Products::Product.get_gift_given_export(filters)
-          row[:columns] << (counts[rw[:category].name][4] = counts[rw[:category].name][4].to_i + count)
+          row[:columns] << count
+          counts[rw[:category].name][4] = counts[rw[:category].name][4].to_i + count
           row[:styles] << (s.add_style text_center.deep_merge(middle_align).deep_merge(border).deep_merge(wrap))
 
           count = Erp::Products::Product.get_damage_record_export(filters)
           count += Erp::Products::Product.get_stock_check_export(filters)
-          row[:columns] << (counts[rw[:category].name][5] = counts[rw[:category].name][5].to_i + count)
+          row[:columns] << count
+          counts[rw[:category].name][5] = counts[rw[:category].name][5].to_i + count
           row[:styles] << (s.add_style text_center.deep_merge(middle_align).deep_merge(border).deep_merge(wrap))
 
           count = (filters[:state_ids].present? ? Erp::Products::Product.get_state_check_export(filters) : '--')
           if filters[:state_ids].present?
-            row[:columns] << (counts[rw[:category].name][6] = counts[rw[:category].name][6].to_i + count)
+            row[:columns] << count
+            counts[rw[:category].name][6] = counts[rw[:category].name][6].to_i + count
           else
             row[:columns] << (count)
           end
@@ -290,7 +299,9 @@ wb.styles do |s|
 
           end_params = filters.clone
           end_params[:from_date] = nil
-          row[:columns] << (counts[rw[:category].name][7] = counts[rw[:category].name][7].to_i + Erp::Products::Product.get_stock_real(end_params))
+          row[:columns] << Erp::Products::Product.get_stock_real(end_params)
+          counts[rw[:category].name][7] = counts[rw[:category].name][7].to_i + Erp::Products::Product.get_stock_real(end_params)
+          
           row[:styles] << (s.add_style text_center.deep_merge(middle_align).deep_merge(border).deep_merge(wrap).deep_merge(bold))
 
           sheet.add_row row[:columns], style: row[:styles]

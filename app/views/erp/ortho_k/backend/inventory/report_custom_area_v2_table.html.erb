@@ -51,9 +51,9 @@
     <% @rows.each_with_index do |row, index| %>
         <% counts[row[:category].name] = {} %>
         <% row[:letter_groups].each_with_index do |lg,index2| %>
-            <% lg[:numbers_diameters].each_with_index do |nd,index3| %>
+            <% lg[:numbers_diameters].each_with_index do |nd,index3| %>                
                 <%
-                    query = @product_query
+                    query = @product_query.clone
                     # filter by properties
                     [nd[:diameter_ids], lg[:letter_ids], nd[:number_ids]].each do |ids|
                         if ids.present?
@@ -76,9 +76,12 @@
                 %>
                 <% product_ids = -1 if product_ids.count == 0 %>
                 <% filters = @global_filters.clone.merge({product_id: product_ids}) %>
+                
+                
 
                 <tr>
                     <td class="text-bold text-primary">
+                      <%= query.count %>
                         <%= row[:category].name if index2 == 0 and index3 == 0 %>
                     </td>
                     <td class="text-bold">
@@ -103,7 +106,8 @@
                             begin_params[:to_date] = filters[:from_date]
                             begin_params[:from_date] = nil
                         %>
-                        <%= counts[row[:category].name][0] = counts[row[:category].name][0].to_i + Erp::Products::Product.get_stock_real(begin_params) %>
+                        <%= num = Erp::Products::Product.get_stock_real(begin_params) %>
+                        <% counts[row[:category].name][0] = counts[row[:category].name][0].to_i + num %>
                     </td>
                     <td class="text-center">
                         <%
@@ -114,20 +118,23 @@
                                 ]
                             }))
                         %>
-                        <%= counts[row[:category].name][1] = counts[row[:category].name][1].to_i + count %>
+                        <%= count %>
+                        <% counts[row[:category].name][1] = counts[row[:category].name][1].to_i + count %>
                     </td>
                     <td class="text-center">
                         <%
                             count = Erp::Products::Product.get_stock_check_import(filters)
                         %>
-                        <%= counts[row[:category].name][2] = counts[row[:category].name][2].to_i + count %>
+                        <%= count %>
+                        <% counts[row[:category].name][2] = counts[row[:category].name][2].to_i + count %>
                     </td>
                     <td class="text-center">
                         <%
                           count = (filters[:state_ids].present? ? Erp::Products::Product.get_state_check_import(filters) : '--')
                         %>
                         <% if filters[:state_ids].present? %>
-                          <%= counts[row[:category].name][8] = counts[row[:category].name][8].to_i + count %>
+                          <%= count %>
+                          <% counts[row[:category].name][8] = counts[row[:category].name][8].to_i + count %>
                         <% else %>
                           <%= count %>
                         <% end %>
@@ -143,7 +150,8 @@
                                     state: state
                               }))
                             %>
-                            <%= counts[row[:category].name][3][state.id] = counts[row[:category].name][3][state.id].to_i + count %>
+                            <%= count %>
+                            <% counts[row[:category].name][3][state.id] = counts[row[:category].name][3][state.id].to_i + count %>
                         </td>
                     <% end %>
                     <td class="text-center">
@@ -156,21 +164,24 @@
                             }))
                             count += Erp::Products::Product.get_gift_given_export(filters)
                         %>
-                        <%= counts[row[:category].name][4] = counts[row[:category].name][4].to_i + count %>
+                        <%= count %>
+                        <% counts[row[:category].name][4] = counts[row[:category].name][4].to_i + count %>
                     </td>
                     <td class="text-center">
                         <%
                             count = Erp::Products::Product.get_damage_record_export(filters)
                             count += Erp::Products::Product.get_stock_check_export(filters)
                         %>
-                        <%= counts[row[:category].name][5] = counts[row[:category].name][5].to_i + count %>
+                        <%= count %>
+                        <% counts[row[:category].name][5] = counts[row[:category].name][5].to_i + count %>
                     </td>
                     <td class="text-center">
                         <%
                           count = (filters[:state_ids].present? ? Erp::Products::Product.get_state_check_export(filters) : '--')
                         %>
                         <% if filters[:state_ids].present? %>
-                          <%= counts[row[:category].name][6] = counts[row[:category].name][6].to_i + count %>
+                          <%= count %>
+                          <% counts[row[:category].name][6] = counts[row[:category].name][6].to_i + count %>
                         <% else %>
                           <%= count %>
                         <% end %>
@@ -180,7 +191,8 @@
                             end_params = filters.clone
                             end_params[:from_date] = nil
                         %>
-                        <%= counts[row[:category].name][7] = counts[row[:category].name][7].to_i + Erp::Products::Product.get_stock_real(end_params) %>
+                        <%= Erp::Products::Product.get_stock_real(end_params) %>
+                        <% counts[row[:category].name][7] = counts[row[:category].name][7].to_i + Erp::Products::Product.get_stock_real(end_params) %>
                     </td>
                 </tr>
             <% end %>
@@ -188,7 +200,7 @@
 
 
         <%
-            query = @product_query
+            query = @product_query.clone
             product_ids = query.select('id').where(category_id: row[:category].id)
         %>
         <% product_ids = -1 if product_ids.count == 0 %>
