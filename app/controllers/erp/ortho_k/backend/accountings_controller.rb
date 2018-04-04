@@ -205,94 +205,111 @@ module Erp
 
         # Bao cao cong no khach hang
         def report_customer_liabilities_table
-          glb = params.to_unsafe_hash[:global_filter]
-          if glb[:period].present?
-            @period_name = Erp::Periods::Period.find(glb[:period]).name
-            @from = Erp::Periods::Period.find(glb[:period]).from_date.beginning_of_day
-            @to = Erp::Periods::Period.find(glb[:period]).to_date.end_of_day
+          @global_filters = params.to_unsafe_hash[:global_filter]
+          if @global_filters[:period].present?
+            @period_name = Erp::Periods::Period.find(@global_filters[:period]).name
+            @from = Erp::Periods::Period.find(@global_filters[:period]).from_date.beginning_of_day
+            @to = Erp::Periods::Period.find(@global_filters[:period]).to_date.end_of_day
           else
             @period_name = nil
-            @from = (glb.present? and glb[:from_date].present?) ? glb[:from_date].to_date : nil #Time.now.beginning_of_month
-            @to = (glb.present? and glb[:to_date].present?) ? glb[:to_date].to_date : nil
+            @from = (@global_filters.present? and @global_filters[:from_date].present?) ? @global_filters[:from_date].to_date : nil #Time.now.beginning_of_month
+            @to = (@global_filters.present? and @global_filters[:to_date].present?) ? @global_filters[:to_date].to_date : nil
           end
+          
+          @from_date = @global_filters[:from_date].to_date
+          @to_date = @global_filters[:to_date].to_date
 
-          if glb[:customer].present?
-            @customers = Erp::Contacts::Contact.where(id: glb[:customer])
+          if @global_filters[:customer].present?
+            @customers = Erp::Contacts::Contact.where(id: @global_filters[:customer])
           else
-            #@todo only show related contacts, lien he co phat sinh moi show
             @customers = Erp::Contacts::Contact.where.not(id: Erp::Contacts::Contact.get_main_contact.id)
+          end
+          
+          # @todo only show related contacts, lien he co phat sinh moi show
+          @customers = @customers.get_sales_payment_chasing_contacts(
+            from_date: @from,
+            to_date: @to
+          )
+          
+          File.open("tmp/report_customer_liabilities_xlsx.yml", "w+") do |f|
+            f.write({
+              global_filters: @global_filters,
+              period_name: @period_name,
+              from_date: @from,
+              to_date: @to,
+              customers: @customers
+            }.to_yaml)
           end
         end
 
         def report_customer_liabilities_xlsx
-          glb = params.to_unsafe_hash[:global_filter]
-          if glb[:period].present?
-            @period_name = Erp::Periods::Period.find(glb[:period]).name
-            @from = Erp::Periods::Period.find(glb[:period]).from_date.beginning_of_day
-            @to = Erp::Periods::Period.find(glb[:period]).to_date.end_of_day
-          else
-            @period_name = nil
-            @from = (glb.present? and glb[:from_date].present?) ? glb[:from_date].to_date : nil #Time.now.beginning_of_month
-            @to = (glb.present? and glb[:to_date].present?) ? glb[:to_date].to_date : nil
-          end
-
-          if glb[:customer].present?
-            @customers = Erp::Contacts::Contact.where(id: glb[:customer])
-          else
-            #@todo only show related contacts, lien he co phat sinh moi show
-            @customers = Erp::Contacts::Contact.where.not(id: Erp::Contacts::Contact.get_main_contact.id)
-          end
+          data = YAML.load_file("tmp/report_customer_liabilities_xlsx.yml")
+          
+          @global_filters = data[:global_filters]
+          @period_name = data[:period_name]
+          @from = data[:from_date].to_date
+          @to = data[:to_date].to_date
+          @customers = data[:customers]
+          
+          @customers = Erp::Contacts::Contact.where(id: (@customers.map{|i| i.id}))
 
           respond_to do |format|
             format.xlsx {
-              response.headers['Content-Disposition'] = 'attachment; filename="Cong no khach hang.xlsx"'
+              response.headers['Content-Disposition'] = 'attachment; filename="Bao cao cong no khach hang.xlsx"'
             }
           end
         end
 
         # Bao cao cong no nha cung cap
         def report_supplier_liabilities_table
-          glb = params.to_unsafe_hash[:global_filter]
-          if glb[:period].present?
-            @period_name = Erp::Periods::Period.find(glb[:period]).name
-            @from = Erp::Periods::Period.find(glb[:period]).from_date.beginning_of_day
-            @to = Erp::Periods::Period.find(glb[:period]).to_date.end_of_day
+          global_filters = params.to_unsafe_hash[:global_filter]
+          if global_filters[:period].present?
+            @period_name = Erp::Periods::Period.find(global_filters[:period]).name
+            @from = Erp::Periods::Period.find(global_filters[:period]).from_date.beginning_of_day
+            @to = Erp::Periods::Period.find(global_filters[:period]).to_date.end_of_day
           else
             @period_name = nil
-            @from = (glb.present? and glb[:from_date].present?) ? glb[:from_date].to_date : nil #Time.now.beginning_of_month
-            @to = (glb.present? and glb[:to_date].present?) ? glb[:to_date].to_date : nil
+            @from = (global_filters.present? and global_filters[:from_date].present?) ? global_filters[:from_date].to_date : nil #Time.now.beginning_of_month
+            @to = (global_filters.present? and global_filters[:to_date].present?) ? global_filters[:to_date].to_date : nil
           end
 
-          if glb[:supplier].present?
-            @suppliers = Erp::Contacts::Contact.where(id: glb[:supplier])
+          if global_filters[:supplier].present?
+            @suppliers = Erp::Contacts::Contact.where(id: global_filters[:supplier])
           else
             @suppliers = Erp::Contacts::Contact.where.not(id: Erp::Contacts::Contact.get_main_contact.id)
-                          #.where(is_supplier: true)
+          end
+          
+          # @todo only show related contacts, lien he co phat sinh moi show
+          @suppliers = @suppliers.get_purchase_payment_chasing_contacts(
+            from_date: @from,
+            to_date: @to
+          )
+          
+          File.open("tmp/report_supplier_liabilities_xlsx.yml", "w+") do |f|
+            f.write({
+              global_filters: @global_filters,
+              period_name: @period_name,
+              from_date: @from,
+              to_date: @to,
+              suppliers: @suppliers
+            }.to_yaml)
           end
         end
 
         def report_supplier_liabilities_xlsx
-          glb = params.to_unsafe_hash[:global_filter]
-          if glb[:period].present?
-            @period_name = Erp::Periods::Period.find(glb[:period]).name
-            @from = Erp::Periods::Period.find(glb[:period]).from_date.beginning_of_day
-            @to = Erp::Periods::Period.find(glb[:period]).to_date.end_of_day
-          else
-            @period_name = nil
-            @from = (glb.present? and glb[:from_date].present?) ? glb[:from_date].to_date : nil #Time.now.beginning_of_month
-            @to = (glb.present? and glb[:to_date].present?) ? glb[:to_date].to_date : nil
-          end
-
-          if glb[:supplier].present?
-            @suppliers = Erp::Contacts::Contact.where(id: glb[:supplier])
-          else
-            @suppliers = Erp::Contacts::Contact.where.not(id: Erp::Contacts::Contact.get_main_contact.id)
-                          #.where(is_supplier: true)
-          end
+          data = YAML.load_file("tmp/report_supplier_liabilities_xlsx.yml")
+          
+          @global_filters = data[:global_filters]
+          @period_name = data[:period_name]
+          @from = data[:from_date].to_date
+          @to = data[:to_date].to_date
+          @suppliers = data[:suppliers]
+          
+          @suppliers = Erp::Contacts::Contact.where(id: (@suppliers.map{|i| i.id}))
 
           respond_to do |format|
             format.xlsx {
-              response.headers['Content-Disposition'] = 'attachment; filename="Cong no nha cung cap.xlsx"'
+              response.headers['Content-Disposition'] = 'attachment; filename="Bao cao cong no nha cung cap.xlsx"'
             }
           end
         end
