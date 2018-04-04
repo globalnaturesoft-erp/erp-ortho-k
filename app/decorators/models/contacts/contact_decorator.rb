@@ -345,6 +345,28 @@ Erp::Contacts::Contact.class_eval do
     self.where("erp_contacts_contacts.id IN (?) OR erp_contacts_contacts.id IN (?) OR erp_contacts_contacts.id IN (?)", order_query, product_return_query, payment_query)
   end
   
+  # get contacts list for payment chasing // Customer commission
+  def self.get_customer_commission_payment_chasing_contacts(options={})
+    @from = options[:from_date]
+    @to = options[:to_date]
+
+    # Loc danh sach cac khach hang co phat sinh giao dich (thanh toan, chiet khau)    
+    order_query = Erp::Orders::Order.all_confirmed
+      .sales_orders
+      .payment_for_contact_orders(from_date: @from, to_date: @to)
+      .select('customer_id')
+      .where("cache_customer_commission_amount != ?", 0.0)
+    
+    # @todo truong hop don hang co chiet khau nhung da bi tra lai (tinh sao?)
+    
+    payment_query = Erp::Payments::PaymentRecord.all_done
+      .select('customer_id')
+      .where(payment_type_id: Erp::Payments::PaymentType.find_by_code(Erp::Payments::PaymentType::CODE_CUSTOMER_COMMISSION).id)
+      .where("payment_date >= ? AND payment_date <= ?", @from, @to)
+
+    self.where("erp_contacts_contacts.id IN (?) OR erp_contacts_contacts.id IN (?)", order_query, payment_query)
+  end
+  
   # Get patient by state and date
   def self.get_patients_by_state(options={})
     patient_ids = Erp::Orders::Order.all_confirmed
