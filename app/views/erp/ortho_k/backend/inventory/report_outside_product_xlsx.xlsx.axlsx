@@ -29,10 +29,6 @@ wb.styles do |s|
     # add empty row
     sheet.add_row ['']
     
-    product_ids = @product_query.select('id')
-    product_ids = -1 if product_ids.count == 0
-    filters = @global_filters.clone.merge({product_id: product_ids})
-    
     toprow = {columns: [], styles: []}
     toprow[:columns] << 'TỔNG CỘNG'
     toprow[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_toprow).deep_merge(bold))
@@ -46,47 +42,22 @@ wb.styles do |s|
     toprow[:columns] << ''
     toprow[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_toprow).deep_merge(bold))
     
-    begin_params = filters.clone
-    begin_params[:to_date] = filters[:from_date]
-    begin_params[:from_date] = nil
-    toprow[:columns] << Erp::Products::Product.get_stock_real(begin_params)
+    toprow[:columns] << @total[:begin]
     toprow[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_toprow).deep_merge(bold))
     
-    count = Erp::Products::Product.get_qdelivery_import(filters.clone.merge({
-        delivery_type: [
-          Erp::Qdeliveries::Delivery::TYPE_CUSTOM_IMPORT,
-          Erp::Qdeliveries::Delivery::TYPE_PURCHASE_IMPORT
-        ]
-    }))
-    toprow[:columns] << count
+    toprow[:columns] << @total[:col1]
     toprow[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_toprow).deep_merge(bold))
     
-    count = Erp::Products::Product.get_qdelivery_import(filters.clone.merge({
-        delivery_type: [          
-          Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT
-        ]
-    }))
-    toprow[:columns] << count
+    toprow[:columns] << @total[:col2]
     toprow[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_toprow).deep_merge(bold))
     
-    count = Erp::Products::Product.get_qdelivery_export(filters.clone.merge({
-        delivery_type: [
-          Erp::Qdeliveries::Delivery::TYPE_CUSTOM_EXPORT,
-          Erp::Qdeliveries::Delivery::TYPE_SALES_EXPORT
-        ]
-    }))
-    count += Erp::Products::Product.get_gift_given_export(filters)
-    toprow[:columns] << count
+    toprow[:columns] << @total[:col3]
     toprow[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_toprow).deep_merge(bold))
     
-    count = Erp::Products::Product.get_damage_record_export(filters)
-    count += Erp::Products::Product.get_stock_check_export(filters)
-    toprow[:columns] << count
+    toprow[:columns] << @total[:col4]
     toprow[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_toprow).deep_merge(bold))
     
-    end_params = filters.clone
-    end_params[:from_date] = nil
-    toprow[:columns] << Erp::Products::Product.get_stock_real(end_params)
+    toprow[:columns] << @total[:end]
     toprow[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_toprow).deep_merge(bold))
     
     toprow[:columns] << ''
@@ -134,68 +105,41 @@ wb.styles do |s|
     sheet.add_row header[:columns], style: header[:styles]
     
     # rows
-    @products.each do |product|
+    @rows.each do |r|
         row = {columns: [], styles: []}
         row[:columns] = []
         
-        filters = @global_filters.clone.merge(product_id: product.id)
-        
-        row[:columns] << product.code
+        row[:columns] << r[:product].code
         row[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(middle_align))
         
-        row[:columns] << product.get_diameter
+        row[:columns] << r[:product].get_diameter
         row[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(middle_align))
         
-        row[:columns] << product.category_name
+        row[:columns] << r[:product].category_name
         row[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(middle_align))
         
-        row[:columns] << product.unit_name
+        row[:columns] << r[:product].unit_name
         row[:styles] << (s.add_style text_center.deep_merge(border))
         
-        begin_params = filters.clone
-        begin_params[:to_date] = filters[:from_date]
-        begin_params[:from_date] = nil
-        row[:columns] << Erp::Products::Product.get_stock_real(begin_params)
+        row[:columns] << r[:begin]
         row[:styles] << (s.add_style text_center.deep_merge(border))
         
-        count = Erp::Products::Product.get_qdelivery_import(filters.clone.merge({
-            delivery_type: [
-              Erp::Qdeliveries::Delivery::TYPE_CUSTOM_IMPORT,
-              Erp::Qdeliveries::Delivery::TYPE_PURCHASE_IMPORT
-            ]
-        }))
-        row[:columns] << count
+        row[:columns] << r[:col1]
         row[:styles] << (s.add_style text_center.deep_merge(border))
         
-        count = Erp::Products::Product.get_qdelivery_import(filters.clone.merge({
-            delivery_type: [              
-              Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT
-            ]
-        }))
-        row[:columns] << count
+        row[:columns] << r[:col2]
         row[:styles] << (s.add_style text_center.deep_merge(border))
         
-        count = Erp::Products::Product.get_qdelivery_export(filters.clone.merge({
-            delivery_type: [
-              Erp::Qdeliveries::Delivery::TYPE_CUSTOM_EXPORT,
-              Erp::Qdeliveries::Delivery::TYPE_SALES_EXPORT
-            ]
-        }))
-        count += Erp::Products::Product.get_gift_given_export(filters)
-        row[:columns] << count
+        row[:columns] << r[:col3]
         row[:styles] << (s.add_style text_center.deep_merge(border))
         
-        count = Erp::Products::Product.get_damage_record_export(filters)
-        count += Erp::Products::Product.get_stock_check_export(filters)
-        row[:columns] << count
+        row[:columns] << r[:col4]
         row[:styles] << (s.add_style text_center.deep_merge(border))
         
-        end_params = filters.clone
-        end_params[:from_date] = nil
-        row[:columns] << Erp::Products::Product.get_stock_real(end_params)
+        row[:columns] << r[:end]
         row[:styles] << (s.add_style text_center.deep_merge(border))
         
-        row[:columns] << (product.delivered_delivery_details.empty? ? '' : product.delivered_delivery_details.last.delivery.date.to_date.strftime('%d/%m/%Y'))
+        row[:columns] << (r[:product].delivered_delivery_details.empty? ? '' : r[:product].delivered_delivery_details.last.delivery.date.to_date.strftime('%d/%m/%Y'))
         row[:styles] << (s.add_style text_center.deep_merge(border))
         
         sheet.add_row row[:columns], style: row[:styles]

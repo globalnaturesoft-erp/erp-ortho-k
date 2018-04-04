@@ -641,32 +641,110 @@ module Erp
           @product_query = @product_query.where(category_id: category_ids) if category_ids.present?
 
           # products
-          @products = @product_query.order('ordered_code').paginate(:page => params[:page], :per_page => 50)
+          @products = @product_query.order('ordered_code') #.paginate(:page => params[:page], :per_page => 50)
+          
+          # total
+          @total = {}
+          product_ids = @product_query.select('id')
+          product_ids = -1 if product_ids.count == 0
+          filters = @global_filters.clone.merge({product_id: product_ids})
+          
+          begin_params = filters.clone
+          begin_params[:to_date] = filters[:from_date]
+          begin_params[:from_date] = nil
+          @total[:begin] = Erp::Products::Product.get_stock_real(begin_params)
+          
+          @total[:col1] = Erp::Products::Product.get_qdelivery_import(filters.clone.merge({
+              delivery_type: [
+                Erp::Qdeliveries::Delivery::TYPE_CUSTOM_IMPORT,
+                Erp::Qdeliveries::Delivery::TYPE_PURCHASE_IMPORT
+              ]
+          }))
+          
+          @total[:col2] = Erp::Products::Product.get_qdelivery_import(filters.clone.merge({
+              delivery_type: [                  
+                Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT
+              ]
+          }))
+          
+          @total[:col3] = Erp::Products::Product.get_qdelivery_export(filters.clone.merge({
+              delivery_type: [
+                Erp::Qdeliveries::Delivery::TYPE_CUSTOM_EXPORT,
+                Erp::Qdeliveries::Delivery::TYPE_SALES_EXPORT
+              ]
+          })) + Erp::Products::Product.get_gift_given_export(filters)
+          
+          @total[:col4] = Erp::Products::Product.get_damage_record_export(filters) + Erp::Products::Product.get_stock_check_export(filters)
+          
+          end_params = filters.clone
+          end_params[:from_date] = nil        
+          @total[:end] = e_stock = Erp::Products::Product.get_stock_real(end_params)
+          
+          
+          # rows
+          @rows = []
+          @products.each do |product|
+            filters = @global_filters.clone.merge(product_id: product.id)
+            
+            row = {}
+            row[:product] = product
+            
+            begin_params = filters.clone
+            begin_params[:to_date] = filters[:from_date]
+            begin_params[:from_date] = nil
+            row[:begin] = Erp::Products::Product.get_stock_real(begin_params)
+            
+            row[:col1] = Erp::Products::Product.get_qdelivery_import(filters.clone.merge({
+                delivery_type: [
+                  Erp::Qdeliveries::Delivery::TYPE_CUSTOM_IMPORT,
+                  Erp::Qdeliveries::Delivery::TYPE_PURCHASE_IMPORT
+                ]
+            }))
+            
+            row[:col2] = Erp::Products::Product.get_qdelivery_import(filters.clone.merge({
+                delivery_type: [                  
+                  Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT
+                ]
+            }))
+            
+            row[:col3] = Erp::Products::Product.get_qdelivery_export(filters.clone.merge({
+                delivery_type: [
+                  Erp::Qdeliveries::Delivery::TYPE_CUSTOM_EXPORT,
+                  Erp::Qdeliveries::Delivery::TYPE_SALES_EXPORT
+                ]
+            })) + Erp::Products::Product.get_gift_given_export(filters)
+            
+            row[:col4] = Erp::Products::Product.get_damage_record_export(filters) + Erp::Products::Product.get_stock_check_export(filters)
+            
+            end_params = filters.clone
+            end_params[:from_date] = nil
+          
+            row[:end] = e_stock = Erp::Products::Product.get_stock_real(end_params)
+            
+            if row[:end] >= @global_filters[:min_stock].to_i
+              @rows << row
+            end
+          end
+          
+          File.open("tmp/report_outside_product.yml", "w+") do |f|
+            f.write({
+              period: @period,
+              from_date: @from_date,
+              to_date: @to_date,
+              rows: @rows,
+              total: @total
+            }.to_yaml)
+          end
         end
 
         def report_outside_product_xlsx
-          @global_filters = params.to_unsafe_hash[:global_filter]
-
-          # if has period
-          if @global_filters[:period].present?
-            @period = Erp::Periods::Period.find(@global_filters[:period])
-            @global_filters[:from_date] = @period.from_date
-            @global_filters[:to_date] = @period.to_date
-          end
-
-          @from_date = @global_filters[:from_date].to_date
-          @to_date = @global_filters[:to_date].to_date
-
-          # get categories
-          category_ids = @global_filters[:categories].present? ? @global_filters[:categories] : nil
-          @categories = Erp::Products::Category.where(id: category_ids)
-
-          # product query
-          @product_query = Erp::Products::Product.get_active.where(is_outside: true)
-          @product_query = @product_query.where(category_id: category_ids) if category_ids.present?
-
-          # products
-          @products = @product_query.order('ordered_code')
+          data = YAML.load_file("tmp/report_outside_product.yml")
+          
+          @period = data[:period]
+          @from_date = data[:from_date]
+          @to_date = data[:to_date]
+          @rows = data[:rows]
+          @total = data[:total]
 
           respond_to do |format|
             format.xlsx {
