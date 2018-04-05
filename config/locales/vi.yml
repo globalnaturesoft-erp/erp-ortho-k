@@ -993,6 +993,8 @@ vi:
             product_code: "Mã hàng"
             product_category: "Loại hàng"
             warehouse: "Kho"
+            filter_employee: "Nhân viên"
+            chooose_employee: "Chọn nhân viên k.doanh"
             
             record_date: "Ngày ghi sổ"
             voucher_date: "Ngày chứng từ"
@@ -1036,7 +1038,7 @@ vi:
             product_code: "Hàng hóa"
             sales_price: "Giá bán"
             purchase_price: "Giá mua"
-            salesperson: "N.viên kinh doanh"
+            salesperson: "Nhân viên"
             goods: "Chiết khấu KH"
             record_date: "Ngày ghi sổ"
             voucher_date: "Ngày chứng từ"

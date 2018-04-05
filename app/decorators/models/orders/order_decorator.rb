@@ -319,6 +319,10 @@ Erp::Orders::Order.class_eval do
         query = query.where(erp_orders_orders: {customer_id: params[:customer_id]})
       end
 
+      if params[:employee_id].present?
+        query = query.where(erp_orders_orders: {employee_id: params[:employee_id]})
+      end
+
       if params[:warehouse_id].present?
         query = query.where(erp_orders_orders: {warehouse_id: params[:warehouse_id]})
       end
@@ -365,7 +369,7 @@ Erp::Orders::Order.class_eval do
           eye_position: order_detail.display_eye_position,
           patient_name: order_detail.order.patient_name,
           patient_state_name: order_detail.order.patient_state_name,
-          salesperson_name: order_detail.order.customer.salesperson_name,
+          salesperson_name: order_detail.order.employee_name,
           salesperson_percent: salesperson_percent,
           salesperson_commission_amount: salesperson_commission_amount,
           customer_commission_percent: customer_percent,
@@ -404,6 +408,10 @@ Erp::Orders::Order.class_eval do
 
       if params[:customer_id].present?
         query = query.where(erp_qdeliveries_deliveries: {customer_id: params[:customer_id]})
+      end
+
+      if params[:employee_id].present?
+        query = query.where(erp_qdeliveries_deliveries: {employee_id: params[:employee_id]})
       end
 
       if params[:warehouse_id].present?
@@ -445,6 +453,7 @@ Erp::Orders::Order.class_eval do
           eye_position: delivery_detail.order_detail.display_eye_position,
           patient_name: delivery_detail.order_detail.order.patient_name,
           patient_state_name: delivery_detail.order_detail.order.patient_state_name,
+          salesperson_name: delivery_detail.delivery.employee_name,
         }
         total[:quantity] += qty
         total[:purchase_total_amount] += purchase_total_amount.to_f
@@ -472,6 +481,10 @@ Erp::Orders::Order.class_eval do
 
       if params[:customer_id].present?
         query = query.where(erp_qdeliveries_deliveries: {customer_id: params[:customer_id]})
+      end
+
+      if params[:employee_id].present?
+        query = query.where(erp_qdeliveries_deliveries: {employee_id: params[:employee_id]})
       end
 
       if params[:warehouse_id].present?
@@ -510,6 +523,7 @@ Erp::Orders::Order.class_eval do
           warehouse: delivery_detail.warehouse_name,
           unit: delivery_detail.product.unit_name,
           note: delivery_detail.note,
+          salesperson_name: delivery_detail.delivery.employee_name,
         }
         total[:quantity] += qty
         total[:purchase_total_amount] += purchase_total_amount.to_f

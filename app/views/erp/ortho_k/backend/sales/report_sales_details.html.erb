@@ -36,12 +36,16 @@
             }) %>
         </div>
         <div class="col-md-3">
-            <%= erp_form_control('select', {
-                name: 'types',
-                label: 'Loại xuất/nhập',
-                values: (dfilters["types"].present? ? dfilters["types"] : nil),
-                placeholder: 'Chọn loại phiếu',
-                options: Erp::Orders::Order.get_import_export_type_options,
+            <%= erp_form_control("dataselect", {
+                name: 'warehouse_id',
+                label: t('.filter_warehouse'),
+                values: (
+                    dfilters["warehouse_id"].present? ?
+                    (Erp::Warehouses::Warehouse.where(id: dfilters["warehouse_id"]).map{|i| {text: i.name, value: i.id}})
+                    : nil
+                ),
+                placeholder: t('.choose_warehouse'),
+                url: erp_warehouses.dataselect_backend_warehouses_path(format: 'json'),
                 multiple: true
             }) %>
         </div>
@@ -62,19 +66,16 @@
             }) %>
         </div>
         <div class="col-md-3">
-            <%= erp_form_control("dataselect", {
-                name: 'warehouse_id',
-                label: t('.filter_warehouse'),
-                values: (
-                    dfilters["warehouse_id"].present? ?
-                    (Erp::Warehouses::Warehouse.where(id: dfilters["warehouse_id"]).map{|i| {text: i.name, value: i.id}})
-                    : nil
-                ),
-                placeholder: t('.choose_warehouse'),
-                url: erp_warehouses.dataselect_backend_warehouses_path(format: 'json'),
+            <%= erp_form_control('select', {
+                name: 'types',
+                label: 'Loại xuất/nhập',
+                values: (dfilters["types"].present? ? dfilters["types"] : nil),
+                placeholder: 'Chọn loại phiếu',
+                options: Erp::Orders::Order.get_import_export_type_options,
                 multiple: true
             }) %>
         </div>
+        
         <div class="col-md-3">
             <%= erp_form_control("dataselect", {
                 name: 'category_id',
@@ -105,6 +106,20 @@
         </div>
     </div>
     <div class="row">
+        <div class="col-md-3">
+            <%= erp_form_control("dataselect", {
+                name: 'employee_id',
+                label: t('.filter_employee'),
+                values: (
+                    dfilters["employee_id"].present? ?
+                    (Erp::User.where(id: dfilters["employee_id"]).map{|i| {text: i.name, value: i.id}})
+                    : nil
+                ),
+                placeholder: t('.chooose_employee'),
+                url: erp.dataselect_backend_users_path(format: 'json'),
+                multiple: true
+            }) %>
+        </div>
         <div class="col-md-3">
             <%= erp_form_control('select', {
                 name: 'sort_by',
