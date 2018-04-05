@@ -39,6 +39,8 @@ Erp::Payments::Engine.routes.draw do
 					get 'employee_target_xlsx'
 					get 'company_target_xlsx'
 					get 'commission_xlsx'
+					
+					get 'export_xlsx_all_details'
         end
       end
     end
