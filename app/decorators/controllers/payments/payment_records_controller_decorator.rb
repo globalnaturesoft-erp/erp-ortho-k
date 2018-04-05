@@ -7,6 +7,9 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
     @orders = @customer.sales_orders.payment_for_contact_orders(params.to_unsafe_hash)
     @product_returns = @customer.sales_product_returns.get_deliveries_with_payment_for_contact(params.to_unsafe_hash)
     
+    @orders = @orders.order('order_date DESC, created_at DESC')
+    @product_returns = @product_returns.order('date DESC, created_at DESC')
+    
     respond_to do |format|
       format.xlsx {
         response.headers['Content-Disposition'] = 'attachment; filename="Bang cong no khach hang.xlsx"'
