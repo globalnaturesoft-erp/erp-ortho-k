@@ -187,7 +187,7 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
     Dir.mkdir(tmp_path) unless File.exists?(tmp_path)
     
     @customers.each do |customer|
-      file_name = "#{customer.name.to_ascii.gsub(/\s+/,'_')}-#{customer.id}.xls"
+      file_name = "#{customer.name.to_ascii.gsub(/[^0-9a-z ]/i, '')}-#{customer.id}.xls"
       create_xlsx_files(customer, glb, tmp_path, file_name)
     end
     
@@ -195,7 +195,7 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
     temp = Tempfile.new 'cong_no.zip'
     Zip::File.open(temp.path, Zip::File::CREATE) do |zipfile|
       @customers.each do |customer|
-        file_name = "#{customer.name.to_ascii.gsub(/\s+/,'_')}-#{customer.id}.xls"
+        file_name = "#{customer.name.to_ascii.gsub(/[^0-9a-z ]/i, '')}-#{customer.id}.xls"
         zipfile.add file_name, tmp_path + file_name
       end
     end
@@ -825,7 +825,7 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
         sheet.merge_cells("#{('A'.codepoints.first + 1).chr}#{num_row}:#{('A'.codepoints.first + 5).chr}#{num_row}")
         
         # Setup
-        sheet.merge_cells("#{('A'.codepoints.first).chr}3:#{('A'.codepoints.first + (c - 1)).chr}3")
+        sheet.merge_cells("#{('A'.codepoints.first).chr}3:#{('A'.codepoints.first + (c.to_i - 1)).chr}3")
         sheet.column_widths 15, 15, 80, 7, 7, 10, 12, 12, 12, 25
       end
     end
