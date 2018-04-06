@@ -217,6 +217,9 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
     @orders = @customer.sales_orders.payment_for_contact_orders(glb)
     @product_returns = @customer.sales_product_returns.get_deliveries_with_payment_for_contact(glb)
     
+    @orders = @orders.order('order_date DESC, created_at DESC')
+    @product_returns = @product_returns.order('date DESC, created_at DESC')
+    
     xlsx_package = Axlsx::Package.new
     wb = xlsx_package.workbook
     xlsx_package.use_autowidth = true
