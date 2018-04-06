@@ -829,6 +829,7 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
         sheet.column_widths 15, 15, 80, 7, 7, 10, 12, 12, 12, 25
       end
     end
+
     
     xlsx_package.serialize (tmp_path + file_name)
   end

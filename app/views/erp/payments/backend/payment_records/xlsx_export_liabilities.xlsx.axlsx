@@ -605,7 +605,7 @@ wb.styles do |s|
     sheet.merge_cells("#{('A'.codepoints.first + 1).chr}#{num_row}:#{('A'.codepoints.first + 5).chr}#{num_row}")
     
     # Setup
-    sheet.merge_cells("#{('A'.codepoints.first).chr}3:#{('A'.codepoints.first + (c - 1)).chr}3")
+    sheet.merge_cells("#{('A'.codepoints.first).chr}3:#{('A'.codepoints.first + (c.to_i - 1)).chr}3")
     sheet.column_widths 15, 15, 80, 7, 7, 10, 12, 12, 12, 25
   end
 end
