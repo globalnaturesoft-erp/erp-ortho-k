@@ -91,6 +91,16 @@ Erp::Products::Product.class_eval do
   def get_diameter_properties_value
     self.get_properties_value(Erp::Products::Property.getByName(Erp::Products::Property::NAME_DUONG_KINH))
   end
+  
+  # get diameter
+  def get_letter_properties_value
+    self.get_properties_value(Erp::Products::Property.getByName(Erp::Products::Property::NAME_CHU))
+  end
+  
+  # get diameter
+  def get_number_properties_value
+    self.get_properties_value(Erp::Products::Property.getByName(Erp::Products::Property::NAME_SO))
+  end
 
   # class const - XNK (import export report)
   TYPE_SALES_EXPORT = 'sales_export'
