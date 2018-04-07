@@ -41,6 +41,7 @@ Erp::Payments::Engine.routes.draw do
 					get 'commission_xlsx'
 					
 					get 'export_xlsx_all_details'
+					post 'export_xlsx_all_details'
         end
       end
     end
