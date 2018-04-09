@@ -156,8 +156,8 @@ wb.styles do |s|
         row_1[:columns] << ''
         row_1[:styles] << (s.add_style border)
         
-        row_1[:columns] << ''
-        row_1[:styles] << (s.add_style border)
+        row_1[:columns] << order.note
+        row_1[:styles] << (s.add_style text_left.deep_merge(border))
         
         sheet.add_row row_1[:columns], style: row_1[:styles]
         num_row += 1
@@ -193,7 +193,7 @@ wb.styles do |s|
           row_1[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
           
           row_1[:columns] << order_detail.description
-          row_1[:styles] << (s.add_style text_center.deep_merge(border))
+          row_1[:styles] << (s.add_style text_left.deep_merge(border))
           
           sheet.add_row row_1[:columns], style: row_1[:styles]
           num_row += 1
@@ -371,8 +371,8 @@ wb.styles do |s|
         row_2[:columns] << ''
         row_2[:styles] << (s.add_style border)
         
-        row_2[:columns] << ''
-        row_2[:styles] << (s.add_style border)
+        row_2[:columns] << delivery.note
+        row_2[:styles] << (s.add_style text_left.deep_merge(border))
         
         sheet.add_row row_2[:columns], style: row_2[:styles]
         num_row += 1
@@ -401,10 +401,10 @@ wb.styles do |s|
           row_2[:columns] << delivery_detail.quantity
           row_2[:styles] << (s.add_style text_center.deep_merge(number).deep_merge(border))
           
-          row_2[:columns] << delivery_detail.price
+          row_2[:columns] << delivery_detail.ordered_price
           row_2[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
           
-          row_2[:columns] << ''
+          row_2[:columns] << delivery_detail.discount
           row_2[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
           
           row_2[:columns] << delivery_detail.cache_total
