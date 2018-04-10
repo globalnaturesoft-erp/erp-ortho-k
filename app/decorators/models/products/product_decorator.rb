@@ -1182,7 +1182,8 @@ Erp::Products::Product.class_eval do
   end
 
   # Get products in purchase conditions area
-  def self.get_in_purchase_condition_products
+  def self.get_in_purchase_condition_products(options={})
+    @options = options if options.present?
     # need to purchase: @options["purchase_conditions"]
     ors = []
     @options["purchase_conditions"].each do |option|
@@ -1252,7 +1253,7 @@ Erp::Products::Product.class_eval do
     # state warehouse condition if existed
     result = []
     query.each_with_index do |p, index|
-      if p.get_stock(state_ids: state_id, warehouse_ids: warehouse_ids) <= params[:stock_condition]
+      if p.get_stock(state_ids: state_id, warehouse_ids: warehouse_ids) <= params[:stock_condition].to_i
         result << p
       end
 

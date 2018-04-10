@@ -100,8 +100,8 @@
             }) %>
         </div>
         <div class="col-md-3 text-right">
-            <label style="display: block" class="invisible">.</label>
-            <a class="btn btn-primary custom-submit-button" data-form=".stock-importing-form" href="<%= erp_orders.new_type_backend_orders_path(type: Erp::Orders::Order::TYPE_PURCHASE_ORDER) %>">
+            <a class="btn btn-primary mt-25 global-filter-button">Kiểm kho</a> |
+            <a class="btn btn-primary mt-25 custom-submit-button" data-form=".stock-importing-form" href="<%= erp_orders.new_type_backend_orders_path(type: Erp::Orders::Order::TYPE_PURCHASE_ORDER) %>">
                 <i class="fa fa-share-square"></i> <%= t('.create_purchase_order') %>
             </a>
         </div>
@@ -111,11 +111,13 @@
 <%= erp_datalist(
     url: erp_ortho_k.stock_importing_table_backend_products_path,
     sortable: true,
+    autoload: false,
     keywords: [
         {
             text: t('.name'), name: 'erp_products_products.name'
         },
     ],
+    placeholder: 'Vui lòng điều kiện nhập hàng và nhấn Kiểm kho',
     #filters: [
     #    {
     #        text: t('.show_virtual'), name: 'show_virtual', value: true, checked: false

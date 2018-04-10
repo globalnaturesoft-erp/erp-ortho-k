@@ -16,11 +16,11 @@
             %>
             <% @products.each_with_index do |product,index| %>
                 <%
-                    stock = product.get_cache_stock
+                    stock = product.get_stock
                     area_type = product.is_in_central_area ? 'area_central' : 'area_side'
                     total_quantity = area_type == 'area_central' ? (@central_quantity - stock) : (@side_quantity - stock)
                 %>
-                <% if (!@area.present? or (@area == area_type)) and total_quantity > 0 %>
+                <% if total_quantity > 0 %>
                     <tr>
                         <!--<td class="text-center"><%= index+1 %></td>-->
                         <td class=""><%= product.code %></td>
