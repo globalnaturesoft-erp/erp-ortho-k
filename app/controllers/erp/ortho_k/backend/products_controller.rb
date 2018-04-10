@@ -295,6 +295,9 @@ module Erp
           global_filters = params.to_unsafe_hash[:global_filter]
 
           @warehouses = Erp::Warehouses::Warehouse.where(id: global_filters[:warehouses])
+          
+          @state_id = global_filters[:state].present? ? global_filters[:state] : nil
+          @warehouse_ids = global_filters[:warehouses].present? ? global_filters[:warehouses] : nil
 
           if @warehouses.present?
             @stock_condition = (global_filters.present? and global_filters[:stock_condition].present? ? global_filters[:stock_condition].to_i : 0)

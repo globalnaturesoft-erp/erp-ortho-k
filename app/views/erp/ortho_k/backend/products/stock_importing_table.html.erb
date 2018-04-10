@@ -14,13 +14,16 @@
                 central_count = 0
                 purchase_count = 0
             %>
-            <% @products.each_with_index do |product,index| %>
+            <% @products.each_with_index do |row,index| %>
                 <%
-                    stock = product.get_stock
+                    product = row[:product]
+                    stock = row[:stock]
+                %>
+                <%
                     area_type = product.is_in_central_area ? 'area_central' : 'area_side'
                     total_quantity = area_type == 'area_central' ? (@central_quantity - stock) : (@side_quantity - stock)
                 %>
-                <% if total_quantity > 0 %>
+                <% if (!@area.present? or (@area == area_type)) and total_quantity > 0 %>
                     <tr>
                         <!--<td class="text-center"><%= index+1 %></td>-->
                         <td class=""><%= product.code %></td>

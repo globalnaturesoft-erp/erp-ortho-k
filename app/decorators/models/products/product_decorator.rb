@@ -1253,8 +1253,10 @@ Erp::Products::Product.class_eval do
     # state warehouse condition if existed
     result = []
     query.each_with_index do |p, index|
-      if p.get_stock(state_ids: state_id, warehouse_ids: warehouse_ids) <= params[:stock_condition].to_i
-        result << p
+      stock = p.get_stock(state_ids: state_id, warehouse_ids: warehouse_ids)
+      
+      if stock <= params[:stock_condition].to_i
+        result << {product: p, stock: stock}
       end
 
       puts index
