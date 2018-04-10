@@ -678,8 +678,8 @@ Erp::Orders::Order.class_eval do
   def get_report_name
     str = []
     str << customer_name if customer_name.present?
-    str << doctor_name if doctor_name.present?
-    str << ('BN ' + patient_state_name + ': ' + patient_name) if patient_name.present?
+    #str << doctor_name if doctor_name.present?
+    #str << ('BN ' + patient_state_name + ': ' + patient_name) if patient_name.present?
     return 'Xuất bán - ' + str.join(" - ")
   end
 
