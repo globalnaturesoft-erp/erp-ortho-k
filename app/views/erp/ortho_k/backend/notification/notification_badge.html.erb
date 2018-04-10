@@ -24,7 +24,8 @@
 
   # Sales
   notis[:sales_get_waiting_sales_orders] = Erp::Orders::Order.get_waiting_sales_orders.count
-  notis[:sales] = notis[:sales_get_waiting_sales_orders]
+  notis[:sales_get_not_delivered_consignments] = Erp::Consignments::Consignment.get_not_delivered_consignments.count
+  notis[:sales] = notis[:sales_get_waiting_sales_orders] + notis[:sales_get_not_delivered_consignments]
 %>
 
 <% notis.each do |noti| %>
