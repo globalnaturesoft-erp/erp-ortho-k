@@ -32,10 +32,11 @@ wb.styles do |s|
     # add empty row
     sheet.add_row [nil]
     
-    sheet.add_row ['BẢNG CHI TIẾT CÔNG NỢ'], sz: 16, b: true, bg_color: "ffc801", style: (s.add_style text_center)
-    sheet.add_row ["(#{date})"], sz: 16, bg_color: "ffc801", style: (s.add_style text_center)
+    sheet.add_row ['BẢNG CHI TIẾT CÔNG NỢ'], sz: 16, b: true, style: (s.add_style text_center)
+    sheet.add_row ["(#{date})"], sz: 12, i: true, style: (s.add_style text_center)
+    sheet.add_row ["Đối tượng: #{@customer.name}"], sz: 12, b: true, style: (s.add_style text_center)
     
-    num_row = 5
+    num_row = 6
     
     # ############################ Chi tiết bán hàng ############################
     
@@ -72,6 +73,24 @@ wb.styles do |s|
       c += 1
       sheet.merge_cells("#{('A'.codepoints.first + c).chr}#{num_row+1}:#{('A'.codepoints.first + c).chr}#{num_row+2}")
       
+      if params[:patient_col].present?
+        header_1[:columns] << 'Bệnh nhân'
+        header_1[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
+        subheader_1[:columns] << nil
+        subheader_1[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
+        c += 1
+        sheet.merge_cells("#{('A'.codepoints.first + c).chr}#{num_row+1}:#{('A'.codepoints.first + c).chr}#{num_row+2}")
+      end
+      
+      if params[:patient_state_col].present?
+        header_1[:columns] << 'Tình trạng BN'
+        header_1[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
+        subheader_1[:columns] << nil
+        subheader_1[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
+        c += 1
+        sheet.merge_cells("#{('A'.codepoints.first + c).chr}#{num_row+1}:#{('A'.codepoints.first + c).chr}#{num_row+2}")
+      end
+      
       header_1[:columns] << 'Kho'
       header_1[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
       subheader_1[:columns] << nil
@@ -94,48 +113,69 @@ wb.styles do |s|
       sheet.merge_cells("#{('A'.codepoints.first + c).chr}#{num_row+1}:#{('A'.codepoints.first + c).chr}#{num_row+2}")
       qty = c
       
-      header_1[:columns] << 'Doanh thu'
+      sales_price_merge_num = (params[:sales_discount_col].present? ? 1 : 0) +
+        (params[:sales_total_without_tax_col].present? ? 1 : 0) +
+        (params[:sales_tax_col].present? ? 1 : 0) +
+        (params[:sales_total_col].present? ? 1 : 0)
+      
+      header_1[:columns] << "Doanh thu"
       header_1[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))    
       subheader_1[:columns] << 'Đơn giá'
       subheader_1[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
       c += 1
-      sheet.merge_cells("#{('A'.codepoints.first + c).chr}#{num_row+1}:#{('A'.codepoints.first + (c+4)).chr}#{num_row+1}")
       dongia = c
+      sheet.merge_cells("#{('A'.codepoints.first + c).chr}#{num_row+1}:#{('A'.codepoints.first + (c+sales_price_merge_num)).chr}#{num_row+1}")
       
-      header_1[:columns] << nil
-      header_1[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
-      subheader_1[:columns] << 'Giảm giá'
-      subheader_1[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
-      c += 1
-      giamgia = c
+      if params[:sales_discount_col].present?
+        header_1[:columns] << nil
+        header_1[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
+        subheader_1[:columns] << 'Giảm giá'
+        subheader_1[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
+        c += 1
+        giamgia = c
+      end
       
-      header_1[:columns] << nil
-      header_1[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))    
-      subheader_1[:columns] << 'Thành tiền'
-      subheader_1[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
-      c += 1
-      thanhtien = c
+      if params[:sales_total_without_tax_col].present?
+        header_1[:columns] << nil
+        header_1[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))    
+        subheader_1[:columns] << 'Thành tiền'
+        subheader_1[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
+        c += 1
+        thanhtien = c
+      end
       
-      header_1[:columns] << nil
-      header_1[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))    
-      subheader_1[:columns] << 'Tiền thuế'
-      subheader_1[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
-      c += 1
-      tienthue = c
+      if params[:sales_tax_col].present?
+        header_1[:columns] << nil
+        header_1[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))    
+        subheader_1[:columns] << 'Tiền thuế'
+        subheader_1[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
+        c += 1
+        tienthue = c
+      end
       
-      header_1[:columns] << nil
-      header_1[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
-      subheader_1[:columns] << 'Tổng cộng'
-      subheader_1[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
-      c += 1
-      tongcong = c
+      if params[:sales_total_col].present?
+        header_1[:columns] << nil
+        header_1[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
+        subheader_1[:columns] << 'Tổng cộng'
+        subheader_1[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
+        c += 1
+        tongcong = c
+      end
       
       header_1[:columns] << 'Ghi chú'
       header_1[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
       subheader_1[:columns] << nil
       subheader_1[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
       c += 1
-      sheet.merge_cells("#{('A'.codepoints.first + c).chr}#{num_row+1}:#{('A'.codepoints.first + c).chr}#{num_row+2}")
+      sales_col_note1 = c
+      
+      header_1[:columns] << nil
+      header_1[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
+      subheader_1[:columns] << nil
+      subheader_1[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
+      c += 1
+      sales_col_note2 = c
+      sheet.merge_cells("#{('A'.codepoints.first + sales_col_note1).chr}#{num_row+1}:#{('A'.codepoints.first + sales_col_note2).chr}#{num_row+2}")
       
       sheet.add_row header_1[:columns], style: header_1[:styles]
       num_row += 1
@@ -156,8 +196,15 @@ wb.styles do |s|
         row_1[:columns] << order.get_report_name
         row_1[:styles] << (s.add_style border.deep_merge(bold).deep_merge(bg_subrow))
         
-        row_1[:columns] << nil
-        row_1[:styles] << (s.add_style border.deep_merge(bg_subrow))
+        if params[:patient_col].present?
+          row_1[:columns] << order.patient_name
+          row_1[:styles] << (s.add_style border.deep_merge(bg_subrow))
+        end
+        
+        if params[:patient_state_col].present?
+          row_1[:columns] << order.patient_state_name
+          row_1[:styles] << (s.add_style border.deep_merge(bg_subrow))
+        end
         
         row_1[:columns] << nil
         row_1[:styles] << (s.add_style border.deep_merge(bg_subrow))
@@ -171,20 +218,36 @@ wb.styles do |s|
         row_1[:columns] << nil
         row_1[:styles] << (s.add_style border.deep_merge(bg_subrow))
         
-        row_1[:columns] << nil
-        row_1[:styles] << (s.add_style border.deep_merge(bg_subrow))
+        if params[:sales_discount_col].present?
+          row_1[:columns] << nil
+          row_1[:styles] << (s.add_style border.deep_merge(bg_subrow))
+        end
         
-        row_1[:columns] << nil
-        row_1[:styles] << (s.add_style border.deep_merge(bg_subrow))
+        if params[:sales_total_without_tax_col].present?
+          row_1[:columns] << nil
+          row_1[:styles] << (s.add_style border.deep_merge(bg_subrow))
+        end
         
-        row_1[:columns] << nil
-        row_1[:styles] << (s.add_style border.deep_merge(bg_subrow))
+        if params[:sales_tax_col].present?
+          row_1[:columns] << nil
+          row_1[:styles] << (s.add_style border.deep_merge(bg_subrow))
+        end
+        
+        if params[:sales_total_col].present?
+          row_1[:columns] << nil
+          row_1[:styles] << (s.add_style border.deep_merge(bg_subrow))
+        end
         
         row_1[:columns] << order.note
         row_1[:styles] << (s.add_style text_left.deep_merge(border).deep_merge(bg_subrow))
         
+        row_1[:columns] << nil
+        row_1[:styles] << (s.add_style text_left.deep_merge(border).deep_merge(bg_subrow))
+        
         sheet.add_row row_1[:columns], style: row_1[:styles]
         num_row += 1
+        
+        sheet.merge_cells("#{('A'.codepoints.first + sales_col_note1).chr}#{num_row}:#{('A'.codepoints.first + sales_col_note2).chr}#{num_row}")
         
         order.order_details.each_with_index do |order_detail|
           row_1 = {columns: [], styles: []}
@@ -198,6 +261,16 @@ wb.styles do |s|
           row_1[:columns] << order_detail.product_name
           row_1[:styles] << (s.add_style text_left.deep_merge(border))
           
+          if params[:patient_col].present?
+            row_1[:columns] << nil
+            row_1[:styles] << (s.add_style text_left.deep_merge(border))
+          end
+          
+          if params[:patient_state_col].present?
+            row_1[:columns] << nil
+            row_1[:styles] << (s.add_style text_left.deep_merge(border))
+          end
+          
           row_1[:columns] << order_detail.order.warehouse_name
           row_1[:styles] << (s.add_style text_center.deep_merge(number).deep_merge(border))
           
@@ -210,23 +283,36 @@ wb.styles do |s|
           row_1[:columns] << order_detail.price
           row_1[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
           
-          row_1[:columns] << order_detail.discount_amount
-          row_1[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
+          if params[:sales_discount_col].present?
+            row_1[:columns] << order_detail.discount_amount
+            row_1[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
+          end
           
-          row_1[:columns] << order_detail.total_without_tax
-          row_1[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
+          if params[:sales_total_without_tax_col].present?
+            row_1[:columns] << order_detail.total_without_tax
+            row_1[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
+          end
           
-          row_1[:columns] << order_detail.tax_amount
-          row_1[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
+          if params[:sales_tax_col].present?
+            row_1[:columns] << order_detail.tax_amount
+            row_1[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
+          end
           
-          row_1[:columns] << order_detail.total
-          row_1[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
+          if params[:sales_total_col].present?
+            row_1[:columns] << order_detail.total
+            row_1[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
+          end
           
           row_1[:columns] << order_detail.description
           row_1[:styles] << (s.add_style text_left.deep_merge(border))
           
+          row_1[:columns] << nil
+          row_1[:styles] << (s.add_style text_left.deep_merge(border))
+          
           sheet.add_row row_1[:columns], style: row_1[:styles]
           num_row += 1
+          
+          sheet.merge_cells("#{('A'.codepoints.first + sales_col_note1).chr}#{num_row}:#{('A'.codepoints.first + sales_col_note2).chr}#{num_row}")
         end
       end
       
@@ -243,14 +329,27 @@ wb.styles do |s|
       footer_1[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(border))
       col_ft_1 += 1
       
-      footer_1[:columns] << nil
-      footer_1[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(border))
-      col_ft_1 += 1
+      if params[:patient_col].present?
+        footer_1[:columns] << nil
+        footer_1[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(border))
+        col_ft_1 += 1
+      end
+      
+      if params[:patient_state_col].present?
+        footer_1[:columns] << nil
+        footer_1[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(border))
+        col_ft_1 += 1
+      end
       
       footer_1[:columns] << nil
       footer_1[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(border))
       col_ft_1 += 1
       
+      footer_1[:columns] << nil
+      footer_1[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(border))
+      col_ft_1 += 1
+      
+      # @todo // khong su dung ham SUM truc tiep tren view
       footer_1[:columns] << @orders.sum(&:items_count)#"=SUM(#{('A'.codepoints.first + qty).chr}#{order_num_row_first}:#{('A'.codepoints.first + qty).chr}#{num_row})"
       footer_1[:styles] << (s.add_style bg_footer.deep_merge(number).deep_merge(bold).deep_merge(text_center).deep_merge(border))
       col_ft_1 += 1
@@ -259,23 +358,33 @@ wb.styles do |s|
       footer_1[:styles] << (s.add_style bg_footer.deep_merge(number).deep_merge(bold).deep_merge(text_right).deep_merge(border))
       col_ft_1 += 1
       
-      # @todo // khong su dung ham SUM truc tiep tren view
-      footer_1[:columns] << @orders.sum(&:discount_amount)#"=SUM(#{('A'.codepoints.first + giamgia).chr}#{order_num_row_first}:#{('A'.codepoints.first + giamgia).chr}#{num_row})"
-      footer_1[:styles] << (s.add_style bg_footer.deep_merge(number).deep_merge(bold).deep_merge(text_right).deep_merge(border))
-      col_ft_1 += 1
+      if params[:sales_discount_col].present?
+        footer_1[:columns] << @orders.sum(&:discount_amount)#"=SUM(#{('A'.codepoints.first + giamgia).chr}#{order_num_row_first}:#{('A'.codepoints.first + giamgia).chr}#{num_row})"
+        footer_1[:styles] << (s.add_style bg_footer.deep_merge(number).deep_merge(bold).deep_merge(text_right).deep_merge(border))
+        col_ft_1 += 1
+      end
       
-      footer_1[:columns] << @orders.sum(&:total_without_tax)#"=SUM(#{('A'.codepoints.first + thanhtien).chr}#{order_num_row_first}:#{('A'.codepoints.first + thanhtien).chr}#{num_row})"
-      footer_1[:styles] << (s.add_style bg_footer.deep_merge(number).deep_merge(bold).deep_merge(text_right).deep_merge(border))
-      col_ft_1 += 1
+      if params[:sales_total_without_tax_col].present?
+        footer_1[:columns] << @orders.sum(&:total_without_tax)#"=SUM(#{('A'.codepoints.first + thanhtien).chr}#{order_num_row_first}:#{('A'.codepoints.first + thanhtien).chr}#{num_row})"
+        footer_1[:styles] << (s.add_style bg_footer.deep_merge(number).deep_merge(bold).deep_merge(text_right).deep_merge(border))
+        col_ft_1 += 1
+      end
       
-      footer_1[:columns] << @orders.sum(&:tax_amount)#"=SUM(#{('A'.codepoints.first + tienthue).chr}#{order_num_row_first}:#{('A'.codepoints.first + tienthue).chr}#{num_row})"
-      footer_1[:styles] << (s.add_style bg_footer.deep_merge(number).deep_merge(bold).deep_merge(text_right).deep_merge(border))
-      col_ft_1 += 1
+      if params[:sales_tax_col].present?
+        footer_1[:columns] << @orders.sum(&:tax_amount)#"=SUM(#{('A'.codepoints.first + tienthue).chr}#{order_num_row_first}:#{('A'.codepoints.first + tienthue).chr}#{num_row})"
+        footer_1[:styles] << (s.add_style bg_footer.deep_merge(number).deep_merge(bold).deep_merge(text_right).deep_merge(border))
+        col_ft_1 += 1
+      end
       
-      footer_1[:columns] << @orders.cache_total#"=SUM(#{('A'.codepoints.first + tongcong).chr}#{order_num_row_first}:#{('A'.codepoints.first + tongcong).chr}#{num_row})"
-      footer_1[:styles] << (s.add_style bg_footer.deep_merge(number).deep_merge(bold).deep_merge(text_right).deep_merge(border))
-      col_ft_1 += 1
+      if params[:sales_total_col].present?
+        footer_1[:columns] << @orders.cache_total#"=SUM(#{('A'.codepoints.first + tongcong).chr}#{order_num_row_first}:#{('A'.codepoints.first + tongcong).chr}#{num_row})"
+        footer_1[:styles] << (s.add_style bg_footer.deep_merge(number).deep_merge(bold).deep_merge(text_right).deep_merge(border))
+        col_ft_1 += 1
+      end
       col_amount_ft_1 = col_ft_1
+      
+      footer_1[:columns] << nil
+      footer_1[:styles] << (s.add_style bg_footer.deep_merge(border).deep_merge(border))
       
       footer_1[:columns] << nil
       footer_1[:styles] << (s.add_style bg_footer.deep_merge(border).deep_merge(border))
@@ -283,7 +392,11 @@ wb.styles do |s|
       sheet.add_row footer_1[:columns], style: footer_1[:styles]
       num_row += 1
       row_ft_1 = num_row
+      # Merge column total
       sheet.merge_cells("#{('A'.codepoints.first).chr}#{num_row}:#{('A'.codepoints.first + 4).chr}#{num_row}")
+      
+      # Merge colunm note
+      sheet.merge_cells("#{('A'.codepoints.first + sales_col_note1).chr}#{num_row}:#{('A'.codepoints.first + sales_col_note2).chr}#{num_row}")
     end
     
     
@@ -322,6 +435,24 @@ wb.styles do |s|
       c += 1
       sheet.merge_cells("#{('A'.codepoints.first + c).chr}#{num_row+1}:#{('A'.codepoints.first + c).chr}#{num_row+2}")
       
+      if params[:patient_col].present?
+        header_2[:columns] << 'Bênh nhân'
+        header_2[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
+        subheader_2[:columns] << nil
+        subheader_2[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
+        c += 1
+        sheet.merge_cells("#{('A'.codepoints.first + c).chr}#{num_row+1}:#{('A'.codepoints.first + c).chr}#{num_row+2}")
+      end
+      
+      if params[:patient_state_col].present?
+        header_2[:columns] << 'Tình trạng BN'
+        header_2[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
+        subheader_2[:columns] << nil
+        subheader_2[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
+        c += 1
+        sheet.merge_cells("#{('A'.codepoints.first + c).chr}#{num_row+1}:#{('A'.codepoints.first + c).chr}#{num_row+2}")
+      end
+      
       header_2[:columns] << 'Kho'
       header_2[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
       subheader_2[:columns] << nil
@@ -344,34 +475,44 @@ wb.styles do |s|
       sheet.merge_cells("#{('A'.codepoints.first + c).chr}#{num_row+1}:#{('A'.codepoints.first + c).chr}#{num_row+2}")
       qty = c
       
+      return_price_merge_num = (params[:return_amount_col].present? ? 1 : 0) +
+        (params[:return_discount_col].present? ? 1 : 0) +
+        (params[:return_total_col].present? ? 1 : 0)
+      
       header_2[:columns] << 'Doanh thu trả lại'
       header_2[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))    
       subheader_2[:columns] << 'Giá mua'
       subheader_2[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
       c += 1
-      sheet.merge_cells("#{('A'.codepoints.first + c).chr}#{num_row+1}:#{('A'.codepoints.first + (c+3)).chr}#{num_row+1}")
+      sheet.merge_cells("#{('A'.codepoints.first + c).chr}#{num_row+1}:#{('A'.codepoints.first + (c+return_price_merge_num)).chr}#{num_row+1}")
       giamua = c
       
-      header_2[:columns] << nil
-      header_2[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
-      subheader_2[:columns] << 'Thành tiền'
-      subheader_2[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
-      c += 1
-      thanhtien = c
+      if params[:return_amount_col].present?
+        header_2[:columns] << nil
+        header_2[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
+        subheader_2[:columns] << 'Thành tiền'
+        subheader_2[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
+        c += 1
+        thanhtien = c
+      end
       
-      header_2[:columns] << nil
-      header_2[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
-      subheader_2[:columns] << 'Giảm giá'
-      subheader_2[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
-      c += 1
-      giamgia = c
+      if params[:return_discount_col].present?
+        header_2[:columns] << nil
+        header_2[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
+        subheader_2[:columns] << 'Giảm giá'
+        subheader_2[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
+        c += 1
+        giamgia = c
+      end
       
-      header_2[:columns] << nil
-      header_2[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
-      subheader_2[:columns] << 'Tổng cộng'
-      subheader_2[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
-      c += 1
-      tongcong = c
+      if params[:return_total_col].present?
+        header_2[:columns] << nil
+        header_2[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
+        subheader_2[:columns] << 'Tổng cộng'
+        subheader_2[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
+        c += 1
+        tongcong = c
+      end
       
       header_2[:columns] << 'Ghi chú'
       header_2[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
@@ -407,8 +548,15 @@ wb.styles do |s|
         row_2[:columns] << delivery.get_report_name
         row_2[:styles] << (s.add_style border.deep_merge(bold).deep_merge(bg_subrow))
         
-        row_2[:columns] << nil
-        row_2[:styles] << (s.add_style border.deep_merge(bg_subrow))
+        if params[:patient_col].present?
+          row_2[:columns] << (delivery.get_related_order.present? ? delivery.get_related_order.patient_name : nil)
+          row_2[:styles] << (s.add_style border.deep_merge(bg_subrow))
+        end
+        
+        if params[:patient_state_col].present?
+          row_2[:columns] << (delivery.get_related_order.present? ? delivery.get_related_order.patient_state_name : nil)
+          row_2[:styles] << (s.add_style border.deep_merge(bg_subrow))
+        end
         
         row_2[:columns] << nil
         row_2[:styles] << (s.add_style border.deep_merge(bg_subrow))
@@ -422,11 +570,20 @@ wb.styles do |s|
         row_2[:columns] << nil
         row_2[:styles] << (s.add_style border.deep_merge(bg_subrow))
         
-        row_2[:columns] << nil
-        row_2[:styles] << (s.add_style border.deep_merge(bg_subrow))
+        if params[:return_amount_col].present?
+          row_2[:columns] << nil
+          row_2[:styles] << (s.add_style border.deep_merge(bg_subrow))
+        end
         
-        row_2[:columns] << nil
-        row_2[:styles] << (s.add_style border.deep_merge(bg_subrow))
+        if params[:return_discount_col].present?
+          row_2[:columns] << nil
+          row_2[:styles] << (s.add_style border.deep_merge(bg_subrow))
+        end
+        
+        if params[:return_total_col].present?
+          row_2[:columns] << nil
+          row_2[:styles] << (s.add_style border.deep_merge(bg_subrow))
+        end
         
         row_2[:columns] << delivery.note
         row_2[:styles] << (s.add_style text_left.deep_merge(border).deep_merge(bg_subrow))
@@ -452,6 +609,16 @@ wb.styles do |s|
           row_2[:columns] << "#{delivery_detail.product_name}" #{'(' + delivery_detail.get_report_name + ')' if !delivery_detail.get_report_name.empty?}"
           row_2[:styles] << (s.add_style text_left.deep_merge(border))
           
+          if params[:patient_col].present?
+            row_2[:columns] << nil
+            row_2[:styles] << (s.add_style text_center.deep_merge(border))
+          end
+          
+          if params[:patient_state_col].present?
+            row_2[:columns] << nil
+            row_2[:styles] << (s.add_style text_center.deep_merge(border))
+          end
+          
           row_2[:columns] << delivery_detail.warehouse_name
           row_2[:styles] << (s.add_style text_center.deep_merge(number).deep_merge(border))
           
@@ -464,14 +631,20 @@ wb.styles do |s|
           row_2[:columns] << delivery_detail.ordered_price
           row_2[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
           
-          row_2[:columns] << delivery_detail.ordered_subtotal
-          row_2[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
+          if params[:return_amount_col].present?
+            row_2[:columns] << delivery_detail.ordered_subtotal
+            row_2[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
+          end
           
-          row_2[:columns] << delivery_detail.discount
-          row_2[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
+          if params[:return_discount_col].present?
+            row_2[:columns] << delivery_detail.discount
+            row_2[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
+          end
           
-          row_2[:columns] << delivery_detail.cache_total
-          row_2[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
+          if params[:return_total_col].present?
+            row_2[:columns] << delivery_detail.cache_total
+            row_2[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
+          end
           
           row_2[:columns] << delivery_detail.note
           row_2[:styles] << (s.add_style text_left.deep_merge(border))
@@ -490,6 +663,18 @@ wb.styles do |s|
       footer_2[:columns] << 'Tổng cộng'
       footer_2[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(wrap_text).deep_merge(border))
       col_ft_2 = 0
+      
+      if params[:patient_col].present?
+        footer_2[:columns] << nil
+        footer_2[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(border))
+        col_ft_2 += 1
+      end
+      
+      if params[:patient_state_col].present?
+        footer_2[:columns] << nil
+        footer_2[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(border))
+        col_ft_2 += 1
+      end
       
       footer_2[:columns] << nil
       footer_2[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(border))
@@ -515,17 +700,23 @@ wb.styles do |s|
       footer_2[:styles] << (s.add_style bg_footer.deep_merge(number).deep_merge(bold).deep_merge(text_right).deep_merge(border))
       col_ft_2 += 1
       
-      footer_2[:columns] << nil #@product_returns.ordered_subtotal#"=SUM(#{('A'.codepoints.first + thanhtien).chr}#{delivery_num_row_first}:#{('A'.codepoints.first + thanhtien).chr}#{num_row})"
-      footer_2[:styles] << (s.add_style bg_footer.deep_merge(number).deep_merge(bold).deep_merge(text_right).deep_merge(border))
-      col_ft_2 += 1
+      if params[:return_amount_col].present?
+        footer_2[:columns] << nil #@product_returns.ordered_subtotal#"=SUM(#{('A'.codepoints.first + thanhtien).chr}#{delivery_num_row_first}:#{('A'.codepoints.first + thanhtien).chr}#{num_row})"
+        footer_2[:styles] << (s.add_style bg_footer.deep_merge(number).deep_merge(bold).deep_merge(text_right).deep_merge(border))
+        col_ft_2 += 1
+      end
       
-      footer_2[:columns] << nil #@product_returns.discount#"=SUM(#{('A'.codepoints.first + giamgia).chr}#{delivery_num_row_first}:#{('A'.codepoints.first + giamgia).chr}#{num_row})"
-      footer_2[:styles] << (s.add_style bg_footer.deep_merge(number).deep_merge(bold).deep_merge(text_right).deep_merge(border))
-      col_ft_2 += 1
+      if params[:return_discount_col].present?
+        footer_2[:columns] << nil #@product_returns.discount#"=SUM(#{('A'.codepoints.first + giamgia).chr}#{delivery_num_row_first}:#{('A'.codepoints.first + giamgia).chr}#{num_row})"
+        footer_2[:styles] << (s.add_style bg_footer.deep_merge(number).deep_merge(bold).deep_merge(text_right).deep_merge(border))
+        col_ft_2 += 1
+      end
       
-      footer_2[:columns] << @product_returns.cache_total_amount #"=SUM(#{('A'.codepoints.first + tongcong).chr}#{delivery_num_row_first}:#{('A'.codepoints.first + tongcong).chr}#{num_row})"
-      footer_2[:styles] << (s.add_style bg_footer.deep_merge(number).deep_merge(bold).deep_merge(text_right).deep_merge(border))
-      col_ft_2 += 1
+      if params[:return_total_col].present?
+        footer_2[:columns] << @product_returns.cache_total_amount #"=SUM(#{('A'.codepoints.first + tongcong).chr}#{delivery_num_row_first}:#{('A'.codepoints.first + tongcong).chr}#{num_row})"
+        footer_2[:styles] << (s.add_style bg_footer.deep_merge(number).deep_merge(bold).deep_merge(text_right).deep_merge(border))
+        col_ft_2 += 1
+      end
       col_amount_ft_2 = col_ft_2
       
       footer_2[:columns] << nil
@@ -546,6 +737,9 @@ wb.styles do |s|
     
     # ############################ 3. Tổng kết ############################
     
+    add_patient_num = (params[:patient_col].present? ? 1 : 0) +
+                      (params[:patient_state_col].present? ? 1 : 0)
+    
     # add empty row
     sheet.add_row [nil]
     num_row += 1
@@ -564,6 +758,16 @@ wb.styles do |s|
     header_3[:columns] << nil
     header_3[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
     
+    if params[:patient_col].present?
+      header_3[:columns] << nil
+      header_3[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
+    end
+    
+    if params[:patient_state_col].present?
+      header_3[:columns] << nil
+      header_3[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
+    end
+    
     header_3[:columns] << nil
     header_3[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
     
@@ -578,7 +782,7 @@ wb.styles do |s|
     
     sheet.add_row header_3[:columns], style: header_3[:styles]
     num_row += 1
-    sheet.merge_cells("#{('A'.codepoints.first + 1).chr}#{num_row}:#{('A'.codepoints.first + 5).chr}#{num_row}")
+    sheet.merge_cells("#{('A'.codepoints.first + 1).chr}#{num_row}:#{('A'.codepoints.first + 5 + add_patient_num).chr}#{num_row}")
     
     # Add rows
     rw1 = {columns: [], styles: []}
@@ -622,7 +826,7 @@ wb.styles do |s|
     rw6[:styles] << (s.add_style bg_footer.deep_merge(text_left).deep_merge(bold).deep_merge(border_dotted_bottom))
     num_col += 1
     
-    (num_col..(num_col+3)).each do |c|
+    (num_col..(num_col+3+add_patient_num)).each do |c|
       num_col += 1
       rw1[:columns] << nil
       rw1[:styles] << (s.add_style border_dotted_bottom)
@@ -665,22 +869,22 @@ wb.styles do |s|
     
     sheet.add_row rw1[:columns], style: rw1[:styles]
     num_row += 1
-    sheet.merge_cells("#{('A'.codepoints.first + 1).chr}#{num_row}:#{('A'.codepoints.first + 5).chr}#{num_row}")
+    sheet.merge_cells("#{('A'.codepoints.first + 1).chr}#{num_row}:#{('A'.codepoints.first + 5 + add_patient_num).chr}#{num_row}")
     sheet.add_row rw2[:columns], style: rw2[:styles]
     num_row += 1
-    sheet.merge_cells("#{('A'.codepoints.first + 1).chr}#{num_row}:#{('A'.codepoints.first + 5).chr}#{num_row}")
+    sheet.merge_cells("#{('A'.codepoints.first + 1).chr}#{num_row}:#{('A'.codepoints.first + 5 + add_patient_num).chr}#{num_row}")
     sheet.add_row rw3[:columns], style: rw3[:styles]
     num_row += 1
-    sheet.merge_cells("#{('A'.codepoints.first + 1).chr}#{num_row}:#{('A'.codepoints.first + 5).chr}#{num_row}")
+    sheet.merge_cells("#{('A'.codepoints.first + 1).chr}#{num_row}:#{('A'.codepoints.first + 5 + add_patient_num).chr}#{num_row}")
     sheet.add_row rw4[:columns], style: rw4[:styles]
     num_row += 1
-    sheet.merge_cells("#{('A'.codepoints.first + 1).chr}#{num_row}:#{('A'.codepoints.first + 5).chr}#{num_row}")
+    sheet.merge_cells("#{('A'.codepoints.first + 1).chr}#{num_row}:#{('A'.codepoints.first + 5 + add_patient_num).chr}#{num_row}")
     sheet.add_row rw5[:columns], style: rw5[:styles]
     num_row += 1
-    sheet.merge_cells("#{('A'.codepoints.first + 1).chr}#{num_row}:#{('A'.codepoints.first + 5).chr}#{num_row}")
+    sheet.merge_cells("#{('A'.codepoints.first + 1).chr}#{num_row}:#{('A'.codepoints.first + 5 + add_patient_num).chr}#{num_row}")
     sheet.add_row rw6[:columns], style: rw6[:styles]
     num_row += 1
-    sheet.merge_cells("#{('A'.codepoints.first + 1).chr}#{num_row}:#{('A'.codepoints.first + 5).chr}#{num_row}")
+    sheet.merge_cells("#{('A'.codepoints.first + 1).chr}#{num_row}:#{('A'.codepoints.first + 5 + add_patient_num).chr}#{num_row}")
     
     
     # ############################ Footer Signature ############################
@@ -688,32 +892,80 @@ wb.styles do |s|
     # add empty row
     sheet.add_row [nil]
     num_row += 1
+    sheet.add_row ["\'- Số này có 2 trang, đánh số từ trang số 1 đến trang 2"]
+    num_row += 1
+    sheet.add_row ["\'- Ngày mở sổ ....."]
+    num_row += 1
+    sheet.add_row [nil]
+    num_row += 1
+    sheet.add_row [nil]
+    num_row += 1
     
+    sign = {columns: [], styles: []}
     sign1 = {columns: [], styles: []}
     sign2 = {columns: [], styles: []}
     
+    sign[:columns] << nil
+    sign[:styles] << (s.add_style {})
+    sign[:columns] << nil
+    sign[:styles] << (s.add_style {})
+    sign[:columns] << nil
+    sign[:styles] << (s.add_style {})
+    if params[:patient_col].present?
+      sign[:columns] << nil
+      sign[:styles] << (s.add_style {})
+    end
+    if params[:patient_state_col].present?
+      sign[:columns] << nil
+      sign[:styles] << (s.add_style {})
+    end
+    sign[:columns] << nil
+    sign[:styles] << (s.add_style {})
+    sign[:columns] << nil
+    sign[:styles] << (s.add_style {})
+    sign[:columns] << nil
+    sign[:styles] << (s.add_style {})
+    sign[:columns] << nil
+    sign[:styles] << (s.add_style {})
+    sign[:columns] << nil
+    sign[:styles] << (s.add_style {})
+    sign[:columns] << nil
+    sign[:styles] << (s.add_style {})
+    sign[:columns] << nil
+    sign[:styles] << (s.add_style {})
+    sign[:columns] << Time.now.strftime('Ngày %d tháng %m năm %Y')
+    sign[:styles] << (s.add_style text_center.merge(italic))
+    
     sign1[:columns] << nil
     sign1[:styles] << (s.add_style {})
-    sign1[:columns] << 'Xác nhận của khách hàng'
+    sign1[:columns] << 'Người lập biểu'
     sign1[:styles] << (s.add_style text_center.merge(bold))
+    sign1[:columns] << nil
+    sign1[:styles] << (s.add_style {})
+    if params[:patient_col].present?
+      sign1[:columns] << nil
+      sign1[:styles] << (s.add_style {})
+    end
+    if params[:patient_state_col].present?
+      sign1[:columns] << nil
+      sign1[:styles] << (s.add_style {})
+    end
+    sign1[:columns] << nil
+    sign1[:styles] << (s.add_style {})
+    sign1[:columns] << nil
+    sign1[:styles] << (s.add_style {})
+    sign1[:columns] << nil
+    sign1[:styles] << (s.add_style {})
+    sign1[:columns] << nil
+    sign1[:styles] << (s.add_style {})
+    sign1[:columns] << nil
+    sign1[:styles] << (s.add_style {})
     sign1[:columns] << nil
     sign1[:styles] << (s.add_style {})
     sign1[:columns] << nil
     sign1[:styles] << (s.add_style {})
     sign1[:columns] << 'Kế toán trưởng'
     sign1[:styles] << (s.add_style text_center.merge(bold))
-    sign1[:columns] << nil
-    sign1[:styles] << (s.add_style {})
-    sign1[:columns] << nil
-    sign1[:styles] << (s.add_style {})
-    sign1[:columns] << nil
-    sign1[:styles] << (s.add_style {})
-    sign1[:columns] << nil
-    sign1[:styles] << (s.add_style {})
-    sign1[:columns] << nil
-    sign1[:styles] << (s.add_style {})
-    sign1[:columns] << 'Giám đốc'
-    sign1[:styles] << (s.add_style text_center.merge(bold))
     
     sign2[:columns] << nil
     sign2[:styles] << (s.add_style {})
@@ -721,31 +973,50 @@ wb.styles do |s|
     sign2[:styles] << (s.add_style text_center.merge(italic))
     sign2[:columns] << nil
     sign2[:styles] << (s.add_style {})
+    if params[:patient_col].present?
+      sign2[:columns] << nil
+      sign2[:styles] << (s.add_style {})
+    end
+    if params[:patient_state_col].present?
+      sign2[:columns] << nil
+      sign2[:styles] << (s.add_style {})
+    end
+    sign2[:columns] << nil
+    sign2[:styles] << (s.add_style {})
+    sign2[:columns] << nil
+    sign2[:styles] << (s.add_style {})
+    sign2[:columns] << nil
+    sign2[:styles] << (s.add_style {})
+    sign2[:columns] << nil
+    sign2[:styles] << (s.add_style {})
+    sign2[:columns] << nil
+    sign2[:styles] << (s.add_style {})
+    sign2[:columns] << nil
+    sign2[:styles] << (s.add_style {})
     sign2[:columns] << nil
     sign2[:styles] << (s.add_style {})
     sign2[:columns] << '(Ký, họ tên)'
     sign2[:styles] << (s.add_style text_center.merge(italic))
-    sign2[:columns] << nil
-    sign2[:styles] << (s.add_style {})
-    sign2[:columns] << nil
-    sign2[:styles] << (s.add_style {})
-    sign2[:columns] << nil
-    sign2[:styles] << (s.add_style {})
-    sign2[:columns] << nil
-    sign2[:styles] << (s.add_style {})
-    sign2[:columns] << nil
-    sign2[:styles] << (s.add_style {})
-    sign2[:columns] << '(Ký, họ tên, đóng dấu)'
-    sign2[:styles] << (s.add_style text_center.merge(italic))
     
+    sheet.add_row sign[:columns], style: sign[:styles]
+    num_row += 1
     sheet.add_row sign1[:columns], style: sign1[:styles]
     num_row += 1
     sheet.add_row sign2[:columns], style: sign2[:styles]
     num_row += 1
     
+    patient_col_widths = []
+    if params[:patient_col].present?
+      patient_col_widths << 10
+    end
+    if params[:patient_state_col].present?
+      patient_col_widths << 10
+    end
+    
     # Setup
     sheet.merge_cells("#{('A'.codepoints.first).chr}4:#{('A'.codepoints.first + (c.to_i)).chr}4")
     sheet.merge_cells("#{('A'.codepoints.first).chr}5:#{('A'.codepoints.first + (c.to_i)).chr}5")
-    sheet.column_widths 15, 15, 40, 7, 7, 10, 12, 12, 12, 12, 12, 20
+    sheet.merge_cells("#{('A'.codepoints.first).chr}6:#{('A'.codepoints.first + (c.to_i)).chr}6")
+    sheet.column_widths 15, 15, 35, *patient_col_widths, 7, 7, 10, 12, 12, 12, 12, 12, 12, 12
   end
 end
