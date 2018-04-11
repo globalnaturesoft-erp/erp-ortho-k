@@ -8,7 +8,7 @@
             </a>
         </li>
         
-        <% if @consignment.cs_returns.count > 0 %>
+        <% if @consignment.delivered_cs_returns.count > 0 %>
         <li>
             <a href="#tab_<%= tabid %>_2" data-toggle="tab">
                 <i class="fa fa-reply-all"></i>
@@ -81,7 +81,7 @@
                 </tbody>
             </table>
         </div>
-        <% if @consignment.cs_returns.count > 0 %>
+        <% if @consignment.delivered_cs_returns.count > 0 %>
             <div class="tab-pane" id="tab_<%= tabid %>_2">
                 <table class="table table-bordered table-advance order-column">
                     <thead class="flip-content">
@@ -105,7 +105,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <% @consignment.cs_returns.each do |cs_return| %>
+                        <% @consignment.delivered_cs_returns.each do |cs_return| %>
                             <tr>
                                 <td class="bg-grey bg-font-grey text-left text-nowrap bold"><%= cs_return.code %></td>
                                 <td class="bg-grey bg-font-grey text-left bold"><%= format_date(cs_return.return_date) %></td>
