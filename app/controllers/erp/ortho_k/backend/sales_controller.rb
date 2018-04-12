@@ -4,39 +4,47 @@ module Erp
       class SalesController < Erp::Backend::BackendController
         # Bao cao ban va tra hang
         def report_sell_and_return_table
-          glb = params.to_unsafe_hash[:global_filter]
-          if glb[:period].present?
-            @period_name = Erp::Periods::Period.find(glb[:period]).name
-            @from = Erp::Periods::Period.find(glb[:period]).from_date.beginning_of_day
-            @to = Erp::Periods::Period.find(glb[:period]).to_date.end_of_day
+                      glb = params.to_unsafe_hash[:global_filter]
+          @global_filters = params.to_unsafe_hash[:global_filter]
+          if @global_filters[:period].present?
+            @period_name = Erp::Periods::Period.find(@global_filters[:period]).name
+            @from = Erp::Periods::Period.find(@global_filters[:period]).from_date.beginning_of_day
+            @to = Erp::Periods::Period.find(@global_filters[:period]).to_date.end_of_day
           else
             @period_name = nil
-            @from = (glb.present? and glb[:from_date].present?) ? glb[:from_date].to_date : nil
-            @to = (glb.present? and glb[:to_date].present?) ? glb[:to_date].to_date : nil
+            @from = (@global_filters.present? and @global_filters[:from_date].present?) ? @global_filters[:from_date].to_date : nil
+            @to = (@global_filters.present? and @global_filters[:to_date].present?) ? @global_filters[:to_date].to_date : nil
           end
 
           @orders = Erp::Orders::Order.sales_orders.all_confirmed.search(params)
 
           @deliveries = Erp::Qdeliveries::Delivery.all_delivered.search(params)
                           .where(delivery_type: Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT)
+          
+          File.open("tmp/report_sell_and_return_xlsx.yml", "w+") do |f|
+            f.write({
+              global_filters: @global_filters,
+              period_name: @period_name,
+              from_date: @from,
+              to_date: @to,
+              orders: @orders,
+              deliveries: @deliveries
+            }.to_yaml)
+          end
         end
 
         def report_sell_and_return_xlsx
-          glb = params.to_unsafe_hash[:global_filter]
-          if glb[:period].present?
-            @period_name = Erp::Periods::Period.find(glb[:period]).name
-            @from = Erp::Periods::Period.find(glb[:period]).from_date.beginning_of_day
-            @to = Erp::Periods::Period.find(glb[:period]).to_date.end_of_day
-          else
-            @period_name = nil
-            @from = (glb.present? and glb[:from_date].present?) ? glb[:from_date].to_date : nil
-            @to = (glb.present? and glb[:to_date].present?) ? glb[:to_date].to_date : nil
-          end
-
-          @orders = Erp::Orders::Order.sales_orders.all_confirmed.search(params)
-
-          @deliveries = Erp::Qdeliveries::Delivery.all_delivered.search(params)
-            .where(delivery_type: Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT)
+          data = YAML.load_file("tmp/report_sell_and_return_xlsx.yml")
+          
+          @global_filters = data[:global_filters]
+          @period_name = data[:period_name]
+          @from = data[:from_date]
+          @to = data[:to_date]
+          @orders = data[:orders]
+          @deliveries = data[:deliveries]
+          
+          @orders = Erp::Orders::Order.where(id: (@orders.map{|i| i.id}))
+          @deliveries = Erp::Qdeliveries::Delivery.where(id: (@deliveries.map{|i| i.id}))
 
           respond_to do |format|
             format.xlsx {

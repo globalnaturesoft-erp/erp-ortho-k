@@ -7,31 +7,33 @@
 <% end %>
 
 <% content_for :page_toolbar do %>
-    <%= actions = []
-        actions << {
-            text: '<i class="fa fa-file-pdf-o"></i> ' + t(".export_pdf"),
-            url: ''
-        }
-        actions << {
-            text: '<i class="fa fa-file-excel-o"></i> ' + t('.export_excel'),
-            url: ''
-        }
-        actions << {
-            text: '<i class="fa fa-print"></i> ' + t('.print'),
-            url: ''
-        }
-        erp_component('button/actions', {
-        actions: actions,
-        text: t('.options'),
-        class: 'btn-noborder btn-sm',
-        icon: 'fa fa-gear'
-    }) %>
+    <% if false %>
+        <%= actions = []
+            actions << {
+                text: '<i class="fa fa-file-pdf-o"></i> ' + t(".export_pdf"),
+                url: ''
+            }
+            actions << {
+                text: '<i class="fa fa-file-excel-o"></i> ' + t('.export_excel'),
+                url: ''
+            }
+            actions << {
+                text: '<i class="fa fa-print"></i> ' + t('.print'),
+                url: ''
+            }
+            erp_component('button/actions', {
+            actions: actions,
+            text: t('.options'),
+            class: 'btn-noborder btn-sm',
+            icon: 'fa fa-gear'
+        }) %>
+    <% end %>
 <% end %>
 
 <% content_for :global_filter do %>
     <% dfilters = current_user.get_filters(request.path+"_table").present? ? current_user.get_filters(request.path+"_table") : {}  %>
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-2">
             <%= erp_form_control('date', {
                 label: t('.from_date'),
                 name: 'from_date',
@@ -39,7 +41,7 @@
                 placeholder: t('.select_from_date')
             }) %>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
             <%= erp_form_control('date', {
                 label: t('.to_date'),
                 name: 'to_date',
@@ -47,7 +49,7 @@
                 placeholder: t('.select_to_date')
             }) %>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
             <%= erp_form_control("dataselect", {
                 name: 'period',
                 value: (dfilters["period"].present? ? Erp::Periods::Period.find(dfilters["period"]).id : nil),
@@ -57,9 +59,45 @@
                 url: erp_periods.dataselect_backend_periods_path(format: 'json')
             }) %>
         </div>
+        <div class="col-md-3">
+            <%= erp_form_control("dataselect", {
+                name: 'customer',
+                label: t('.filter_customer'),
+                values: (
+                    dfilters["customer"].present? ?
+                    (Erp::Contacts::Contact.where(id: dfilters["customer"]).map{|i| {text: i.name, value: i.id}})
+                    : nil
+                ),
+                placeholder: t('.chooose_customer'),
+                url: erp_contacts.dataselect_backend_contacts_path(format: 'json', is_customer: true),
+                multiple: true
+            }) %>
+        </div>
+        <div class="col-md-3">
+            <%= erp_form_control("dataselect", {
+                name: 'employee',
+                label: t('.filter_employee'),
+                values: (
+                    dfilters["employee"].present? ?
+                    (Erp::User.where(id: dfilters["employee"]).map{|i| {text: i.name, value: i.id}})
+                    : nil
+                ),
+                placeholder: t('.chooose_employee'),
+                url: erp.dataselect_backend_users_path(format: 'json'),
+                multiple: true
+            }) %>
+        </div>
     </div>
 <% end %>
 
 <%= erp_datalist(
-    url: erp_ortho_k.report_sell_and_return_table_backend_sales_path
+    url: erp_ortho_k.report_sell_and_return_table_backend_sales_path,
+    columns: [
+        {
+            text: t('.patient'), name: 'patient', value: true, checked: false
+        },
+        {
+            text: t('.patient_state'), name: 'patient_state', value: true, checked: false
+        }
+    ]
 ) %>
