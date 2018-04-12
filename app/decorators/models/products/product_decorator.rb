@@ -2538,4 +2538,25 @@ Erp::Products::Product.class_eval do
     lens
   end
   
+  # get last delivery record
+  def last_delivery_detail(options={})
+    query = self.delivered_delivery_details.includes(:delivery
+                                                     )
+    if options[:from_date].present?
+      query = query.where('erp_qdeliveries_deliveries.date >= ?', options[:from_date].to_date.beginning_of_day)
+    end
+
+    if options[:to_date].present?
+      query = query.where('erp_qdeliveries_deliveries.date <= ?', options[:to_date].to_date.end_of_day)
+    end
+    
+    if options[:period].present?
+      query = query.where('erp_qdeliveries_deliveries.date >= ? AND erp_qdeliveries_deliveries.date <= ?',
+        Erp::Periods::Period.find(options[:period]).from_date.beginning_of_day,
+				Erp::Periods::Period.find(options[:period]).to_date.end_of_day)
+    end
+    
+    query.last
+  end
+  
 end

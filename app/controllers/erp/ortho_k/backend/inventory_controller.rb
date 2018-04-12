@@ -1359,6 +1359,219 @@ module Erp
             }
           end
         end
+        
+        # Report custom products
+        def report_custom_product
+          # default from to date
+          @from_date = Time.now.beginning_of_month
+          @to_date = Time.now.end_of_day
+
+          @period = Erp::Periods::Period.where(name: "Tháng #{Time.now.month}/#{Time.now.year}").first
+        end
+
+        def report_custom_product_table
+          @global_filters = params.to_unsafe_hash[:global_filter]
+
+          @is_set_type_selected = @global_filters[:categories] == Erp::Products::Category.get_set.id.to_s
+
+          # if has period
+          if @global_filters[:period].present?
+            @period = Erp::Periods::Period.find(@global_filters[:period])
+            @global_filters[:from_date] = @period.from_date
+            @global_filters[:to_date] = @period.to_date
+          end
+
+          @from_date = @global_filters[:from_date].to_date
+          @to_date = @global_filters[:to_date].to_date
+
+          # get categories
+          category_ids = @global_filters[:categories].present? ? @global_filters[:categories] : nil
+          @categories = Erp::Products::Category.where(id: category_ids)
+
+          # get diameters
+          diameter_ids = @global_filters[:diameters].present? ? @global_filters[:diameters] : nil
+          @diameters = Erp::Products::PropertiesValue.where(id: diameter_ids)
+
+          # get diameters
+          letter_ids = @global_filters[:letters].present? ? @global_filters[:letters] : nil
+          @letters = Erp::Products::PropertiesValue.where(id: letter_ids)
+
+          # get numbers
+          number_ids = @global_filters[:numbers].present? ? @global_filters[:numbers] : nil
+          @numbers = Erp::Products::PropertiesValue.where(id: number_ids)
+
+
+          # product query
+          @product_query = Erp::Products::Product.get_active.joins(:category).where(category_id: category_ids)
+            .order('erp_products_products.ordered_code')
+          # single keyword
+          if params.to_unsafe_hash[:keyword].present?
+            keyword = params.to_unsafe_hash[:keyword].strip.downcase
+            keyword.split(' ').each do |q|
+              q = q.strip
+              @product_query = @product_query.where('LOWER(erp_products_products.cache_search) LIKE ?', '%'+q+'%')
+            end
+          end
+          # filter by diameters
+          if diameter_ids.present?
+            if !diameter_ids.kind_of?(Array)
+              @product_query = @product_query.where("erp_products_products.cache_properties LIKE '%[\"#{diameter_ids}\",%'")
+            else
+              diameter_ids = (diameter_ids.reject { |c| c.empty? })
+              if !diameter_ids.empty?
+                qs = []
+                diameter_ids.each do |x|
+                  qs << "(erp_products_products.cache_properties LIKE '%[\"#{x}\",%')"
+                end
+                @product_query = @product_query.where("(#{qs.join(" OR ")})")
+              end
+            end
+          end
+          # filter by letters
+          if letter_ids.present?
+            if !letter_ids.kind_of?(Array)
+              @product_query = @product_query.where("erp_products_products.cache_properties LIKE '%[\"#{letter_ids}\",%'")
+            else
+              letter_ids = (letter_ids.reject { |c| c.empty? })
+              if !letter_ids.empty?
+                qs = []
+                letter_ids.each do |x|
+                  qs << "(erp_products_products.cache_properties LIKE '%[\"#{x}\",%')"
+                end
+                @product_query = @product_query.where("(#{qs.join(" OR ")})")
+              end
+            end
+          end
+          # filter by numbers
+          if number_ids.present?
+            if !number_ids.kind_of?(Array)
+              @product_query = @product_query.where("erp_products_products.cache_properties LIKE '%[\"#{number_ids}\",%'")
+            else
+              number_ids = (number_ids.reject { |c| c.empty? })
+              if !number_ids.empty?
+                qs = []
+                number_ids.each do |x|
+                  qs << "(erp_products_products.cache_properties LIKE '%[\"#{x}\",%')"
+                end
+                @product_query = @product_query.where("(#{qs.join(" OR ")})")
+              end
+            end
+          end
+
+          # products
+          @products = @product_query.order('erp_products_products.category_id, erp_products_products.ordered_code').paginate(:page => params[:page], :per_page => 20)
+
+          # state
+          @states = Erp::Products::State.all_active
+          if @global_filters[:state_ids].present?
+            @states = Erp::Products::State.where(id: @global_filters[:state_ids])
+          end
+        end
+
+        def report_custom_product_xlsx
+          @global_filters = params.to_unsafe_hash[:global_filter]
+
+          @is_set_type_selected = @global_filters[:categories] == Erp::Products::Category.get_set.id.to_s
+
+          # if has period
+          if @global_filters[:period].present?
+            @period = Erp::Periods::Period.find(@global_filters[:period])
+            @global_filters[:from_date] = @period.from_date
+            @global_filters[:to_date] = @period.to_date
+          end
+
+          @from_date = @global_filters[:from_date].to_date
+          @to_date = @global_filters[:to_date].to_date
+
+          # get categories
+          category_ids = @global_filters[:categories].present? ? @global_filters[:categories] : nil
+          @categories = Erp::Products::Category.where(id: category_ids)
+
+          # get diameters
+          diameter_ids = @global_filters[:diameters].present? ? @global_filters[:diameters] : nil
+          @diameters = Erp::Products::PropertiesValue.where(id: diameter_ids)
+
+          # get diameters
+          letter_ids = @global_filters[:letters].present? ? @global_filters[:letters] : nil
+          @letters = Erp::Products::PropertiesValue.where(id: letter_ids)
+
+          # get numbers
+          number_ids = @global_filters[:numbers].present? ? @global_filters[:numbers] : nil
+          @numbers = Erp::Products::PropertiesValue.where(id: number_ids)
+
+
+          # product query
+          @product_query = Erp::Products::Product.get_active.joins(:category).where(category_id: category_ids)
+            .order('erp_products_products.ordered_code')
+          # single keyword
+          if params.to_unsafe_hash[:keyword].present?
+            keyword = params.to_unsafe_hash[:keyword].strip.downcase
+            keyword.split(' ').each do |q|
+              q = q.strip
+              @product_query = @product_query.where('LOWER(erp_products_products.cache_search) LIKE ?', '%'+q+'%')
+            end
+          end
+          # filter by diameters
+          if diameter_ids.present?
+            if !diameter_ids.kind_of?(Array)
+              @product_query = @product_query.where("erp_products_products.cache_properties LIKE '%[\"#{diameter_ids}\",%'")
+            else
+              diameter_ids = (diameter_ids.reject { |c| c.empty? })
+              if !diameter_ids.empty?
+                qs = []
+                diameter_ids.each do |x|
+                  qs << "(erp_products_products.cache_properties LIKE '%[\"#{x}\",%')"
+                end
+                @product_query = @product_query.where("(#{qs.join(" OR ")})")
+              end
+            end
+          end
+          # filter by letters
+          if letter_ids.present?
+            if !letter_ids.kind_of?(Array)
+              @product_query = @product_query.where("erp_products_products.cache_properties LIKE '%[\"#{letter_ids}\",%'")
+            else
+              letter_ids = (letter_ids.reject { |c| c.empty? })
+              if !letter_ids.empty?
+                qs = []
+                letter_ids.each do |x|
+                  qs << "(erp_products_products.cache_properties LIKE '%[\"#{x}\",%')"
+                end
+                @product_query = @product_query.where("(#{qs.join(" OR ")})")
+              end
+            end
+          end
+          # filter by numbers
+          if number_ids.present?
+            if !number_ids.kind_of?(Array)
+              @product_query = @product_query.where("erp_products_products.cache_properties LIKE '%[\"#{number_ids}\",%'")
+            else
+              number_ids = (number_ids.reject { |c| c.empty? })
+              if !number_ids.empty?
+                qs = []
+                number_ids.each do |x|
+                  qs << "(erp_products_products.cache_properties LIKE '%[\"#{x}\",%')"
+                end
+                @product_query = @product_query.where("(#{qs.join(" OR ")})")
+              end
+            end
+          end
+
+          # products
+          @products = @product_query.order('erp_products_products.category_id, erp_products_products.ordered_code').paginate(:page => params[:page], :per_page => 20)
+
+          # state
+          @states = Erp::Products::State.all_active
+          if @global_filters[:state_ids].present?
+            @states = Erp::Products::State.where(id: @global_filters[:state_ids])
+          end
+
+          respond_to do |format|
+            format.xlsx {
+              response.headers['Content-Disposition'] = 'attachment; filename="Thong ke ton kho theo san pham custom.xlsx"'
+            }
+          end
+        end
       end
     end
   end

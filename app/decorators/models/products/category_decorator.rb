@@ -36,4 +36,9 @@ Erp::Products::Category.class_eval do
   def self.get_set
     self.where(name: ['Bộ sét']).first
   end
+  
+  # get bo custom category
+  def self.get_custom
+    self.where(name: ['Custom']).first
+  end
 end
