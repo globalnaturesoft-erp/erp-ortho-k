@@ -114,18 +114,7 @@
                                 <td class="bg-grey bg-font-grey text-center bold"><%= cs_return.total_quantity %></td>
                                 <td class="bg-grey bg-font-grey text-left"><%= cs_return.note.html_safe if cs_return.note.present? %></td>
                                 <td class="bg-grey bg-font-grey text-left">
-                                    <%= erp_component('button/edit', {
-                                        href: erp_consignments.edit_backend_cs_return_path(cs_return),
-                                        class: 'btn-sm btn-noborder',
-                                        help: 'Chỉnh sửa'
-                                    }) %>
-                                    <%= erp_component('button/view', {
-                                        href: erp_consignments.backend_cs_return_path(cs_return),
-                                        help: 'Xem và In',
-                                        class: 'btn-sm btn-noborder',
-                                        icon: 'fa fa-print',
-                                        target: '_blank'
-                                    }) %>
+                                    <%= cs_return_dropdown_actions(cs_return) %>
                                 </td>
                             </tr>
                             <% cs_return.return_details.each do |return_detail| %>
