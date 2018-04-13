@@ -1,4 +1,4 @@
-<% if !(@global_filters[:categories].present? and @global_filters[:letters].present? and @global_filters[:numbers_diameters].present?) %>
+<% if @multi_rows.empty? %>
   <div class="alert alert-warning">
       <p>Vui lòng chọn các tham số bắt buộc:
           <br>- <strong>Loại hàng</strong>
@@ -47,198 +47,202 @@
             <th class="text-center bg-primary text-nowrap" width="5%"><%= state.name %></th>
         <% end %>
     </tr>
-    <% counts = {} %>
-    <% @rows.each_with_index do |row, index| %>
-        <% counts[row[:category].name] = {} %>
-        <% row[:letter_groups].each_with_index do |lg,index2| %>
-            <% lg[:numbers_diameters].each_with_index do |nd,index3| %>                
-                <%
-                    query = @product_query.clone
-                    # filter by properties
-                    [nd[:diameter_ids], lg[:letter_ids], nd[:number_ids]].each do |ids|
-                        if ids.present?
-                          if !ids.kind_of?(Array)
-                            query = query.where("erp_products_products.cache_properties LIKE '%[\"#{ids}\",%'")
-                          else
-                            ids = (ids.reject { |c| c.empty? })
-                            if !ids.empty?
-                              qs = []
-                              ids.each do |x|
-                                qs << "(erp_products_products.cache_properties LIKE '%[\"#{x}\",%')"
+      
+    <% @multi_rows.each_with_index do |rows, index0| %>
+      <% counts = {} %>
+      <% @rows = rows %>
+      <% @rows.each_with_index do |row, index| %>
+          <% counts[row[:category].name] = {} %>
+          <% row[:letter_groups].each_with_index do |lg,index2| %>
+              <% lg[:numbers_diameters].each_with_index do |nd,index3| %>                
+                  <%
+                      query = @product_query.clone
+                      # filter by properties
+                      [nd[:diameter_ids], lg[:letter_ids], nd[:number_ids]].each do |ids|
+                          if ids.present?
+                            if !ids.kind_of?(Array)
+                              query = query.where("erp_products_products.cache_properties LIKE '%[\"#{ids}\",%'")
+                            else
+                              ids = (ids.reject { |c| c.empty? })
+                              if !ids.empty?
+                                qs = []
+                                ids.each do |x|
+                                  qs << "(erp_products_products.cache_properties LIKE '%[\"#{x}\",%')"
+                                end
+                                query = query.where("(#{qs.join(" OR ")})")
                               end
-                              query = query.where("(#{qs.join(" OR ")})")
                             end
                           end
-                        end
-                    end
-
-                    product_ids = query.select('id').where(category_id: row[:category].id)
-                %>
-                <% product_ids = -1 if product_ids.count == 0 %>
-                <% filters = @global_filters.clone.merge({product_id: product_ids}) %>
-                
-                
-
-                <tr>
-                    <td class="text-bold text-primary">
-                        <%= row[:category].name if index2 == 0 and index3 == 0 %>
-                    </td>
-                    <td class="text-bold">
-                        <% if index3 == 0 %>
-                            <% values = Erp::Products::PropertiesValue.where(id: lg[:letter_ids]).map(&:value) %>
-                            <%= values.first %> -> <%= values.last %>
-                        <% end %>
-                    </td>
-                    <td>
-                        <% values = Erp::Products::PropertiesValue.where(id: nd[:number_ids]).map(&:value) %>
-                        <%= values.first %> -> <%= values.last %>
-                    </td>
-                    <td>
-                        <% values = Erp::Products::PropertiesValue.where(id: nd[:diameter_ids]).map(&:value) %>
-                        <%= values.first %> -> <%= values.last %>
-                    </td>
-
-
-                    <td class="text-center text-bold">
-                        <%
-                            begin_params = filters.clone
-                            begin_params[:to_date] = filters[:from_date]
-                            begin_params[:from_date] = nil
-                        %>
-                        <%= num = Erp::Products::Product.get_stock_real(begin_params) %>
-                        <% counts[row[:category].name][0] = counts[row[:category].name][0].to_i + num %>
-                    </td>
-                    <td class="text-center">
-                        <%
-                            count = Erp::Products::Product.get_qdelivery_import(filters.clone.merge({
-                                delivery_type: [
-                                  Erp::Qdeliveries::Delivery::TYPE_CUSTOM_IMPORT,
-                                  Erp::Qdeliveries::Delivery::TYPE_PURCHASE_IMPORT
-                                ]
-                            }))
-                        %>
-                        <%= count %>
-                        <% counts[row[:category].name][1] = counts[row[:category].name][1].to_i + count %>
-                    </td>
-                    <td class="text-center">
-                        <%
-                            count = Erp::Products::Product.get_stock_check_import(filters)
-                        %>
-                        <%= count %>
-                        <% counts[row[:category].name][2] = counts[row[:category].name][2].to_i + count %>
-                    </td>
-                    <td class="text-center">
-                        <%
-                          count = (filters[:state_ids].present? ? Erp::Products::Product.get_state_check_import(filters) : '--')
-                        %>
-                        <% if filters[:state_ids].present? %>
-                          <%= count %>
-                          <% counts[row[:category].name][8] = counts[row[:category].name][8].to_i + count %>
-                        <% else %>
-                          <%= count %>
-                        <% end %>
-                    </td>
-                    <% counts[row[:category].name][3] = {} %>
-                    <% @states.each do |state| %>
-                        <td class="text-center">
-                            <%
+                      end
+  
+                      product_ids = query.select('id').where(category_id: row[:category].id)
+                  %>
+                  <% product_ids = -1 if product_ids.count == 0 %>
+                  <% filters = @global_filters.clone.merge({product_id: product_ids}) %>
+                  
+                  
+  
+                  <tr>
+                      <td class="text-bold text-primary">
+                          <%= row[:category].name if index2 == 0 and index3 == 0 %>
+                      </td>
+                      <td class="text-bold">
+                          <% if index3 == 0 %>
+                              <% values = Erp::Products::PropertiesValue.where(id: lg[:letter_ids]).map(&:value) %>
+                              <%= values.first %> -> <%= values.last %>
+                          <% end %>
+                      </td>
+                      <td>
+                          <% values = Erp::Products::PropertiesValue.where(id: nd[:number_ids]).map(&:value) %>
+                          <%= values.first %> -> <%= values.last %>
+                      </td>
+                      <td>
+                          <% values = Erp::Products::PropertiesValue.where(id: nd[:diameter_ids]).map(&:value) %>
+                          <%= values.first %> -> <%= values.last %>
+                      </td>
+  
+  
+                      <td class="text-center text-bold">
+                          <%
+                              begin_params = filters.clone
+                              begin_params[:to_date] = filters[:from_date]
+                              begin_params[:from_date] = nil
+                          %>
+                          <%= num = Erp::Products::Product.get_stock_real(begin_params) %>
+                          <% counts[row[:category].name][0] = counts[row[:category].name][0].to_i + num %>
+                      </td>
+                      <td class="text-center">
+                          <%
                               count = Erp::Products::Product.get_qdelivery_import(filters.clone.merge({
-                                    delivery_type: [                                        
-                                        Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT
-                                    ],
-                                    state: state
+                                  delivery_type: [
+                                    Erp::Qdeliveries::Delivery::TYPE_CUSTOM_IMPORT,
+                                    Erp::Qdeliveries::Delivery::TYPE_PURCHASE_IMPORT
+                                  ]
                               }))
-                            %>
+                          %>
+                          <%= count %>
+                          <% counts[row[:category].name][1] = counts[row[:category].name][1].to_i + count %>
+                      </td>
+                      <td class="text-center">
+                          <%
+                              count = Erp::Products::Product.get_stock_check_import(filters)
+                          %>
+                          <%= count %>
+                          <% counts[row[:category].name][2] = counts[row[:category].name][2].to_i + count %>
+                      </td>
+                      <td class="text-center">
+                          <%
+                            count = (filters[:state_ids].present? ? Erp::Products::Product.get_state_check_import(filters) : '--')
+                          %>
+                          <% if filters[:state_ids].present? %>
                             <%= count %>
-                            <% counts[row[:category].name][3][state.id] = counts[row[:category].name][3][state.id].to_i + count %>
-                        </td>
-                    <% end %>
-                    <td class="text-center">
-                        <%
-                            count = Erp::Products::Product.get_qdelivery_export(filters.clone.merge({
-                                delivery_type: [
-                                  Erp::Qdeliveries::Delivery::TYPE_CUSTOM_EXPORT,
-                                  Erp::Qdeliveries::Delivery::TYPE_SALES_EXPORT
-                                ]
-                            }))
-                            count += Erp::Products::Product.get_gift_given_export(filters)
-                        %>
-                        <%= count %>
-                        <% counts[row[:category].name][4] = counts[row[:category].name][4].to_i + count %>
-                    </td>
-                    <td class="text-center">
-                        <%
-                            count = Erp::Products::Product.get_damage_record_export(filters)
-                            count += Erp::Products::Product.get_stock_check_export(filters)
-                        %>
-                        <%= count %>
-                        <% counts[row[:category].name][5] = counts[row[:category].name][5].to_i + count %>
-                    </td>
-                    <td class="text-center">
-                        <%
-                          count = (filters[:state_ids].present? ? Erp::Products::Product.get_state_check_export(filters) : '--')
-                        %>
-                        <% if filters[:state_ids].present? %>
+                            <% counts[row[:category].name][8] = counts[row[:category].name][8].to_i + count %>
+                          <% else %>
+                            <%= count %>
+                          <% end %>
+                      </td>
+                      <% counts[row[:category].name][3] = {} %>
+                      <% @states.each do |state| %>
+                          <td class="text-center">
+                              <%
+                                count = Erp::Products::Product.get_qdelivery_import(filters.clone.merge({
+                                      delivery_type: [                                        
+                                          Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT
+                                      ],
+                                      state: state
+                                }))
+                              %>
+                              <%= count %>
+                              <% counts[row[:category].name][3][state.id] = counts[row[:category].name][3][state.id].to_i + count %>
+                          </td>
+                      <% end %>
+                      <td class="text-center">
+                          <%
+                              count = Erp::Products::Product.get_qdelivery_export(filters.clone.merge({
+                                  delivery_type: [
+                                    Erp::Qdeliveries::Delivery::TYPE_CUSTOM_EXPORT,
+                                    Erp::Qdeliveries::Delivery::TYPE_SALES_EXPORT
+                                  ]
+                              }))
+                              count += Erp::Products::Product.get_gift_given_export(filters)
+                          %>
                           <%= count %>
-                          <% counts[row[:category].name][6] = counts[row[:category].name][6].to_i + count %>
-                        <% else %>
+                          <% counts[row[:category].name][4] = counts[row[:category].name][4].to_i + count %>
+                      </td>
+                      <td class="text-center">
+                          <%
+                              count = Erp::Products::Product.get_damage_record_export(filters)
+                              count += Erp::Products::Product.get_stock_check_export(filters)
+                          %>
                           <%= count %>
-                        <% end %>
-                    </td>
-                    <td class="text-center text-bold">
-                        <%
-                            end_params = filters.clone
-                            end_params[:from_date] = nil
-                        %>
-                        <%= Erp::Products::Product.get_stock_real(end_params) %>
-                        <% counts[row[:category].name][7] = counts[row[:category].name][7].to_i + Erp::Products::Product.get_stock_real(end_params) %>
-                    </td>
-                </tr>
-            <% end %>
-        <% end %>
-
-
-        <%
-            query = @product_query.clone
-            product_ids = query.select('id').where(category_id: row[:category].id)
-        %>
-        <% product_ids = -1 if product_ids.count == 0 %>
-        <% filters = @global_filters.clone.merge({product_id: product_ids}) %>
-
-        <tr>
-            <td class="text-bold bg-grey text-right" colspan="4">
-                Tổng cộng
-            </td>
-            <td class="text-center bg-grey text-bold">
-                <%= counts[row[:category].name][0] %>
-            </td>
-            <td class="text-center bg-grey">
-                <%= counts[row[:category].name][1] %>
-            </td>
-            <td class="text-center bg-grey">
-                <%= counts[row[:category].name][2] %>
-            </td>
-            <td class="text-center bg-grey">
-                <%= counts[row[:category].name][8] %>
-            </td>
-            <% @states.each do |state| %>
-                <td class="text-center bg-grey">
-                    <%= counts[row[:category].name][3][state.id] %>
-                </td>
-            <% end %>
-            <td class="text-center bg-grey">
-                <%= counts[row[:category].name][4] %>
-            </td>
-            <td class="text-center bg-grey">
-                <%= counts[row[:category].name][5] %>
-            </td>
-            <td class="text-center bg-grey">
-                <%= counts[row[:category].name][6] %>
-            </td>
-            <td class="text-center bg-grey text-bold">
-                <%= counts[row[:category].name][7] %>
-            </td>
-        </tr>
+                          <% counts[row[:category].name][5] = counts[row[:category].name][5].to_i + count %>
+                      </td>
+                      <td class="text-center">
+                          <%
+                            count = (filters[:state_ids].present? ? Erp::Products::Product.get_state_check_export(filters) : '--')
+                          %>
+                          <% if filters[:state_ids].present? %>
+                            <%= count %>
+                            <% counts[row[:category].name][6] = counts[row[:category].name][6].to_i + count %>
+                          <% else %>
+                            <%= count %>
+                          <% end %>
+                      </td>
+                      <td class="text-center text-bold">
+                          <%
+                              end_params = filters.clone
+                              end_params[:from_date] = nil
+                          %>
+                          <%= Erp::Products::Product.get_stock_real(end_params) %>
+                          <% counts[row[:category].name][7] = counts[row[:category].name][7].to_i + Erp::Products::Product.get_stock_real(end_params) %>
+                      </td>
+                  </tr>
+              <% end %>
+          <% end %>
+  
+  
+          <%
+              query = @product_query.clone
+              product_ids = query.select('id').where(category_id: row[:category].id)
+          %>
+          <% product_ids = -1 if product_ids.count == 0 %>
+          <% filters = @global_filters.clone.merge({product_id: product_ids}) %>
+  
+          <tr>
+              <td class="text-bold bg-grey text-right" colspan="4">
+                  Tổng cộng
+              </td>
+              <td class="text-center bg-grey text-bold">
+                  <%= counts[row[:category].name][0] %>
+              </td>
+              <td class="text-center bg-grey">
+                  <%= counts[row[:category].name][1] %>
+              </td>
+              <td class="text-center bg-grey">
+                  <%= counts[row[:category].name][2] %>
+              </td>
+              <td class="text-center bg-grey">
+                  <%= counts[row[:category].name][8] %>
+              </td>
+              <% @states.each do |state| %>
+                  <td class="text-center bg-grey">
+                      <%= counts[row[:category].name][3][state.id] %>
+                  </td>
+              <% end %>
+              <td class="text-center bg-grey">
+                  <%= counts[row[:category].name][4] %>
+              </td>
+              <td class="text-center bg-grey">
+                  <%= counts[row[:category].name][5] %>
+              </td>
+              <td class="text-center bg-grey">
+                  <%= counts[row[:category].name][6] %>
+              </td>
+              <td class="text-center bg-grey text-bold">
+                  <%= counts[row[:category].name][7] %>
+              </td>
+          </tr>
+      <% end %>
     <% end %>
   </table>
 <% end %>

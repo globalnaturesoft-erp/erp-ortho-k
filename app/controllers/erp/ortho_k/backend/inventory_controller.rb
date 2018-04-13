@@ -976,31 +976,39 @@ module Erp
 
           @from_date = @global_filters[:from_date].to_date
           @to_date = @global_filters[:to_date].to_date
-
-          # area array
-          @rows = []
-          # categories each
-          if @global_filters[:categories].present? and @global_filters[:letters].present? and @global_filters[:numbers_diameters].present?
-            @global_filters[:categories] = @global_filters[:categories].kind_of?(Array) ? @global_filters[:categories] : [@global_filters[:categories]]
-            @global_filters[:categories].each do |category_id|
-              span = (@global_filters[:letters].count)
-              row = {category: Erp::Products::Category.find(category_id), letter_groups: [], span: 0}
-
-              # letters each
-              @global_filters[:letters].each do |lrow|
-                row_2 = {letter_ids: lrow[1], numbers_diameters: []}
-
-                # numbers diameters
-                @global_filters[:numbers_diameters].each do |ndrow|
-                  row_2[:numbers_diameters] << {number_ids: ndrow[1][:numbers], diameter_ids: ndrow[1][:diameters]}
+          
+          @multi_rows = []
+          
+          @global_filters[:areas].each do |arow|
+              filters = arow[1]
+            
+              # area array
+              rows = []
+              # categories each
+              if filters[:categories].present? and filters[:letters].present? and filters[:numbers_diameters].present?
+                filters[:categories] = filters[:categories].kind_of?(Array) ? filters[:categories] : [filters[:categories]]
+                filters[:categories].each do |category_id|
+                  span = (filters[:letters].count)
+                  row = {category: Erp::Products::Category.find(category_id), letter_groups: [], span: 0}
+    
+                  # letters each
+                  filters[:letters].each do |lrow|
+                    row_2 = {letter_ids: lrow[1], numbers_diameters: []}
+    
+                    # numbers diameters
+                    filters[:numbers_diameters].each do |ndrow|
+                      row_2[:numbers_diameters] << {number_ids: ndrow[1][:numbers], diameter_ids: ndrow[1][:diameters]}
+                    end
+    
+                    # letters
+                    row[:letter_groups] << row_2
+                  end
+    
+                  rows << row
                 end
-
-                # letters
-                row[:letter_groups] << row_2
               end
-
-              @rows << row
-            end
+              
+            @multi_rows << rows if !rows.empty?
           end
 
           @product_query = Erp::Products::Product.get_active
@@ -1024,31 +1032,39 @@ module Erp
 
           @from_date = @global_filters[:from_date].to_date
           @to_date = @global_filters[:to_date].to_date
-
-          # area array
-          @rows = []
-          # categories each
-          if @global_filters[:categories].present? and @global_filters[:letters].present? and @global_filters[:numbers_diameters].present?
-            @global_filters[:categories] = @global_filters[:categories].kind_of?(Array) ? @global_filters[:categories] : [@global_filters[:categories]]
-            @global_filters[:categories].each do |category_id|
-              span = (@global_filters[:letters].count)
-              row = {category: Erp::Products::Category.find(category_id), letter_groups: [], span: 0}
-
-              # letters each
-              @global_filters[:letters].each do |lrow|
-                row_2 = {letter_ids: lrow[1], numbers_diameters: []}
-
-                # numbers diameters
-                @global_filters[:numbers_diameters].each do |ndrow|
-                  row_2[:numbers_diameters] << {number_ids: ndrow[1][:numbers], diameter_ids: ndrow[1][:diameters]}
+          
+          @multi_rows = []
+          
+          @global_filters[:areas].each do |arow|
+              filters = arow[1]
+            
+              # area array
+              rows = []
+              # categories each
+              if filters[:categories].present? and filters[:letters].present? and filters[:numbers_diameters].present?
+                filters[:categories] = filters[:categories].kind_of?(Array) ? filters[:categories] : [filters[:categories]]
+                filters[:categories].each do |category_id|
+                  span = (filters[:letters].count)
+                  row = {category: Erp::Products::Category.find(category_id), letter_groups: [], span: 0}
+    
+                  # letters each
+                  filters[:letters].each do |lrow|
+                    row_2 = {letter_ids: lrow[1], numbers_diameters: []}
+    
+                    # numbers diameters
+                    filters[:numbers_diameters].each do |ndrow|
+                      row_2[:numbers_diameters] << {number_ids: ndrow[1][:numbers], diameter_ids: ndrow[1][:diameters]}
+                    end
+    
+                    # letters
+                    row[:letter_groups] << row_2
+                  end
+    
+                  rows << row
                 end
-
-                # letters
-                row[:letter_groups] << row_2
               end
-
-              @rows << row
-            end
+              
+            @multi_rows << rows if !rows.empty?
           end
 
           @product_query = Erp::Products::Product.get_active
