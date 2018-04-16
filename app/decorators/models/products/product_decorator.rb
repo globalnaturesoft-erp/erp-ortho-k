@@ -1075,6 +1075,8 @@ Erp::Products::Product.class_eval do
 
         query1.each do |state_check_detail|
           qty = - state_check_detail.quantity
+          qty_export = state_check_detail.quantity
+          source_warehouse = state_check_detail.state_check.warehouse_name
           result << {
             record_type: 'state_check',
             record_date: state_check_detail.state_check.created_at,
@@ -1085,9 +1087,11 @@ Erp::Products::Product.class_eval do
             category: state_check_detail.product.category_name,
             product_name: state_check_detail.get_product_name,
             quantity: qty,
+            qty_export: qty_export,
             description: state_check_detail.state_check.note,
             state: state_check_detail.get_old_state_name,
             warehouse: state_check_detail.state_check.warehouse_name,
+            source_warehouse: source_warehouse,
             unit: state_check_detail.product.unit_name,
             note: state_check_detail.note
           }
@@ -1102,6 +1106,8 @@ Erp::Products::Product.class_eval do
 
         query2.each do |state_check_detail|
           qty = state_check_detail.quantity
+          qty_import = state_check_detail.quantity
+          destination_warehouse = state_check_detail.state_check.warehouse_name
           result << {
             record_type: 'state_check',
             record_date: state_check_detail.state_check.created_at,
@@ -1112,9 +1118,11 @@ Erp::Products::Product.class_eval do
             category: state_check_detail.product.category_name,
             product_name: state_check_detail.get_product_name,
             quantity: qty,
+            qty_import: qty_import,
             description: state_check_detail.state_check.note,
             state: state_check_detail.get_state_name,
             warehouse: state_check_detail.state_check.warehouse_name,
+            destination_warehouse: destination_warehouse,
             unit: state_check_detail.product.unit_name,
             note: state_check_detail.note
           }
