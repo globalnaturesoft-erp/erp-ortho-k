@@ -48,7 +48,7 @@ wb.styles do |s|
     row_num += 1
 
     sheet.add_row ['Tình trạng:',
-      (@global_filters[:state_ids].present? ? Erp::Warehouses::Warehouse.where(id: @global_filters[:state_ids]).map(&:name).join(', ') : 'Tất cả')],
+      (@global_filters[:state_ids].present? ? Erp::Products::State.where(id: @global_filters[:state_ids]).map(&:name).join(', ') : 'Tất cả')],
       style: [(s.add_style text_left), (s.add_style text_left.deep_merge(bold))]
     row_num += 1
 
