@@ -142,12 +142,13 @@
             <% end %>
         </thead>
 
-        <% @products.each do |product| %>
+        <% @list.each do |row| %>
+            <% product = row[:product] %>
             <% filters = @global_filters.clone.merge(product_id: product.id) %>
 
             <tr>
                 <td class="text-nowrap">
-                  <%= product.last_delivery_detail(filters).nil? ? '' : format_date(product.last_delivery_detail(filters).delivery.date) %>
+                  <%= row[:date].nil? ? '' : format_date(row[:date]) %>
                 </td>
                 <td class="text-semibold text-left text-nowrap"><%= product.name %></td>
                 <td class="text-center"><%= product.unit_name %></td>
@@ -223,7 +224,7 @@
                     <%= Erp::Products::Product.get_stock_real(end_params) %>
                 </td>
                 <td class="">
-                  <%= product.last_delivery_detail(filters).nil? ? '' : product.last_delivery_detail(filters).delivery.note %>
+                  <%= row[:note].nil? ? '' : row[:note] %>
                 </td>
                 <% if @is_set_type_selected %>
                     <td class="text-center">

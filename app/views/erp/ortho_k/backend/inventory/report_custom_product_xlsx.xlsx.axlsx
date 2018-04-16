@@ -213,14 +213,16 @@ wb.styles do |s|
     sheet.add_row subheader[:columns], style: subheader[:styles]
 
     # rows
-    @products.each do |product|
+    @list.each do |rw|
+        product = rw[:product]
+        
         row = {columns: [], styles: []}
         row[:columns] = []
 
         filters = @global_filters.clone.merge(product_id: product.id)
         filters[:state_id] = Erp::Products::State.get_new_state.id
 
-        row[:columns] << (product.last_delivery_detail(filters).nil? ? '' : format_date(product.last_delivery_detail(filters).delivery.date))
+        row[:columns] << (rw[:date].nil? ? '' : format_date(rw[:date]))
         row[:styles] << (s.add_style text_left.deep_merge(border).deep_merge(middle_align))
 
         row[:columns] << product.name
@@ -282,7 +284,7 @@ wb.styles do |s|
         row[:columns] << Erp::Products::Product.get_stock_real(end_params)
         row[:styles] << (s.add_style text_center.deep_merge(border))
         
-        row[:columns] << (product.last_delivery_detail(filters).nil? ? '' : product.last_delivery_detail(filters).delivery.note)
+        row[:columns] << (rw[:note].nil? ? '' : rw[:note])
         row[:styles] << (s.add_style text_left.deep_merge(border))
 
         if @is_set_type_selected

@@ -1475,7 +1475,18 @@ module Erp
           end
 
           # products
-          @products = @product_query.order('erp_products_products.category_id, erp_products_products.ordered_code').paginate(:page => params[:page], :per_page => 20)
+          @products = @product_query.order('erp_products_products.category_id, erp_products_products.ordered_code').paginate(:page => params[:page], :per_page => 1000)
+          
+          @list = []
+          @products.each do |p|
+            @list << {
+              product: p,
+              date: (p.last_delivery_detail(@global_filters).present? ? p.last_delivery_detail(@global_filters).delivery.date : nil),
+              note: (p.last_delivery_detail(@global_filters).present? ? p.last_delivery_detail(@global_filters).delivery.note : nil)
+            }
+          end
+          
+          @list = (@list.sort_by { |row| row[:date].to_i }).reverse!
 
           # state
           @states = Erp::Products::State.all_active
@@ -1574,7 +1585,18 @@ module Erp
           end
 
           # products
-          @products = @product_query.order('erp_products_products.category_id, erp_products_products.ordered_code').paginate(:page => params[:page], :per_page => 20)
+          @products = @product_query.order('erp_products_products.category_id, erp_products_products.ordered_code')
+          
+          @list = []
+          @products.each do |p|
+            @list << {
+              product: p,
+              date: (p.last_delivery_detail(@global_filters).present? ? p.last_delivery_detail(@global_filters).delivery.date : nil),
+              note: (p.last_delivery_detail(@global_filters).present? ? p.last_delivery_detail(@global_filters).delivery.note : nil)
+            }
+          end
+          
+          @list = (@list.sort_by { |row| row[:date].to_i }).reverse!
 
           # state
           @states = Erp::Products::State.all_active
