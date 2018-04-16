@@ -755,7 +755,7 @@ module Erp
               end
 
               # find by code
-              @product_query = @product_query.where("name LIKE ?", "%#{code}-%")
+              @product_query = @product_query.where("name LIKE ?", "#{code}-%")
 
               #product_ids = @product_query.find_by_properties_value_ids([chu_pv.id,so_pv.id]).select('id')
               product_ids = @product_query.select('id')
