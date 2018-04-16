@@ -70,6 +70,9 @@ wb.styles do |s|
             ],
             state: state
         }))
+        count += Erp::Products::Product.get_cs_return_import(filters.clone.merge({
+            state: state
+        }))
 
       toprow[:columns] << count
       toprow[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_toprow).deep_merge(bold))
@@ -82,6 +85,7 @@ wb.styles do |s|
         ]
     }))
     count += Erp::Products::Product.get_gift_given_export(filters)
+    count += Erp::Products::Product.get_consignment_export(filters)
     toprow[:columns] << count
     toprow[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_toprow).deep_merge(bold))
 
@@ -244,6 +248,9 @@ wb.styles do |s|
               ],
               state: state
           }))
+          count += Erp::Products::Product.get_cs_return_import(filters.clone.merge({
+              state: state
+          }))
           row[:columns] << count
           row[:styles] << (s.add_style text_center.deep_merge(number).deep_merge(border))
         end
@@ -255,6 +262,7 @@ wb.styles do |s|
             ]
         }))
         count += Erp::Products::Product.get_gift_given_export(filters)
+        count += Erp::Products::Product.get_consignment_export(filters)
         row[:columns] << count
         row[:styles] << (s.add_style text_center.deep_merge(border))
 
