@@ -204,7 +204,7 @@ module Erp
           end
 
           # products
-          @products = @product_query.order('erp_products_products.category_id, erp_products_products.ordered_code').paginate(:page => params[:page], :per_page => 20)
+          @products = @product_query.order('erp_products_products.category_id, erp_products_products.ordered_code, erp_products_products.name').paginate(:page => params[:page], :per_page => 20)
 
           # state
           @states = Erp::Products::State.all_active

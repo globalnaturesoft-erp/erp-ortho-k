@@ -70,7 +70,9 @@
                                     ],
                                     state: state
                                 }))
-                                count += Erp::Products::Product.get_gift_given_export(filters)
+                                count += Erp::Products::Product.get_cs_return_import(filters.clone.merge({
+                                    state: state
+                                }))
                             %>
                             <%= count %>
                         </td>
@@ -84,6 +86,7 @@
                             ]
                         }))
                         count += Erp::Products::Product.get_gift_given_export(filters)
+                        count += Erp::Products::Product.get_consignment_export(filters)
                     %>
                     <%= count %>
                   </td>
@@ -176,12 +179,15 @@
                 <% @states.each do |state| %>
                     <td class="text-center">
                         <%
-                          count = Erp::Products::Product.get_qdelivery_import(filters.clone.merge({
-                                delivery_type: [
-                                    Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT
-                                ],
+                            count = Erp::Products::Product.get_qdelivery_import(filters.clone.merge({
+                                  delivery_type: [
+                                      Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT
+                                  ],
+                                  state: state
+                            }))
+                            count += Erp::Products::Product.get_cs_return_import(filters.clone.merge({
                                 state: state
-                          }))
+                            }))
                         %>
                         <%= count %>
                     </td>
@@ -195,6 +201,7 @@
                             ]
                         }))
                         count += Erp::Products::Product.get_gift_given_export(filters)
+                        count += Erp::Products::Product.get_consignment_export(filters)
                     %>
                     <%= count %>
                 </td>
