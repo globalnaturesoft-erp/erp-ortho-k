@@ -260,6 +260,9 @@
                   ],
                   state: state
               }))
+              count += Erp::Products::Product.get_cs_return_import(filters.clone.merge({
+                  state: state
+              }))
             %>
             <%= count %>
           </td>
