@@ -11,28 +11,10 @@
     <div class="row">
         <div class="col-md-3">
             <%= erp_form_control('date', {
-                label: 'Từ ngày',
-                name: 'from_date',
-                value: (dfilters["from_date"].present? ? dfilters["from_date"].to_date : nil),
-                placeholder: 'Chọn ngày đầu kỳ'
-            }) %>
-        </div>
-        <div class="col-md-3">
-            <%= erp_form_control('date', {
                 label: 'Đến ngày',
                 name: 'to_date',
                 value: (dfilters["to_date"].present? ? dfilters["to_date"].to_date : nil),
                 placeholder: 'Chọn ngày cuối kỳ'
-            }) %>
-        </div>
-        <div class="col-md-3">
-            <%= erp_form_control('dataselect', {
-                label: 'Mốc thời gian',
-                name: 'period',
-                value: (dfilters["period"].present? ? Erp::Periods::Period.find(dfilters["period"]).id : nil),
-                text: (dfilters["period"].present? ? Erp::Periods::Period.find(dfilters["period"]).name : nil),
-                placeholder: 'Chọn khoảng thời gian',
-                url: erp_periods.dataselect_backend_periods_path(format: 'json'),
             }) %>
         </div>
     </div>

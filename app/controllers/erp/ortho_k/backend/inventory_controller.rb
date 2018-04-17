@@ -494,22 +494,7 @@ module Erp
 
         def report_warehouse_table
           @global_filters = params.to_unsafe_hash[:global_filter]
-
-          # if has period
-          if @global_filters[:period].present?
-            @period = Erp::Periods::Period.find(@global_filters[:period])
-            @global_filters[:from_date] = @period.from_date
-            @global_filters[:to_date] = @period.to_date
-          end
-
-          @from_date = @global_filters[:from_date].to_date
-          @to_date = @global_filters[:to_date].to_date
-          
-          if !@from_date.present?
-            @from_date = Time.now.beginning_of_month
-            @global_filters[:from_date] = @from_date
-          end
-          
+          @to_date = @global_filters[:to_date].to_date          
           if !@to_date.present?
             @to_date = Time.now
             @global_filters[:to_date] = @to_date
@@ -529,22 +514,7 @@ module Erp
 
         def report_warehouse_xlsx
           @global_filters = params.to_unsafe_hash[:global_filter]
-
-          # if has period
-          if @global_filters[:period].present?
-            @period = Erp::Periods::Period.find(@global_filters[:period])
-            @global_filters[:from_date] = @period.from_date
-            @global_filters[:to_date] = @period.to_date
-          end
-
-          @from_date = @global_filters[:from_date].to_date
-          @to_date = @global_filters[:to_date].to_date
-          
-          if !@from_date.present?
-            @from_date = Time.now.beginning_of_month
-            @global_filters[:from_date] = @from_date
-          end
-          
+          @to_date = @global_filters[:to_date].to_date          
           if !@to_date.present?
             @to_date = Time.now
             @global_filters[:to_date] = @to_date
