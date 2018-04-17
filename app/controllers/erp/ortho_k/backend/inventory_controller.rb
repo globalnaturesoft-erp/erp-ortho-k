@@ -22,6 +22,16 @@ module Erp
 
           @from_date = @global_filters[:from_date].to_date
           @to_date = @global_filters[:to_date].to_date
+          
+          if !@from_date.present?
+            @from_date = Time.now.beginning_of_month
+            @global_filters[:from_date] = @from_date
+          end
+          
+          if !@to_date.present?
+            @to_date = Time.now
+            @global_filters[:to_date] = @to_date
+          end
 
           # get categories
           category_ids = @global_filters[:categories].present? ? @global_filters[:categories] : nil
@@ -67,6 +77,16 @@ module Erp
 
           @from_date = @global_filters[:from_date].to_date
           @to_date = @global_filters[:to_date].to_date
+          
+          if !@from_date.present?
+            @from_date = Time.now.beginning_of_month
+            @global_filters[:from_date] = @from_date
+          end
+          
+          if !@to_date.present?
+            @to_date = Time.now
+            @global_filters[:to_date] = @to_date
+          end
 
           # get categories
           category_ids = @global_filters[:categories].present? ? @global_filters[:categories] : nil
@@ -128,6 +148,16 @@ module Erp
 
           @from_date = @global_filters[:from_date].to_date
           @to_date = @global_filters[:to_date].to_date
+          
+          if !@from_date.present?
+            @from_date = Time.now.beginning_of_month
+            @global_filters[:from_date] = @from_date
+          end
+          
+          if !@to_date.present?
+            @to_date = Time.now
+            @global_filters[:to_date] = @to_date
+          end
 
           # get categories
           category_ids = @global_filters[:categories].present? ? @global_filters[:categories] : nil
@@ -227,6 +257,16 @@ module Erp
 
           @from_date = @global_filters[:from_date].to_date
           @to_date = @global_filters[:to_date].to_date
+          
+          if !@from_date.present?
+            @from_date = Time.now.beginning_of_month
+            @global_filters[:from_date] = @from_date
+          end
+          
+          if !@to_date.present?
+            @to_date = Time.now
+            @global_filters[:to_date] = @to_date
+          end
 
           # get categories
           category_ids = @global_filters[:categories].present? ? @global_filters[:categories] : nil
@@ -338,6 +378,16 @@ module Erp
 
           @from_date = @global_filters[:from_date].to_date
           @to_date = @global_filters[:to_date].to_date
+          
+          if !@from_date.present?
+            @from_date = Time.now.beginning_of_month
+            @global_filters[:from_date] = @from_date
+          end
+          
+          if !@to_date.present?
+            @to_date = Time.now
+            @global_filters[:to_date] = @to_date
+          end
 
           # get categories
           category_ids = @global_filters[:categories].present? ? @global_filters[:categories] : nil
@@ -383,6 +433,16 @@ module Erp
 
           @from_date = @global_filters[:from_date].to_date
           @to_date = @global_filters[:to_date].to_date
+          
+          if !@from_date.present?
+            @from_date = Time.now.beginning_of_month
+            @global_filters[:from_date] = @from_date
+          end
+          
+          if !@to_date.present?
+            @to_date = Time.now
+            @global_filters[:to_date] = @to_date
+          end
 
           # get categories
           category_ids = @global_filters[:categories].present? ? @global_filters[:categories] : nil
@@ -444,6 +504,16 @@ module Erp
 
           @from_date = @global_filters[:from_date].to_date
           @to_date = @global_filters[:to_date].to_date
+          
+          if !@from_date.present?
+            @from_date = Time.now.beginning_of_month
+            @global_filters[:from_date] = @from_date
+          end
+          
+          if !@to_date.present?
+            @to_date = Time.now
+            @global_filters[:to_date] = @to_date
+          end
 
           # get categories
           category_ids = @global_filters[:categories].present? ? @global_filters[:categories] : []
@@ -469,6 +539,16 @@ module Erp
 
           @from_date = @global_filters[:from_date].to_date
           @to_date = @global_filters[:to_date].to_date
+          
+          if !@from_date.present?
+            @from_date = Time.now.beginning_of_month
+            @global_filters[:from_date] = @from_date
+          end
+          
+          if !@to_date.present?
+            @to_date = Time.now
+            @global_filters[:to_date] = @to_date
+          end
 
           # get categories
           category_ids = @global_filters[:categories].present? ? @global_filters[:categories] : []
@@ -511,6 +591,16 @@ module Erp
 
           @from_date = @global_filters[:from_date].to_date
           @to_date = @global_filters[:to_date].to_date
+          
+          if !@from_date.present?
+            @from_date = Time.now.beginning_of_month
+            @global_filters[:from_date] = @from_date
+          end
+          
+          if !@to_date.present?
+            @to_date = Time.now
+            @global_filters[:to_date] = @to_date
+          end
 
           # get categories
           category_ids = @global_filters[:categories].present? ? @global_filters[:categories] : nil
@@ -563,6 +653,16 @@ module Erp
 
           @from_date = @global_filters[:from_date].to_date
           @to_date = @global_filters[:to_date].to_date
+          
+          if !@from_date.present?
+            @from_date = Time.now.beginning_of_month
+            @global_filters[:from_date] = @from_date
+          end
+          
+          if !@to_date.present?
+            @to_date = Time.now
+            @global_filters[:to_date] = @to_date
+          end
 
           # get categories
           category_ids = @global_filters[:categories].present? ? @global_filters[:categories] : nil
@@ -631,6 +731,16 @@ module Erp
 
           @from_date = @global_filters[:from_date].to_date
           @to_date = @global_filters[:to_date].to_date
+          
+          if !@from_date.present?
+            @from_date = Time.now.beginning_of_month
+            @global_filters[:from_date] = @from_date
+          end
+          
+          if !@to_date.present?
+            @to_date = Time.now
+            @global_filters[:to_date] = @to_date
+          end
 
           # get categories
           category_ids = @global_filters[:categories].present? ? @global_filters[:categories] : nil
@@ -775,6 +885,16 @@ module Erp
 
           @from_date = @global_filters[:from_date].to_date
           @to_date = @global_filters[:to_date].to_date
+          
+          if !@from_date.present?
+            @from_date = Time.now.beginning_of_month
+            @global_filters[:from_date] = @from_date
+          end
+          
+          if !@to_date.present?
+            @to_date = Time.now
+            @global_filters[:to_date] = @to_date
+          end
 
           # get categories
           category_ids = @global_filters[:categories].present? ? @global_filters[:categories] : nil
@@ -867,6 +987,16 @@ module Erp
 
           @from_date = @global_filters[:from_date].to_date
           @to_date = @global_filters[:to_date].to_date
+          
+          if !@from_date.present?
+            @from_date = Time.now.beginning_of_month
+            @global_filters[:from_date] = @from_date
+          end
+          
+          if !@to_date.present?
+            @to_date = Time.now
+            @global_filters[:to_date] = @to_date
+          end
 
           # get categories
           category_ids = @global_filters[:categories].present? ? @global_filters[:categories] : nil
@@ -977,6 +1107,16 @@ module Erp
           @from_date = @global_filters[:from_date].to_date
           @to_date = @global_filters[:to_date].to_date
           
+          if !@from_date.present?
+            @from_date = Time.now.beginning_of_month
+            @global_filters[:from_date] = @from_date
+          end
+          
+          if !@to_date.present?
+            @to_date = Time.now
+            @global_filters[:to_date] = @to_date
+          end
+          
           @multi_rows = []
           
           @global_filters[:areas].each do |arow|
@@ -1032,6 +1172,16 @@ module Erp
 
           @from_date = @global_filters[:from_date].to_date
           @to_date = @global_filters[:to_date].to_date
+          
+          if !@from_date.present?
+            @from_date = Time.now.beginning_of_month
+            @global_filters[:from_date] = @from_date
+          end
+          
+          if !@to_date.present?
+            @to_date = Time.now
+            @global_filters[:to_date] = @to_date
+          end
           
           @multi_rows = []
           
@@ -1094,6 +1244,16 @@ module Erp
 
           @from_date = @global_filter[:from_date].to_date
           @to_date = @global_filter[:to_date].to_date
+          
+          if !@from_date.present?
+            @from_date = Time.now.beginning_of_month
+            @global_filters[:from_date] = @from_date
+          end
+          
+          if !@to_date.present?
+            @to_date = Time.now
+            @global_filters[:to_date] = @to_date
+          end
 
           # product query
           @product_query = Erp::Products::Product.get_active
@@ -1241,6 +1401,16 @@ module Erp
 
           @from_date = @global_filter[:from_date].to_date
           @to_date = @global_filter[:to_date].to_date
+          
+          if !@from_date.present?
+            @from_date = Time.now.beginning_of_month
+            @global_filters[:from_date] = @from_date
+          end
+          
+          if !@to_date.present?
+            @to_date = Time.now
+            @global_filters[:to_date] = @to_date
+          end
 
           # product query
           @product_query = Erp::Products::Product.get_active
@@ -1399,6 +1569,16 @@ module Erp
 
           @from_date = @global_filters[:from_date].to_date
           @to_date = @global_filters[:to_date].to_date
+          
+          if !@from_date.present?
+            @from_date = Time.now.beginning_of_month
+            @global_filters[:from_date] = @from_date
+          end
+          
+          if !@to_date.present?
+            @to_date = Time.now
+            @global_filters[:to_date] = @to_date
+          end
 
           # get categories
           category_ids = @global_filters[:categories].present? ? @global_filters[:categories] : nil
@@ -1509,6 +1689,16 @@ module Erp
 
           @from_date = @global_filters[:from_date].to_date
           @to_date = @global_filters[:to_date].to_date
+          
+          if !@from_date.present?
+            @from_date = Time.now.beginning_of_month
+            @global_filters[:from_date] = @from_date
+          end
+          
+          if !@to_date.present?
+            @to_date = Time.now
+            @global_filters[:to_date] = @to_date
+          end
 
           # get categories
           category_ids = @global_filters[:categories].present? ? @global_filters[:categories] : nil
