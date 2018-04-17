@@ -1,0 +1,440 @@
+wb = xlsx_package.workbook
+xlsx_package.use_autowidth = true
+wb.styles do |s|
+  wb.styles.fonts.first.name = 'Calibri'
+  wb.add_worksheet(name: @order.code) do |sheet|
+    # style
+    bg_info = {:bg_color => "305496", :fg_color => "FF"}
+    text_center = {alignment: { horizontal: :center }}
+    text_left = {alignment: { horizontal: :left }}
+    text_right = {alignment: { horizontal: :right }}
+    border = {border: { style: :thin, color: "00", :edges => [:left, :right, :bottom, :top] }}
+    number = {format_code: '#,##0'}
+    bold = {b: true}
+    italic = {i: true}
+    
+     # Top head
+    sheet.add_row ["CÔNG TY TNHH ORTHO-K VIỆT NAM"], b: true
+    sheet.add_row ["535 An Dương Vương, Phường 8, Quận 5, TP. Hồ Chí Minh, Việt Nam"], b: true
+    
+    # add empty row
+    sheet.add_row [nil]
+    
+    # Title
+    sheet.add_row ["ĐƠN #{@order.sales? ? 'BÁN' : 'ĐẶT'} HÀNG"], sz: 16, b: true, style: (s.add_style text_center)
+    sheet.add_row [@order.order_date.strftime('Ngày %d tháng %m năm %Y')], sz: 11, i: true, style: (s.add_style text_center)
+    sheet.add_row ["Số: #{@order.code}"], sz: 12, style: (s.add_style text_center)
+    
+    num_row = 6
+
+    # add empty row
+    sheet.add_row [nil]
+    num_row += 1
+    
+    contact = @order.sales? ? @order.customer : @order.supplier
+    
+    infos_row_1 = {columns: [], styles: []}
+    infos_row_2 = {columns: [], styles: []}
+    infos_row_3 = {columns: [], styles: []}
+    
+    infos_row_1[:columns] << "#{@order.sales? ? 'Khách hàng' : 'Nhà cung cấp'}: #{contact.name}"
+    infos_row_1[:styles] << (s.add_style text_left)
+    
+    infos_row_2[:columns] << "Địa chỉ: #{display_contact_address(contact)}"
+    infos_row_2[:styles] << (s.add_style text_left)
+    
+    infos_row_3[:columns] << "Ghi chú: #{@order.note}"
+    infos_row_3[:styles] << (s.add_style text_left)
+    
+    (2..9).each do |col|
+      infos_row_1[:columns] << nil
+      infos_row_1[:styles] << (s.add_style text_left)
+      
+      infos_row_2[:columns] << nil
+      infos_row_2[:styles] << (s.add_style text_left)
+      
+      infos_row_3[:columns] << nil
+      infos_row_3[:styles] << (s.add_style text_left)
+    end
+    
+    infos_row_1[:columns] << "BS: #{@order.doctor_name}"
+    infos_row_1[:styles] << (s.add_style text_right)
+    
+    infos_row_2[:columns] << "BN: #{@order.patient_name}"
+    infos_row_2[:styles] << (s.add_style text_right)
+    
+    infos_row_3[:columns] << nil
+    infos_row_3[:styles] << (s.add_style {})
+    
+    sheet.add_row infos_row_1[:columns], style: infos_row_1[:styles]
+    num_row += 1
+    sheet.add_row infos_row_2[:columns], style: infos_row_2[:styles]
+    num_row += 1
+    sheet.add_row infos_row_3[:columns], style: infos_row_3[:styles]
+    num_row += 1
+    
+    # add empty row
+    sheet.add_row [nil]
+    num_row += 1
+
+    # header
+    header = {columns: [], styles: []}
+    footer_1 = {columns: [], styles: []}
+    footer_2 = {columns: [], styles: []}
+    footer_3 = {columns: [], styles: []}
+    
+    header[:columns] = []
+    if get_columns(params).include?("ordinal_number") or get_columns(params).empty?
+      header[:columns] << t('.ordinal_number')
+      header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(border))
+      sheet.column_info.first.width = 5
+
+      footer_1[:columns] << 'Cộng tiền hàng:'
+      footer_1[:styles] << (s.add_style text_right.deep_merge(border))
+
+      footer_2[:columns] << "Tiền thuế (#{@order.tax.present? ? @order.tax.short_name : '0 %'})"
+      footer_2[:styles] << (s.add_style text_right.deep_merge(border))
+
+      footer_3[:columns] << 'Tổng cần thanh toán:'
+      footer_3[:styles] << (s.add_style text_right.deep_merge(border))
+      
+      num_col = 0
+    end
+    if get_columns(params).include?("items") or get_columns(params).empty?
+      header[:columns] << t('.items')
+      header[:styles] << (s.add_style bg_info.deep_merge(border))
+
+      footer_1[:columns] << nil
+      footer_1[:styles] << (s.add_style border)
+
+      footer_2[:columns] << nil
+      footer_2[:styles] << (s.add_style border)
+
+      footer_3[:columns] << nil
+      footer_3[:styles] << (s.add_style border)
+      
+      num_col += 1
+    end
+    if get_columns(params).include?("category")
+      header[:columns] << t('.category')
+      header[:styles] << (s.add_style bg_info.deep_merge(border))
+
+      footer_1[:columns] << nil
+      footer_1[:styles] << (s.add_style border)
+
+      footer_2[:columns] << nil
+      footer_2[:styles] << (s.add_style border)
+
+      footer_3[:columns] << nil
+      footer_3[:styles] << (s.add_style border)
+      
+      num_col += 1
+    end
+    if get_columns(params).include?("units") or get_columns(params).empty?
+      header[:columns] << t('.units')
+      header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(border))
+
+      footer_1[:columns] << nil
+      footer_1[:styles] << (s.add_style border)
+
+      footer_2[:columns] << nil
+      footer_2[:styles] << (s.add_style border)
+
+      footer_3[:columns] << nil
+      footer_3[:styles] << (s.add_style border)
+      
+      num_col += 1
+    end
+    if get_columns(params).include?("serials") or get_columns(params).empty?
+      header[:columns] << t('.serials')
+      header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(border))
+
+      footer_1[:columns] << nil
+      footer_1[:styles] << (s.add_style border)
+
+      footer_2[:columns] << nil
+      footer_2[:styles] << (s.add_style border)
+
+      footer_3[:columns] << nil
+      footer_3[:styles] << (s.add_style border)
+      
+      num_col += 1
+    end
+    if get_columns(params).include?("eye_position") or get_columns(params).empty?
+      header[:columns] << t('.eye_position')
+      header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(border))
+
+      footer_1[:columns] << nil
+      footer_1[:styles] << (s.add_style border)
+
+      footer_2[:columns] << nil
+      footer_2[:styles] << (s.add_style border)
+
+      footer_3[:columns] << nil
+      footer_3[:styles] << (s.add_style border)
+      
+      num_col += 1
+    end
+    if get_columns(params).include?("quantity") or get_columns(params).empty?
+      header[:columns] << t('.quantity')
+      header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(border))
+
+      footer_1[:columns] << nil
+      footer_1[:styles] << (s.add_style text_center.deep_merge(border))
+
+      footer_2[:columns] << nil
+      footer_2[:styles] << (s.add_style border)
+
+      footer_3[:columns] << nil
+      footer_3[:styles] << (s.add_style border)
+      
+      num_col += 1
+    end
+    if get_columns(params).include?("price") or get_columns(params).empty?
+      header[:columns] << t('.price')
+      header[:styles] << (s.add_style bg_info.deep_merge(text_right).deep_merge(border))
+
+      footer_1[:columns] << nil
+      footer_1[:styles] << (s.add_style border)
+
+      footer_2[:columns] << nil
+      footer_2[:styles] << (s.add_style border)
+
+      footer_3[:columns] << nil
+      footer_3[:styles] << (s.add_style border)
+      
+      num_col += 1
+    end
+    if get_columns(params).include?("total_amount") or get_columns(params).empty?
+      header[:columns] << t('.total_amount')
+      header[:styles] << (s.add_style bg_info.deep_merge(text_right).deep_merge(border))
+
+      footer_1[:columns] << nil
+      footer_1[:styles] << (s.add_style border)
+
+      footer_2[:columns] << nil
+      footer_2[:styles] << (s.add_style border)
+
+      footer_3[:columns] << nil
+      footer_3[:styles] << (s.add_style border)
+      
+      num_col += 1
+    end
+    if get_columns(params).include?("discount")
+      header[:columns] << t('.discount')
+      header[:styles] << (s.add_style bg_info.deep_merge(text_right).deep_merge(border))
+
+      footer_1[:columns] << nil
+      footer_1[:styles] << (s.add_style border)
+
+      footer_2[:columns] << nil
+      footer_2[:styles] << (s.add_style border)
+
+      footer_3[:columns] << nil
+      footer_3[:styles] << (s.add_style border)
+      
+      num_col += 1
+    end
+    col_total = 0
+    if get_columns(params).include?("total")
+      header[:columns] << t('.total')
+      header[:styles] << (s.add_style bg_info.deep_merge(text_right).deep_merge(border))
+
+      footer_1[:columns] << @order.total_without_tax
+      footer_1[:styles] << (s.add_style text_right.deep_merge(bold).deep_merge(number).deep_merge(border))
+
+      footer_2[:columns] << @order.tax_amount
+      footer_2[:styles] << (s.add_style text_right.deep_merge(bold).deep_merge(number).deep_merge(border))
+
+      footer_3[:columns] << @order.cache_total
+      footer_3[:styles] << (s.add_style text_right.deep_merge(bold).deep_merge(number).deep_merge(border))
+      
+      num_col += 1
+      col_total = num_col
+    end
+    if get_columns(params).include?("note")
+      header[:columns] << t('.note')
+      header[:styles] << (s.add_style bg_info.deep_merge(border))
+
+      footer_1[:columns] << nil
+      footer_1[:styles] << (s.add_style text_right.deep_merge(border))
+
+      footer_2[:columns] << nil
+      footer_2[:styles] << (s.add_style border)
+
+      footer_3[:columns] << nil
+      footer_3[:styles] << (s.add_style border)
+      
+      num_col += 1
+    end
+
+    sheet.add_row header[:columns], style: header[:styles]
+    num_row += 1
+
+    # rows
+    @order.order_details.each_with_index do |order_detail, index|
+      row = {columns: [], styles: []}
+      row[:columns] = []
+      if get_columns(params).include?("ordinal_number") or get_columns(params).empty?
+        row[:columns] << index+1
+        row[:styles] << (s.add_style text_center.deep_merge(border))
+      end
+      if get_columns(params).include?("items") or get_columns(params).empty?
+        row[:columns] << order_detail.product_name
+        row[:styles] << (s.add_style border)
+      end
+      if get_columns(params).include?("category")
+        row[:columns] << order_detail.product_category_name
+        row[:styles] << (s.add_style border)
+      end
+      if get_columns(params).include?("units") or get_columns(params).empty?
+        row[:columns] << order_detail.product_unit_name
+        row[:styles] << (s.add_style text_center.deep_merge(border))
+      end
+      if get_columns(params).include?("serials")
+        row[:columns] << order_detail.serials
+        row[:styles] << (s.add_style text_center.deep_merge(border))
+      end
+      if get_columns(params).include?("eye_position")
+        row[:columns] << order_detail.display_eye_position
+        row[:styles] << (s.add_style text_center.deep_merge(border))
+      end
+      if get_columns(params).include?("quantity") or get_columns(params).empty?
+        row[:columns] << order_detail.quantity
+        row[:styles] << (s.add_style text_center.deep_merge(border))
+      end
+      if get_columns(params).include?("price") or get_columns(params).empty?
+        row[:columns] << order_detail.price
+        row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
+      end
+      if get_columns(params).include?("total_amount") or get_columns(params).empty?
+        row[:columns] << order_detail.subtotal
+        row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
+      end
+      if get_columns(params).include?("discount")
+        row[:columns] << order_detail.discount_amount
+        row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
+      end
+      if get_columns(params).include?("total")
+        row[:columns] << order_detail.total
+        row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
+      end
+      if get_columns(params).include?("note")
+        row[:columns] << order_detail.description
+        row[:styles] << (s.add_style border)
+      end
+
+      sheet.add_row row[:columns], style: row[:styles]
+      num_row += 1
+    end
+
+    # footer
+    sheet.add_row footer_1[:columns], style: footer_1[:styles]
+    num_row += 1
+    row_ft_1 = num_row
+    
+    sheet.add_row footer_2[:columns], style: footer_2[:styles]
+    num_row += 1
+    row_ft_2 = num_row
+    
+    sheet.add_row footer_3[:columns], style: footer_3[:styles]
+    num_row += 1
+    row_ft_3 = num_row
+    
+    sheet.merge_cells("#{('A'.codepoints.first).chr}#{row_ft_1}:#{('A'.codepoints.first + (col_total - 1)).chr}#{row_ft_1}")
+    sheet.merge_cells("#{('A'.codepoints.first).chr}#{row_ft_2}:#{('A'.codepoints.first + (col_total - 1)).chr}#{row_ft_2}")
+    sheet.merge_cells("#{('A'.codepoints.first).chr}#{row_ft_3}:#{('A'.codepoints.first + (col_total - 1)).chr}#{row_ft_3}")
+    
+    # add empty row
+    sheet.add_row [nil], height: 5
+    num_row += 1
+    sheet.add_row ["Tổng số tiền (bằng chữ): #{docso(@order.cache_total)}"]
+    num_row += 1
+    sheet.add_row ["Lưu ý: Cty chỉ thu hồi hàng hóa khi có HĐBH kèm theo"]
+    num_row += 1
+    sheet.add_row [nil]
+    num_row += 1
+    
+    # signature footer
+    sign = {columns: [], styles: []}
+    sign1 = {columns: [], styles: []}
+    sign2 = {columns: [], styles: []}
+    
+    sign[:columns] << nil
+    sign[:styles] << (s.add_style {})
+    sign[:columns] << nil
+    sign[:styles] << (s.add_style {})
+    sign[:columns] << nil
+    sign[:styles] << (s.add_style {})
+    sign[:columns] << nil
+    sign[:styles] << (s.add_style {})
+    sign[:columns] << nil
+    sign[:styles] << (s.add_style {})
+    sign[:columns] << nil
+    sign[:styles] << (s.add_style {})
+    sign[:columns] << nil
+    sign[:styles] << (s.add_style {})
+    sign[:columns] << nil
+    sign[:styles] << (s.add_style {})
+    sign[:columns] << Time.now.strftime('Ngày %d tháng %m năm %Y')
+    sign[:styles] << (s.add_style text_center.merge(italic))
+    
+    sign1[:columns] << nil
+    sign1[:styles] << (s.add_style {})
+    sign1[:columns] << 'Người lập phiếu'
+    sign1[:styles] << (s.add_style text_center.merge(bold))
+    sign1[:columns] << nil
+    sign1[:styles] << (s.add_style {})
+    sign1[:columns] << 'Người giao hàng'
+    sign1[:styles] << (s.add_style text_center.merge(bold))
+    sign1[:columns] << nil
+    sign1[:styles] << (s.add_style {})
+    sign1[:columns] << nil
+    sign1[:styles] << (s.add_style {})
+    sign1[:columns] << 'Người nhận hàng'
+    sign1[:styles] << (s.add_style text_center.merge(bold))
+    sign1[:columns] << nil
+    sign1[:styles] << (s.add_style {})
+    sign1[:columns] << 'Thủ kho'
+    sign1[:styles] << (s.add_style text_center.merge(bold))
+    
+    sign2[:columns] << nil
+    sign2[:styles] << (s.add_style {})
+    sign2[:columns] << '(Ký, họ tên)'
+    sign2[:styles] << (s.add_style text_center.merge(italic))
+    sign2[:columns] << nil
+    sign2[:styles] << (s.add_style {})
+    sign2[:columns] << '(Ký, họ tên)'
+    sign2[:styles] << (s.add_style text_center.merge(italic))
+    sign2[:columns] << nil
+    sign2[:styles] << (s.add_style {})
+    sign2[:columns] << nil
+    sign2[:styles] << (s.add_style {})
+    sign2[:columns] << '(Ký, họ tên)'
+    sign2[:styles] << (s.add_style text_center.merge(italic))
+    sign2[:columns] << nil
+    sign2[:styles] << (s.add_style {})
+    sign2[:columns] << '(Ký, họ tên)'
+    sign2[:styles] << (s.add_style text_center.merge(italic))
+    
+    sheet.add_row sign[:columns], style: sign[:styles]
+    num_row += 1
+    sheet.add_row sign1[:columns], style: sign1[:styles]
+    num_row += 1
+    sheet.add_row sign2[:columns], style: sign2[:styles]
+    num_row += 1
+    
+    sheet.add_row [nil]
+    num_row += 1
+    sheet.add_row [nil]
+    num_row += 1
+    sheet.add_row [nil, @order.creator_name], b: true, style: (s.add_style text_center)
+
+    # Setup
+    sheet.merge_cells("#{('A'.codepoints.first).chr}4:#{('A'.codepoints.first + num_col).chr}4")
+    sheet.merge_cells("#{('A'.codepoints.first).chr}5:#{('A'.codepoints.first + num_col).chr}5")
+    sheet.merge_cells("#{('A'.codepoints.first).chr}6:#{('A'.codepoints.first + num_col).chr}6")
+    
+    sheet.column_widths 5, 25, 10, 10, 10, 10, 10, 15, 15, 15, 15, 15, 15, 15 #*patient_col_widths
+  end
+end

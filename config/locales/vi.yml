@@ -1172,6 +1172,12 @@ vi:
             diameter: "Đ.kính"
             category: "Loại"
             eye_position: "Thông tin mắt"
+          show:
+            serials: "Số lô"
+            eye_position: "MT/MP"
+          xlsx:
+            serials: "Số lô"
+            eye_position: "MT/MP"
     stock_transfers:
       backend:
         transfers:
