@@ -2509,7 +2509,7 @@ Erp::Products::Product.class_eval do
 
   # get all letter-number
   def self.get_all_len_codes
-    codes = ((self.all.order('ordered_code').map(&:code).select {|i| i.present? and i.to_s.split(' ').count == 1}).map {|i| i.split('-')[0]}).uniq
+    codes = ((self.all.order('ordered_code').map(&:code).select {|i| i.present?}).map {|i| i.split('-')[0]}).uniq
     codes = codes.map {|code|
       if !code.match('[A-Z]{4}[0-9]{1,2}').nil?
         code = "Z2#{code}"

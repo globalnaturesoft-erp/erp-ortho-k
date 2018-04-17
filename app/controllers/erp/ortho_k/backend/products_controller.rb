@@ -682,11 +682,15 @@ module Erp
           @rows = []
           @heads = []
           @totals = {}
+          @line_totals = {}
+          @all_total = 0
 
           filters = params.to_unsafe_hash[:global_filter][:filters]
 
           #
-          Erp::Products::Product.get_all_len_codes.each do |code|
+          Erp::Products::Product.get_all_len_codes.each_with_index do |code, line_num|
+            @line_totals[line_num] = '--'
+            
             row = {}
             row[:code] = code
 
@@ -704,7 +708,7 @@ module Erp
               end
 
               # product query
-              @product_query = Erp::Products::Product
+              @product_query = Erp::Products::Product.get_active
               @product_query = @product_query.where(category_id: @global_filter[:categories]) if @global_filter[:categories].present?
 
               # get diameters
@@ -752,6 +756,9 @@ module Erp
                 end
 
                 @totals[area_name] = stock
+                
+                # all total
+                @all_total += stock
               end
 
               # find by code
@@ -772,6 +779,15 @@ module Erp
               else
                 stock = "--"
               end
+              
+              # line total
+              if stock != '--'
+                if @line_totals[line_num] == '--'
+                  @line_totals[line_num] = stock
+                else
+                  @line_totals[line_num] += stock
+                end
+              end
 
               # add row
               row[area_name] = stock
@@ -785,7 +801,7 @@ module Erp
           end
 
           File.open("tmp/purchasing_export.yml", "w+") do |f|
-            f.write({rows: @rows, heads: @heads, totals: @totals}.to_yaml)
+            f.write({rows: @rows, heads: @heads, totals: @totals, line_totals: @line_totals, all_total: @all_total}.to_yaml)
           end
 
           render layout: nil
@@ -797,6 +813,8 @@ module Erp
           @rows = data[:rows]
           @heads = data[:heads]
           @totals = data[:totals]
+          @line_totals = data[:line_totals]
+          @all_total = data[:all_total]
 
           respond_to do |format|
             format.xlsx {

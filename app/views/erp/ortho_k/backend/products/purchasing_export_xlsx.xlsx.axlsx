@@ -12,7 +12,7 @@ wb.styles do |s|
         bg_general = {:bg_color => "a9d08e", :fg_color => "00"}
 
         # Top head
-        sheet.add_row ["TỒN KHO THEO LOẠI HÀNG - ĐƯỜNG KÍNH"], b: true
+        sheet.add_row ["TỒN KHO THEO MÃ HÀNG"], b: true
 
         # head 1
         head_rows = ['']
@@ -20,6 +20,7 @@ wb.styles do |s|
         @heads.each do |head|
             head_rows << @totals[head]
         end
+        head_rows << @all_total
 
         sheet.add_row head_rows, style: (s.add_style bg_stock_0)
 
@@ -30,15 +31,19 @@ wb.styles do |s|
         @heads.each do |head|
             head_rows << head
         end
+        head_rows << 'Tổng cộng'       
 
         sheet.add_row head_rows, style: (s.add_style bg_general)
 
-        @rows.each do |row|
-            r = [row[:code]]
-            @heads.each do |head|
-              r << row[head]
+        @rows.each_with_index do |row, line_num|
+            if @line_totals[line_num] != '--'
+                r = [row[:code]]
+                @heads.each do |head|
+                  r << row[head]
+                end
+                r << @line_totals[line_num]
+                sheet.add_row r
             end
-            sheet.add_row r
         end
 
         sheet.column_widths 12, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24

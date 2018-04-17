@@ -29,6 +29,7 @@
         <% @heads.each do |head| %>
           <td class="text-center bg-success text-bold"><%= @totals[head] %></td>
         <% end %>
+        <td class="text-center bg-success text-bold"><%= @all_total %></td>
       </tr>
 
       <tr>
@@ -36,15 +37,19 @@
         <% @heads.each do |head| %>
           <th class="text-center bg-primary"><%= head %></th>
         <% end %>
+        <th class="text-center bg-primary">Tổng cộng</th>
       </tr>
 
-      <% @rows.each do |row| %>
-        <tr>
-            <td class="text-left"><%= row[:code] %></td>
-            <% @heads.each do |head| %>
-              <td class="text-center"><%= row[head] %></th>
-            <% end %>
-        </tr>
+      <% @rows.each_with_index do |row, line_num| %>
+        <% if @line_totals[line_num] != '--' %>
+          <tr>
+              <td class="text-left"><%= row[:code] %></td>
+              <% @heads.each do |head| %>
+                <td class="text-center"><%= row[head] %></th>
+              <% end %>
+              <td class="text-center"><%= @line_totals[line_num] %></th>
+          </tr>
+        <% end %>
       <% end %>
   </table>
 <% end %>
