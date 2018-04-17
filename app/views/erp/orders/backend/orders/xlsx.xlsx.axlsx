@@ -8,6 +8,7 @@ wb.styles do |s|
     text_center = {alignment: { horizontal: :center }}
     text_left = {alignment: { horizontal: :left }}
     text_right = {alignment: { horizontal: :right }}
+    text_middle = {alignment: { horizontal: :center, vertical: :center }}
     border = {border: { style: :thin, color: "00", :edges => [:left, :right, :bottom, :top] }}
     number = {format_code: '#,##0'}
     bold = {b: true}
@@ -57,10 +58,10 @@ wb.styles do |s|
       infos_row_3[:styles] << (s.add_style text_left)
     end
     
-    infos_row_1[:columns] << "BS: #{@order.doctor_name}"
+    infos_row_1[:columns] << (@order.doctor.present? ? "BS: #{@order.doctor_name}" : nil)
     infos_row_1[:styles] << (s.add_style text_right)
     
-    infos_row_2[:columns] << "BN: #{@order.patient_name}"
+    infos_row_2[:columns] << (@order.patient.present? ? "BN: #{@order.patient_name}" : nil)
     infos_row_2[:styles] << (s.add_style text_right)
     
     infos_row_3[:columns] << nil
@@ -86,13 +87,13 @@ wb.styles do |s|
     header[:columns] = []
     if get_columns(params).include?("ordinal_number") or get_columns(params).empty?
       header[:columns] << t('.ordinal_number')
-      header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(border))
+      header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border))
       sheet.column_info.first.width = 5
 
       footer_1[:columns] << 'Cộng tiền hàng:'
       footer_1[:styles] << (s.add_style text_right.deep_merge(border))
 
-      footer_2[:columns] << "Tiền thuế (#{@order.tax.present? ? @order.tax.short_name : '0 %'})"
+      footer_2[:columns] << "Tiền thuế (#{@order.tax.present? ? @order.tax.short_name : '0%'})"
       footer_2[:styles] << (s.add_style text_right.deep_merge(border))
 
       footer_3[:columns] << 'Tổng cần thanh toán:'
@@ -102,7 +103,7 @@ wb.styles do |s|
     end
     if get_columns(params).include?("items") or get_columns(params).empty?
       header[:columns] << t('.items')
-      header[:styles] << (s.add_style bg_info.deep_merge(border))
+      header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border))
 
       footer_1[:columns] << nil
       footer_1[:styles] << (s.add_style border)
@@ -117,7 +118,7 @@ wb.styles do |s|
     end
     if get_columns(params).include?("category")
       header[:columns] << t('.category')
-      header[:styles] << (s.add_style bg_info.deep_merge(border))
+      header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border))
 
       footer_1[:columns] << nil
       footer_1[:styles] << (s.add_style border)
@@ -132,7 +133,7 @@ wb.styles do |s|
     end
     if get_columns(params).include?("units") or get_columns(params).empty?
       header[:columns] << t('.units')
-      header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(border))
+      header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border))
 
       footer_1[:columns] << nil
       footer_1[:styles] << (s.add_style border)
@@ -147,7 +148,7 @@ wb.styles do |s|
     end
     if get_columns(params).include?("serials") or get_columns(params).empty?
       header[:columns] << t('.serials')
-      header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(border))
+      header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border))
 
       footer_1[:columns] << nil
       footer_1[:styles] << (s.add_style border)
@@ -162,7 +163,7 @@ wb.styles do |s|
     end
     if get_columns(params).include?("eye_position") or get_columns(params).empty?
       header[:columns] << t('.eye_position')
-      header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(border))
+      header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border))
 
       footer_1[:columns] << nil
       footer_1[:styles] << (s.add_style border)
@@ -177,7 +178,7 @@ wb.styles do |s|
     end
     if get_columns(params).include?("quantity") or get_columns(params).empty?
       header[:columns] << t('.quantity')
-      header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(border))
+      header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border))
 
       footer_1[:columns] << nil
       footer_1[:styles] << (s.add_style text_center.deep_merge(border))
@@ -192,7 +193,7 @@ wb.styles do |s|
     end
     if get_columns(params).include?("price") or get_columns(params).empty?
       header[:columns] << t('.price')
-      header[:styles] << (s.add_style bg_info.deep_merge(text_right).deep_merge(border))
+      header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border))
 
       footer_1[:columns] << nil
       footer_1[:styles] << (s.add_style border)
@@ -207,7 +208,7 @@ wb.styles do |s|
     end
     if get_columns(params).include?("total_amount") or get_columns(params).empty?
       header[:columns] << t('.total_amount')
-      header[:styles] << (s.add_style bg_info.deep_merge(text_right).deep_merge(border))
+      header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border))
 
       footer_1[:columns] << nil
       footer_1[:styles] << (s.add_style border)
@@ -222,7 +223,7 @@ wb.styles do |s|
     end
     if get_columns(params).include?("discount")
       header[:columns] << t('.discount')
-      header[:styles] << (s.add_style bg_info.deep_merge(text_right).deep_merge(border))
+      header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border))
 
       footer_1[:columns] << nil
       footer_1[:styles] << (s.add_style border)
@@ -238,7 +239,7 @@ wb.styles do |s|
     col_total = 0
     if get_columns(params).include?("total")
       header[:columns] << t('.total')
-      header[:styles] << (s.add_style bg_info.deep_merge(text_right).deep_merge(border))
+      header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border))
 
       footer_1[:columns] << @order.total_without_tax
       footer_1[:styles] << (s.add_style text_right.deep_merge(bold).deep_merge(number).deep_merge(border))
@@ -254,7 +255,7 @@ wb.styles do |s|
     end
     if get_columns(params).include?("note")
       header[:columns] << t('.note')
-      header[:styles] << (s.add_style bg_info.deep_merge(border))
+      header[:styles] << (s.add_style bg_info.deep_merge(border).deep_merge(text_middle))
 
       footer_1[:columns] << nil
       footer_1[:styles] << (s.add_style text_right.deep_merge(border))
@@ -268,7 +269,7 @@ wb.styles do |s|
       num_col += 1
     end
 
-    sheet.add_row header[:columns], style: header[:styles]
+    sheet.add_row header[:columns], style: header[:styles], height: 20
     num_row += 1
 
     # rows
