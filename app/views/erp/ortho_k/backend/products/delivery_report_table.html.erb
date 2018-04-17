@@ -10,7 +10,7 @@
                 <td class="text-center stock-num text-bold bg-warning">
                     <%
                         begin_params = @global_filters.clone
-                        begin_params[:to_date] = @global_filters[:from_date]
+                        begin_params[:to_date] = (@global_filters[:from_date].to_date - 1.day).to_s
                         begin_params[:from_date] = nil
                         begin_params[:product_id] = product_ids
                     %>
@@ -208,7 +208,7 @@
                     <td class="text-center stock-num text-bold bg-warning">
                         <%
                             begin_params = @global_filters.clone
-                            begin_params[:to_date] = @global_filters[:from_date]
+                            begin_params[:to_date] = (@global_filters[:from_date].to_date - 1.day).to_s
                             begin_params[:from_date] = nil
                             begin_params[:product_id] = product_ids
                         %>

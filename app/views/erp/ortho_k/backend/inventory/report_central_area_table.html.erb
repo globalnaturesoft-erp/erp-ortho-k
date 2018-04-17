@@ -37,7 +37,7 @@
         <td class="text-center bg-success text-bold">
           <%
               begin_params = filters.clone
-              begin_params[:to_date] = filters[:from_date]
+              begin_params[:to_date] = (filters[:from_date].to_date - 1.day).to_s
               begin_params[:from_date] = nil
           %>
           <% in_begin = Erp::Products::Product.get_stock_real(begin_params) %>
@@ -60,7 +60,7 @@
         <td class="text-center bg-success text-bold">
           <%
               begin_params = filters.clone
-              begin_params[:to_date] = filters[:from_date]
+              begin_params[:to_date] = (filters[:from_date].to_date - 1.day).to_s
               begin_params[:from_date] = nil
           %>
           <% not_begin = Erp::Products::Product.get_stock_real(begin_params) %>
@@ -126,7 +126,7 @@
           <td class="text-center text-bold">
             <%
                 begin_params = filters.clone
-                begin_params[:to_date] = filters[:from_date]
+                begin_params[:to_date] = (filters[:from_date].to_date - 1.day).to_s
                 begin_params[:from_date] = nil
             %>
             <%= Erp::Products::Product.get_stock_real(begin_params) %>
@@ -147,7 +147,7 @@
           <td class="text-center text-bold">
             <%
                 begin_params = filters.clone
-                begin_params[:to_date] = filters[:from_date]
+                begin_params[:to_date] = (filters[:from_date].to_date - 1.day).to_s
                 begin_params[:from_date] = nil
             %>
             <%= Erp::Products::Product.get_stock_real(begin_params) %>
@@ -176,7 +176,7 @@
         <td class="text-center bg-grey text-bold">
           <%
               begin_params = filters.clone
-              begin_params[:to_date] = filters[:from_date]
+              begin_params[:to_date] = (filters[:from_date].to_date - 1.day).to_s
               begin_params[:from_date] = nil
           %>
           <%= Erp::Products::Product.get_stock_real(begin_params) %>
@@ -197,7 +197,7 @@
         <td class="text-center bg-grey text-bold">
           <%
               begin_params = filters.clone
-              begin_params[:to_date] = filters[:from_date]
+              begin_params[:to_date] = (filters[:from_date].to_date - 1.day).to_s
               begin_params[:from_date] = nil
           %>
           <%= Erp::Products::Product.get_stock_real(begin_params) %>

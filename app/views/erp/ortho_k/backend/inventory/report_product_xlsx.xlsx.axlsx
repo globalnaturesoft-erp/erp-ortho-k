@@ -32,10 +32,10 @@ wb.styles do |s|
     product_ids = @product_query.select('id')
     product_ids = -1 if product_ids.count == 0
     filters = @global_filters.clone.merge({product_id: product_ids})
-    filters[:state_id] = Erp::Products::State.get_new_state.id
+    # filters[:state_id] = Erp::Products::State.get_new_state.id
 
     begin_params = filters.clone
-    begin_params[:to_date] = filters[:from_date]
+    begin_params[:to_date] = (filters[:from_date].to_date - 1.day).to_s
     begin_params[:from_date] = nil
 
     toprow = {columns: [], styles: []}
@@ -227,7 +227,7 @@ wb.styles do |s|
         row[:styles] << (s.add_style text_center.deep_merge(border))
 
         begin_params = filters.clone
-        begin_params[:to_date] = filters[:from_date]
+        begin_params[:to_date] = (filters[:from_date].to_date - 1.day).to_s
         begin_params[:from_date] = nil
         row[:columns] << Erp::Products::Product.get_stock_real(begin_params)
         row[:styles] << (s.add_style text_center.deep_merge(border))

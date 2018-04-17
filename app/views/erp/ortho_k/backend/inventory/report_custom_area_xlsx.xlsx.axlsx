@@ -136,7 +136,7 @@ wb.styles do |s|
       row[:styles] << (s.add_style text_center.deep_merge(middle_align).deep_merge(border).deep_merge(bold))
       
       begin_params = filters.clone
-      begin_params[:to_date] = filters[:from_date]
+      begin_params[:to_date] = (filters[:from_date].to_date - 1.day).to_s
       begin_params[:from_date] = nil        
       begin_amount = Erp::Products::Product.get_stock_real(begin_params)
       

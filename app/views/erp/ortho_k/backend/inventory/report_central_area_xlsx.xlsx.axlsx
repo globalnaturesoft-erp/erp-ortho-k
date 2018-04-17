@@ -40,11 +40,11 @@ wb.styles do |s|
     
     # ----central_query----
     product_ids = @central_query.select('id')
-    product_ids = nil if product_ids.count == 0
+    product_ids = -1 if product_ids.count == 0
     filters = @global_filters.clone.merge({product_id: product_ids})
     
     begin_params = filters.clone
-    begin_params[:to_date] = filters[:from_date]
+    begin_params[:to_date] = (filters[:from_date].to_date - 1.day).to_s
     begin_params[:from_date] = nil
     in_begin = Erp::Products::Product.get_stock_real(begin_params)
     
@@ -54,11 +54,11 @@ wb.styles do |s|
     
     # ----not_central_query----
     product_ids = @not_central_query.select('id')
-    product_ids = nil if product_ids.count == 0
+    product_ids = -1 if product_ids.count == 0
     filters = @global_filters.clone.merge(product_id: product_ids)
     
     begin_params = filters.clone
-    begin_params[:to_date] = filters[:from_date]
+    begin_params[:to_date] = (filters[:from_date].to_date - 1.day).to_s
     begin_params[:from_date] = nil
     not_begin = Erp::Products::Product.get_stock_real(begin_params)
     
@@ -177,7 +177,7 @@ wb.styles do |s|
         warehouse_line += 1
         
         product_ids = @central_query.select('id').where(category_id: category.id).where("erp_products_products.cache_properties LIKE '%[\"#{diameter.id}\",%'")
-        product_ids = nil if product_ids.count == 0
+        product_ids = -1 if product_ids.count == 0
         filters = @global_filters.clone.merge(product_id: product_ids)
         
         row[:columns] << (diameter_index == 0 ? category.name : '')
@@ -188,7 +188,7 @@ wb.styles do |s|
         cat_line2 += 1
         
         begin_params = filters.clone
-        begin_params[:to_date] = filters[:from_date]
+        begin_params[:to_date] = (filters[:from_date].to_date - 1.day).to_s
         begin_params[:from_date] = nil
         row[:columns] << Erp::Products::Product.get_stock_real(begin_params)
         row[:styles] << (s.add_style text_center.deep_merge(border))
@@ -199,11 +199,11 @@ wb.styles do |s|
         row[:styles] << (s.add_style text_center.deep_merge(border))
         
         product_ids = @not_central_query.select('id').where(category_id: category.id).where("erp_products_products.cache_properties LIKE '%[\"#{diameter.id}\",%'")
-        product_ids = nil if product_ids.count == 0
+        product_ids = -1 if product_ids.count == 0
         filters = @global_filters.clone.merge(product_id: product_ids)
         
         begin_params = filters.clone
-        begin_params[:to_date] = filters[:from_date]
+        begin_params[:to_date] = (filters[:from_date].to_date - 1.day).to_s
         begin_params[:from_date] = nil
         row[:columns] << Erp::Products::Product.get_stock_real(begin_params)
         row[:styles] << (s.add_style text_center.deep_merge(border))
@@ -219,7 +219,7 @@ wb.styles do |s|
       subrow = {columns: [], styles: []}
       
       product_ids = @central_query.select('id').where(category_id: category.id)
-      product_ids = nil if product_ids.count == 0
+      product_ids = -1 if product_ids.count == 0
       filters = @global_filters.clone.merge({product_id: product_ids})
       
       subrow[:columns] << ''
@@ -232,7 +232,7 @@ wb.styles do |s|
       subrow[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_subrow).merge(bold))
       
       begin_params = filters.clone
-      begin_params[:to_date] = filters[:from_date]
+      begin_params[:to_date] = (filters[:from_date].to_date - 1.day).to_s
       begin_params[:from_date] = nil
       subrow[:columns] << Erp::Products::Product.get_stock_real(begin_params)
       subrow[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_subrow).merge(bold))
@@ -243,11 +243,11 @@ wb.styles do |s|
       subrow[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_subrow).merge(bold))
       
       product_ids = @not_central_query.select('id').where(category_id: category.id)
-      product_ids = nil if product_ids.count == 0
+      product_ids = -1 if product_ids.count == 0
       filters = @global_filters.clone.merge(product_id: product_ids)
       
       begin_params = filters.clone
-      begin_params[:to_date] = filters[:from_date]
+      begin_params[:to_date] = (filters[:from_date].to_date - 1.day).to_s
       begin_params[:from_date] = nil
       subrow[:columns] << Erp::Products::Product.get_stock_real(begin_params)
       subrow[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_subrow).merge(bold))
