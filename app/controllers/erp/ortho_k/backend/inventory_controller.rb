@@ -775,14 +775,14 @@ module Erp
               delivery_type: [                  
                 Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT
               ]
-          }))
+          })) + Erp::Products::Product.get_cs_return_import(filters)
           
           @total[:col3] = Erp::Products::Product.get_qdelivery_export(filters.clone.merge({
               delivery_type: [
                 Erp::Qdeliveries::Delivery::TYPE_CUSTOM_EXPORT,
                 Erp::Qdeliveries::Delivery::TYPE_SALES_EXPORT
               ]
-          })) + Erp::Products::Product.get_gift_given_export(filters)
+          })) + Erp::Products::Product.get_gift_given_export(filters) + Erp::Products::Product.get_consignment_export(filters)
           
           @total[:col4] = Erp::Products::Product.get_damage_record_export(filters) + Erp::Products::Product.get_stock_check_export(filters)
           
@@ -1219,12 +1219,12 @@ module Erp
           
           if !@from_date.present?
             @from_date = Time.now.beginning_of_month
-            @global_filters[:from_date] = @from_date
+            @global_filter[:from_date] = @from_date
           end
           
           if !@to_date.present?
             @to_date = Time.now
-            @global_filters[:to_date] = @to_date
+            @global_filter[:to_date] = @to_date
           end
 
           # product query

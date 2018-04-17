@@ -60,6 +60,9 @@
                         count = Erp::Products::Product.get_stock_check_import(@global_filters.merge({
                             product_id: product_ids,
                         }))
+                        count += Erp::Products::Product.get_state_check_import(@global_filters.merge({
+                            product_id: product_ids,
+                        }))
                         total_import += count
                     %>
                     <%= count %>
@@ -137,6 +140,9 @@
                 <td class="text-center stock-num">
                     <%
                         count = Erp::Products::Product.get_stock_check_export(@global_filters.merge({
+                            product_id: product_ids,
+                        }))
+                        count += Erp::Products::Product.get_state_check_import(@global_filters.merge({
                             product_id: product_ids,
                         }))
                         total_export += count
@@ -255,6 +261,9 @@
                             count = Erp::Products::Product.get_stock_check_import(@global_filters.merge({
                                 product_id: product_ids,
                             }))
+                            count += Erp::Products::Product.get_state_check_import(@global_filters.merge({
+                                product_id: product_ids,
+                            }))
                             total_import += count
                         %>
                         <%= count %>
@@ -335,6 +344,9 @@
                     <td class="text-center stock-num">
                         <%
                             count = Erp::Products::Product.get_stock_check_export(@global_filters.merge({
+                                product_id: product_ids,
+                            }))
+                            count += Erp::Products::Product.get_state_check_export(@global_filters.merge({
                                 product_id: product_ids,
                             }))
                             total_export += count

@@ -56,6 +56,9 @@
                 count = Erp::Products::Product.get_stock_check_import(@global_filters.merge({
                     product_id: product_ids,
                 }))
+                count += Erp::Products::Product.get_state_check_import(@global_filters.merge({
+                    product_id: product_ids,
+                }))
                 total_import += count
             %>
             <%= count %>
@@ -135,6 +138,9 @@
                 count = Erp::Products::Product.get_stock_check_export(@global_filters.merge({
                     product_id: product_ids,
                 }))
+                count += Erp::Products::Product.get_state_check_export(@global_filters.merge({
+                    product_id: product_ids,
+                }))
                 total_export += count
             %>
             <%= count %>
@@ -177,7 +183,7 @@
         <th class="bg-primary text-center" rowspan="2">Cuối kỳ</th>
     </tr>
     <tr>
-        <th class="bg-primary text-center" width="7%" title="Xuất kho">NK</th>
+        <th class="bg-primary text-center" width="7%" title="Nhập kho">NK</th>
         <th class="bg-primary text-center" width="7%" title="Hoàn kho (Khách hàng)">HK</th>
         <th class="bg-primary text-center" width="7%" title="Chuyển kho">CK</th>
         <th class="bg-primary text-center" width="7%" title="Trả hàng ký gởi/Cho mượn">TKG</th>
@@ -265,6 +271,9 @@
                         count = Erp::Products::Product.get_stock_check_import(@global_filters.merge({
                             product_id: product_ids,
                         }))
+                        count += Erp::Products::Product.get_state_check_import(@global_filters.merge({
+                            product_id: product_ids,
+                        }))
                         total_import += count
                     %>
                     <%= count %>
@@ -344,6 +353,9 @@
                 <td class="text-center stock-num">
                     <%
                         count = Erp::Products::Product.get_stock_check_export(@global_filters.merge({
+                            product_id: product_ids,
+                        }))
+                        count += Erp::Products::Product.get_state_check_export(@global_filters.merge({
                             product_id: product_ids,
                         }))
                         total_export += count
@@ -440,6 +452,9 @@
                         count = Erp::Products::Product.get_stock_check_import(@global_filters.merge({
                             product_id: product_ids,
                         }))
+                        count += Erp::Products::Product.get_state_check_import(@global_filters.merge({
+                            product_id: product_ids,
+                        }))
                         total_import += count
                     %>
                     <%= count %>
@@ -519,6 +534,9 @@
                 <th class="text-center stock-num bg-grey">
                     <%
                         count = Erp::Products::Product.get_stock_check_export(@global_filters.merge({
+                            product_id: product_ids,
+                        }))
+                        count += Erp::Products::Product.get_state_check_export(@global_filters.merge({
                             product_id: product_ids,
                         }))
                         total_export += count
