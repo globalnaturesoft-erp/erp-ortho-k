@@ -1774,16 +1774,30 @@ module Erp
             @global_filters[:to_date] = @to_date
           end
 
-          # get categories
-          category_ids = @global_filters[:categories].present? ? @global_filters[:categories] : nil
-          @categories = Erp::Products::Category.where(id: category_ids)
+          # get letters
+          letter_ids = @global_filters[:letters].present? ? @global_filters[:letters] : nil
+          @letters = Erp::Products::PropertiesValue.where(id: letter_ids)
 
           # get diameters
           diameter_ids = @global_filters[:diameters].present? ? @global_filters[:diameters] : nil
           @diameters = Erp::Products::PropertiesValue.where(id: diameter_ids)
 
           # product query
-          @product_query = Erp::Products::Product.get_active.where(category_id: category_ids)
+          @product_query = Erp::Products::Product.get_active
+          
+          # filter by letters
+          if !letter_ids.kind_of?(Array)
+            @product_query = @product_query.where("erp_products_products.cache_properties LIKE '%[\"#{letter_ids}\",%'")
+          else
+            letter_ids = (letter_ids.reject { |c| c.empty? })
+            if !letter_ids.empty?
+              qs = []
+              letter_ids.each do |x|
+                qs << "(erp_products_products.cache_properties LIKE '%[\"#{x}\",%')"
+              end
+              @product_query = @product_query.where("(#{qs.join(" OR ")})")
+            end
+          end
 
           # filter by diameters
           if !diameter_ids.kind_of?(Array)
@@ -1803,6 +1817,18 @@ module Erp
           @states = Erp::Products::State.all_active
           if @global_filters[:state_ids].present?
             @states = Erp::Products::State.where(id: @global_filters[:state_ids])
+          end
+          
+          File.open("tmp/report_code_diameter.yml", "w+") do |f|
+            f.write({
+              global_filters: @global_filters,
+              from_date: @from_date,
+              to_date: @to_date,
+              letters: @letters,
+              diameters: @diameters,
+              product_query: @product_query,
+              states: @states
+            }.to_yaml)
           end
         end
 
@@ -1829,16 +1855,31 @@ module Erp
             @global_filters[:to_date] = @to_date
           end
 
-          # get categories
-          category_ids = @global_filters[:categories].present? ? @global_filters[:categories] : nil
-          @categories = Erp::Products::Category.where(id: category_ids)
+          # get letters
+          letter_ids = @global_filters[:letters].present? ? @global_filters[:letters] : nil
+          @letters = Erp::Products::PropertiesValue.where(id: letter_ids)
 
           # get diameters
           diameter_ids = @global_filters[:diameters].present? ? @global_filters[:diameters] : nil
           @diameters = Erp::Products::PropertiesValue.where(id: diameter_ids)
 
           # product query
-          @product_query = Erp::Products::Product.get_active.where(category_id: category_ids)
+          @product_query = Erp::Products::Product.get_active
+          
+          # filter by letters
+          if !letter_ids.kind_of?(Array)
+            @product_query = @product_query.where("erp_products_products.cache_properties LIKE '%[\"#{letter_ids}\",%'")
+          else
+            letter_ids = (letter_ids.reject { |c| c.empty? })
+            if !letter_ids.empty?
+              qs = []
+              letter_ids.each do |x|
+                qs << "(erp_products_products.cache_properties LIKE '%[\"#{x}\",%')"
+              end
+              @product_query = @product_query.where("(#{qs.join(" OR ")})")
+            end
+          end
+
           # filter by diameters
           if !diameter_ids.kind_of?(Array)
             @product_query = @product_query.where("erp_products_products.cache_properties LIKE '%[\"#{diameter_ids}\",%'")
@@ -1858,10 +1899,10 @@ module Erp
           if @global_filters[:state_ids].present?
             @states = Erp::Products::State.where(id: @global_filters[:state_ids])
           end
-
+          
           respond_to do |format|
             format.xlsx {
-              response.headers['Content-Disposition'] = 'attachment; filename="Thong ke ton kho.xlsx"'
+              response.headers['Content-Disposition'] = 'attachment; filename="Thong ke ton kho Ma Duong kinh.xlsx"'
             }
           end
         end

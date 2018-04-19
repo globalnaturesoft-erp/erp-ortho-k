@@ -38,16 +38,18 @@
     </div>
     <div class="row">
         <div class="col-md-3">
+            <% letter = Erp::Products::Property.where(name: "Chữ").first %>
             <%= erp_form_control("dataselect", {
-                name: 'categories',
+                name: 'letters',
                 values: (
-                    dfilters["categories"].present? ?
-                    (Erp::Products::Category.where(id: dfilters["categories"]).map{|i| {text: i.name, value: i.id}})
+                    dfilters["letters"].present? ?
+                    (Erp::Products::PropertiesValue.where(id: dfilters["letters"]).map{|i| {text: i.value, value: i.id}})
                     : nil
                 ),
-                label: 'Loại hàng',
-                placeholder: 'Chọn loại hàng',
-                url: erp_products.dataselect_backend_categories_path(format: 'json'),
+                label: 'Chữ',
+                placeholder: letter.name,
+                url: erp_products.dataselect_backend_properties_values_path(format: 'json', property_id: letter.id),
+                include_blank: 'Tất cả chữ',
                 multiple: true
             }) %>
         </div>
@@ -99,7 +101,7 @@
 <% end %>
 
 <%= erp_datalist(
-    url: erp_ortho_k.report_category_diameter_table_backend_inventory_index_path,
+    url: erp_ortho_k.report_code_diameter_table_backend_inventory_index_path,
     sortable: true,
     #filters: [
     #    {

@@ -174,18 +174,21 @@ wb.styles do |s|
 
     # rows
     cat_line2 = 6
-    @categories.each_with_index do |category,category_index|
+    @letters.each_with_index do |letter|
       cat_line1 = cat_line2 + 1
       @diameters.each_with_index do |diameter,diameter_index|
         row = {columns: [], styles: []}
         row[:columns] = []
 
-        product_ids = @product_query.select('id').where(category_id: category.id).where("erp_products_products.cache_properties LIKE '%[\"#{diameter.id}\",%'")
+        product_ids = @product_query.select('id')
+          .where("erp_products_products.cache_properties LIKE '%[\"#{letter.id}\",%'")
+          .where("erp_products_products.cache_properties LIKE '%[\"#{diameter.id}\",%'")
+          
         product_ids = -1 if product_ids.count == 0
         filters = @global_filters.clone.merge(product_id: product_ids)
         filters[:state_id] = Erp::Products::State.get_new_state.id
 
-        row[:columns] << (diameter_index == 0 ? category.name : '')
+        row[:columns] << (diameter_index == 0 ? letter.value : '')
         row[:styles] << (s.add_style text_left.deep_merge(border).deep_merge(middle_align))
 
         row[:columns] << diameter.value
@@ -250,7 +253,7 @@ wb.styles do |s|
       end
       subrow = {columns: [], styles: []}
 
-      product_ids = @product_query.select('id').where(category_id: category.id)
+      product_ids = @product_query.select('id').where("erp_products_products.cache_properties LIKE '%[\"#{letter.id}\",%'")
       product_ids = -1 if product_ids.count == 0
       filters = @global_filters.clone.merge({product_id: product_ids})
       filters[:state_id] = Erp::Products::State.get_new_state.id
