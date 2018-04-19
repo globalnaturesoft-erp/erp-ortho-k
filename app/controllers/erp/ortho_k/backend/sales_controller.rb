@@ -164,9 +164,14 @@ module Erp
             @from = (glb.present? and glb[:from_date].present?) ? glb[:from_date].to_date : nil
             @to = (glb.present? and glb[:to_date].present?) ? glb[:to_date].to_date : nil
           end
+          
+          product_return_query = Erp::Qdeliveries::Delivery.all_delivered
+            .sales_import_deliveries(from_date: @from, to_date: @to)
+            .select('customer_id')
 
           # @todo chỉ lấy danh sách khách hàng nào có trả hàng trong thời gian lọc
           @customers = Erp::Contacts::Contact.where.not(id: Erp::Contacts::Contact.get_main_contact.id)
+          @customers = @customers.where("erp_contacts_contacts.id IN (?)", product_return_query).order(:name)
 
           # get categories
           category_ids = glb[:categories].present? ? glb[:categories] : nil
@@ -180,16 +185,21 @@ module Erp
           glb = params.to_unsafe_hash[:global_filter]
           if glb[:period].present?
             @period_name = Erp::Periods::Period.find(glb[:period]).name
-            @from_date = Erp::Periods::Period.find(glb[:period]).from_date.beginning_of_day
-            @to_date = Erp::Periods::Period.find(glb[:period]).to_date.end_of_day
+            @from = Erp::Periods::Period.find(glb[:period]).from_date.beginning_of_day
+            @to = Erp::Periods::Period.find(glb[:period]).to_date.end_of_day
           else
             @period_name = nil
-            @from_date = (glb.present? and glb[:from_date].present?) ? glb[:from_date].to_date : nil
-            @to_date = (glb.present? and glb[:to_date].present?) ? glb[:to_date].to_date : nil
+            @from = (glb.present? and glb[:from_date].present?) ? glb[:from_date].to_date : nil
+            @to = (glb.present? and glb[:to_date].present?) ? glb[:to_date].to_date : nil
           end
+          
+          product_return_query = Erp::Qdeliveries::Delivery.all_delivered
+            .sales_import_deliveries(from_date: @from, to_date: @to)
+            .select('customer_id')
 
           # @todo chỉ lấy danh sách khách hàng nào có trả hàng trong thời gian lọc
           @customers = Erp::Contacts::Contact.where.not(id: Erp::Contacts::Contact.get_main_contact.id)
+          @customers = @customers.where("erp_contacts_contacts.id IN (?)", product_return_query).order(:name)
 
           # get categories
           category_ids = glb[:categories].present? ? glb[:categories] : nil
@@ -197,6 +207,8 @@ module Erp
 
           # len products
           @len_product_ids = Erp::Products::Product.where(category_id: Erp::Products::Category.get_lens.map(&:id)).select('id')
+          
+          
           
           respond_to do |format|
             format.xlsx {

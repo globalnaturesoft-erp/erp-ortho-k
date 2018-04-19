@@ -39,8 +39,8 @@ wb.styles do |s|
     Erp::Products::State.all_active.each do |state|
       count = Erp::Products::Product.get_qdelivery_import({
           product_id: @len_product_ids,
-          from_date: @from_date,
-          to_date: @to_date,
+          from_date: @from,
+          to_date: @to,
           delivery_type: [
               Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT
           ],
@@ -52,8 +52,8 @@ wb.styles do |s|
     
     count = Erp::Products::Product.get_qdelivery_import({
         product_id: @len_product_ids,
-        from_date: @from_date,
-        to_date: @to_date,
+        from_date: @from,
+        to_date: @to,
         delivery_type: [
             Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT
         ]
@@ -66,8 +66,8 @@ wb.styles do |s|
       product_ids = -1 if product_ids.empty?
       count = Erp::Products::Product.get_qdelivery_import({
           product_id: product_ids,
-          from_date: @from_date,
-          to_date: @to_date,
+          from_date: @from,
+          to_date: @to,
           delivery_type: [
               Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT
           ]
@@ -138,8 +138,8 @@ wb.styles do |s|
       Erp::Products::State.all_active.each do |state|
         count = Erp::Products::Product.get_qdelivery_import({
             product_id: @len_product_ids,
-            from_date: @from_date,
-            to_date: @to_date,
+            from_date: @from,
+            to_date: @to,
             delivery_type: [
                 Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT
             ],
@@ -152,8 +152,8 @@ wb.styles do |s|
       
       count = Erp::Products::Product.get_qdelivery_import({
           product_id: @len_product_ids,
-          from_date: @from_date,
-          to_date: @to_date,
+          from_date: @from,
+          to_date: @to,
           delivery_type: [
               Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT
           ],
@@ -167,8 +167,8 @@ wb.styles do |s|
         product_ids = -1 if product_ids.empty?
         count = Erp::Products::Product.get_qdelivery_import({
             product_id: product_ids,
-            from_date: @from_date,
-            to_date: @to_date,
+            from_date: @from,
+            to_date: @to,
             delivery_type: [
                 Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT
             ],
