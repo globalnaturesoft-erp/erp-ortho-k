@@ -7,8 +7,8 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
     @orders = @customer.sales_orders.payment_for_contact_orders(params.to_unsafe_hash)
     @product_returns = @customer.sales_product_returns.get_deliveries_with_payment_for_contact(params.to_unsafe_hash)
     
-    @orders = @orders.order('order_date DESC, created_at DESC')
-    @product_returns = @product_returns.order('date DESC, created_at DESC')
+    @orders = @orders.order('order_date ASC, created_at ASC')
+    @product_returns = @product_returns.order('date ASC, created_at ASC')
     
     respond_to do |format|
       format.xlsx {
@@ -217,8 +217,8 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
     @orders = @customer.sales_orders.payment_for_contact_orders(glb)
     @product_returns = @customer.sales_product_returns.get_deliveries_with_payment_for_contact(glb)
     
-    @orders = @orders.order('order_date DESC, created_at DESC')
-    @product_returns = @product_returns.order('date DESC, created_at DESC')
+    @orders = @orders.order('order_date ASC, created_at ASC')
+    @product_returns = @product_returns.order('date ASC, created_at ASC')
     
     xlsx_package = Axlsx::Package.new
     wb = xlsx_package.workbook

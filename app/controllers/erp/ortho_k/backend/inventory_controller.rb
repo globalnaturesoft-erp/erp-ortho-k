@@ -1742,6 +1742,129 @@ module Erp
             }
           end
         end
+        
+        def report_code_diameter
+          # default from to date
+          @from_date = Time.now.beginning_of_month
+          @to_date = Time.now.end_of_day
+
+          @period = Erp::Periods::Period.where(name: "Tháng #{Time.now.month}/#{Time.now.year}").first
+        end
+
+        def report_code_diameter_table
+          @global_filters = params.to_unsafe_hash[:global_filter]
+
+          # if has period
+          if @global_filters[:period].present?
+            @period = Erp::Periods::Period.find(@global_filters[:period])
+            @global_filters[:from_date] = @period.from_date
+            @global_filters[:to_date] = @period.to_date
+          end
+
+          @from_date = @global_filters[:from_date].to_date
+          @to_date = @global_filters[:to_date].to_date
+          
+          if !@from_date.present?
+            @from_date = Time.now.beginning_of_month
+            @global_filters[:from_date] = @from_date
+          end
+          
+          if !@to_date.present?
+            @to_date = Time.now
+            @global_filters[:to_date] = @to_date
+          end
+
+          # get categories
+          category_ids = @global_filters[:categories].present? ? @global_filters[:categories] : nil
+          @categories = Erp::Products::Category.where(id: category_ids)
+
+          # get diameters
+          diameter_ids = @global_filters[:diameters].present? ? @global_filters[:diameters] : nil
+          @diameters = Erp::Products::PropertiesValue.where(id: diameter_ids)
+
+          # product query
+          @product_query = Erp::Products::Product.get_active.where(category_id: category_ids)
+
+          # filter by diameters
+          if !diameter_ids.kind_of?(Array)
+            @product_query = @product_query.where("erp_products_products.cache_properties LIKE '%[\"#{diameter_ids}\",%'")
+          else
+            diameter_ids = (diameter_ids.reject { |c| c.empty? })
+            if !diameter_ids.empty?
+              qs = []
+              diameter_ids.each do |x|
+                qs << "(erp_products_products.cache_properties LIKE '%[\"#{x}\",%')"
+              end
+              @product_query = @product_query.where("(#{qs.join(" OR ")})")
+            end
+          end
+
+          # state
+          @states = Erp::Products::State.all_active
+          if @global_filters[:state_ids].present?
+            @states = Erp::Products::State.where(id: @global_filters[:state_ids])
+          end
+        end
+
+        def report_code_diameter_xlsx
+          @global_filters = params.to_unsafe_hash[:global_filter]
+
+          # if has period
+          if @global_filters[:period].present?
+            @period = Erp::Periods::Period.find(@global_filters[:period])
+            @global_filters[:from_date] = @period.from_date
+            @global_filters[:to_date] = @period.to_date
+          end
+
+          @from_date = @global_filters[:from_date].to_date
+          @to_date = @global_filters[:to_date].to_date
+          
+          if !@from_date.present?
+            @from_date = Time.now.beginning_of_month
+            @global_filters[:from_date] = @from_date
+          end
+          
+          if !@to_date.present?
+            @to_date = Time.now
+            @global_filters[:to_date] = @to_date
+          end
+
+          # get categories
+          category_ids = @global_filters[:categories].present? ? @global_filters[:categories] : nil
+          @categories = Erp::Products::Category.where(id: category_ids)
+
+          # get diameters
+          diameter_ids = @global_filters[:diameters].present? ? @global_filters[:diameters] : nil
+          @diameters = Erp::Products::PropertiesValue.where(id: diameter_ids)
+
+          # product query
+          @product_query = Erp::Products::Product.get_active.where(category_id: category_ids)
+          # filter by diameters
+          if !diameter_ids.kind_of?(Array)
+            @product_query = @product_query.where("erp_products_products.cache_properties LIKE '%[\"#{diameter_ids}\",%'")
+          else
+            diameter_ids = (diameter_ids.reject { |c| c.empty? })
+            if !diameter_ids.empty?
+              qs = []
+              diameter_ids.each do |x|
+                qs << "(erp_products_products.cache_properties LIKE '%[\"#{x}\",%')"
+              end
+              @product_query = @product_query.where("(#{qs.join(" OR ")})")
+            end
+          end
+
+          # state
+          @states = Erp::Products::State.all_active
+          if @global_filters[:state_ids].present?
+            @states = Erp::Products::State.where(id: @global_filters[:state_ids])
+          end
+
+          respond_to do |format|
+            format.xlsx {
+              response.headers['Content-Disposition'] = 'attachment; filename="Thong ke ton kho.xlsx"'
+            }
+          end
+        end
       end
     end
   end

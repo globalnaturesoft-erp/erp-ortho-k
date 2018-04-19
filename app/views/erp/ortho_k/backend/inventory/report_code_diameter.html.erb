@@ -1,0 +1,111 @@
+<% content_for :title do %>
+    Thống kê tồn kho
+<% end %>
+
+<% content_for :page_title do %>
+    <i class="fa fa-archive"></i> Thống kê tồn kho
+<% end %>
+
+<% content_for :global_filter do %>
+    <% dfilters = current_user.get_filters(request.path+"_table").present? ? current_user.get_filters(request.path+"_table") : {}  %>
+    <div class="row">
+        <div class="col-md-3">
+            <%= erp_form_control('date', {
+                label: 'Từ ngày',
+                name: 'from_date',
+                value: (dfilters["from_date"].present? ? dfilters["from_date"].to_date : nil),
+                placeholder: 'Chọn ngày đầu kỳ'
+            }) %>
+        </div>
+        <div class="col-md-3">
+            <%= erp_form_control('date', {
+                label: 'Đến ngày',
+                name: 'to_date',
+                value: (dfilters["to_date"].present? ? dfilters["to_date"].to_date : nil),
+                placeholder: 'Chọn ngày cuối kỳ'
+            }) %>
+        </div>
+        <div class="col-md-3">
+            <%= erp_form_control('dataselect', {
+                label: 'Mốc thời gian',
+                name: 'period',
+                value: (dfilters["period"].present? ? Erp::Periods::Period.find(dfilters["period"]).id : nil),
+                text: (dfilters["period"].present? ? Erp::Periods::Period.find(dfilters["period"]).name : nil),
+                placeholder: 'Chọn khoảng thời gian',
+                url: erp_periods.dataselect_backend_periods_path(format: 'json'),
+            }) %>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <%= erp_form_control("dataselect", {
+                name: 'categories',
+                values: (
+                    dfilters["categories"].present? ?
+                    (Erp::Products::Category.where(id: dfilters["categories"]).map{|i| {text: i.name, value: i.id}})
+                    : nil
+                ),
+                label: 'Loại hàng',
+                placeholder: 'Chọn loại hàng',
+                url: erp_products.dataselect_backend_categories_path(format: 'json'),
+                multiple: true
+            }) %>
+        </div>
+        <div class="col-md-3">
+            <% diameter = Erp::Products::Property.where(name: "Đường kính").first %>
+            <%= erp_form_control("dataselect", {
+                name: 'diameters',
+                values: (
+                    dfilters["diameters"].present? ?
+                    (Erp::Products::PropertiesValue.where(id: dfilters["diameters"]).map{|i| {text: i.value, value: i.id}})
+                    : nil
+                ),
+                label: 'Chọn đường kính',
+                placeholder: diameter.name,
+                url: erp_products.dataselect_backend_properties_values_path(format: 'json', property_id: diameter.id),
+                include_blank: t('.all_diameters'),
+                multiple: true
+            }) %>
+        </div>
+        <div class="col-md-3">
+            <%= erp_form_control("dataselect", {
+                name: 'warehouse_ids',
+                values: (
+                    dfilters["warehouse_ids"].present? ?
+                    (Erp::Warehouses::Warehouse.where(id: dfilters["warehouse_ids"]).map{|i| {text: i.name, value: i.id}})
+                    : nil
+                ),
+                label: 'Kho',
+                placeholder: 'Chọn kho',
+                url: erp_warehouses.dataselect_backend_warehouses_path(format: 'json'),
+                multiple: true
+            }) %>
+        </div>
+        <div class="col-md-3">
+            <%= erp_form_control("dataselect", {
+                name: 'state_ids',
+                values: (
+                    dfilters["state_ids"].present? ?
+                    (Erp::Products::State.where(id: dfilters["state_ids"]).map{|i| {text: i.name, value: i.id}})
+                    : nil
+                ),
+                label: 'Tình trạng',
+                placeholder: 'Tất cả tình trạng',
+                url: erp_products.dataselect_backend_states_path(format: 'json'),
+                multiple: true
+            }) %>
+        </div>
+    </div>
+<% end %>
+
+<%= erp_datalist(
+    url: erp_ortho_k.report_category_diameter_table_backend_inventory_index_path,
+    sortable: true,
+    #filters: [
+    #    {
+    #        text: t('.show_virtual'), name: 'show_virtual', value: true, checked: false
+    #    },
+    #],
+    columns: [
+    ],
+) %>

@@ -39,7 +39,10 @@
         <li class="divider"><a><hr></a></li>
 
         <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/inventory" && params[:action] == "report_category_diameter" %>">
-            <%= link_to "Tồn theo loại/đ.Kính", erp_ortho_k.report_category_diameter_backend_inventory_index_path, class: "nav-link ", title: 'Thống kê tồn kho theo Len-Đường kính' %>
+            <%= link_to "Tồn theo Loại/Đ.Kính", erp_ortho_k.report_category_diameter_backend_inventory_index_path, class: "nav-link ", title: 'Thống kê tồn kho theo Loại Len-Đường kính' %>
+        </li>
+        <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/inventory" && params[:action] == "report_code_diameter" %>">
+            <%= link_to "Tồn theo Mã/Đ.Kính", erp_ortho_k.report_code_diameter_backend_inventory_index_path, class: "nav-link ", title: 'Thống kê tồn kho theo Mã-Đường kính' %>
         </li>
         <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/inventory" && params[:action] == "report_product" %>">
             <%= link_to "Tồn theo sản phẩm",

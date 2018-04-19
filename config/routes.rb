@@ -180,6 +180,10 @@ Erp::OrthoK::Engine.routes.draw do
 					get 'report_category_diameter'
 					post 'report_category_diameter_table'
 					get 'report_category_diameter_xlsx'
+					
+					get 'report_code_diameter'
+					post 'report_code_diameter_table'
+					get 'report_code_diameter_xlsx'
 
 					get 'report_product'
 					post 'report_product_table'
