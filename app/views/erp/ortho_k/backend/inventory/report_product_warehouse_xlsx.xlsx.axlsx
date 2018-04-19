@@ -55,7 +55,9 @@ wb.styles do |s|
       toprow[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_toprow).deep_merge(bold))
     end
     
-    filters = @global_filters
+    filters = @global_filters.clone.merge({
+      product_id: product_ids
+    })
     toprow[:columns] << Erp::Products::Product.get_stock_real(filters)
     toprow[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_toprow).deep_merge(bold))
     

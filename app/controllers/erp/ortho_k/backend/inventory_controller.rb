@@ -928,7 +928,7 @@ module Erp
           end
 
           # products
-          @products = @product_query.paginate(:page => params[:page], :per_page => 20)
+          @products = @product_query.order('ordered_code, name').paginate(:page => params[:page], :per_page => 20)
         end
 
         def report_product_warehouse_xlsx
@@ -1016,7 +1016,7 @@ module Erp
           end
 
           # products
-          @products = @product_query
+          @products = @product_query.order('ordered_code, name')
 
           respond_to do |format|
             format.xlsx {
