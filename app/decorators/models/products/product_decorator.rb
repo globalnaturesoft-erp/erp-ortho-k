@@ -2565,6 +2565,17 @@ Erp::Products::Product.class_eval do
     end
     
     query.last
+  end  
+  
+  # get all sales products not len
+  def self.get_sales_products_not_len(options={})
+    self.get_sales_products(options).where.not(category_id: Erp::Products::Category.get_lens.select(:id))
   end
+  
+  # get all returned products not len
+  def self.get_returned_products_not_len(options={})
+    self.get_returned_products(options).where.not(category_id: Erp::Products::Category.get_lens.select(:id))
+  end
+  
   
 end

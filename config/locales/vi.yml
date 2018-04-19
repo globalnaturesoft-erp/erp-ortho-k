@@ -779,6 +779,18 @@ vi:
           report_sales_results_table:
             please_select_filter: "Vui lòng chọn MỐC THỜI GIAN để xem nội dung báo cáo"
             no_matching_records_found: "Nội dung báo cáo không được tìm thấy. Vui lòng chọn các điều kiện khác để xem."
+          report_sales_summary:
+            report_sales_results: "Báo cáo - Kết quả bán hàng (Doanh số trong kỳ)"
+            from_date: "Từ ngày"
+            to_date: "Đến ngày"
+            select_from_date: "Chọn lọc theo ngày đầu kỳ"
+            select_to_date: "Chọn lọc theo ngày cuối kỳ"
+            filter_period: "Thời gian cố định"
+            choose_period: "Chọn lọc theo thời gian cố định"
+            options: "Tùy chọn"
+            export_pdf: "Xuất ra PDF"
+            export_excel: "Xuất ra Excel"
+            print: "In ấn / Print"
           report_income_statement:
             report_income_statement: "Báo cáo - Kết quả kinh doanh trong kỳ"
             from_date: "Từ ngày"

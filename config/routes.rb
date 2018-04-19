@@ -172,6 +172,10 @@ Erp::OrthoK::Engine.routes.draw do
 					get 'report_liabilities_arising'
 					post 'report_liabilities_arising_table'
 					get 'report_liabilities_arising_xlsx'
+					
+					get 'report_sales_summary'
+					post 'report_sales_summary_table'
+					get 'report_sales_summary_xlsx'
 				end
 			end
 

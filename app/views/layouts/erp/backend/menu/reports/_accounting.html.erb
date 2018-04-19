@@ -1,6 +1,7 @@
 <li class="nav-item <%= "active open" if (params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_pay_receive") ||
                                          (params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_synthesis_pay_receive") ||
                                          (params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_sales_results") ||
+                                         (params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_sales_summary") ||
                                          (params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_income_statement") ||
                                          (params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_cash_flow") ||
                                          (params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_customer_liabilities") ||
@@ -25,6 +26,9 @@
         </li>
         <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_sales_results" %>">
             <%= link_to "Kết quả bán hàng", erp_ortho_k.report_sales_results_backend_accountings_path, class: "nav-link ", title: 'Kết quả bán hàng, trả lại hàng thực tế theo thời gian' %>
+        </li>
+        <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_sales_summary" %>">
+            <%= link_to "Thống kê bán hàng", erp_ortho_k.report_sales_summary_backend_accountings_path, class: "nav-link ", title: 'Kết quả bán hàng, trả lại hàng thực tế theo thời gian' %>
         </li>
         <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_income_statement" %>">
             <%= link_to "Kết quả kinh doanh", erp_ortho_k.report_income_statement_backend_accountings_path, class: "nav-link ", title: 'Báo cáo kết quả kinh doanh, biểu đồ doanh số' %>
