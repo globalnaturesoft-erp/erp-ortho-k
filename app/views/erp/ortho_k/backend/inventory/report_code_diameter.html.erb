@@ -35,6 +35,20 @@
                 url: erp_periods.dataselect_backend_periods_path(format: 'json'),
             }) %>
         </div>
+        <div class="col-md-3">
+            <%= erp_form_control("dataselect", {
+                name: 'state_ids',
+                values: (
+                    dfilters["state_ids"].present? ?
+                    (Erp::Products::State.where(id: dfilters["state_ids"]).map{|i| {text: i.name, value: i.id}})
+                    : nil
+                ),
+                label: 'Tình trạng',
+                placeholder: 'Tất cả tình trạng',
+                url: erp_products.dataselect_backend_states_path(format: 'json'),
+                multiple: true
+            }) %>
+        </div>
     </div>
     <div class="row">
         <div class="col-md-3">
@@ -82,20 +96,9 @@
                 url: erp_warehouses.dataselect_backend_warehouses_path(format: 'json'),
                 multiple: true
             }) %>
-        </div>
-        <div class="col-md-3">
-            <%= erp_form_control("dataselect", {
-                name: 'state_ids',
-                values: (
-                    dfilters["state_ids"].present? ?
-                    (Erp::Products::State.where(id: dfilters["state_ids"]).map{|i| {text: i.name, value: i.id}})
-                    : nil
-                ),
-                label: 'Tình trạng',
-                placeholder: 'Tất cả tình trạng',
-                url: erp_products.dataselect_backend_states_path(format: 'json'),
-                multiple: true
-            }) %>
+        </div>        
+        <div class="col-md-3 mt-25 text-right">
+            <a href="#" class="btn btn-primary global-filter-button">Kiểm kho</a>
         </div>
     </div>
 <% end %>
@@ -103,11 +106,8 @@
 <%= erp_datalist(
     url: erp_ortho_k.report_code_diameter_table_backend_inventory_index_path,
     sortable: true,
-    #filters: [
-    #    {
-    #        text: t('.show_virtual'), name: 'show_virtual', value: true, checked: false
-    #    },
-    #],
+    autoload: false,
     columns: [
     ],
+    placeholder: 'Vui lòng chọn điều kiện cần xem và nhấn Kiểm kho'
 ) %>
