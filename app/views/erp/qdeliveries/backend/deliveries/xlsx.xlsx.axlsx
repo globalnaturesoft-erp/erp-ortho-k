@@ -1,0 +1,582 @@
+wb = xlsx_package.workbook
+xlsx_package.use_autowidth = true
+wb.styles do |s|
+  wb.styles.fonts.first.name = 'Calibri'
+  wb.add_worksheet(name: @delivery.code) do |sheet|
+    # style
+    bg_info = {:bg_color => "305496", :fg_color => "FF"}
+    text_center = {alignment: { horizontal: :center }}
+    text_left = {alignment: { horizontal: :left }}
+    text_right = {alignment: { horizontal: :right }}
+    text_middle = {alignment: { horizontal: :center, vertical: :center }}
+    border = {border: { style: :thin, color: "00", :edges => [:left, :right, :bottom, :top] }}
+    number = {format_code: '#,##0'}
+    bold = {b: true}
+    italic = {i: true}
+    
+     # Top head
+    sheet.add_row ["CÔNG TY TNHH ORTHO-K VIỆT NAM"], b: true
+    sheet.add_row ["535 An Dương Vương, Phường 8, Quận 5, TP. Hồ Chí Minh, Việt Nam"], b: true
+    
+    # add empty row
+    sheet.add_row [nil]
+    
+    # Title
+    @title = 'PHIẾU NHẬP KHO' if @delivery.delivery_type == Erp::Qdeliveries::Delivery::TYPE_PURCHASE_IMPORT
+    @title = 'HÀNG BÁN BỊ TRẢ LẠI' if @delivery.delivery_type == Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT
+    @title = 'PHIẾU NHẬP KHO' if @delivery.delivery_type == Erp::Qdeliveries::Delivery::TYPE_CUSTOM_IMPORT
+    @title = 'PHIẾU XUẤT KHO' if @delivery.delivery_type == Erp::Qdeliveries::Delivery::TYPE_SALES_EXPORT
+    @title = 'PHIẾU XUẤT KHO' if @delivery.delivery_type == Erp::Qdeliveries::Delivery::TYPE_PURCHASE_EXPORT
+    @title = 'PHIẾU XUẤT KHO' if @delivery.delivery_type == Erp::Qdeliveries::Delivery::TYPE_CUSTOM_EXPORT
+    
+    sheet.add_row [@title], sz: 16, b: true, style: (s.add_style text_center)
+    sheet.add_row [@delivery.date.strftime('Ngày %d tháng %m năm %Y')], sz: 11, i: true, style: (s.add_style text_center)
+    sheet.add_row ["Số: #{@delivery.code}"], sz: 12, style: (s.add_style text_center)
+    
+    num_row = 6
+
+    # add empty row
+    sheet.add_row [nil]
+    num_row += 1
+    
+    contact = ''
+    contact_name =  @delivery.get_contact.present? ? @delivery.get_contact.contact_name : ''
+    
+    if [Erp::Qdeliveries::Delivery::TYPE_PURCHASE_IMPORT,
+        Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT].include?(@delivery.delivery_type)
+      contact = "Người giao hàng: #{contact_name}"
+    end
+    
+    if [Erp::Qdeliveries::Delivery::TYPE_SALES_EXPORT,
+        Erp::Qdeliveries::Delivery::TYPE_PURCHASE_EXPORT].include?(@delivery.delivery_type)
+      contact = "Người nhận hàng: #{contact_name}"
+    end
+    
+    if [Erp::Qdeliveries::Delivery::TYPE_CUSTOM_IMPORT,
+        Erp::Qdeliveries::Delivery::TYPE_CUSTOM_EXPORT].include?(@delivery.delivery_type)
+      contact = "Người phụ trách: #{@delivery.employee_name}"
+    end
+    
+    infos_row_1 = {columns: [], styles: []}
+    infos_row_2 = {columns: [], styles: []}
+    infos_row_3 = {columns: [], styles: []}
+    
+    infos_row_1[:columns] << contact
+    infos_row_1[:styles] << (s.add_style text_left)
+    
+    infos_row_2[:columns] << "Địa chỉ: #{display_contact_address(@delivery.get_contact) if @delivery.get_contact.present?}"
+    infos_row_2[:styles] << (s.add_style text_left)
+    
+    infos_row_3[:columns] << "Ghi chú: #{@delivery.note}"
+    infos_row_3[:styles] << (s.add_style text_left)
+    
+    (2..9).each do |col|
+      infos_row_1[:columns] << nil
+      infos_row_1[:styles] << (s.add_style text_left)
+      
+      infos_row_2[:columns] << nil
+      infos_row_2[:styles] << (s.add_style text_left)
+      
+      infos_row_3[:columns] << nil
+      infos_row_3[:styles] << (s.add_style text_left)
+    end
+    
+    employee = nil
+    order_code = nil
+    doctor = nil
+    patient = nil
+    
+    if ![Erp::Qdeliveries::Delivery::TYPE_CUSTOM_IMPORT,
+         Erp::Qdeliveries::Delivery::TYPE_CUSTOM_EXPORT].include?(@delivery.delivery_type)
+      employee = "NV phụ trách: #{@delivery.employee_name}"
+    end
+    
+    if !@delivery.get_related_order.nil?
+      order_code = "Chứng từ: #{@delivery.get_related_order.code}"
+      doctor = "BS: #{@delivery.get_related_order.doctor_name}"
+      patient = "BN: #{@delivery.get_related_order.patient_name}"
+    end
+      
+    infos_row_1[:columns] << employee
+    infos_row_1[:styles] << (s.add_style text_right)
+    
+    infos_row_2[:columns] << order_code
+    infos_row_2[:styles] << (s.add_style text_right)
+    
+    infos_row_3[:columns] << "#{doctor} / #{patient}" 
+    infos_row_3[:styles] << (s.add_style {})
+    
+    sheet.add_row infos_row_1[:columns], style: infos_row_1[:styles]
+    num_row += 1
+    sheet.add_row infos_row_2[:columns], style: infos_row_2[:styles]
+    num_row += 1
+    sheet.add_row infos_row_3[:columns], style: infos_row_3[:styles]
+    num_row += 1
+    
+    # add empty row
+    sheet.add_row [nil]
+    num_row += 1
+
+    # header
+    header = {columns: [], styles: []}
+    footer_1 = {columns: [], styles: []}
+    footer_2 = {columns: [], styles: []}
+    footer_3 = {columns: [], styles: []}
+    footer_4 = {columns: [], styles: []}
+    
+    if get_columns(params).include?("ordinal_number") or get_columns(params).empty?
+      header[:columns] << t('.ordinal_number')
+      header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border))
+      sheet.column_info.first.width = 5
+
+      footer_1[:columns] << 'Cộng tiền hàng:'
+      footer_1[:styles] << (s.add_style text_right.deep_merge(border))
+
+      footer_2[:columns] << "Tiền thuế (0%)"
+      footer_2[:styles] << (s.add_style text_right.deep_merge(border))
+
+      footer_3[:columns] << 'Tổng tiền trả lại:'
+      footer_3[:styles] << (s.add_style text_right.deep_merge(border))
+
+      footer_4[:columns] << 'Tổng số lượng:'
+      footer_4[:styles] << (s.add_style text_right.deep_merge(border))
+      
+      num_col = 0
+    end
+    
+    if get_columns(params).include?("items") or get_columns(params).empty?
+      header[:columns] << t('.items')
+      header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border))
+
+      footer_1[:columns] << nil
+      footer_1[:styles] << (s.add_style border)
+
+      footer_2[:columns] << nil
+      footer_2[:styles] << (s.add_style border)
+
+      footer_3[:columns] << nil
+      footer_3[:styles] << (s.add_style border)
+
+      footer_4[:columns] << nil
+      footer_4[:styles] << (s.add_style border)
+      
+      num_col += 1
+    end
+    
+    if get_columns(params).include?("units") or get_columns(params).empty?
+      header[:columns] << t('.units')
+      header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border))
+
+      footer_1[:columns] << nil
+      footer_1[:styles] << (s.add_style border)
+
+      footer_2[:columns] << nil
+      footer_2[:styles] << (s.add_style border)
+
+      footer_3[:columns] << nil
+      footer_3[:styles] << (s.add_style border)
+
+      footer_4[:columns] << nil
+      footer_4[:styles] << (s.add_style border)
+      
+      num_col += 1
+    end
+    
+    if get_columns(params).include?("patient_state")
+      header[:columns] << t('.patient_state')
+      header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border))
+
+      footer_1[:columns] << nil
+      footer_1[:styles] << (s.add_style border)
+
+      footer_2[:columns] << nil
+      footer_2[:styles] << (s.add_style border)
+
+      footer_3[:columns] << nil
+      footer_3[:styles] << (s.add_style border)
+
+      footer_4[:columns] << nil
+      footer_4[:styles] << (s.add_style border)
+      
+      num_col += 1
+    end
+    
+    if get_columns(params).include?("patient_name")
+      header[:columns] << t('.patient_name')
+      header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border))
+
+      footer_1[:columns] << nil
+      footer_1[:styles] << (s.add_style border)
+
+      footer_2[:columns] << nil
+      footer_2[:styles] << (s.add_style border)
+
+      footer_3[:columns] << nil
+      footer_3[:styles] << (s.add_style border)
+
+      footer_4[:columns] << nil
+      footer_4[:styles] << (s.add_style border)
+      
+      num_col += 1
+    end
+    
+    if get_columns(params).include?("warehouse")
+      header[:columns] << t('.warehouse')
+      header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border))
+
+      footer_1[:columns] << nil
+      footer_1[:styles] << (s.add_style border)
+
+      footer_2[:columns] << nil
+      footer_2[:styles] << (s.add_style border)
+
+      footer_3[:columns] << nil
+      footer_3[:styles] << (s.add_style border)
+
+      footer_4[:columns] << nil
+      footer_4[:styles] << (s.add_style border)
+      
+      num_col += 1
+    end
+    
+    if get_columns(params).include?("state")
+      header[:columns] << t('.state')
+      header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border))
+
+      footer_1[:columns] << nil
+      footer_1[:styles] << (s.add_style border)
+
+      footer_2[:columns] << nil
+      footer_2[:styles] << (s.add_style border)
+
+      footer_3[:columns] << nil
+      footer_3[:styles] << (s.add_style border)
+
+      footer_4[:columns] << nil
+      footer_4[:styles] << (s.add_style border)
+      
+      num_col += 1
+    end
+    
+    if get_columns(params).include?("serials")
+      header[:columns] << t('.serials')
+      header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border))
+
+      footer_1[:columns] << nil
+      footer_1[:styles] << (s.add_style border)
+
+      footer_2[:columns] << nil
+      footer_2[:styles] << (s.add_style border)
+
+      footer_3[:columns] << nil
+      footer_3[:styles] << (s.add_style border)
+
+      footer_4[:columns] << nil
+      footer_4[:styles] << (s.add_style border)
+      
+      num_col += 1
+    end
+    
+    if get_columns(params).include?("eye_position")
+      header[:columns] << t('.eye_position')
+      header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border))
+
+      footer_1[:columns] << nil
+      footer_1[:styles] << (s.add_style border)
+
+      footer_2[:columns] << nil
+      footer_2[:styles] << (s.add_style border)
+
+      footer_3[:columns] << nil
+      footer_3[:styles] << (s.add_style border)
+
+      footer_4[:columns] << nil
+      footer_4[:styles] << (s.add_style border)
+      
+      num_col += 1
+    end
+    
+    if get_columns(params).include?("quantity") or get_columns(params).empty?
+      header[:columns] << t('.quantity')
+      header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border))
+
+      footer_1[:columns] << nil
+      footer_1[:styles] << (s.add_style text_center.deep_merge(border))
+
+      footer_2[:columns] << nil
+      footer_2[:styles] << (s.add_style border)
+
+      footer_3[:columns] << nil
+      footer_3[:styles] << (s.add_style border)
+
+      footer_4[:columns] << nil
+      footer_4[:styles] << (s.add_style border)
+      
+      num_col += 1
+    end
+    
+    if @delivery.delivery_type == Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT
+      if get_columns(params).include?("price") or get_columns(params).empty?
+        header[:columns] << t('.price')
+        header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border))
+  
+        footer_1[:columns] << nil
+        footer_1[:styles] << (s.add_style border)
+  
+        footer_2[:columns] << nil
+        footer_2[:styles] << (s.add_style border)
+  
+        footer_3[:columns] << nil
+        footer_3[:styles] << (s.add_style border)
+
+        footer_4[:columns] << nil
+        footer_4[:styles] << (s.add_style border)
+        
+        num_col += 1
+      end
+      col_total = 0
+      if get_columns(params).include?("total_amount")
+        header[:columns] << t('.total_amount')
+        header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border))
+  
+        footer_1[:columns] << @delivery.total_amount
+        footer_1[:styles] << (s.add_style text_right.deep_merge(bold).deep_merge(number).deep_merge(border))
+  
+        footer_2[:columns] << 0
+        footer_2[:styles] << (s.add_style text_right.deep_merge(bold).deep_merge(number).deep_merge(border))
+  
+        footer_3[:columns] << @delivery.total_amount
+        footer_3[:styles] << (s.add_style text_right.deep_merge(bold).deep_merge(number).deep_merge(border))
+
+        footer_4[:columns] << @delivery.total_delivery_quantity
+        footer_4[:styles] << (s.add_style border)
+        
+        num_col += 1
+        col_total = num_col
+      end
+    end
+    if get_columns(params).include?("record")
+      header[:columns] << t('.record')
+      header[:styles] << (s.add_style bg_info.deep_merge(border).deep_merge(text_middle))
+
+      footer_1[:columns] << nil
+      footer_1[:styles] << (s.add_style text_right.deep_merge(border))
+
+      footer_2[:columns] << nil
+      footer_2[:styles] << (s.add_style border)
+
+      footer_3[:columns] << nil
+      footer_3[:styles] << (s.add_style border)
+
+      footer_4[:columns] << nil
+      footer_4[:styles] << (s.add_style border)
+      
+      num_col += 1
+    end
+    if get_columns(params).include?("note")
+      header[:columns] << t('.note')
+      header[:styles] << (s.add_style bg_info.deep_merge(border).deep_merge(text_middle))
+
+      footer_1[:columns] << nil
+      footer_1[:styles] << (s.add_style text_right.deep_merge(border))
+
+      footer_2[:columns] << nil
+      footer_2[:styles] << (s.add_style border)
+
+      footer_3[:columns] << nil
+      footer_3[:styles] << (s.add_style border)
+
+      footer_4[:columns] << nil
+      footer_4[:styles] << (s.add_style border)
+      
+      num_col += 1
+    end
+
+    sheet.add_row header[:columns], style: header[:styles], height: 20
+    num_row += 1
+
+    # rows
+    @delivery.delivery_details.each_with_index do |delivery_detail,index|
+      row = {columns: [], styles: []}
+      row[:columns] = []
+      if get_columns(params).include?("ordinal_number") or get_columns(params).empty?
+        row[:columns] << index+1
+        row[:styles] << (s.add_style text_center.deep_merge(border))
+      end
+      if get_columns(params).include?("items") or get_columns(params).empty?
+        row[:columns] << delivery_detail.get_product.name
+        row[:styles] << (s.add_style border)
+      end
+      if get_columns(params).include?("units") or get_columns(params).empty?
+        row[:columns] << delivery_detail.get_product.unit_name
+        row[:styles] << (s.add_style text_center.deep_merge(border))
+      end
+      if get_columns(params).include?("patient_state")
+        row[:columns] << (delivery_detail.get_order.present? ? delivery_detail.get_order.display_patient_info[:state] : nil)
+        row[:styles] << (s.add_style border)
+      end
+      if get_columns(params).include?("patient_name")
+        row[:columns] <<  (delivery_detail.get_order.present? ? delivery_detail.get_order.display_patient_info[:name] : nil)
+        row[:styles] << (s.add_style border)
+      end
+      if get_columns(params).include?("warehouse")
+        row[:columns] << delivery_detail.warehouse_name
+        row[:styles] << (s.add_style text_center.deep_merge(border))
+      end
+      if get_columns(params).include?("state")
+        row[:columns] << delivery_detail.state_name
+        row[:styles] << (s.add_style text_center.deep_merge(border))
+      end
+      if get_columns(params).include?("serials")
+        row[:columns] << delivery_detail.serials
+        row[:styles] << (s.add_style text_center.deep_merge(border))
+      end
+      if get_columns(params).include?("eye_position")
+        row[:columns] << delivery_detail.get_eye_position
+        row[:styles] << (s.add_style text_center.deep_merge(border))
+      end
+      if get_columns(params).include?("quantity") or get_columns(params).empty?
+        row[:columns] << delivery_detail.quantity
+        row[:styles] << (s.add_style text_center.deep_merge(border))
+      end
+      if @delivery.delivery_type == Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT
+        if get_columns(params).include?("price") or get_columns(params).empty?
+          row[:columns] << delivery_detail.price
+          row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
+        end
+        if get_columns(params).include?("total_amount") or get_columns(params).empty?
+          row[:columns] << delivery_detail.cache_total
+          row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
+        end
+      end
+      if get_columns(params).include?("record")
+        row[:columns] << delivery_detail.get_order_code
+        row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
+      end
+      if get_columns(params).include?("note")
+        row[:columns] << delivery_detail.note
+        row[:styles] << (s.add_style border)
+      end
+
+      sheet.add_row row[:columns], style: row[:styles]
+      num_row += 1
+    end
+
+    # footer
+    if @delivery.delivery_type == Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT
+      sheet.add_row footer_1[:columns], style: footer_1[:styles]
+      num_row += 1
+      row_ft_1 = num_row
+      
+      sheet.add_row footer_2[:columns], style: footer_2[:styles]
+      num_row += 1
+      row_ft_2 = num_row
+      
+      sheet.add_row footer_3[:columns], style: footer_3[:styles]
+      num_row += 1
+      row_ft_3 = num_row
+    else
+      sheet.add_row footer_4[:columns], style: footer_4[:styles]
+      num_row += 1
+      row_ft_4 = num_row
+    end
+    
+    #sheet.merge_cells("#{('A'.codepoints.first).chr}#{row_ft_1}:#{('A'.codepoints.first + (col_total - 1)).chr}#{row_ft_1}")
+    #sheet.merge_cells("#{('A'.codepoints.first).chr}#{row_ft_2}:#{('A'.codepoints.first + (col_total - 1)).chr}#{row_ft_2}")
+    #sheet.merge_cells("#{('A'.codepoints.first).chr}#{row_ft_3}:#{('A'.codepoints.first + (col_total - 1)).chr}#{row_ft_3}")
+    
+    # add empty row
+    sheet.add_row [nil], height: 5
+    num_row += 1
+    if @delivery.delivery_type == Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT
+      sheet.add_row ["Tổng số tiền (bằng chữ): #{docso(@delivery.total_amount) if @delivery.delivery_type == Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT}"]
+      num_row += 1
+    end
+    sheet.add_row ["Lưu ý: Cty chỉ thu hồi hàng hóa khi có HĐBH kèm theo"]
+    num_row += 1
+    sheet.add_row [nil]
+    num_row += 1
+    
+    # signature footer
+    sign = {columns: [], styles: []}
+    sign1 = {columns: [], styles: []}
+    sign2 = {columns: [], styles: []}
+    
+    sign[:columns] << nil
+    sign[:styles] << (s.add_style {})
+    sign[:columns] << nil
+    sign[:styles] << (s.add_style {})
+    sign[:columns] << nil
+    sign[:styles] << (s.add_style {})
+    sign[:columns] << nil
+    sign[:styles] << (s.add_style {})
+    sign[:columns] << nil
+    sign[:styles] << (s.add_style {})
+    sign[:columns] << nil
+    sign[:styles] << (s.add_style {})
+    sign[:columns] << nil
+    sign[:styles] << (s.add_style {})
+    sign[:columns] << nil
+    sign[:styles] << (s.add_style {})
+    sign[:columns] << Time.now.strftime('Ngày %d tháng %m năm %Y')
+    sign[:styles] << (s.add_style text_center.merge(italic))
+    
+    sign1[:columns] << nil
+    sign1[:styles] << (s.add_style {})
+    sign1[:columns] << 'Người lập phiếu'
+    sign1[:styles] << (s.add_style text_center.merge(bold))
+    sign1[:columns] << nil
+    sign1[:styles] << (s.add_style {})
+    sign1[:columns] << 'Người giao hàng'
+    sign1[:styles] << (s.add_style text_center.merge(bold))
+    sign1[:columns] << nil
+    sign1[:styles] << (s.add_style {})
+    sign1[:columns] << nil
+    sign1[:styles] << (s.add_style {})
+    sign1[:columns] << 'Người nhận hàng'
+    sign1[:styles] << (s.add_style text_center.merge(bold))
+    sign1[:columns] << nil
+    sign1[:styles] << (s.add_style {})
+    sign1[:columns] << 'Thủ kho'
+    sign1[:styles] << (s.add_style text_center.merge(bold))
+    
+    sign2[:columns] << nil
+    sign2[:styles] << (s.add_style {})
+    sign2[:columns] << '(Ký, họ tên)'
+    sign2[:styles] << (s.add_style text_center.merge(italic))
+    sign2[:columns] << nil
+    sign2[:styles] << (s.add_style {})
+    sign2[:columns] << '(Ký, họ tên)'
+    sign2[:styles] << (s.add_style text_center.merge(italic))
+    sign2[:columns] << nil
+    sign2[:styles] << (s.add_style {})
+    sign2[:columns] << nil
+    sign2[:styles] << (s.add_style {})
+    sign2[:columns] << '(Ký, họ tên)'
+    sign2[:styles] << (s.add_style text_center.merge(italic))
+    sign2[:columns] << nil
+    sign2[:styles] << (s.add_style {})
+    sign2[:columns] << '(Ký, họ tên)'
+    sign2[:styles] << (s.add_style text_center.merge(italic))
+    
+    sheet.add_row sign[:columns], style: sign[:styles]
+    num_row += 1
+    sheet.add_row sign1[:columns], style: sign1[:styles]
+    num_row += 1
+    sheet.add_row sign2[:columns], style: sign2[:styles]
+    num_row += 1
+    
+    sheet.add_row [nil]
+    num_row += 1
+    sheet.add_row [nil]
+    num_row += 1
+    sheet.add_row [nil, @delivery.creator_name], b: true, style: (s.add_style text_center)
+
+    # Setup
+    sheet.merge_cells("#{('A'.codepoints.first).chr}4:#{('A'.codepoints.first + num_col).chr}4")
+    sheet.merge_cells("#{('A'.codepoints.first).chr}5:#{('A'.codepoints.first + num_col).chr}5")
+    sheet.merge_cells("#{('A'.codepoints.first).chr}6:#{('A'.codepoints.first + num_col).chr}6")
+    
+    sheet.column_widths 5, 25, 10, 10, 10, 10, 10, 15, 15, 15, 15, 15, 15, 15 #*patient_col_widths
+  end
+end

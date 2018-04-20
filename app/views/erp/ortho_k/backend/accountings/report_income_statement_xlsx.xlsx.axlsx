@@ -8,221 +8,232 @@ wb.styles do |s|
     text_center = {alignment: { horizontal: :center }}
     text_left = {alignment: { horizontal: :left }}
     text_right = {alignment: { horizontal: :right }}
-    middle_align =  {alignment: { vertical: :center }}
+    vertical_center =  {alignment: { vertical: :center }}
+    text_middle = {alignment: { horizontal: :center, vertical: :center }}
     number = {format_code: '#,##0'}
     border = {border: { style: :thin, color: "00", :edges => [:left, :right, :bottom] }}
     bold = {b: true}
     
+    # Top head
+    sheet.add_row ["CÔNG TY TNHH ORTHO-K VIỆT NAM"], b: true
+    sheet.add_row ["535 An Dương Vương, Phường 8, Quận 5, TP. Hồ Chí Minh, Việt Nam"], b: true
+    
     # add empty row
-    sheet.add_row ['']
+    sheet.add_row [nil]
     
     # Title
-    date = "#{' TỪ ' + @from.to_date.strftime('%d/%m/%Y') if !@from.nil?}#{' ĐẾN ' + @to.to_date.strftime('%d/%m/%Y') if !@to.nil?}"
-    sheet.add_row [('KẾT QUẢ KINH DOANH' + date).upcase], sz: 16, b: true, style: (s.add_style text_center)
+    if @period_name.nil?
+      date = "#{'TỪ ' + @from.to_date.strftime('%d/%m/%Y') if !@from.nil?}#{' ĐẾN ' + @to.to_date.strftime('%d/%m/%Y') if !@to.nil?}"
+    else
+      date = @period_name
+    end
+    
+    sheet.add_row ['BÁO CÁO KẾT QUẢ KINH DOANH'], sz: 16, b: true, style: (s.add_style text_center)
+    sheet.add_row ["(#{date.upcase})"], sz: 12, style: (s.add_style text_center)
     
     # add empty row
-    sheet.add_row ['']
+    sheet.add_row [nil]
+    
+    row_num = 6
     
     # header
     header = {columns: [], styles: []}
-    header[:columns] = []
+    column_widths = []
       
     header[:columns] << t('.ordinal_number')
-    header[:styles] << (s.add_style bg_info.deep_merge(text_center).merge(b: true))
-    sheet.column_info.first.width = 5
+    header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(bold))
+    column_widths << 8
+    col_num = 0
     
     header[:columns] << t('.name')
-    header[:styles] << (s.add_style bg_info.merge(b: true))
+    header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(bold))
+    column_widths << nil
+    col_num += 1
   
     header[:columns] << t('.amount')
-    header[:styles] << (s.add_style bg_info.deep_merge(text_right).merge(b: true))
+    header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(bold))
+    column_widths << nil
+    col_num += 1
 
-    sheet.add_row header[:columns], style: header[:styles]
-    r = 4
+    sheet.add_row header[:columns], style: header[:styles], height: 25
+    row_num += 1
     
     # row no.1
     row = {columns: [], styles: []}
-    row[:columns] = []
     
     row[:columns] << 1
-    row[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bold))
+    row[:styles] << (s.add_style text_middle.deep_merge(border).deep_merge(bold))
   
     row[:columns] << 'Doanh thu bán hàng'
-    row[:styles] << (s.add_style border.deep_merge(bold))
+    row[:styles] << (s.add_style border.deep_merge(vertical_center).deep_merge(bold))
   
     row[:columns] << Erp::Orders::Order.sales_total_amount(from_date: @from, to_date: @to)
-    row[:styles] << (s.add_style text_right.deep_merge(number).merge(border).deep_merge(bold))
+    row[:styles] << (s.add_style text_right.deep_merge(vertical_center).deep_merge(number).merge(border).deep_merge(bold))
 
-    sheet.add_row row[:columns], style: row[:styles]
-    r += 1
+    sheet.add_row row[:columns], style: row[:styles], height: 20
+    row_num += 1
     
     # row no.2
     row = {columns: [], styles: []}
-    row[:columns] = []
     
     row[:columns] << 2
-    row[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bold))
+    row[:styles] << (s.add_style text_middle.deep_merge(border).deep_merge(bold))
   
     row[:columns] << 'Hàng bán bị trả lại'
-    row[:styles] << (s.add_style border.deep_merge(bold))
+    row[:styles] << (s.add_style border.deep_merge(vertical_center).deep_merge(bold))
   
     row[:columns] << Erp::Qdeliveries::DeliveryDetail.total_amount_by_delivery_type(
                         delivery_type: Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT,
                         from_date: @from, to_date: @to)
-    row[:styles] << (s.add_style text_right.deep_merge(number).merge(border).deep_merge(bold))
+    row[:styles] << (s.add_style text_right.deep_merge(vertical_center).deep_merge(number).merge(border).deep_merge(bold))
 
-    sheet.add_row row[:columns], style: row[:styles]
-    r += 1
-    
+    sheet.add_row row[:columns], style: row[:styles], height: 20
+    row_num += 1
+text_middle
     # row no.3
     row = {columns: [], styles: []}
-    row[:columns] = []
     
     row[:columns] << 3
-    row[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bold))
+    row[:styles] << (s.add_style text_center.deep_merge(vertical_center).deep_merge(border).deep_merge(bold))
   
     row[:columns] << 'Doanh thu sau khi đã trừ hàng bị trả lại ( 3 = 1 - 2 )'
-    row[:styles] << (s.add_style border.deep_merge(bold))
+    row[:styles] << (s.add_style border.deep_merge(vertical_center).deep_merge(vertical_center).deep_merge(bold))
   
     row[:columns] << Erp::Orders::Order.doanh_thu_sau_khi_da_tru_hang_bi_tra_lai(from_date: @from, to_date: @to)
-    row[:styles] << (s.add_style text_right.deep_merge(number).merge(border).deep_merge(bold))
+    row[:styles] << (s.add_style text_right.deep_merge(vertical_center).deep_merge(vertical_center).deep_merge(number).merge(border).deep_merge(bold))
 
-    sheet.add_row row[:columns], style: row[:styles]
-    r += 1
+    sheet.add_row row[:columns], style: row[:styles], height: 20
+    row_num += 1
     
     # row no.4
     row = {columns: [], styles: []}
-    row[:columns] = []
     
     row[:columns] << 4
-    row[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bold))
+    row[:styles] << (s.add_style text_middle.deep_merge(border).deep_merge(bold))
   
     row[:columns] << 'Giá vốn hàng bán'
-    row[:styles] << (s.add_style border.deep_merge(bold))
+    row[:styles] << (s.add_style border.deep_merge(vertical_center).deep_merge(bold))
   
     row[:columns] << Erp::Orders::Order.cost_total_amount(from_date: @from, to_date: @to)
-    row[:styles] << (s.add_style text_right.deep_merge(number).merge(border).deep_merge(bold))
+    row[:styles] << (s.add_style text_right.deep_merge(vertical_center).deep_merge(number).merge(border).deep_merge(bold))
 
-    sheet.add_row row[:columns], style: row[:styles]
-    r += 1
+    sheet.add_row row[:columns], style: row[:styles], height: 20
+    row_num += 1
     
     # row no.5
     row = {columns: [], styles: []}
-    row[:columns] = []
     
     row[:columns] << 5
-    row[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bold))
+    row[:styles] << (s.add_style text_middle.deep_merge(border).deep_merge(bold))
   
     row[:columns] << 'Lợi nhuận gộp về bán hàng ( 5 = 3 - 4 )'
-    row[:styles] << (s.add_style border.deep_merge(bold))
+    row[:styles] << (s.add_style border.deep_merge(vertical_center).deep_merge(bold))
     
     loi_nhuan_sau_ban_hang = Erp::Orders::Order.loi_nhuan_gop_ve_ban_hang(from_date: @from, to_date: @to)
     row[:columns] << loi_nhuan_sau_ban_hang
-    row[:styles] << (s.add_style text_right.deep_merge(number).merge(border).deep_merge(bold))
+    row[:styles] << (s.add_style text_right.deep_merge(vertical_center).deep_merge(number).merge(border).deep_merge(bold))
 
-    sheet.add_row row[:columns], style: row[:styles]
-    r += 1
+    sheet.add_row row[:columns], style: row[:styles], height: 20
+    row_num += 1
     
     # row no.6
     row = {columns: [], styles: []}
-    row[:columns] = []
     
     row[:columns] << 6
-    row[:styles] << (s.add_style text_center.deep_merge(middle_align).deep_merge(border).deep_merge(bold))
+    row[:styles] << (s.add_style text_middle.deep_merge(border).deep_merge(bold))
   
     row[:columns] << 'Tổng các khoản thu khác:'
-    row[:styles] << (s.add_style border.deep_merge(bold))
+    row[:styles] << (s.add_style border.deep_merge(vertical_center).deep_merge(bold))
     
     tong_thu_khac = @receivables.receive_amount_by_payment_type(from_date: @from, to_date: @to)
     row[:columns] << tong_thu_khac
-    row[:styles] << (s.add_style text_right.deep_merge(number).merge(border).deep_merge(bold))
+    row[:styles] << (s.add_style text_right.deep_merge(vertical_center).deep_merge(number).merge(border).deep_merge(bold))
 
-    sheet.add_row row[:columns], style: row[:styles]
-    r += 1
-    r6 = r
+    sheet.add_row row[:columns], style: row[:styles], height: 20
+    row_num += 1
+    row_ordinal_6 = row_num
     
     @receivables.each do |receive|
       receive_amount = receive.receive_amount_by_payment_type(from_date: @from, to_date: @to)
       index = 0
       if receive_amount > 0
         row = {columns: [], styles: []}
-        row[:columns] = []
         
-        row[:columns] << ''
+        row[:columns] << nil
         row[:styles] << (s.add_style text_center.deep_merge(border))
       
         index += 1
         row[:columns] << "6.#{index}. #{receive.name}"
-        row[:styles] << (s.add_style border)
+        row[:styles] << (s.add_style border.deep_merge(vertical_center))
       
         row[:columns] << receive_amount
-        row[:styles] << (s.add_style text_right.deep_merge(number).merge(border))
+        row[:styles] << (s.add_style text_right.deep_merge(vertical_center).deep_merge(number).merge(border))
     
-        sheet.add_row row[:columns], style: row[:styles]
-        r += 1
+        sheet.add_row row[:columns], style: row[:styles], height: 20
+        row_num += 1
       end
     end
-    sheet.merge_cells("A#{r6}:A#{r}")
+    sheet.merge_cells("A#{row_ordinal_6}:A#{row_num}")
     
     # row no.7
     row = {columns: [], styles: []}
-    row[:columns] = []
     
     row[:columns] << 7
-    row[:styles] << (s.add_style text_center.deep_merge(middle_align).deep_merge(border).deep_merge(bold))
+    row[:styles] << (s.add_style text_middle.deep_merge(border).deep_merge(bold))
   
     row[:columns] << 'Tổng các khoản chi khác:'
-    row[:styles] << (s.add_style border.deep_merge(bold))
+    row[:styles] << (s.add_style border.deep_merge(vertical_center).deep_merge(bold))
     
     tong_chi_khac = @payables.paid_amount_by_payment_type(from_date: @from, to_date: @to)
     row[:columns] << tong_chi_khac
-    row[:styles] << (s.add_style text_right.deep_merge(number).merge(border).deep_merge(bold))
+    row[:styles] << (s.add_style text_right.deep_merge(vertical_center).deep_merge(number).merge(border).deep_merge(bold))
 
-    sheet.add_row row[:columns], style: row[:styles]
-    r += 1
-    r7 = r
+    sheet.add_row row[:columns], style: row[:styles], height: 20
+    row_num += 1
+    row_ordinal_7 = row_num
     
     @payables.each do |pay|
       paid_amount = pay.paid_amount_by_payment_type(from_date: @from, to_date: @to)
       index = 0
       if paid_amount > 0
         row = {columns: [], styles: []}
-        row[:columns] = []
         
-        row[:columns] << ''
+        row[:columns] << nil
         row[:styles] << (s.add_style text_center.deep_merge(border))
       
         index += 1
         row[:columns] << "7.#{index}. #{pay.name}"
-        row[:styles] << (s.add_style border)
+        row[:styles] << (s.add_style border.deep_merge(vertical_center))
       
         row[:columns] << paid_amount
-        row[:styles] << (s.add_style text_right.deep_merge(number).merge(border))
+        row[:styles] << (s.add_style text_right.deep_merge(vertical_center).deep_merge(number).merge(border))
     
-        sheet.add_row row[:columns], style: row[:styles]
-        r += 1
+        sheet.add_row row[:columns], style: row[:styles], height: 20
+        row_num += 1
       end
     end
-    sheet.merge_cells("A#{r7}:A#{r}")
+    sheet.merge_cells("A#{row_ordinal_7}:A#{row_num}")
     
     # row no.9
     row = {columns: [], styles: []}
-    row[:columns] = []
     
     row[:columns] << 8
-    row[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bold))
+    row[:styles] << (s.add_style text_middle.deep_merge(border).deep_merge(bold))
   
-    row[:columns] << 'Lợi nhuận thuần từ hoạt động kinh doanh ( 9 = ( 5 + 6 ) - 7 )'
-    row[:styles] << (s.add_style border.deep_merge(bold))
+    row[:columns] << 'Lợi nhuận thuần từ hoạt động kinh doanh ( 8 = ( 5 + 6 ) - 7 )'
+    row[:styles] << (s.add_style border.deep_merge(vertical_center).deep_merge(bold))
     
     loi_nhuan_thuan = loi_nhuan_sau_ban_hang + tong_thu_khac - tong_chi_khac
     row[:columns] << loi_nhuan_thuan
-    row[:styles] << (s.add_style text_right.deep_merge(number).merge(border).deep_merge(bold))
+    row[:styles] << (s.add_style text_right.deep_merge(vertical_center).deep_merge(number).merge(border).deep_merge(bold))
 
-    sheet.add_row row[:columns], style: row[:styles]
-    r += 1
+    sheet.add_row row[:columns], style: row[:styles], height: 20
+    row_num += 1
     
     # Setup
-    sheet.merge_cells("A2:C2")
+    sheet.merge_cells("#{('A'.codepoints.first).chr}4:#{('A'.codepoints.first + col_num).chr}4")
+    sheet.merge_cells("#{('A'.codepoints.first).chr}5:#{('A'.codepoints.first + col_num).chr}5")
+    
+    sheet.column_widths *column_widths
   end
 end

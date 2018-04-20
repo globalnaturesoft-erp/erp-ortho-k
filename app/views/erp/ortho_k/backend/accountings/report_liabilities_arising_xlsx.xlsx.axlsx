@@ -5,56 +5,84 @@ wb.styles do |s|
   wb.add_worksheet(name: 'Danh sách KH phát sinh') do |sheet|
     # style
     bg_info = {:bg_color => "305496", :fg_color => "FF"}
-    bg_footer = {:bg_color => "ffd966", :fg_color => "00"}
+    bg_footer = {:bg_color => "ffff00", :fg_color => "c52f24"}
     text_center = {alignment: { horizontal: :center }}
     text_left = {alignment: { horizontal: :left }}
     text_right = {alignment: { horizontal: :right }}
+    vertical_center = {alignment: { vertical: :center }}
+    text_middle = {alignment: { horizontal: :center, vertical: :center }}
     number = {format_code: '#,##0'}
     border = {border: { style: :thin, color: "00", :edges => [:left, :right, :bottom] }}
     bold = {b: true}
     
+    # Top head
+    sheet.add_row ["CÔNG TY TNHH ORTHO-K VIỆT NAM"], b: true
+    sheet.add_row ["535 An Dương Vương, Phường 8, Quận 5, TP. Hồ Chí Minh, Việt Nam"], b: true
+    
     # add empty row
-    sheet.add_row ['']
+    sheet.add_row [nil]
     
     # Title
-    date = "#{' TỪ ' + @from.to_date.strftime('%d/%m/%Y') if !@from.nil?}#{' ĐẾN ' + @to.to_date.strftime('%d/%m/%Y') if !@to.nil?}"
-    sheet.add_row [('DANH SÁCH KHÁCH HÀNG PHÁT SINH' + date).upcase], sz: 16, b: true, style: (s.add_style text_center)
+    if @period_name.nil?
+      date = "#{'TỪ ' + @from.to_date.strftime('%d/%m/%Y') if !@from.nil?}#{' ĐẾN ' + @to.to_date.strftime('%d/%m/%Y') if !@to.nil?}"
+    else
+      date = @period_name
+    end
+    sheet.add_row [('DANH SÁCH KHÁCH HÀNG PHÁT SINH').upcase], sz: 16, b: true, style: (s.add_style text_center)
+    sheet.add_row ["(#{date.upcase})"], sz: 12, style: (s.add_style text_center)
     
     # add empty row
-    sheet.add_row ['']
+    sheet.add_row [nil]
+    row_num = 6
     
     # header
     header = {columns: [], styles: []}
-    header[:columns] = []
+    column_widths = []
     
     header[:columns] << 'STT'
-    header[:styles] << (s.add_style bg_info.deep_merge(text_center).merge(bold))
+    header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
+    column_widths << 5
+    col_num = 0
     
     header[:columns] << 'Tên khách hàng'
-    header[:styles] << (s.add_style bg_info.deep_merge(text_center).merge(bold))
+    header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
+    column_widths << 35
+    col_num += 1
     
     header[:columns] << 'Tỉnh/TP'
-    header[:styles] << (s.add_style bg_info.deep_merge(text_center).merge(bold))
+    header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
+    column_widths << 15
+    col_num += 1
     
     header[:columns] << 'Tổng nợ'
-    header[:styles] << (s.add_style bg_info.deep_merge(text_center).merge(bold))
+    header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
+    column_widths << 15
+    col_num += 1
     
     header[:columns] << 'Thực thu'
-    header[:styles] << (s.add_style bg_info.deep_merge(text_center).merge(bold))
+    header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
+    column_widths << 15
+    col_num += 1
     
     header[:columns] << 'Chưa thu'
-    header[:styles] << (s.add_style bg_info.deep_merge(text_center).merge(bold))
+    header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
+    column_widths << 15
+    col_num += 1
     
-    header[:columns] << 'Sale phụ trách'
-    header[:styles] << (s.add_style bg_info.deep_merge(text_center).merge(bold))
+    header[:columns] << 'NV phụ trách'
+    header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
+    column_widths << nil
+    col_num += 1
     
     header[:columns] << 'Ghi chú'
-    header[:styles] << (s.add_style bg_info.deep_merge(text_center).merge(bold))
+    header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
+    column_widths << nil
+    col_num += 1
     
-    sheet.add_row header[:columns], style: header[:styles]
+    sheet.add_row header[:columns], style: header[:styles], height: 25
+    row_num += 1
     
     # rows
-    r = 4
     @customers.each_with_index do |customer,index|
       sales_total = customer.sales_debt_amount(to_date: (!@from.nil? ? (@from-1.day) : @from)) +
                     customer.sales_total_amount(from_date: @from, to_date: @to)
@@ -62,7 +90,6 @@ wb.styles do |s|
       sales_debt_remain = customer.sales_debt_amount(to_date: @to)
     
       row = {columns: [], styles: []}
-      row[:columns] = []
     
       row[:columns] << index+1
       row[:styles] << (s.add_style text_center.deep_merge(border))
@@ -71,7 +98,7 @@ wb.styles do |s|
       row[:styles] << (s.add_style text_left.deep_merge(border))
     
       row[:columns] << customer.state_name
-      row[:styles] << (s.add_style text_center.deep_merge(border))
+      row[:styles] << (s.add_style text_left.deep_merge(border))
     
       row[:columns] << sales_total
       row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
@@ -83,13 +110,13 @@ wb.styles do |s|
       row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
     
       row[:columns] << (!customer.salesperson.nil? ? customer.salesperson_name : '')
-      row[:styles] << (s.add_style text_center.deep_merge(border))
+      row[:styles] << (s.add_style text_left.deep_merge(border))
     
       row[:columns] << ''
       row[:styles] << (s.add_style text_center.deep_merge(border))
     
       sheet.add_row row[:columns], style: row[:styles]
-      r += 1
+      row_num += 1
     end
     
     # footer
@@ -101,22 +128,22 @@ wb.styles do |s|
     footer = {columns: [], styles: []}
     
     footer[:columns] << "Tổng cộng"
-    footer[:styles] << (s.add_style bold.deep_merge(border).deep_merge(text_center).deep_merge(bg_footer))
+    footer[:styles] << (s.add_style bold.deep_merge(border).deep_merge(text_middle).deep_merge(bg_footer))
     
     footer[:columns] << ''
-    footer[:styles] << (s.add_style bold.deep_merge(border).deep_merge(bg_footer))
+    footer[:styles] << (s.add_style bold.deep_merge(border).deep_merge(text_middle).deep_merge(bg_footer))
     
     footer[:columns] << ''
-    footer[:styles] << (s.add_style bold.deep_merge(border).deep_merge(bg_footer))
+    footer[:styles] << (s.add_style bold.deep_merge(border).deep_merge(text_middle).deep_merge(bg_footer))
     
     footer[:columns] << sales_total
-    footer[:styles] << (s.add_style number.deep_merge(bold).deep_merge(border).deep_merge(bg_footer))
+    footer[:styles] << (s.add_style number.deep_merge(bold).deep_merge(vertical_center).deep_merge(border).deep_merge(bg_footer))
     
     footer[:columns] << sales_paid_arising
-    footer[:styles] << (s.add_style number.deep_merge(bold).deep_merge(border).deep_merge(bg_footer))
+    footer[:styles] << (s.add_style number.deep_merge(bold).deep_merge(vertical_center).deep_merge(border).deep_merge(bg_footer))
     
     footer[:columns] << sales_debt_remain
-    footer[:styles] << (s.add_style number.deep_merge(bold).deep_merge(border).deep_merge(bg_footer))
+    footer[:styles] << (s.add_style number.deep_merge(bold).deep_merge(vertical_center).deep_merge(border).deep_merge(bg_footer))
     
     footer[:columns] << ''
     footer[:styles] << (s.add_style bold.deep_merge(border).deep_merge(bg_footer))
@@ -124,12 +151,14 @@ wb.styles do |s|
     footer[:columns] << ''
     footer[:styles] << (s.add_style bold.deep_merge(border).deep_merge(bg_footer))
     
-    sheet.add_row footer[:columns], style: footer[:styles]
-    r += 1
-    sheet.column_widths 5, 30, 15, 15, 15, 15, 15, 20
+    sheet.add_row footer[:columns], style: footer[:styles], height: 25
+    row_num += 1
+    sheet.merge_cells("A#{row_num}:C#{row_num}")
     
     # Setup
-    sheet.merge_cells("A2:H2")
-    sheet.merge_cells("A#{r}:C#{r}")
+    sheet.merge_cells("#{('A'.codepoints.first).chr}4:#{('A'.codepoints.first + col_num).chr}4")
+    sheet.merge_cells("#{('A'.codepoints.first).chr}5:#{('A'.codepoints.first + col_num).chr}5")
+    
+    sheet.column_widths *column_widths
   end
 end

@@ -4,12 +4,14 @@
       
     <div class="custom-show text-center">
         <h4 class="font-blue-madison bold uppercase mb-15">
-            Tổng hợp thu chi
-            <% if @period_name.nil? %>
-                <%= 'Từ ' + @from.strftime('%d/%m/%Y') if !@from.nil? %> <%= ' Đến ' + @to.strftime('%d/%m/%Y') if !@to.nil? %>
-            <% else %>
-                <%= @period_name %>
-            <% end %>
+            Tổng hợp thu chi <br>
+            <span class="font-sm">
+                <% if @period_name.nil? %>
+                    (<%= 'Từ ' + @from.strftime('%d/%m/%Y') if !@from.nil? %> <%= ' Đến ' + @to.strftime('%d/%m/%Y') if !@to.nil? %>)
+                <% else %>
+                    (<%= @period_name %>)
+                <% end %>
+            </span>
         </h4>
     </div>
     

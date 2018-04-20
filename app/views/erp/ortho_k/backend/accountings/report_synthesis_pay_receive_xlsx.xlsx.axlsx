@@ -9,43 +9,51 @@ wb.styles do |s|
     text_center = {alignment: { horizontal: :center }}
     text_left = {alignment: { horizontal: :left }}
     text_right = {alignment: { horizontal: :right }}
-    middle_align = {alignment: { vertical: :center }}
+    text_middle = {alignment: { horizontal: :center, vertical: :center }}
+    vertical_center = {alignment: { vertical: :center }}
     number = {format_code: '#,##0'}
     border = {border: { style: :thin, color: "00", :edges => [:left, :right, :bottom] }}
     bold = {b: true}
     
+    # Top head
+    sheet.add_row ["CÔNG TY TNHH ORTHO-K VIỆT NAM"], b: true
+    sheet.add_row ["535 An Dương Vương, Phường 8, Quận 5, TP. Hồ Chí Minh, Việt Nam"], b: true
+    
     # add empty row
-    sheet.add_row ['']
+    sheet.add_row [nil]
     
     # Title
-    date = "#{' TỪ ' + @from.to_date.strftime('%d/%m/%Y') if !@from.nil?}#{' ĐẾN ' + @to.to_date.strftime('%d/%m/%Y') if !@to.nil?}"
-    sheet.add_row ['TỔNG HỢP THU CHI' + date], sz: 16, b: true, style: (s.add_style text_center)
+    date = "#{'TỪ ' + @from.to_date.strftime('%d/%m/%Y') if !@from.nil?}#{' ĐẾN ' + @to.to_date.strftime('%d/%m/%Y') if !@to.nil?}"
+    sheet.add_row ['TỔNG HỢP THU CHI'], sz: 16, b: true, style: (s.add_style text_center)
+    sheet.add_row ["(#{date})"], sz: 12, style: (s.add_style text_center)
     
     # add empty row
-    sheet.add_row ['']
+    sheet.add_row [nil]
     
     # header
     header = {columns: [], styles: []}
     footer = {columns: [], styles: []}
-    header[:columns] = []
+    column_widths = []
     
-    header[:columns] << ''
-    header[:styles] << (s.add_style header_bg_info.deep_merge(text_center).merge(bold))
+    header[:columns] << nil
+    header[:styles] << (s.add_style header_bg_info.deep_merge(text_middle).merge(bold))
     footer[:columns] << "KẾT TOÁN"
-    footer[:styles] << (s.add_style footer_bg_info.deep_merge(text_center).deep_merge(border).merge(bold))
+    footer[:styles] << (s.add_style footer_bg_info.deep_merge(text_middle).deep_merge(border).merge(bold))
+    column_widths << 15
     
     header[:columns] << 'Diễn giải'
-    header[:styles] << (s.add_style header_bg_info.deep_merge(text_left).merge(bold))
-    footer[:columns] << ''
+    header[:styles] << (s.add_style header_bg_info.deep_merge(text_middle).merge(bold))
+    footer[:columns] << nil
     footer[:styles] << (s.add_style bold.deep_merge(border))
+    column_widths << 60
     
     header[:columns] << 'Số tiền'
-    header[:styles] << (s.add_style header_bg_info.deep_merge(text_right).merge(bold))
+    header[:styles] << (s.add_style header_bg_info.deep_merge(text_middle).merge(bold))
     footer[:columns] << @payment_types.remain_amount_by_payment_type(from_date: @from, to_date: @to)
-    footer[:styles] << (s.add_style footer_bg_info.deep_merge(number).deep_merge(border).merge(bold))
+    footer[:styles] << (s.add_style footer_bg_info.deep_merge(number).deep_merge(border).deep_merge(vertical_center).merge(bold))
+    column_widths << 25
     
-    sheet.add_row header[:columns], style: header[:styles]
-    sheet.column_widths 10, 40, 15
+    sheet.add_row header[:columns], style: header[:styles], height: 25
     
     # rows 1
     re_count = 0
@@ -55,8 +63,8 @@ wb.styles do |s|
         row = {columns: [], styles: []}
         row[:columns] = []
       
-        row[:columns] << (re_count==0 ? 'PHẦN THU' : '')
-        row[:styles] << (s.add_style text_center.deep_merge(middle_align).deep_merge(border).merge(bold))
+        row[:columns] << (re_count==0 ? 'PHẦN THU' : nil)
+        row[:styles] << (s.add_style text_middle.deep_merge(border).merge(bold))
       
         row[:columns] << receive.name
         row[:styles] << (s.add_style text_left.deep_merge(border))
@@ -71,7 +79,7 @@ wb.styles do |s|
     end
     row = {columns: [], styles: []}
     row[:columns] = []
-    row[:columns] << ''
+    row[:columns] << nil
     row[:styles] << (s.add_style border)
     row[:columns] << 'Tổng thu'
     row[:styles] << (s.add_style bold.deep_merge(border))
@@ -87,8 +95,8 @@ wb.styles do |s|
         row = {columns: [], styles: []}
         row[:columns] = []
       
-        row[:columns] << (pa_count==0 ? 'PHẦN CHI' : '')
-        row[:styles] << (s.add_style text_center.deep_merge(middle_align).deep_merge(border).merge(bold))
+        row[:columns] << (pa_count==0 ? 'PHẦN CHI' : nil)
+        row[:styles] << (s.add_style text_middle.deep_merge(border).merge(bold))
       
         row[:columns] << pay.name
         row[:styles] << (s.add_style text_left.deep_merge(border))
@@ -103,7 +111,7 @@ wb.styles do |s|
     end
     row = {columns: [], styles: []}
     row[:columns] = []
-    row[:columns] << ''
+    row[:columns] << nil
     row[:styles] << (s.add_style border)
     row[:columns] << 'Tổng chi'
     row[:styles] << (s.add_style bold.deep_merge(border))
@@ -112,15 +120,18 @@ wb.styles do |s|
     sheet.add_row row[:columns], style: row[:styles]
     
     # footer
-    sheet.add_row footer[:columns], style: footer[:styles]
+    sheet.add_row footer[:columns], style: footer[:styles], height: 25
     
     # Setup
-    sheet.merge_cells("A2:C2")
-    cells_0 = 4
+    sheet.merge_cells("A4:C4")
+    sheet.merge_cells("A5:C5")
+    cells_0 = 7
     cells_1 = cells_0 + re_count + 1
     cells_2 = cells_1 + pa_count + 1
     sheet.merge_cells("A#{cells_0 + 1}:A#{cells_1}")
     sheet.merge_cells("A#{cells_1 + 1}:A#{cells_2}")
     sheet.merge_cells("A#{cells_2 + 1}:B#{cells_2 + 1}")
+    
+    sheet.column_widths *column_widths
   end
 end

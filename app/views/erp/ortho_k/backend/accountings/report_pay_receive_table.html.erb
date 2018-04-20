@@ -11,11 +11,20 @@
     
     <div class="custom-show text-center">
         <h4 class="font-blue-madison bold uppercase mb-15">
+            Báo cáo
             <%= 'Thu ' if get_filters(params)['pay_receive'].present? and get_filters(params)['pay_receive'].include?(Erp::Payments::PaymentRecord::TYPE_RECEIVE) %>
             <%= 'Chi ' if get_filters(params)['pay_receive'].present? and get_filters(params)['pay_receive'].include?(Erp::Payments::PaymentRecord::TYPE_PAY) %>
-            tiền hàng
-            <%= 'từ ' + @from.strftime('%d/%m/%Y') if !@from.nil? %>
-            <%= 'đến ' + @to.strftime('%d/%m/%Y') if !@to.nil? %>
+            tiền hàng <br>
+            <span class="font-sm">
+                <% if @period_name.nil? %>
+                    (
+                        <%= 'từ ' + @from.strftime('%d/%m/%Y') if !@from.nil? %>
+                        <%= 'đến ' + @to.strftime('%d/%m/%Y') if !@to.nil? %>
+                    )
+                <% else %>
+                    (<%= @period_name %>)
+                <% end %>
+            </span>
         </h4>
     </div>
     
