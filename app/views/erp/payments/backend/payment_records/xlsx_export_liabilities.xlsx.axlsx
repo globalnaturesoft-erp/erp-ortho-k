@@ -843,8 +843,8 @@ wb.styles do |s|
     end
     
     num_col += 1
-    begin_sales_debt_amount = @customer.sales_debt_amount(to_date: (@from - 1.day))
-    rw1[:columns] << begin_sales_debt_amount
+    begin_sales_debt_by_period_amount = @customer.sales_debt_by_period_amount(to_date: (@from - 1.day))
+    rw1[:columns] << begin_sales_debt_by_period_amount
     rw1[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border_dotted_bottom).deep_merge(bold))
     
     sales_order_total_amount = @orders.sum(:cache_total)
@@ -859,12 +859,12 @@ wb.styles do |s|
     rw4[:columns] << period_amount
     rw4[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border_dotted_bottom).deep_merge(bold))
     
-    sales_paid_amount = @customer.sales_paid_amount(from_date: @from, to_date: @to)
-    rw5[:columns] << sales_paid_amount
+    sales_paid_by_period_amount = @customer.sales_paid_by_period_amount(from_date: @from, to_date: @to)
+    rw5[:columns] << sales_paid_by_period_amount
     rw5[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border_dotted_bottom))
     
-    end_sales_debt_amount = @customer.sales_debt_amount(to_date: @to)
-    rw6[:columns] << end_sales_debt_amount
+    end_sales_debt_by_period_amount = @customer.sales_debt_by_period_amount(to_date: @to)
+    rw6[:columns] << end_sales_debt_by_period_amount
     rw6[:styles] << (s.add_style bg_footer.deep_merge(text_right).deep_merge(number).deep_merge(border_dotted_bottom).deep_merge(bold))
     
     sheet.add_row rw1[:columns], style: rw1[:styles]
