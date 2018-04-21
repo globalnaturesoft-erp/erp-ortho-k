@@ -718,54 +718,84 @@ module Erp
             filters = params.to_unsafe_hash[:global_filter][:filters]
             filters.each_with_index do |m, index|
               @global_filter = m[1]
-
-              # period
-              @from = @global_filter[:from_date].present? ? @global_filter[:from_date].to_date : nil
-              @to = @global_filter[:to_date].present? ? @global_filter[:to_date].to_date : nil
-              if @global_filter[:period].present?
-                @period = Erp::Periods::Period.find(@global_filter[:period])
-                @from = @period.from_date
-                @to = @period.to_date
-              end
-
-              # product query
-              @product_query = Erp::Products::Product.get_active
-              @product_query = @product_query.where(category_id: @global_filter[:categories]) if @global_filter[:categories].present?
-
-              # get diameters
-              diameter_ids = @global_filter[:diameters].present? ? @global_filter[:diameters] : nil
-              @diameters = Erp::Products::PropertiesValue.where(id: diameter_ids)
-              # filter by diameters
-              if diameter_ids.present?
-                if !diameter_ids.kind_of?(Array)
-                  @product_query = @product_query.where("erp_products_products.cache_properties LIKE '%[\"#{diameter_ids}\",%'")
-                else
-                  diameter_ids = (diameter_ids.reject { |c| c.empty? })
-                  if !diameter_ids.empty?
-                    qs = []
-                    diameter_ids.each do |x|
-                      qs << "(erp_products_products.cache_properties LIKE '%[\"#{x}\",%')"
+              
+              if @global_filter[:categories].present?
+                # period
+                @from = @global_filter[:from_date].present? ? @global_filter[:from_date].to_date : nil
+                @to = @global_filter[:to_date].present? ? @global_filter[:to_date].to_date : nil
+                if @global_filter[:period].present?
+                  @period = Erp::Periods::Period.find(@global_filter[:period])
+                  @from = @period.from_date
+                  @to = @period.to_date
+                end
+  
+                # product query
+                @product_query = Erp::Products::Product.get_active
+                @product_query = @product_query.where(category_id: @global_filter[:categories]) if @global_filter[:categories].present?
+  
+                # get diameters
+                diameter_ids = @global_filter[:diameters].present? ? @global_filter[:diameters] : nil
+                @diameters = Erp::Products::PropertiesValue.where(id: diameter_ids)
+                # filter by diameters
+                if diameter_ids.present?
+                  if !diameter_ids.kind_of?(Array)
+                    @product_query = @product_query.where("erp_products_products.cache_properties LIKE '%[\"#{diameter_ids}\",%'")
+                  else
+                    diameter_ids = (diameter_ids.reject { |c| c.empty? })
+                    if !diameter_ids.empty?
+                      qs = []
+                      diameter_ids.each do |x|
+                        qs << "(erp_products_products.cache_properties LIKE '%[\"#{x}\",%')"
+                      end
+                      @product_query = @product_query.where("(#{qs.join(" OR ")})")
                     end
-                    @product_query = @product_query.where("(#{qs.join(" OR ")})")
                   end
                 end
-              end
-
-              # get area name
-              ns = []
-              ns << @diameters.map(&:value).join(',') if @diameters.present?
-              ns << Erp::Products::Category.where(id: @global_filter[:categories]).map(&:name).join('|') if @global_filter[:categories].present?
-              ns << Erp::Warehouses::Warehouse.where(id: @global_filter[:warehouses]).map(&:name).join('|') if @global_filter[:warehouses].present?
-              area_name = ns.join('-')
-
-              # totals
-              if !@totals[area_name].present?
+  
+                # get area name
+                ns = []
+                ns << @diameters.map(&:value).join(',') if @diameters.present?
+                ns << Erp::Products::Category.where(id: @global_filter[:categories]).map(&:name).join('|') if @global_filter[:categories].present?
+                ns << Erp::Warehouses::Warehouse.where(id: @global_filter[:warehouses]).map(&:name).join('|') if @global_filter[:warehouses].present?
+                area_name = ns.join('-')
+  
+                # totals
+                if !@totals[area_name].present?
+                  #product_ids = @product_query.find_by_properties_value_ids([chu_pv.id,so_pv.id]).select('id')
+                  product_ids = @product_query.select('id')
+  
+                  if @product_query.count > 0
+                    product_ids = -1 if product_ids.count == 0
+  
+                    filters = @global_filter.clone.merge({
+                      product_id: product_ids,
+                      state_ids: @global_filter[:states],
+                      warehouse_ids: @global_filter[:warehouses]
+                    })
+                    if show_virtual
+                      stock = Erp::Products::Product.get_stock_virtual(filters)
+                    else
+                      stock = Erp::Products::Product.get_stock_real(filters)
+                    end
+                  else
+                    stock = "--"
+                  end
+  
+                  @totals[area_name] = stock
+                  
+                  # all total
+                  @all_total += stock
+                end
+  
+                # find by code
+                @product_query = @product_query.where("name LIKE ?", "#{code}-%")
+  
                 #product_ids = @product_query.find_by_properties_value_ids([chu_pv.id,so_pv.id]).select('id')
                 product_ids = @product_query.select('id')
-
+  
                 if @product_query.count > 0
                   product_ids = -1 if product_ids.count == 0
-
+  
                   filters = @global_filter.clone.merge({
                     product_id: product_ids,
                     state_ids: @global_filter[:states],
@@ -779,54 +809,26 @@ module Erp
                 else
                   stock = "--"
                 end
-
-                @totals[area_name] = stock
                 
-                # all total
-                @all_total += stock
-              end
-
-              # find by code
-              @product_query = @product_query.where("name LIKE ?", "#{code}-%")
-
-              #product_ids = @product_query.find_by_properties_value_ids([chu_pv.id,so_pv.id]).select('id')
-              product_ids = @product_query.select('id')
-
-              if @product_query.count > 0
-                product_ids = -1 if product_ids.count == 0
-
-                filters = @global_filter.clone.merge({
-                  product_id: product_ids,
-                  state_ids: @global_filter[:states],
-                  warehouse_ids: @global_filter[:warehouses]
-                })
-                if show_virtual
-                  stock = Erp::Products::Product.get_stock_virtual(filters)
-                else
-                  stock = Erp::Products::Product.get_stock_real(filters)
+                # line total
+                if stock != '--'
+                  if @line_totals[line_num] == '--'
+                    @line_totals[line_num] = stock
+                  else
+                    @line_totals[line_num] += stock
+                  end
                 end
-              else
-                stock = "--"
+  
+                # add row
+                row[area_name] = stock
+  
+                # heads name
+                @heads << area_name if !@heads.include?(area_name)
               end
-              
-              # line total
-              if stock != '--'
-                if @line_totals[line_num] == '--'
-                  @line_totals[line_num] = stock
-                else
-                  @line_totals[line_num] += stock
-                end
-              end
-
-              # add row
-              row[area_name] = stock
-
-              # heads name
-              @heads << area_name if !@heads.include?(area_name)
             end
 
 
-            @rows << row
+            @rows << row if row != false
           end
 
           File.open("tmp/purchasing_export.yml", "w+") do |f|
