@@ -5,7 +5,7 @@ module Erp
     module Backend
       class ProductsController < Erp::Backend::BackendController
         # get matrix group
-        def get_matrix_group(filter)
+        def get_matrix_group(filter, show_virtual)
           @global_filter = filter
 
           # period
@@ -109,7 +109,11 @@ module Erp
                     state_ids: @global_filter[:states],
                     warehouse_ids: @global_filter[:warehouses]
                   })
-                  stock = Erp::Products::Product.get_stock_real(filters)
+                  if show_virtual
+                    stock = Erp::Products::Product.get_stock_virtual(filters)
+                  else
+                    stock = Erp::Products::Product.get_stock_real(filters)
+                  end
     
                   @matrix[row_index] << {
                     value: stock,
@@ -151,10 +155,24 @@ module Erp
 
         def matrix_report_table
           @matrixes = []
+          
+          # show virtual
+          show_virtual = false
+          if params.to_unsafe_hash["filters"].present?
+            params.to_unsafe_hash["filters"].each do |ft|
+              ft[1].each do |cond|
+                # in case filter is show archived
+                if cond[1]["name"] == 'show_virtual'
+                  # show archived items
+                  show_virtual = true
+                end
+              end
+            end
+          end
 
           filters = params.to_unsafe_hash[:global_filter][:filters]
           filters.each do |m|
-            @matrixes << self.get_matrix_group(m[1])
+            @matrixes << self.get_matrix_group(m[1], show_virtual)
           end
 
           File.open("tmp/matrix_report.yml", "w+") do |f|
