@@ -704,6 +704,9 @@ module Erp
           @all_total = 0
 
           filters = params.to_unsafe_hash[:global_filter][:filters]
+          
+          # show virtual stock
+          show_virtual = params.to_unsafe_hash[:global_filter][:show_virtual] == 'yes' ? true : false
 
           #
           Erp::Products::Product.get_all_len_codes.each_with_index do |code, line_num|
@@ -768,7 +771,11 @@ module Erp
                     state_ids: @global_filter[:states],
                     warehouse_ids: @global_filter[:warehouses]
                   })
-                  stock = Erp::Products::Product.get_stock_real(filters)
+                  if show_virtual
+                    stock = Erp::Products::Product.get_stock_virtual(filters)
+                  else
+                    stock = Erp::Products::Product.get_stock_real(filters)
+                  end
                 else
                   stock = "--"
                 end
@@ -793,7 +800,11 @@ module Erp
                   state_ids: @global_filter[:states],
                   warehouse_ids: @global_filter[:warehouses]
                 })
-                stock = Erp::Products::Product.get_stock_real(filters)
+                if show_virtual
+                  stock = Erp::Products::Product.get_stock_virtual(filters)
+                else
+                  stock = Erp::Products::Product.get_stock_real(filters)
+                end
               else
                 stock = "--"
               end

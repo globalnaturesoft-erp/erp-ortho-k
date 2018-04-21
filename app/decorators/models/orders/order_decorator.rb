@@ -754,11 +754,20 @@ Erp::Orders::Order.class_eval do
       product_id = product.present? ? product.id : nil
 
       if product.present?
+        if self.purchase?
+          purchase_price = product.get_purchase_price(quantity: row[1])
+          price = purchase_price.present? ? purchase_price.price : 0.0
+        else
+          sales_price = product.get_sales_price(quantity: row[1])
+          price = sales_price.present? ? sales_price.price : 0.0
+        end
+      
         self.order_details.build(
           id: nil,
           product_id: product_id,
           quantity: row["quantity"],
           serials: row["serials"],
+          price: price,
         )
       end
     end

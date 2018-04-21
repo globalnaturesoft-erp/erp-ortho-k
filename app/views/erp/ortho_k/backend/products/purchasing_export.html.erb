@@ -9,6 +9,15 @@
 <% content_for :global_filter do %>
     <% dfilters = current_user.get_filters(request.path+"_list").present? ? current_user.get_filters(request.path+"_table") : {}  %>
     <div class="row">
+        <div class="col-md-2">
+            <%= erp_form_control("select", {
+                name: 'show_virtual',
+                label: 'Tính cả hàng sắp nhập',
+                options: [{text: 'Không', value: 'no'}, {text: 'Có', value: 'yes'}]
+            }) %>
+        </div>
+    </div>
+    <div class="row">
         <div class="col-md-11 addable-container">
             <div class="addable-boxes border-top" data-pattern=".patterns-matrix">
                 <% (0..20).each do |number| %>

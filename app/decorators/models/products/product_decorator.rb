@@ -2512,6 +2512,17 @@ Erp::Products::Product.class_eval do
       type: 'purchase'
     )
   end
+  
+  # purchase
+  def get_sales_price(options={})
+    Erp::Prices::Price.get_by_product(
+      contact_id: options[:contact_id],
+      category_id: self.category_id,
+      properties_value_id: self.get_diameter_id,
+      quantity: options[:quantity].to_i,
+      type: 'purchase'
+    )
+  end
 
   # get all letter-number
   def self.get_all_len_codes
