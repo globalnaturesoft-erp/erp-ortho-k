@@ -15,7 +15,7 @@
 
 <% content_for :global_filter do %>
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-2">
             <%= erp_form_control("dataselect", {
                 name: 'warehouses',
                 value: '',
@@ -26,7 +26,7 @@
                 multiple: true,
             }) %>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
             <%= erp_form_control("dataselect", {
                 name: 'state',
                 value: '',
@@ -47,7 +47,7 @@
                 multiple: true
             }) %>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
             <% diameter = Erp::Products::Property.where(name: "Đường kính").first %>
             <%= erp_form_control("dataselect", {
                 name: 'diameters[]',
@@ -60,19 +60,16 @@
                 multiple: true
             }) %>
         </div>
-        <!--<div class="col-md-3">
-            <%= erp_form_control("dataselect", {
-                name: 'area',
-                value: '',
-                text: '',
-                label: t('.area'),
-                placeholder: t('.all_areas'),
-                url: erp_ortho_k.area_dataselect_backend_central_areas_path(format: 'json')
+        <div class="col-md-2">
+            <%= erp_form_control("select", {
+                name: 'show_virtual',
+                label: 'Tính cả hàng sắp nhập',
+                options: [{text: 'Không', value: 'no'}, {text: 'Có', value: 'yes'}]
             }) %>
-        </div>-->
+        </div>
     </div>
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-2">
             <%= erp_form_control("text", {
                 name: 'stock_condition',
                 value: '0',
@@ -81,7 +78,7 @@
                 placeholder: 'Điều kiện tồn'
             }) %>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
             <%= erp_form_control("text", {
                 name: 'side_quantity',
                 value: '1',
@@ -90,7 +87,7 @@
                 placeholder: 'Số lượng tối đa vùng rìa'
             }) %>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
             <%= erp_form_control("text", {
                 name: 'central_quantity',
                 value: '2',
@@ -99,7 +96,7 @@
                 placeholder: 'Số lượng tối đa vùng TT'
             }) %>
         </div>
-        <div class="col-md-3 text-right">
+        <div class="col-md-6 text-right">
             <a class="btn btn-primary mt-25 global-filter-button">Kiểm kho</a> |
             <a class="btn btn-primary mt-25 custom-submit-button" data-form=".stock-importing-form" href="<%= erp_orders.new_type_backend_orders_path(type: Erp::Orders::Order::TYPE_PURCHASE_ORDER) %>">
                 <i class="fa fa-share-square"></i> <%= t('.create_purchase_order') %>

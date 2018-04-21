@@ -1225,6 +1225,8 @@ Erp::Products::Product.class_eval do
   end
 
   def self.get_stock_importing_product(params={})
+    glbfs = params[:filters].present? ? params[:filters] : {}
+    
     # open central settings
     setting_file = 'setting_ortho_k.conf'
     if File.file?(setting_file)
@@ -1261,7 +1263,11 @@ Erp::Products::Product.class_eval do
     # state warehouse condition if existed
     result = []
     query.each_with_index do |p, index|
-      stock = p.get_stock(state_ids: state_id, warehouse_ids: warehouse_ids)
+      if glbfs[:show_virtual].present? and glbfs[:show_virtual] == 'yes'
+        stock = p.get_stock_virtual(state_ids: state_id, warehouse_ids: warehouse_ids)
+      else
+        stock = p.get_stock(state_ids: state_id, warehouse_ids: warehouse_ids)
+      end
       
       if stock <= params[:stock_condition].to_i
         result << {product: p, stock: stock}
