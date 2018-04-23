@@ -793,22 +793,22 @@ wb.styles do |s|
     rw6 = {columns: [], styles: []}
     
     rw1[:columns] << '1'
-    rw1[:styles] << (s.add_style text_center.deep_merge(bold).deep_merge(border).deep_merge(border_dotted_bottom))
+    rw1[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(border_dotted_bottom))
     num_row_total_1 = num_row + 1
     rw2[:columns] << '2'
-    rw2[:styles] << (s.add_style text_center.deep_merge(italic).deep_merge(border).deep_merge(border_dotted_bottom))
+    rw2[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(border_dotted_bottom))
     num_row_total_2 = num_row + 2
     rw3[:columns] << '3'
-    rw3[:styles] << (s.add_style text_center.deep_merge(italic).deep_merge(border).deep_merge(border_dotted_bottom))
+    rw3[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(border_dotted_bottom))
     num_row_total_3 = num_row + 3
     rw4[:columns] << '4'
-    rw4[:styles] << (s.add_style text_center.deep_merge(bold).deep_merge(border).deep_merge(border_dotted_bottom))
+    rw4[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(border_dotted_bottom))
     num_row_total_4 = num_row + 4
     rw5[:columns] << '5'
     rw5[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(border_dotted_bottom))
     num_row_total_5 = num_row + 5
     rw6[:columns] << '6'
-    rw6[:styles] << (s.add_style bg_footer.deep_merge(text_center).deep_merge(bold).deep_merge(border).deep_merge(border_dotted_bottom))
+    rw6[:styles] << (s.add_style bg_footer.deep_merge(text_center).deep_merge(border).deep_merge(border_dotted_bottom))
     num_row_total_6 = num_row + 6
     num_col = 0
     
@@ -1049,6 +1049,6 @@ wb.styles do |s|
     sheet.merge_cells("#{('A'.codepoints.first).chr}4:#{('A'.codepoints.first + (c.to_i)).chr}4")
     sheet.merge_cells("#{('A'.codepoints.first).chr}5:#{('A'.codepoints.first + (c.to_i)).chr}5")
     sheet.merge_cells("#{('A'.codepoints.first).chr}6:#{('A'.codepoints.first + (c.to_i)).chr}6")
-    sheet.column_widths 15, 15, 35, *patient_col_widths, 7, 7, 10, 12, *price_col_widths, 12, 12
+    sheet.column_widths 15, 15, 40, *patient_col_widths, 7, 7, 10, 12, *price_col_widths, 12, 12
   end
 end

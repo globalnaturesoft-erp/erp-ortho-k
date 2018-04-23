@@ -1,7 +1,15 @@
 Erp::Payments::Backend::PaymentRecordsController.class_eval do
   def xlsx_export_liabilities
-    @from = (params[:from_date].present?) ? params[:from_date].to_date : Time.now.beginning_of_month
-    @to = (params[:to_date].present?) ? params[:to_date].to_date : Time.now
+    @from = Time.now.beginning_of_month.beginning_of_day
+    @to = Time.now.end_of_day
+    
+    if params[:from_date].present?
+      @from = params[:from_date].to_date.beginning_of_day
+    end
+    
+    if params[:to_date].present?
+      @to = params[:to_date].to_date.end_of_day
+    end
 
     @customer = Erp::Contacts::Contact.find(params[:customer_id])
     @orders = @customer.sales_orders.payment_for_contact_orders(params.to_unsafe_hash)
