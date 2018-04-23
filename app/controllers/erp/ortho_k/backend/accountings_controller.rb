@@ -465,7 +465,7 @@ module Erp
           # sales table
           
           # by patient state
-          patient_states = Erp::OrthoK::PatientState.get_active
+          patient_states = Erp::OrthoK::PatientState.all
           pst_ids = patient_states.map {|p| {name: p.name, id: p.id} }
           pst_ids << {name: 'Khác', id: -1}
           pst_ids.each do |pst|
@@ -492,7 +492,7 @@ module Erp
           # other products
           not_len_products = Erp::Products::Product.get_sales_products_not_len(from_date: @from, to_date: @to)          
           not_len_products.each do |p|
-            odsq = p.get_sales_confirmed_order_details
+            odsq = p.get_sales_confirmed_order_details(from_date: @from, to_date: @to) 
             
             quantity = odsq.sum(:quantity)
             amount = odsq.sum(&:total_without_tax)
@@ -512,7 +512,8 @@ module Erp
           # returns table
           patient_states = Erp::OrthoK::PatientState.get_active
           pst_ids = patient_states.map {|p| {name: p.name, id: p.id} }
-          pst_ids << {name: 'Khác', id: -1}
+          pst_ids << {name: 'Không chứng từ', id: -1}
+          pst_ids << {name: 'Khác', id: -2}
           pst_ids.each do |pst|
             
             ddsq = Erp::Qdeliveries::DeliveryDetail.get_returned_confirmed_delivery_details(from_date: @from, to_date: @to, patient_state_id: pst[:id])
@@ -537,7 +538,7 @@ module Erp
           # other products
           not_len_products = Erp::Products::Product.get_returned_products_not_len(from_date: @from, to_date: @to)          
           not_len_products.each do |p|
-            ddsq = p.get_returned_confirmed_delivery_details
+            ddsq = p.get_returned_confirmed_delivery_details(from_date: @from, to_date: @to)         
             
             quantity = ddsq.sum(:quantity)
             amount = ddsq.sum(&:total_amount)
