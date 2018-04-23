@@ -113,6 +113,7 @@
                             --
                         </td>
                     <% end %>
+                    <td class="text-center bg-grey text-bold"></td>
               </tr>
 
               <tr>
@@ -133,6 +134,7 @@
                         Bộ (ghép)
                     </td>
                   <% end %>
+                    <th rowspan="2" class="text-center bg-primary"></th>
               </tr>
               <tr>
                   <% @states.each do |state| %>
@@ -234,6 +236,9 @@
                         ) %>
                     </td>
                 <% end %>
+                <td>
+                    <a target="_blank" href="<%= erp_qdeliveries.edit_backend_delivery_path(row[:delivery]) %>"><i class="icon-pencil"></i> Sửa</a>
+                </td>
             </tr>
         <% end %>
     </table>

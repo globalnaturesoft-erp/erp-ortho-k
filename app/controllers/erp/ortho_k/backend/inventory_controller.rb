@@ -1604,7 +1604,8 @@ module Erp
             @list << {
               product: p,
               date: (p.last_delivery_detail(@global_filters).present? ? p.last_delivery_detail(@global_filters).delivery.date : nil),
-              note: (p.last_delivery_detail(@global_filters).present? ? p.last_delivery_detail(@global_filters).delivery.note : nil)
+              note: (p.last_delivery_detail(@global_filters).present? ? p.last_delivery_detail(@global_filters).delivery.note : nil),
+              delivery: (p.last_delivery_detail(@global_filters).present? ? p.last_delivery_detail(@global_filters).delivery : nil)
             }
           end
           
