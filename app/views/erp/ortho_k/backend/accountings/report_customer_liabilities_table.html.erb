@@ -38,7 +38,7 @@
             <% @customers.each_with_index do |customer, index| %>
                 <tr>
                     <td class="text-center"><%= index+1 %></td>
-                    <td class="text-left bold"><%= customer.name %></td>
+                    <td class="text-left"><%= customer.name %></td>
                     <td class="text-right">
                         <%= format_number(customer.sales_debt_by_period_amount(to_date: (!@from.nil? ? (@from-1.day) : @from))) %>
                     </td>

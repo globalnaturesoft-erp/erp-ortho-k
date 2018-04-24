@@ -4,13 +4,15 @@ module Erp
       class AccountingsController < Erp::Backend::BackendController
         # Bao cao chi tiet thu/chi
         def report_pay_receive_table
-          glb = params.to_unsafe_hash[:global_filter]
-          if glb[:period].present?
-            @from = Erp::Periods::Period.find(glb[:period]).from_date.beginning_of_day
-            @to = Erp::Periods::Period.find(glb[:period]).to_date.end_of_day
+          @global_filters = params.to_unsafe_hash[:global_filter]
+          if @global_filters[:period].present?
+            @period_name = Erp::Periods::Period.find(@global_filters[:period]).name
+            @from = Erp::Periods::Period.find(@global_filters[:period]).from_date.beginning_of_day
+            @to = Erp::Periods::Period.find(@global_filters[:period]).to_date.end_of_day
           else
-            @from = (glb.present? and glb[:from_date].present?) ? glb[:from_date].to_date : nil
-            @to = (glb.present? and glb[:to_date].present?) ? glb[:to_date].to_date : nil
+            @period_name = nil
+            @from = (@global_filters.present? and @global_filters[:from_date].present?) ? @global_filters[:from_date].to_date : nil
+            @to = (@global_filters.present? and @global_filters[:to_date].present?) ? @global_filters[:to_date].to_date : nil
           end
 
           @payment_records = Erp::Payments::PaymentRecord.search(params)
@@ -20,27 +22,29 @@ module Erp
               Erp::Payments::PaymentType.find_by_code(Erp::Payments::PaymentType::CODE_CUSTOMER).id,
               Erp::Payments::PaymentType.find_by_code(Erp::Payments::PaymentType::CODE_SALES_ORDER).id
             ]
-          ).order('payment_date DESC')
+          ).order('payment_date ASC')
+          
+          File.open("tmp/report_pay_receive_xlsx.yml", "w+") do |f|
+            f.write({
+              global_filters: @global_filters,
+              period_name: @period_name,
+              from_date: @from,
+              to_date: @to,
+              payment_records: @payment_records
+            }.to_yaml)
+          end
         end
 
-        def report_pay_receive_xlsx
-          glb = params.to_unsafe_hash[:global_filter]
-          if glb[:period].present?
-            @from = Erp::Periods::Period.find(glb[:period]).from_date.beginning_of_day
-            @to = Erp::Periods::Period.find(glb[:period]).to_date.end_of_day
-          else
-            @from = (glb.present? and glb[:from_date].present?) ? glb[:from_date].to_date : nil
-            @to = (glb.present? and glb[:to_date].present?) ? glb[:to_date].to_date : nil
-          end
-
-          @payment_records = Erp::Payments::PaymentRecord.search(params)
-
-          @payment_records = @payment_records.where(
-            payment_type_id: [
-              Erp::Payments::PaymentType.find_by_code(Erp::Payments::PaymentType::CODE_CUSTOMER).id,
-              Erp::Payments::PaymentType.find_by_code(Erp::Payments::PaymentType::CODE_SALES_ORDER).id
-            ]
-          ).order('payment_date DESC')
+        def report_pay_receive_xlsx          
+          data = YAML.load_file("tmp/report_pay_receive_xlsx.yml")
+          
+          @global_filters = data[:global_filters]
+          @period_name = data[:period_name]
+          @from = data[:from_date].to_date
+          @to = data[:to_date].to_date
+          @payment_records = data[:payment_records]
+          
+          @payment_records = Erp::Payments::PaymentRecord.where(id: (@payment_records.map{|i| i.id})).order('payment_date ASC')
 
           respond_to do |format|
             format.xlsx {
@@ -51,37 +55,48 @@ module Erp
 
         # Bao cao tong hop thu/chi
         def report_synthesis_pay_receive_table
-          glb = params.to_unsafe_hash[:global_filter]
-          if glb[:period].present?
-            @period_name = Erp::Periods::Period.find(glb[:period]).name
-            @from = Erp::Periods::Period.find(glb[:period]).from_date.beginning_of_day
-            @to = Erp::Periods::Period.find(glb[:period]).to_date.end_of_day
+          @global_filters = params.to_unsafe_hash[:global_filter]
+          if @global_filters[:period].present?
+            @period_name = Erp::Periods::Period.find(@global_filters[:period]).name
+            @from = Erp::Periods::Period.find(@global_filters[:period]).from_date.beginning_of_day
+            @to = Erp::Periods::Period.find(@global_filters[:period]).to_date.end_of_day
           else
             @period_name = nil
-            @from = (glb.present? and glb[:from_date].present?) ? glb[:from_date].to_date : nil
-            @to = (glb.present? and glb[:to_date].present?) ? glb[:to_date].to_date : nil
+            @from = (@global_filters.present? and @global_filters[:from_date].present?) ? @global_filters[:from_date].to_date : nil
+            @to = (@global_filters.present? and @global_filters[:to_date].present?) ? @global_filters[:to_date].to_date : nil
           end
 
-          @payables = Erp::Payments::PaymentType.where(is_payable: true)
-          @receivables = Erp::Payments::PaymentType.where(is_receivable: true)
-          @payment_types = Erp::Payments::PaymentType.all # Lấy các payment type ACTIVE
+          @payment_types = Erp::Payments::PaymentType.all_active
+          @payables = @payment_types.where(is_payable: true).order('name ASC')
+          @receivables = @payment_types.where(is_receivable: true).order('name ASC')
+          
+          File.open("tmp/report_synthesis_pay_receive_xlsx.yml", "w+") do |f|
+            f.write({
+              global_filters: @global_filters,
+              period_name: @period_name,
+              from_date: @from,
+              to_date: @to,
+              payables: @payables,
+              receivables: @receivables,
+              payment_types: @payment_types
+            }.to_yaml)
+          end
         end
 
-        def report_synthesis_pay_receive_xlsx
-          glb = params.to_unsafe_hash[:global_filter]
-          if glb[:period].present?
-            @period_name = Erp::Periods::Period.find(glb[:period]).name
-            @from = Erp::Periods::Period.find(glb[:period]).from_date.beginning_of_day
-            @to = Erp::Periods::Period.find(glb[:period]).to_date.end_of_day
-          else
-            @period_name = nil
-            @from = (glb.present? and glb[:from_date].present?) ? glb[:from_date].to_date : nil
-            @to = (glb.present? and glb[:to_date].present?) ? glb[:to_date].to_date : nil
-          end
-
-          @payables = Erp::Payments::PaymentType.where(is_payable: true)
-          @receivables = Erp::Payments::PaymentType.where(is_receivable: true)
-          @payment_types = Erp::Payments::PaymentType.all_active # Lấy các payment type ACTIVE
+        def report_synthesis_pay_receive_xlsx          
+          data = YAML.load_file("tmp/report_synthesis_pay_receive_xlsx.yml")
+          
+          @global_filters = data[:global_filters]
+          @period_name = data[:period_name]
+          @from = data[:from_date].to_date
+          @to = data[:to_date].to_date
+          @payment_types = data[:payment_types]
+          @payables = data[:payables]
+          @receivables = data[:receivables]
+          
+          @payment_types = Erp::Payments::PaymentType.where(id: (@payment_types.map{|i| i.id}))
+          @payables = @payment_types.where(id: (@payables.map{|i| i.id})).order('name ASC')
+          @receivables = @payment_types.where(id: (@receivables.map{|i| i.id})).order('name ASC')
 
           respond_to do |format|
             format.xlsx {
@@ -104,6 +119,7 @@ module Erp
           end
 
           @categories = Erp::Products::Category.all_unarchive
+            .order('erp_products_categories.name ASC')
           
           File.open("tmp/report_sales_results_xlsx.yml", "w+") do |f|
             f.write({
@@ -126,6 +142,7 @@ module Erp
           @categories = data[:categories]
           
           @categories = Erp::Products::Category.where(id: (@categories.map{|i| i.id}))
+            .order('erp_products_categories.name ASC')
           
           respond_to do |format|
             format.xlsx {

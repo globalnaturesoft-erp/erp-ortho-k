@@ -43,19 +43,19 @@
                 <tr>
                     <td class="text-center"><%= index+1 %></td>
                     <td class="text-left"><%= customer.name %></td>
-                    <td class="text-center">
+                    <td class="text-left">
                         <%= customer.state_name %>
                     </td>
-                    <td class="text-center">
+                    <td class="text-right">
                         <%= format_number(sales_total) %>
                     </td>
-                    <td class="text-center">
+                    <td class="text-right">
                         <%= format_number(sales_paid_arising) %>
                     </td>
-                    <td class="text-center">
+                    <td class="text-right">
                         <%= format_number(sales_debt_remain) %>
                     </td>
-                    <td class="text-center">
+                    <td class="text-left">
                         <%= !customer.salesperson.nil? ? customer.salesperson_name : '--' %>
                     </td>
                 </tr>
@@ -66,9 +66,9 @@
             <% sales_debt_remain = @customers.sales_debt_amount(to_date: @to) %>
             <tr>
                 <td class="bg-green-jungle bg-font-green-jungle border-green-jungle text-center bold" colspan="3">TỔNG CỘNG</td>
-                <td class="bg-green-jungle bg-font-green-jungle border-green-jungle text-center bold"><%= format_number(sales_total) %></td>
-                <td class="bg-green-jungle bg-font-green-jungle border-green-jungle text-center bold"><%= format_number(sales_paid_arising) %></td>
-                <td class="bg-green-jungle bg-font-green-jungle border-green-jungle text-center bold"><%= format_number(sales_debt_remain) %></td>
+                <td class="bg-green-jungle bg-font-green-jungle border-green-jungle text-right bold"><%= format_number(sales_total) %></td>
+                <td class="bg-green-jungle bg-font-green-jungle border-green-jungle text-right bold"><%= format_number(sales_paid_arising) %></td>
+                <td class="bg-green-jungle bg-font-green-jungle border-green-jungle text-right bold"><%= format_number(sales_debt_remain) %></td>
                 <td class="bg-green-jungle bg-font-green-jungle border-green-jungle text-center bold"></td>
             </tr>
         </tbody>

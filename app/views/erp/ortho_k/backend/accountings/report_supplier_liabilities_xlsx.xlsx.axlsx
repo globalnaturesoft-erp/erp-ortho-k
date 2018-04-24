@@ -51,25 +51,25 @@ wb.styles do |s|
     
     header[:columns] << t('.begin_period_debt_amount')
     header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
-    footer[:columns] << @suppliers.sales_debt_by_period_amount(to_date: (!@from.nil? ? (@from-1.day) : @from))
+    footer[:columns] << @suppliers.purchase_debt_by_period_amount(to_date: (!@from.nil? ? (@from-1.day) : @from))
     footer[:styles] << (s.add_style bg_footer.deep_merge(number).deep_merge(bold).deep_merge(border).deep_merge(vertical_center))
     num_col += 1
     
     header[:columns] << t('.total_debt_amount')
     header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
-    footer[:columns] << @suppliers.sales_total_amount(from_date: @from, to_date: @to)
+    footer[:columns] << @suppliers.purchase_total_amount(from_date: @from, to_date: @to)
     footer[:styles] << (s.add_style bg_footer.deep_merge(number).deep_merge(bold).deep_merge(border).deep_merge(vertical_center))
     num_col += 1
     
     header[:columns] << t('.total_paid_amount')
     header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
-    footer[:columns] << @suppliers.sales_paid_by_period_amount(from_date: @from, to_date: @to)
+    footer[:columns] << @suppliers.purchase_paid_by_period_amount(from_date: @from, to_date: @to)
     footer[:styles] << (s.add_style bg_footer.deep_merge(number).deep_merge(bold).deep_merge(border).deep_merge(vertical_center))
     num_col += 1
     
     header[:columns] << t('.end_period_debt_amount')
     header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
-    footer[:columns] << @suppliers.sales_debt_by_period_amount(to_date: @to)
+    footer[:columns] << @suppliers.purchase_debt_by_period_amount(to_date: @to)
     footer[:styles] << (s.add_style bg_footer.deep_merge(number).deep_merge(bold).deep_merge(border).deep_merge(vertical_center))
     num_col += 1
     
