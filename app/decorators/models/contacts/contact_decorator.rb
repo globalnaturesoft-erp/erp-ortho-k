@@ -400,4 +400,12 @@ Erp::Contacts::Contact.class_eval do
     
     patient_ids
   end
+  
+  # Get contact has returned products
+  def self.get_has_sales_returned_qdeliveries(options={})
+    query = Erp::Qdeliveries::DeliveryDetail.get_returned_confirmed_delivery_details(options)
+    query = query.select('erp_qdeliveries_deliveries.customer_id')
+    
+    self.where(id: query)
+  end
 end

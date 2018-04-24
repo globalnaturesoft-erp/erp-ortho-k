@@ -287,6 +287,118 @@ module Erp
             }
           end
         end
+        
+        # Bao cao hang ban bi tra lai
+        def report_product_return_by_pstate
+          
+        end
+        
+        # Bao cao hang ban bi tra lai
+        def report_product_return_by_pstate_table
+          glb = params.to_unsafe_hash[:global_filter]
+          if glb[:period].present?
+            @period = Erp::Periods::Period.find(glb[:period])
+            @from = @period.from_date.beginning_of_day
+            @to = @period.to_date.end_of_day
+          else
+            @period = nil
+            @from = (glb.present? and glb[:from_date].present?) ? glb[:from_date].to_date : nil
+            @to = (glb.present? and glb[:to_date].present?) ? glb[:to_date].to_date : nil
+          end
+          
+          @customers = Erp::Contacts::Contact.get_has_sales_returned_qdeliveries(from_date: @from, to_date: @to)
+          
+          # get categories
+          category_ids = glb[:categories].present? ? glb[:categories] : nil
+          @categories = Erp::Products::Category.where(id: category_ids)
+
+          # patients states
+          patient_states = Erp::OrthoK::PatientState.get_active
+          @patient_states = patient_states.map {|p| {name: p.name, id: p.id} }
+          @patient_states << {name: 'Không chứng từ', id: -1}
+          @patient_states << {name: 'Không có bệnh nhân', id: -2}
+          
+          # rows
+          @rows = []
+          @totals = {total: 0}
+          @category_totals = {}
+          
+          @customers.each do |customer|
+            row = {}
+            
+            # customer
+            row[:customer] = customer
+            row[:total] = 0            
+            
+            # by patient state
+            @patient_states.each do |state|
+              ddsq = Erp::Qdeliveries::DeliveryDetail.get_returned_confirmed_delivery_details(from_date: @from, to_date: @to, patient_state_id: state[:id])
+                .joins(:product)
+                .where(erp_qdeliveries_deliveries: {customer_id: customer.id})
+                .where(erp_products_products: {category_id: Erp::Products::Category.get_lens.select(:id)})
+              
+              quantity = ddsq.sum(:quantity)
+              
+              row[state[:name]] = quantity
+              row[:total] += quantity
+              
+              # totals
+              @totals[state[:name]] = @totals[state[:name]].present? ? (@totals[state[:name]] + quantity) : quantity
+              @totals[:total] += quantity
+            end
+            
+            # orther product
+            @categories.each do |category|
+              product_ids = Erp::Products::Product.where(category_id: category.id).select('id')
+              product_ids = -1 if product_ids.empty?
+              quan = Erp::Products::Product.get_qdelivery_import({
+                  product_id: product_ids,
+                  from_date: @from,
+                  to_date: @to,
+                  delivery_type: [
+                      Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT
+                  ],
+                  customer_id: customer.id
+              })
+              
+              row[category.name] = quan
+              
+              @category_totals[category.name] = @category_totals[category.name].present? ? (@category_totals[category.name] + quan) : quan
+            end
+            
+            @rows << row
+          end
+          
+          File.open("tmp/report_product_return_by_pstate.yml", "w+") do |f|
+            f.write({
+              rows: @rows,
+              category_totals: @category_totals,
+              totals: @totals,
+              from: @from,
+              to: @to,
+              patient_states: @patient_states,
+              categories: @categories,
+            }.to_yaml)
+          end
+        end
+        
+        def report_product_return_by_pstate_xlsx
+          data = YAML.load_file("tmp/report_product_return_by_pstate.yml")
+          
+          @rows = data[:rows]
+          @category_totals = data[:category_totals]
+          @totals = data[:totals]
+          @from_date = data[:from]
+          @to_date = data[:to]
+          @patient_states = data[:patient_states]
+          @categories = data[:categories]
+          
+          respond_to do |format|
+            format.xlsx {
+              response.headers['Content-Disposition'] = 'attachment; filename="Bao cao khach hang tra hang.xlsx"'
+            }
+          end
+        end
       end
     end
   end

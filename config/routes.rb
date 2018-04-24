@@ -252,6 +252,10 @@ Erp::OrthoK::Engine.routes.draw do
 					get 'report_new_patient'
 					post 'report_new_patient_table'
 					get 'report_new_patient_xlsx'
+					
+					get 'report_product_return_by_pstate'
+					post 'report_product_return_by_pstate_table'
+					get 'report_product_return_by_pstate_xlsx'
 				end
 			end
 

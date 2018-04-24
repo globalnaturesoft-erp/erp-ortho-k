@@ -995,6 +995,21 @@ vi:
           report_product_return_table:
             please_select_filter: "Vui lòng chọn thời gian trên bộ lọc"
             no_matching_records_found: "Nội dung báo cáo không được tìm thấy. Vui lòng chọn các điều kiện khác để xem."
+          report_product_return_by_pstate:
+            report_product_return: "Báo cáo - Danh sách khách hàng trả hàng"
+            from_date: "Từ ngày"
+            to_date: "Đến ngày"
+            select_from_date: "Chọn lọc theo ngày đầu kỳ"
+            select_to_date: "Chọn lọc theo ngày cuối kỳ"
+            filter_period: "Thời gian cố định"
+            choose_period: "Chọn lọc theo thời gian cố định"
+            options: "Tùy chọn"
+            export_pdf: "Xuất ra PDF"
+            export_excel: "Xuất ra Excel"
+            print: "In ấn / Print"
+          report_product_return_by_pstate_table:
+            please_select_filter: "Vui lòng chọn thời gian trên bộ lọc"
+            no_matching_records_found: "Nội dung báo cáo không được tìm thấy. Vui lòng chọn các điều kiện khác để xem."
           report_sales_details:
             report_sales_details: "Sổ chi tiết bán hàng"
             from_date: "Từ ngày"
