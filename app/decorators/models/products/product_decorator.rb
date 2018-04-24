@@ -2581,7 +2581,7 @@ Erp::Products::Product.class_eval do
 #				Erp::Periods::Period.find(options[:period]).to_date.end_of_day)
 #    end
     
-    query.last
+    query.first
   end  
   
   # get all sales products not len

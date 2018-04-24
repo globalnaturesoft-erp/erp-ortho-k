@@ -478,7 +478,7 @@ module Erp
           # by patient state
           patient_states = Erp::OrthoK::PatientState.all
           pst_ids = patient_states.map {|p| {name: p.name, id: p.id} }
-          pst_ids << {name: 'Khác', id: -1}
+          pst_ids << {name: 'Không có bệnh nhân', id: -1}
           pst_ids.each do |pst|
             
             odsq = Erp::Orders::OrderDetail.get_sales_confirmed_order_details(from_date: @from, to_date: @to, patient_state_id: pst[:id])
@@ -524,7 +524,7 @@ module Erp
           patient_states = Erp::OrthoK::PatientState.get_active
           pst_ids = patient_states.map {|p| {name: p.name, id: p.id} }
           pst_ids << {name: 'Không chứng từ', id: -1}
-          pst_ids << {name: 'Khác', id: -2}
+          pst_ids << {name: 'Không có bệnh nhân', id: -2}
           pst_ids.each do |pst|
             
             ddsq = Erp::Qdeliveries::DeliveryDetail.get_returned_confirmed_delivery_details(from_date: @from, to_date: @to, patient_state_id: pst[:id])
