@@ -154,7 +154,7 @@
             %>
             <% end_stock = Erp::Products::Product.get_stock_real(end_params) %>
             
-            <% if end_stock >= @global_filters[:min_stock].to_i %>
+            <% if true and end_stock >= @global_filters[:min_stock].to_i %>
                 <tr>
                     <td class="text-nowrap">
                       <%= row[:date].nil? ? '' : format_date(row[:date]) %>

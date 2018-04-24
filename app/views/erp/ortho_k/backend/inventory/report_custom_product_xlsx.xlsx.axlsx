@@ -226,7 +226,7 @@ wb.styles do |s|
         end_params[:from_date] = nil
         end_stock = Erp::Products::Product.get_stock_real(end_params)
         
-        if end_stock >= @global_filters[:min_stock].to_i
+        if true and end_stock >= @global_filters[:min_stock].to_i
           row[:columns] << (rw[:date].nil? ? '' : format_date(rw[:date]))
           row[:styles] << (s.add_style text_left.deep_merge(border).deep_merge(middle_align))
   
