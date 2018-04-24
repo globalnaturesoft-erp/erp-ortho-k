@@ -38,18 +38,18 @@
             <% @customers.each_with_index do |customer, index| %>
                 <tr>
                     <td class="text-center"><%= index+1 %></td>
-                    <td class="text-left"><%= customer.name %></td>
-                    <td class="text-center font-yellow-gold">
-                        <%= format_number(customer.sales_debt_amount(to_date: (!@from.nil? ? (@from-1.day) : @from))) %>
+                    <td class="text-left bold"><%= customer.name %></td>
+                    <td class="text-right">
+                        <%= format_number(customer.sales_debt_by_period_amount(to_date: (!@from.nil? ? (@from-1.day) : @from))) %>
                     </td>
-                    <td class="text-center font-yellow-gold">
+                    <td class="text-right">
                         <%= format_number(customer.sales_total_amount(from_date: @from, to_date: @to)) %>
                     </td>
-                    <td class="text-center font-yellow-gold">
-                        <%= format_number(customer.sales_paid_amount(from_date: @from, to_date: @to)) %>
+                    <td class="text-right">
+                        <%= format_number(customer.sales_paid_by_period_amount(from_date: @from, to_date: @to)) %>
                     </td>
-                    <td class="text-center font-yellow-gold">
-                        <%= format_number(customer.sales_debt_amount(to_date: @to)) %>
+                    <td class="text-right">
+                        <%= format_number(customer.sales_debt_by_period_amount(to_date: @to)) %>
                     </td>
                     <td class="text-center">
                         <%= !customer.salesperson.nil? ? customer.salesperson_name : '--' %>
@@ -58,10 +58,10 @@
             <% end %>
             <tr>
                 <td class="bg-green-jungle bg-font-green-jungle border-green-jungle text-center bold" colspan="2">TỔNG CỘNG</td>
-                <td class="bg-green-jungle bg-font-green-jungle border-green-jungle text-center bold"><%= format_number(@customers.sales_debt_amount(to_date: (!@from.nil? ? (@from-1.day) : @from))) %></td>
-                <td class="bg-green-jungle bg-font-green-jungle border-green-jungle text-center bold"><%= format_number(@customers.sales_total_amount(from_date: @from, to_date: @to)) %></td>
-                <td class="bg-green-jungle bg-font-green-jungle border-green-jungle text-center bold"><%= format_number(@customers.sales_paid_amount(from_date: @from, to_date: @to)) %></td>
-                <td class="bg-green-jungle bg-font-green-jungle border-green-jungle text-center bold"><%= format_number(@customers.sales_debt_amount(to_date: @to)) %></td>
+                <td class="bg-green-jungle bg-font-green-jungle border-green-jungle text-right bold"><%= format_number(@customers.sales_debt_by_period_amount(to_date: (!@from.nil? ? (@from-1.day) : @from))) %></td>
+                <td class="bg-green-jungle bg-font-green-jungle border-green-jungle text-right bold"><%= format_number(@customers.sales_total_amount(from_date: @from, to_date: @to)) %></td>
+                <td class="bg-green-jungle bg-font-green-jungle border-green-jungle text-right bold"><%= format_number(@customers.sales_paid_by_period_amount(from_date: @from, to_date: @to)) %></td>
+                <td class="bg-green-jungle bg-font-green-jungle border-green-jungle text-right bold"><%= format_number(@customers.sales_debt_by_period_amount(to_date: @to)) %></td>
                 <td class="bg-green-jungle bg-font-green-jungle border-green-jungle text-center bold"></td>
             </tr>
         </tbody>

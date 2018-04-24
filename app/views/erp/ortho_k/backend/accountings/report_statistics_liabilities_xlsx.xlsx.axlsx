@@ -65,10 +65,10 @@ wb.styles do |s|
       row = {columns: [], styles: []}
       
       total_amount = @customers.sales_total_amount(from_date: period[:from], to_date: period[:to])
-      paid_amount = @customers.sales_paid_amount(from_date: period[:from], to_date: period[:to])
-      debt_amount = @customers.sales_debt_amount(from_date: period[:from], to_date: period[:to])
+      paid_amount = @customers.sales_paid_by_period_amount(from_date: period[:from], to_date: period[:to])
+      debt_amount = @customers.sales_debt_by_period_amount(from_date: period[:from], to_date: period[:to])
       
-      if (total_amount + paid_amount + debt_amount) > 0
+      if total_amount > 0 or paid_amount > 0 or debt_amount > 0
         row[:columns] << period[:name]
         row[:styles] << (s.add_style text_middle.deep_merge(border))
       
@@ -88,8 +88,8 @@ wb.styles do |s|
     
     # footer
     total_amount = @customers.sales_total_amount(from_date: @periods.first[:from], to_date: @periods.last[:to])
-    paid_amount = @customers.sales_paid_amount(from_date: @periods.first[:from], to_date: @periods.last[:to])
-    debt_amount = @customers.sales_debt_amount(from_date: @periods.first[:from], to_date: @periods.last[:to])
+    paid_amount = @customers.sales_paid_by_period_amount(from_date: @periods.first[:from], to_date: @periods.last[:to])
+    debt_amount = @customers.sales_debt_by_period_amount(from_date: @periods.first[:from], to_date: @periods.last[:to])
     
     footer[:columns] << "Tổng cộng"
     footer[:styles] << (s.add_style bg_footer.deep_merge(text_middle).deep_merge(border).merge(bold))

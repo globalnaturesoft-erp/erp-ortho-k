@@ -890,10 +890,10 @@ vi:
             export_excel: "Xuất ra Excel"
             print: "In ấn / Print"
           report_statistics_liabilities_xlsx:
-            periods: "Danh mục"
-            total_debt_amount: "Tổng nợ"
-            total_paid_amount: "Tổng thu"
-            total_remain_amount: "Còn lại"
+            periods: "Danh mục thống kê"
+            total_debt_amount: "Tổng nợ trong kỳ"
+            total_paid_amount: "Tổng thu trong kỳ"
+            total_remain_amount: "Chưa thu trong kỳ"
           report_liabilities_arising:
             report_liabilities_arising: "Báo cáo - Khách hàng phát sinh giao dịch trong kỳ"
             from_date: "Từ ngày"

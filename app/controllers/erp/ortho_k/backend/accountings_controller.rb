@@ -270,8 +270,8 @@ module Erp
           
           @global_filters = data[:global_filters]
           @period_name = data[:period_name]
-          @from = data[:from_date].to_date
-          @to = data[:to_date].to_date
+          @from = data[:from_date].to_date.beginning_of_day
+          @to = data[:to_date].to_date.end_of_day
           @customers = data[:customers]
           
           @customers = Erp::Contacts::Contact.where(id: (@customers.map{|i| i.id}))
@@ -324,8 +324,8 @@ module Erp
           
           @global_filters = data[:global_filters]
           @period_name = data[:period_name]
-          @from = data[:from_date].to_date
-          @to = data[:to_date].to_date
+          @from = data[:from_date].to_date.beginning_of_day
+          @to = data[:to_date].to_date.end_of_day
           @suppliers = data[:suppliers]
           
           @suppliers = Erp::Contacts::Contact.where(id: (@suppliers.map{|i| i.id}))
@@ -341,11 +341,22 @@ module Erp
         def report_statistics_liabilities_table
           @periods = Erp::Periods::Period.get_time_array(params)
           @customers = Erp::Contacts::Contact.where.not(id: Erp::Contacts::Contact.get_main_contact.id)
+          
+          File.open("tmp/report_statistics_liabilities_xlsx.yml", "w+") do |f|
+            f.write({
+              periods: @periods,
+              customers: @customers
+            }.to_yaml)
+          end
         end
 
-        def report_statistics_liabilities_xlsx
-          @periods = Erp::Periods::Period.get_time_array(params)
-          @customers = Erp::Contacts::Contact.where.not(id: Erp::Contacts::Contact.get_main_contact.id)
+        def report_statistics_liabilities_xlsx          
+          data = YAML.load_file("tmp/report_statistics_liabilities_xlsx.yml")
+          
+          @periods = data[:periods]
+          @customers = data[:customers]
+          
+          @customers = Erp::Contacts::Contact.where(id: (@customers.map{|i| i.id}))
 
           respond_to do |format|
             format.xlsx {

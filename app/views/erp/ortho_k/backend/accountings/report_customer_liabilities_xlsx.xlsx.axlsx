@@ -36,48 +36,56 @@ wb.styles do |s|
     # header
     header = {columns: [], styles: []}
     footer = {columns: [], styles: []}
+    column_widths = []
     
     header[:columns] << t('.ordinal_number')
     header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
     footer[:columns] << "Tổng cộng"
     footer[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(border).deep_merge(text_middle))
     num_col = 0
+    column_widths << 5
     
     header[:columns] << t('.customer_name')
     header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
     footer[:columns] << nil
     footer[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(border).deep_merge(text_left))
     num_col += 1
+    column_widths << 35
     
     header[:columns] << t('.begin_period_debt_amount')
     header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
-    footer[:columns] << @customers.sales_debt_amount(to_date: (!@from.nil? ? (@from-1.day) : @from))
+    footer[:columns] << @customers.sales_debt_by_period_amount(to_date: (!@from.nil? ? (@from-1.day) : @from))
     footer[:styles] << (s.add_style bg_footer.deep_merge(number).deep_merge(bold).deep_merge(border).deep_merge(vertical_center))
     num_col += 1
+    column_widths << 15
     
     header[:columns] << t('.total_debt_amount')
     header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
     footer[:columns] << @customers.sales_total_amount(from_date: @from, to_date: @to)
     footer[:styles] << (s.add_style bg_footer.deep_merge(number).deep_merge(bold).deep_merge(border).deep_merge(vertical_center))
     num_col += 1
+    column_widths << 15
     
     header[:columns] << t('.total_paid_amount')
     header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
-    footer[:columns] << @customers.sales_paid_amount(from_date: @from, to_date: @to)
+    footer[:columns] << @customers.sales_paid_by_period_amount(from_date: @from, to_date: @to)
     footer[:styles] << (s.add_style bg_footer.deep_merge(number).deep_merge(bold).deep_merge(border).deep_merge(vertical_center))
     num_col += 1
+    column_widths << 15
     
     header[:columns] << t('.end_period_debt_amount')
     header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
-    footer[:columns] << @customers.sales_debt_amount(to_date: @to)
+    footer[:columns] << @customers.sales_debt_by_period_amount(to_date: @to)
     footer[:styles] << (s.add_style bg_footer.deep_merge(number).deep_merge(bold).deep_merge(border).deep_merge(vertical_center))
     num_col += 1
+    column_widths << 15
     
     header[:columns] << t('.salesperson')
     header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
     footer[:columns] << nil
     footer[:styles] << (s.add_style bg_footer.deep_merge(border))
     num_col += 1
+    column_widths << 25
     
     sheet.add_row header[:columns], style: header[:styles], height: 25
     num_row += 1
@@ -93,16 +101,16 @@ wb.styles do |s|
       row[:columns] << customer.name
       row[:styles] << (s.add_style text_left.deep_merge(border))
     
-      row[:columns] << customer.sales_debt_amount(to_date: (!@from.nil? ? (@from-1.day) : @from))
+      row[:columns] << customer.sales_debt_by_period_amount(to_date: (!@from.nil? ? (@from-1.day) : @from))
       row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
     
       row[:columns] << customer.sales_total_amount(from_date: @from, to_date: @to)
       row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
     
-      row[:columns] << customer.sales_paid_amount(from_date: @from, to_date: @to)
+      row[:columns] << customer.sales_paid_by_period_amount(from_date: @from, to_date: @to)
       row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
     
-      row[:columns] << customer.sales_debt_amount(to_date: @to)
+      row[:columns] << customer.sales_debt_by_period_amount(to_date: @to)
       row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
     
       row[:columns] << (!customer.salesperson.nil? ? customer.salesperson_name : nil)
@@ -121,6 +129,6 @@ wb.styles do |s|
     sheet.merge_cells("#{('A'.codepoints.first).chr}4:#{('A'.codepoints.first + num_col).chr}4")
     sheet.merge_cells("#{('A'.codepoints.first).chr}5:#{('A'.codepoints.first + num_col).chr}5")
     
-    sheet.column_widths 5, 35, 15, 15, 15, 15, 22
+    sheet.column_widths *column_widths
   end
 end

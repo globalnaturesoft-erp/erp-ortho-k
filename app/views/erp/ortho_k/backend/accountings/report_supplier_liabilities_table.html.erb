@@ -26,11 +26,11 @@
         <thead class="flip-content">
             <tr>
                 <th width="5%"  class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">STT</th>
-                <th width="20%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Tên nhà cung cấp</th>
-                <th width="20%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap" title="Tổng số tiền còn nợ tính đến thời điểm ngày đầu kỳ">Tổng nợ đầu kỳ</th>
-                <th width="20%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap" title="Khoản nợ phát sinh trong kỳ">Nợ trong kỳ</th>
-                <th width="20%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap" title="Số tiền đã thanh toán trong kỳ">Đã thanh toán</th>
-                <th width="20%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap" title="Số tiền còn nợ">Nợ cuối kỳ</th>
+                <th width="20%" class="text-left bg-yellow-mint bg-font-yellow-mint text-nowrap">Tên nhà cung cấp</th>
+                <th width="20%" class="text-right bg-yellow-mint bg-font-yellow-mint text-nowrap" title="Tổng số tiền còn nợ tính đến thời điểm ngày đầu kỳ">Tổng nợ đầu kỳ</th>
+                <th width="20%" class="text-right bg-yellow-mint bg-font-yellow-mint text-nowrap" title="Khoản nợ phát sinh trong kỳ">Nợ trong kỳ</th>
+                <th width="20%" class="text-right bg-yellow-mint bg-font-yellow-mint text-nowrap" title="Số tiền đã thanh toán trong kỳ">Đã thanh toán</th>
+                <th width="20%" class="text-right bg-yellow-mint bg-font-yellow-mint text-nowrap" title="Số tiền còn nợ">Nợ cuối kỳ</th>
             </tr>
         </thead>
         <tbody>
@@ -38,26 +38,26 @@
                 <tr>
                     <td class="text-center"><%= index+1 %></td>
                     <td class="text-left"><%= supplier.name %></td>
-                    <td class="text-center font-yellow-gold">
-                        <%= format_number(supplier.purchase_debt_amount(to_date: (!@from.nil? ? (@from-1.day) : @from))) %>
+                    <td class="text-right">
+                        <%= format_number(supplier.purchase_debt_by_period_amount(to_date: (!@from.nil? ? (@from-1.day) : @from))) %>
                     </td>
-                    <td class="text-center font-yellow-gold">
+                    <td class="text-right">
                         <%= format_number(supplier.purchase_total_amount(from_date: @from, to_date: @to)) %>
                     </td>
-                    <td class="text-center font-yellow-gold">
-                        <%= format_number(supplier.purchase_paid_amount(from_date: @from, to_date: @to)) %>
+                    <td class="text-right">
+                        <%= format_number(supplier.purchase_paid_by_period_amount(from_date: @from, to_date: @to)) %>
                     </td>
-                    <td class="text-center font-yellow-gold">
-                        <%= format_number(supplier.purchase_debt_amount(to_date: @to)) %>
+                    <td class="text-right">
+                        <%= format_number(supplier.purchase_debt_by_period_amount(to_date: @to)) %>
                     </td>
                 </tr>
             <% end %>
             <tr>
                 <td class="bg-green-jungle bg-font-green-jungle border-green-jungle text-center bold" colspan="2">TỔNG CỘNG</td>
-                <td class="bg-green-jungle bg-font-green-jungle border-green-jungle text-center bold"><%= format_number(@suppliers.purchase_debt_amount(to_date: (!@from.nil? ? (@from-1.day) : @from))) %></td>
-                <td class="bg-green-jungle bg-font-green-jungle border-green-jungle text-center bold"><%= format_number(@suppliers.purchase_total_amount(from_date: @from, to_date: @to)) %></td>
-                <td class="bg-green-jungle bg-font-green-jungle border-green-jungle text-center bold"><%= format_number(@suppliers.purchase_paid_amount(from_date: @from, to_date: @to)) %></td>
-                <td class="bg-green-jungle bg-font-green-jungle border-green-jungle text-center bold"><%= format_number(@suppliers.purchase_debt_amount(to_date: @to)) %></td>
+                <td class="bg-green-jungle bg-font-green-jungle border-green-jungle text-right bold"><%= format_number(@suppliers.purchase_debt_by_period_amount(to_date: (!@from.nil? ? (@from-1.day) : @from))) %></td>
+                <td class="bg-green-jungle bg-font-green-jungle border-green-jungle text-right bold"><%= format_number(@suppliers.purchase_total_amount(from_date: @from, to_date: @to)) %></td>
+                <td class="bg-green-jungle bg-font-green-jungle border-green-jungle text-right bold"><%= format_number(@suppliers.purchase_paid_by_period_amount(from_date: @from, to_date: @to)) %></td>
+                <td class="bg-green-jungle bg-font-green-jungle border-green-jungle text-right bold"><%= format_number(@suppliers.purchase_debt_by_period_amount(to_date: @to)) %></td>
             </tr>
         </tbody>
     </table>
