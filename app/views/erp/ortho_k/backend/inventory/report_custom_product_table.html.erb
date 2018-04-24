@@ -147,99 +147,105 @@
         <% @list.each do |row| %>
             <% product = row[:product] %>
             <% filters = @global_filters.clone.merge(product_id: product.id) %>
-
-            <tr>
-                <td class="text-nowrap">
-                  <%= row[:date].nil? ? '' : format_date(row[:date]) %>
-                </td>
-                <td class="text-semibold text-left text-nowrap"><%= product.name %></td>
-                <td class="text-center"><%= product.unit_name %></td>
-
-                <td class="text-center text-bold">
-                    <%
-                        begin_params = filters.clone
-                        begin_params[:to_date] = (filters[:from_date].to_date - 1.day).to_s
-                        begin_params[:from_date] = nil
-                    %>
-                    <%= Erp::Products::Product.get_stock_real(begin_params) %>
-                </td>
-                <td class="text-center">
-                    <%
-                        count = Erp::Products::Product.get_qdelivery_import(filters.clone.merge({
-                            delivery_type: [
-                                Erp::Qdeliveries::Delivery::TYPE_CUSTOM_IMPORT,
-                                Erp::Qdeliveries::Delivery::TYPE_PURCHASE_IMPORT
-                            ]
-                        }))
-                    %>
-                    <%= count %>
-                </td>
-                <td class="text-center">
-                    <%
-                        count = Erp::Products::Product.get_stock_check_import(filters)
-                    %>
-                    <%= count %>
-                </td>
-                <% @states.each do |state| %>
+            
+            <%
+                end_params = filters.clone
+                end_params[:from_date] = nil
+            %>
+            <% end_stock = Erp::Products::Product.get_stock_real(end_params) %>
+            
+            <% if end_stock >= @global_filters[:min_stock].to_i %>
+                <tr>
+                    <td class="text-nowrap">
+                      <%= row[:date].nil? ? '' : format_date(row[:date]) %>
+                    </td>
+                    <td class="text-semibold text-left text-nowrap"><%= product.name %></td>
+                    <td class="text-center"><%= product.unit_name %></td>
+    
+                    <td class="text-center text-bold">
+                        <%
+                            begin_params = filters.clone
+                            begin_params[:to_date] = (filters[:from_date].to_date - 1.day).to_s
+                            begin_params[:from_date] = nil
+                        %>
+                        <%= Erp::Products::Product.get_stock_real(begin_params) %>
+                    </td>
                     <td class="text-center">
                         <%
-                          count = Erp::Products::Product.get_qdelivery_import(filters.clone.merge({
+                            count = Erp::Products::Product.get_qdelivery_import(filters.clone.merge({
                                 delivery_type: [
-                                    Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT
-                                ],
-                                state: state
-                          }))
+                                    Erp::Qdeliveries::Delivery::TYPE_CUSTOM_IMPORT,
+                                    Erp::Qdeliveries::Delivery::TYPE_PURCHASE_IMPORT
+                                ]
+                            }))
                         %>
                         <%= count %>
                     </td>
-                <% end %>
-                <td class="text-center">
-                    <%
-                        count = Erp::Products::Product.get_qdelivery_export(filters.clone.merge({
-                            delivery_type: [
-                              Erp::Qdeliveries::Delivery::TYPE_CUSTOM_EXPORT,
-                              Erp::Qdeliveries::Delivery::TYPE_SALES_EXPORT
-                            ]
-                        }))
-                        count += Erp::Products::Product.get_gift_given_export(filters)
-                    %>
-                    <%= count %>
-                </td>
-                <td class="text-center">
-                    <%
-                        count = Erp::Products::Product.get_damage_record_export(filters)
-                        count += Erp::Products::Product.get_stock_check_export(filters)
-                    %>
-                    <%= count %>
-                </td>
-                <td class="text-center">
-                    <%
-                      count = (filters[:state_id].present? ? Erp::Products::Product.get_state_check_export(filters) : '--')
-                    %>
-                    <%= count %>
-                </td>
-                <td class="text-center text-bold">
-                    <%
-                        end_params = filters.clone
-                        end_params[:from_date] = nil
-                    %>
-                    <%= Erp::Products::Product.get_stock_real(end_params) %>
-                </td>
-                <td class="">
-                  <%= row[:note].nil? ? '' : row[:note] %>
-                </td>
-                <% if @is_set_type_selected %>
                     <td class="text-center">
-                        <%= product.get_combine_max_quantity(
-                            warehouse_ids: @global_filters["warehouse_ids"],
-                            state_ids: @global_filters["state_ids"]
-                        ) %>
+                        <%
+                            count = Erp::Products::Product.get_stock_check_import(filters)
+                        %>
+                        <%= count %>
                     </td>
-                <% end %>
-                <td>
-                    <a target="_blank" href="<%= erp_qdeliveries.edit_backend_delivery_path(row[:delivery]) %>"><i class="icon-pencil"></i> Sửa</a>
-                </td>
-            </tr>
+                    <% @states.each do |state| %>
+                        <td class="text-center">
+                            <%
+                              count = Erp::Products::Product.get_qdelivery_import(filters.clone.merge({
+                                    delivery_type: [
+                                        Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT
+                                    ],
+                                    state: state
+                              }))
+                            %>
+                            <%= count %>
+                        </td>
+                    <% end %>
+                    <td class="text-center">
+                        <%
+                            count = Erp::Products::Product.get_qdelivery_export(filters.clone.merge({
+                                delivery_type: [
+                                  Erp::Qdeliveries::Delivery::TYPE_CUSTOM_EXPORT,
+                                  Erp::Qdeliveries::Delivery::TYPE_SALES_EXPORT
+                                ]
+                            }))
+                            count += Erp::Products::Product.get_gift_given_export(filters)
+                        %>
+                        <%= count %>
+                    </td>
+                    <td class="text-center">
+                        <%
+                            count = Erp::Products::Product.get_damage_record_export(filters)
+                            count += Erp::Products::Product.get_stock_check_export(filters)
+                        %>
+                        <%= count %>
+                    </td>
+                    <td class="text-center">
+                        <%
+                          count = (filters[:state_id].present? ? Erp::Products::Product.get_state_check_export(filters) : '--')
+                        %>
+                        <%= count %>
+                    </td>
+                    <td class="text-center text-bold">
+                        <%= end_stock %>
+                    </td>
+                    <td class="">
+                      <%= row[:note].nil? ? '' : row[:note] %>
+                    </td>
+                    <% if @is_set_type_selected %>
+                        <td class="text-center">
+                            <%= product.get_combine_max_quantity(
+                                warehouse_ids: @global_filters["warehouse_ids"],
+                                state_ids: @global_filters["state_ids"]
+                            ) %>
+                        </td>
+                    <% end %>
+                    <td>
+                        <% if row[:delivery].present? %>
+                            <a target="_blank" href="<%= erp_qdeliveries.edit_backend_delivery_path(row[:delivery]) %>"><i class="icon-pencil"></i> Sửa</a>
+                        <% end %>
+                    </td>
+                </tr>
+            <% end %>
         <% end %>
     </table>
     <%= erp_datalist_pagination(@products) %>
