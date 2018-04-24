@@ -5,6 +5,7 @@ wb.styles do |s|
   wb.add_worksheet(name: @delivery.code) do |sheet|
     # style
     bg_info = {:bg_color => "305496", :fg_color => "FF"}
+    bg_footer = {:bg_color => "ffff00", :fg_color => "c52f24"}
     text_center = {alignment: { horizontal: :center }}
     text_left = {alignment: { horizontal: :left }}
     text_right = {alignment: { horizontal: :right }}
@@ -28,6 +29,25 @@ wb.styles do |s|
     @title = 'PHIẾU XUẤT KHO' if @delivery.delivery_type == Erp::Qdeliveries::Delivery::TYPE_SALES_EXPORT
     @title = 'PHIẾU XUẤT KHO' if @delivery.delivery_type == Erp::Qdeliveries::Delivery::TYPE_PURCHASE_EXPORT
     @title = 'PHIẾU XUẤT KHO' if @delivery.delivery_type == Erp::Qdeliveries::Delivery::TYPE_CUSTOM_EXPORT
+    
+    colspan = (get_columns(params).include?("ordinal_number") ? 1 : 0) +
+      (get_columns(params).include?("items") ? 1 : 0) +
+      (get_columns(params).include?("units") ? 1 : 0) +
+      (get_columns(params).include?("patient_state") ? 1 : 0) +
+      (get_columns(params).include?("patient_name") ? 1 : 0) +
+      (get_columns(params).include?("warehouse") ? 1 : 0) +
+      (get_columns(params).include?("state") ? 1 : 0) +
+      (get_columns(params).include?("serials") ? 1 : 0) +
+      (get_columns(params).include?("eye_position") ? 1 : 0) +
+      (get_columns(params).include?("quantity") ? 1 : 0) +
+      (get_columns(params).include?("record") ? 1 : 0) +
+      (get_columns(params).include?("note") ? 1 : 0)
+      
+    if @delivery.delivery_type == Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT
+      colspan = colspan +
+      (get_columns(params).include?("price") ? 1 : 0) +
+      (get_columns(params).include?("total_amount") ? 1 : 0)
+    end
     
     sheet.add_row [@title], sz: 16, b: true, style: (s.add_style text_center)
     sheet.add_row [@delivery.date.strftime('Ngày %d tháng %m năm %Y')], sz: 11, i: true, style: (s.add_style text_center)
@@ -70,7 +90,7 @@ wb.styles do |s|
     infos_row_3[:columns] << "Ghi chú: #{@delivery.note}"
     infos_row_3[:styles] << (s.add_style text_left)
     
-    (2..9).each do |col|
+    (2..(colspan-1)).each do |col|
       infos_row_1[:columns] << nil
       infos_row_1[:styles] << (s.add_style text_left)
       
@@ -104,7 +124,7 @@ wb.styles do |s|
     infos_row_2[:styles] << (s.add_style text_right)
     
     infos_row_3[:columns] << "#{doctor} / #{patient}" 
-    infos_row_3[:styles] << (s.add_style {})
+    infos_row_3[:styles] << (s.add_style text_right)
     
     sheet.add_row infos_row_1[:columns], style: infos_row_1[:styles]
     num_row += 1
@@ -119,200 +139,127 @@ wb.styles do |s|
 
     # header
     header = {columns: [], styles: []}
-    footer_1 = {columns: [], styles: []}
-    footer_2 = {columns: [], styles: []}
-    footer_3 = {columns: [], styles: []}
-    footer_4 = {columns: [], styles: []}
+    footer = {columns: [], styles: []}
+    patient_col_widths = []
     
     if get_columns(params).include?("ordinal_number") or get_columns(params).empty?
       header[:columns] << t('.ordinal_number')
       header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border))
       sheet.column_info.first.width = 5
 
-      footer_1[:columns] << 'Cộng tiền hàng:'
-      footer_1[:styles] << (s.add_style text_right.deep_merge(border))
-
-      footer_2[:columns] << "Tiền thuế (0%)"
-      footer_2[:styles] << (s.add_style text_right.deep_merge(border))
-
-      footer_3[:columns] << 'Tổng tiền trả lại:'
-      footer_3[:styles] << (s.add_style text_right.deep_merge(border))
-
-      footer_4[:columns] << 'Tổng số lượng:'
-      footer_4[:styles] << (s.add_style text_right.deep_merge(border))
+      footer[:columns] << 'Tổng cộng:'
+      footer[:styles] << (s.add_style bg_footer.deep_merge(text_center).deep_merge(bold).deep_merge(border))
       
       num_col = 0
+      footer_merge_cell_num = num_col
+      patient_col_widths << 5
     end
     
     if get_columns(params).include?("items") or get_columns(params).empty?
       header[:columns] << t('.items')
       header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border))
 
-      footer_1[:columns] << nil
-      footer_1[:styles] << (s.add_style border)
-
-      footer_2[:columns] << nil
-      footer_2[:styles] << (s.add_style border)
-
-      footer_3[:columns] << nil
-      footer_3[:styles] << (s.add_style border)
-
-      footer_4[:columns] << nil
-      footer_4[:styles] << (s.add_style border)
+      footer[:columns] << nil
+      footer[:styles] << (s.add_style bg_footer.deep_merge(text_center).deep_merge(border))
       
       num_col += 1
+      footer_merge_cell_num = num_col
+      patient_col_widths << 25
     end
     
     if get_columns(params).include?("units") or get_columns(params).empty?
       header[:columns] << t('.units')
       header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border))
 
-      footer_1[:columns] << nil
-      footer_1[:styles] << (s.add_style border)
-
-      footer_2[:columns] << nil
-      footer_2[:styles] << (s.add_style border)
-
-      footer_3[:columns] << nil
-      footer_3[:styles] << (s.add_style border)
-
-      footer_4[:columns] << nil
-      footer_4[:styles] << (s.add_style border)
+      footer[:columns] << nil
+      footer[:styles] << (s.add_style bg_footer.deep_merge(text_center).deep_merge(border))
       
       num_col += 1
+      footer_merge_cell_num = num_col
+      patient_col_widths << 10
     end
     
     if get_columns(params).include?("patient_state")
       header[:columns] << t('.patient_state')
       header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border))
 
-      footer_1[:columns] << nil
-      footer_1[:styles] << (s.add_style border)
-
-      footer_2[:columns] << nil
-      footer_2[:styles] << (s.add_style border)
-
-      footer_3[:columns] << nil
-      footer_3[:styles] << (s.add_style border)
-
-      footer_4[:columns] << nil
-      footer_4[:styles] << (s.add_style border)
+      footer[:columns] << nil
+      footer[:styles] << (s.add_style bg_footer.deep_merge(text_center).deep_merge(border))
       
       num_col += 1
+      footer_merge_cell_num = num_col
+      patient_col_widths << 15
     end
     
     if get_columns(params).include?("patient_name")
       header[:columns] << t('.patient_name')
       header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border))
 
-      footer_1[:columns] << nil
-      footer_1[:styles] << (s.add_style border)
-
-      footer_2[:columns] << nil
-      footer_2[:styles] << (s.add_style border)
-
-      footer_3[:columns] << nil
-      footer_3[:styles] << (s.add_style border)
-
-      footer_4[:columns] << nil
-      footer_4[:styles] << (s.add_style border)
+      footer[:columns] << nil
+      footer[:styles] << (s.add_style bg_footer.deep_merge(text_center).deep_merge(border))
       
       num_col += 1
+      footer_merge_cell_num = num_col
+      patient_col_widths << 15
     end
     
     if get_columns(params).include?("warehouse")
       header[:columns] << t('.warehouse')
       header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border))
 
-      footer_1[:columns] << nil
-      footer_1[:styles] << (s.add_style border)
-
-      footer_2[:columns] << nil
-      footer_2[:styles] << (s.add_style border)
-
-      footer_3[:columns] << nil
-      footer_3[:styles] << (s.add_style border)
-
-      footer_4[:columns] << nil
-      footer_4[:styles] << (s.add_style border)
+      footer[:columns] << nil
+      footer[:styles] << (s.add_style border)
       
       num_col += 1
+      footer_merge_cell_num = num_col
+      patient_col_widths << 10
     end
     
     if get_columns(params).include?("state")
       header[:columns] << t('.state')
       header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border))
 
-      footer_1[:columns] << nil
-      footer_1[:styles] << (s.add_style border)
-
-      footer_2[:columns] << nil
-      footer_2[:styles] << (s.add_style border)
-
-      footer_3[:columns] << nil
-      footer_3[:styles] << (s.add_style border)
-
-      footer_4[:columns] << nil
-      footer_4[:styles] << (s.add_style border)
+      footer[:columns] << nil
+      footer[:styles] << (s.add_style bg_footer.deep_merge(text_center).deep_merge(border))
       
       num_col += 1
+      footer_merge_cell_num = num_col
+      patient_col_widths << 10
     end
     
     if get_columns(params).include?("serials")
       header[:columns] << t('.serials')
       header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border))
 
-      footer_1[:columns] << nil
-      footer_1[:styles] << (s.add_style border)
-
-      footer_2[:columns] << nil
-      footer_2[:styles] << (s.add_style border)
-
-      footer_3[:columns] << nil
-      footer_3[:styles] << (s.add_style border)
-
-      footer_4[:columns] << nil
-      footer_4[:styles] << (s.add_style border)
+      footer[:columns] << nil
+      footer[:styles] << (s.add_style bg_footer.deep_merge(text_center).deep_merge(border))
       
       num_col += 1
+      footer_merge_cell_num = num_col
+      patient_col_widths << 15
     end
     
     if get_columns(params).include?("eye_position")
       header[:columns] << t('.eye_position')
       header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border))
 
-      footer_1[:columns] << nil
-      footer_1[:styles] << (s.add_style border)
-
-      footer_2[:columns] << nil
-      footer_2[:styles] << (s.add_style border)
-
-      footer_3[:columns] << nil
-      footer_3[:styles] << (s.add_style border)
-
-      footer_4[:columns] << nil
-      footer_4[:styles] << (s.add_style border)
+      footer[:columns] << nil
+      footer[:styles] << (s.add_style bg_footer.deep_merge(text_center).deep_merge(border))
       
       num_col += 1
+      footer_merge_cell_num = num_col
+      patient_col_widths << 12
     end
     
     if get_columns(params).include?("quantity") or get_columns(params).empty?
       header[:columns] << t('.quantity')
       header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border))
 
-      footer_1[:columns] << nil
-      footer_1[:styles] << (s.add_style text_center.deep_merge(border))
-
-      footer_2[:columns] << nil
-      footer_2[:styles] << (s.add_style border)
-
-      footer_3[:columns] << nil
-      footer_3[:styles] << (s.add_style border)
-
-      footer_4[:columns] << nil
-      footer_4[:styles] << (s.add_style border)
+      footer[:columns] << @delivery.total_delivery_quantity
+      footer[:styles] << (s.add_style bg_footer.deep_merge(text_center).deep_merge(bold).deep_merge(border))
       
       num_col += 1
+      patient_col_widths << 15
     end
     
     if @delivery.delivery_type == Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT
@@ -320,76 +267,44 @@ wb.styles do |s|
         header[:columns] << t('.price')
         header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border))
   
-        footer_1[:columns] << nil
-        footer_1[:styles] << (s.add_style border)
-  
-        footer_2[:columns] << nil
-        footer_2[:styles] << (s.add_style border)
-  
-        footer_3[:columns] << nil
-        footer_3[:styles] << (s.add_style border)
-
-        footer_4[:columns] << nil
-        footer_4[:styles] << (s.add_style border)
+        footer[:columns] << nil
+        footer[:styles] << (s.add_style bg_footer.deep_merge(text_center).deep_merge(border))
         
         num_col += 1
+        patient_col_widths << 15
       end
       col_total = 0
       if get_columns(params).include?("total_amount")
         header[:columns] << t('.total_amount')
         header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border))
   
-        footer_1[:columns] << @delivery.total_amount
-        footer_1[:styles] << (s.add_style text_right.deep_merge(bold).deep_merge(number).deep_merge(border))
-  
-        footer_2[:columns] << 0
-        footer_2[:styles] << (s.add_style text_right.deep_merge(bold).deep_merge(number).deep_merge(border))
-  
-        footer_3[:columns] << @delivery.total_amount
-        footer_3[:styles] << (s.add_style text_right.deep_merge(bold).deep_merge(number).deep_merge(border))
-
-        footer_4[:columns] << @delivery.total_delivery_quantity
-        footer_4[:styles] << (s.add_style border)
+        footer[:columns] << @delivery.total_amount
+        footer[:styles] << (s.add_style bg_footer.deep_merge(text_right).deep_merge(bold).deep_merge(number).deep_merge(border))
         
         num_col += 1
         col_total = num_col
+        patient_col_widths << 15
       end
     end
     if get_columns(params).include?("record")
       header[:columns] << t('.record')
       header[:styles] << (s.add_style bg_info.deep_merge(border).deep_merge(text_middle))
 
-      footer_1[:columns] << nil
-      footer_1[:styles] << (s.add_style text_right.deep_merge(border))
-
-      footer_2[:columns] << nil
-      footer_2[:styles] << (s.add_style border)
-
-      footer_3[:columns] << nil
-      footer_3[:styles] << (s.add_style border)
-
-      footer_4[:columns] << nil
-      footer_4[:styles] << (s.add_style border)
+      footer[:columns] << nil
+      footer[:styles] << (s.add_style bg_footer.deep_merge(border))
       
       num_col += 1
+      patient_col_widths << 15
     end
     if get_columns(params).include?("note")
       header[:columns] << t('.note')
       header[:styles] << (s.add_style bg_info.deep_merge(border).deep_merge(text_middle))
 
-      footer_1[:columns] << nil
-      footer_1[:styles] << (s.add_style text_right.deep_merge(border))
-
-      footer_2[:columns] << nil
-      footer_2[:styles] << (s.add_style border)
-
-      footer_3[:columns] << nil
-      footer_3[:styles] << (s.add_style border)
-
-      footer_4[:columns] << nil
-      footer_4[:styles] << (s.add_style border)
+      footer[:columns] << nil
+      footer[:styles] << (s.add_style bg_footer.deep_merge(border))
       
       num_col += 1
+      patient_col_widths << 15
     end
 
     sheet.add_row header[:columns], style: header[:styles], height: 20
@@ -463,27 +378,10 @@ wb.styles do |s|
     end
 
     # footer
-    if @delivery.delivery_type == Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT
-      sheet.add_row footer_1[:columns], style: footer_1[:styles]
-      num_row += 1
-      row_ft_1 = num_row
-      
-      sheet.add_row footer_2[:columns], style: footer_2[:styles]
-      num_row += 1
-      row_ft_2 = num_row
-      
-      sheet.add_row footer_3[:columns], style: footer_3[:styles]
-      num_row += 1
-      row_ft_3 = num_row
-    else
-      sheet.add_row footer_4[:columns], style: footer_4[:styles]
-      num_row += 1
-      row_ft_4 = num_row
-    end
+    sheet.add_row footer[:columns], style: footer[:styles]
+    num_row += 1
     
-    #sheet.merge_cells("#{('A'.codepoints.first).chr}#{row_ft_1}:#{('A'.codepoints.first + (col_total - 1)).chr}#{row_ft_1}")
-    #sheet.merge_cells("#{('A'.codepoints.first).chr}#{row_ft_2}:#{('A'.codepoints.first + (col_total - 1)).chr}#{row_ft_2}")
-    #sheet.merge_cells("#{('A'.codepoints.first).chr}#{row_ft_3}:#{('A'.codepoints.first + (col_total - 1)).chr}#{row_ft_3}")
+    sheet.merge_cells("#{('A'.codepoints.first).chr}#{num_row}:#{('A'.codepoints.first + (footer_merge_cell_num)).chr}#{num_row}")
     
     # add empty row
     sheet.add_row [nil], height: 5
@@ -577,6 +475,6 @@ wb.styles do |s|
     sheet.merge_cells("#{('A'.codepoints.first).chr}5:#{('A'.codepoints.first + num_col).chr}5")
     sheet.merge_cells("#{('A'.codepoints.first).chr}6:#{('A'.codepoints.first + num_col).chr}6")
     
-    sheet.column_widths 5, 25, 10, 10, 10, 10, 10, 15, 15, 15, 15, 15, 15, 15 #*patient_col_widths
+    sheet.column_widths *patient_col_widths
   end
 end
