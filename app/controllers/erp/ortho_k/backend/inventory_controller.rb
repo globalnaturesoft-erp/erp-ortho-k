@@ -719,6 +719,21 @@ module Erp
           # product query
           @product_query = Erp::Products::Product.get_active.where(is_outside: true)
           @product_query = @product_query.where(category_id: category_ids) if category_ids.present?
+          
+          # min stock
+          if @global_filters[:min_stock].present?
+            min_stock = @global_filters[:min_stock].to_i
+            if min_stock > 0
+              pids = []
+              @product_query.each do |p|
+                if p.get_stock(to_date: @to_date) >= min_stock
+                  pids << p.id
+                end
+              end
+              
+              @product_query = @product_query.where(id: pids)
+            end
+          end
 
           # products
           @products = @product_query.order('ordered_code') #.paginate(:page => params[:page], :per_page => 50)
@@ -1595,6 +1610,21 @@ module Erp
               end
             end
           end
+          
+          # min stock
+          if @global_filters[:min_stock].present?
+            min_stock = @global_filters[:min_stock].to_i
+            if min_stock > 0
+              pids = []
+              @product_query.each do |p|
+                if p.get_stock(to_date: @to_date) >= min_stock
+                  pids << p.id
+                end
+              end
+              
+              @product_query = @product_query.where(id: pids)
+            end
+          end
 
           # products
           @products = @product_query.order('erp_products_products.category_id, erp_products_products.ordered_code').paginate(:page => params[:page], :per_page => 1000)
@@ -1714,6 +1744,21 @@ module Erp
                 end
                 @product_query = @product_query.where("(#{qs.join(" OR ")})")
               end
+            end
+          end
+          
+          # min stock
+          if @global_filters[:min_stock].present?
+            min_stock = @global_filters[:min_stock].to_i
+            if min_stock > 0
+              pids = []
+              @product_query.each do |p|
+                if p.get_stock(to_date: @to_date) >= min_stock
+                  pids << p.id
+                end
+              end
+              
+              @product_query = @product_query.where(id: pids)
             end
           end
 
