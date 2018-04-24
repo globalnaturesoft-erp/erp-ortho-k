@@ -221,82 +221,86 @@ wb.styles do |s|
 
         filters = @global_filters.clone.merge(product_id: product.id)
         filters[:state_id] = Erp::Products::State.get_new_state.id
-
-        row[:columns] << (rw[:date].nil? ? '' : format_date(rw[:date]))
-        row[:styles] << (s.add_style text_left.deep_merge(border).deep_merge(middle_align))
-
-        row[:columns] << product.name
-        row[:styles] << (s.add_style text_left.deep_merge(border).deep_merge(middle_align))
-
-        row[:columns] << product.category_name
-        row[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(middle_align))
-
-        row[:columns] << product.unit_name
-        row[:styles] << (s.add_style text_center.deep_merge(border))
-
-        begin_params = filters.clone
-        begin_params[:to_date] = (filters[:from_date].to_date - 1.day).to_s
-        begin_params[:from_date] = nil
-        row[:columns] << Erp::Products::Product.get_stock_real(begin_params)
-        row[:styles] << (s.add_style text_center.deep_merge(border))
-
-        count = Erp::Products::Product.get_qdelivery_import(filters.clone.merge({
-            delivery_type: [
-              Erp::Qdeliveries::Delivery::TYPE_CUSTOM_IMPORT,
-              Erp::Qdeliveries::Delivery::TYPE_PURCHASE_IMPORT
-            ]
-        }))
-        row[:columns] << count
-        row[:styles] << (s.add_style text_center.deep_merge(border))
-
-        @states.each do |state|
-          count = Erp::Products::Product.get_qdelivery_import(filters.clone.merge({
-              delivery_type: [
-                Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT
-              ],
-              state: state
-          }))
-          row[:columns] << count
-          row[:styles] << (s.add_style text_center.deep_merge(number).deep_merge(border))
-        end
-
-        count = Erp::Products::Product.get_qdelivery_export(filters.clone.merge({
-            delivery_type: [
-              Erp::Qdeliveries::Delivery::TYPE_CUSTOM_EXPORT,
-              Erp::Qdeliveries::Delivery::TYPE_SALES_EXPORT
-            ]
-        }))
-        count += Erp::Products::Product.get_gift_given_export(filters)
-        row[:columns] << count
-        row[:styles] << (s.add_style text_center.deep_merge(border))
-
-        count = Erp::Products::Product.get_damage_record_export(filters)
-        count += Erp::Products::Product.get_stock_check_export(filters)
-        row[:columns] << count
-        row[:styles] << (s.add_style text_center.deep_merge(border))
-
-        count = (filters[:state_id].present? ? Erp::Products::Product.get_state_check_export(filters) : '--')
-        row[:columns] << count
-        row[:styles] << (s.add_style text_center.deep_merge(border))
-
+        
         end_params = filters.clone
         end_params[:from_date] = nil
-        row[:columns] << Erp::Products::Product.get_stock_real(end_params)
-        row[:styles] << (s.add_style text_center.deep_merge(border))
+        end_stock = Erp::Products::Product.get_stock_real(end_params)
         
-        row[:columns] << (rw[:note].nil? ? '' : rw[:note])
-        row[:styles] << (s.add_style text_left.deep_merge(border))
-
-        if @is_set_type_selected
-          count = product.get_combine_max_quantity(
-              warehouse_ids: @global_filters["warehouse_ids"],
-              state_ids: @global_filters["state_ids"]
-          )
+        if end_stock >= @global_filters[:min_stock].to_i
+          row[:columns] << (rw[:date].nil? ? '' : format_date(rw[:date]))
+          row[:styles] << (s.add_style text_left.deep_merge(border).deep_merge(middle_align))
+  
+          row[:columns] << product.name
+          row[:styles] << (s.add_style text_left.deep_merge(border).deep_merge(middle_align))
+  
+          row[:columns] << product.category_name
+          row[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(middle_align))
+  
+          row[:columns] << product.unit_name
+          row[:styles] << (s.add_style text_center.deep_merge(border))
+  
+          begin_params = filters.clone
+          begin_params[:to_date] = (filters[:from_date].to_date - 1.day).to_s
+          begin_params[:from_date] = nil
+          row[:columns] << Erp::Products::Product.get_stock_real(begin_params)
+          row[:styles] << (s.add_style text_center.deep_merge(border))
+  
+          count = Erp::Products::Product.get_qdelivery_import(filters.clone.merge({
+              delivery_type: [
+                Erp::Qdeliveries::Delivery::TYPE_CUSTOM_IMPORT,
+                Erp::Qdeliveries::Delivery::TYPE_PURCHASE_IMPORT
+              ]
+          }))
           row[:columns] << count
           row[:styles] << (s.add_style text_center.deep_merge(border))
+  
+          @states.each do |state|
+            count = Erp::Products::Product.get_qdelivery_import(filters.clone.merge({
+                delivery_type: [
+                  Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT
+                ],
+                state: state
+            }))
+            row[:columns] << count
+            row[:styles] << (s.add_style text_center.deep_merge(number).deep_merge(border))
+          end
+  
+          count = Erp::Products::Product.get_qdelivery_export(filters.clone.merge({
+              delivery_type: [
+                Erp::Qdeliveries::Delivery::TYPE_CUSTOM_EXPORT,
+                Erp::Qdeliveries::Delivery::TYPE_SALES_EXPORT
+              ]
+          }))
+          count += Erp::Products::Product.get_gift_given_export(filters)
+          row[:columns] << count
+          row[:styles] << (s.add_style text_center.deep_merge(border))
+  
+          count = Erp::Products::Product.get_damage_record_export(filters)
+          count += Erp::Products::Product.get_stock_check_export(filters)
+          row[:columns] << count
+          row[:styles] << (s.add_style text_center.deep_merge(border))
+  
+          count = (filters[:state_id].present? ? Erp::Products::Product.get_state_check_export(filters) : '--')
+          row[:columns] << count
+          row[:styles] << (s.add_style text_center.deep_merge(border))
+          
+          row[:columns] << end_stock
+          row[:styles] << (s.add_style text_center.deep_merge(border))
+          
+          row[:columns] << (rw[:note].nil? ? '' : rw[:note])
+          row[:styles] << (s.add_style text_left.deep_merge(border))
+  
+          if @is_set_type_selected
+            count = product.get_combine_max_quantity(
+                warehouse_ids: @global_filters["warehouse_ids"],
+                state_ids: @global_filters["state_ids"]
+            )
+            row[:columns] << count
+            row[:styles] << (s.add_style text_center.deep_merge(border))
+          end
+  
+          sheet.add_row row[:columns], style: row[:styles]
         end
-
-        sheet.add_row row[:columns], style: row[:styles]
     end
 
     # Setup
