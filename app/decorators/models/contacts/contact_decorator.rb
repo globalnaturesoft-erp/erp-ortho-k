@@ -248,16 +248,17 @@ Erp::Contacts::Contact.class_eval do
       i_type_2 = 4
       i_type = 3
       i_parent = 11
-
-      i_city = 5
-      i_area = 6
-
+      
+      i_district = 7
+      i_city = 8
+      i_salesperson = 12
+      i_commission_percent = 13
 
 
       row_count = 1
       sheet.each_row_streaming do |row|
         # only rows with data
-        if row_count >= 3 and row[i_name].value.present?
+        if row_count >= 2 and row[i_name].value.present?
           contact = self.new
           contact.name = row[i_name].value.strip
           contact.code = row[i_code].value.strip
@@ -296,6 +297,35 @@ Erp::Contacts::Contact.class_eval do
 
           group = Erp::Contacts::ContactGroup.where("LOWER(name) = ? ", row[i_group].value.downcase.strip).first
           contact.contact_group = group
+          
+          # create group if not exist
+          if group.nil?
+            group = Erp::Contacts::ContactGroup.create(id: 8, name: row[i_group].value.strip)
+          end
+          
+          # create user if group is Nhân viên
+          if group.name == 'Nhân viên'
+            user_email = contact.name.to_ascii.downcase.split(' ').last.strip + "."
+            contact.name.to_ascii.downcase.split(' ')[0..-2].each do |word|
+              user_email += word[0]
+            end
+            user_email += '@fargo.vn'
+            
+            user = Erp::User.where(email: user_email).first
+            
+            if user.nil?
+              user = Erp::User.create(
+                email: user_email,
+                password: "aA456321@",
+                name: contact.name,
+                backend_access: true,
+                confirmed_at: Time.now-1.day,
+                active: true
+              )
+            end
+            
+            contact.user_id = user.id
+          end
 
           # KH or NCC
           if row[i_type].value == 'Nhà cung cấp'
@@ -312,16 +342,73 @@ Erp::Contacts::Contact.class_eval do
           end
 
           # parent
-          pa = self.where(code: row[i_parent].value).first
-          contact.parent = pa
+          if row[i_parent].present?
+            pa = self.where(code: row[i_parent].value).first
+            contact.parent = pa
+          end
 
           # puts contact.to_json
           exist = Erp::Contacts::Contact.where(name: contact.name).first
+          
+          # district
+          if row[i_district].present?
+            district_name = row[i_district].value
+            
+            district = Erp::Areas::District.where("name LIKE ? or LOWER(name) LIKE ?", district_name.strip, district_name.downcase.strip).first
+            
+            contact.district = district
+          end
+          
+          # district
+          if row[i_city].present?
+            state_name = row[i_city].value
+            
+            state = Erp::Areas::State.where("name LIKE ? or LOWER(name) LIKE ?", state_name.strip, state_name.downcase.strip).first
+            
+            #puts "#{state.present?} - #{state_name}"
+            
+            contact.state = state
+          end
+          
+          # country
+          contact.country = Erp::Areas::Country.where(name: "Việt Nam").first
+          
+          # salesperson
+          if row[i_salesperson].present?
+            sp_name = row[i_salesperson].value
+            
+            salesperson = Erp::User.where(name: sp_name.strip).first
+            
+            contact.salesperson = salesperson
+          end
+          
+          # salesperson    
+          contact.commission_percent = row[i_commission_percent].value
+          
+          # contact.save
+          printf "%-10s %-10s %-10s %-40s %-10s %-10s %-10s %-10s %-15s %-25s %-20s %-10s\n",
+            row[i_num],
+            (exist.nil? ? "SUCCESS" : "EXIST"),
+            contact.code,
+            contact.name[0..30],
+            (contact.is_supplier ? "Supplier" : ((contact.is_customer ? "Customer" : '####'))),
+            contact.contact_type,
+            contact.contact_group_name,            
+            (contact.user.present? ? contact.user.name : ''),
+            (contact.state.present? ? contact.state.name : ''),
+            (contact.district.present? ? contact.district.name : ''),
+            (contact.salesperson.present? ? contact.salesperson.name : ''),
+            contact.commission_percent
+          
+          exist = Erp::Contacts::Contact.where(name: contact.name).first
+          
           if exist.nil?
             contact.save
-            printf "%-20s %-20s %-20s %-20s %-20s\n", contact.is_supplier, contact.contact_type, "SUCCESS", contact.contact_group_name, contact.name
+            puts "#{contact.valid?} ########### SAVED"
+            puts ""
           else
-            printf "%-20s %-20s %-20s %-20s %-20s\n", contact.is_supplier, contact.contact_type, "EXIST", contact.contact_group_name, contact.name
+            puts "#{contact.valid?} ########### EXISTS"
+            puts ""
           end
         end
 
