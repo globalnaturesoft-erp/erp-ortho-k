@@ -128,7 +128,7 @@ module Erp
             @to = (glb.present? and glb[:to_date].present?) ? glb[:to_date].to_date : nil
           end
           
-          @categories = Erp::Products::Category.top_categories.all_unarchive
+          @categories = Erp::Products::Category.includes(:children).where(children_erp_products_categories: {id: nil}).all_unarchive
         end
         
         def report_product_sold_xlsx
@@ -143,7 +143,7 @@ module Erp
             @to = (glb.present? and glb[:to_date].present?) ? glb[:to_date].to_date : nil
           end
           
-          @categories = Erp::Products::Category.top_categories.all_unarchive
+          @categories = Erp::Products::Category.includes(:children).where(children_erp_products_categories: {id: nil}).all_unarchive
           
           respond_to do |format|
             format.xlsx {
