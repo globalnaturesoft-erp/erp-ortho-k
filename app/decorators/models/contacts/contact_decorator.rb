@@ -153,25 +153,25 @@ Erp::Contacts::Contact.class_eval do
     # Loc danh sach cac khach hang co phat sinh giao dich (thanh toan, cong no)
     order_query = Erp::Orders::Order.all_confirmed
       .sales_orders
-      .payment_for_contact_orders(from_date: @from, to_date: @to)
+      .payment_for_contact_orders #(from_date: @from, to_date: @to)
       .select('customer_id')
 
     product_return_query = Erp::Qdeliveries::Delivery.all_delivered
       .sales_import_deliveries
-      .get_deliveries_with_payment_for_contact(from_date: @from, to_date: @to)
+      .get_deliveries_with_payment_for_contact #(from_date: @from, to_date: @to)
       .select('customer_id')
 
     payment_query = Erp::Payments::PaymentRecord.all_done
       .select('customer_id')
       .where(payment_type_id: Erp::Payments::PaymentType.find_by_code(Erp::Payments::PaymentType::CODE_CUSTOMER).id)
-      .where("payment_date >= ? AND payment_date <= ?", @from, @to)
+      #.where("payment_date >= ? AND payment_date <= ?", @from, @to)
       
     payment_by_period_query = Erp::Payments::PaymentRecord.all_done
       .joins(:period)
       .select('customer_id')
       .where(payment_type_id: Erp::Payments::PaymentType.find_by_code(Erp::Payments::PaymentType::CODE_CUSTOMER).id)
-      .where("erp_periods_periods.from_date >= ? AND erp_periods_periods.to_date <= ?",
-             @from.beginning_of_month.beginning_of_day, @to.end_of_month.end_of_day)
+      #.where("erp_periods_periods.from_date >= ? AND erp_periods_periods.to_date <= ?",
+      #       @from.beginning_of_month.beginning_of_day, @to.end_of_month.end_of_day)
 
     self.where("erp_contacts_contacts.id IN (?) OR erp_contacts_contacts.id IN (?) OR erp_contacts_contacts.id IN (?) OR erp_contacts_contacts.id IN (?)",
                order_query, product_return_query, payment_query, payment_by_period_query)
@@ -194,25 +194,25 @@ Erp::Contacts::Contact.class_eval do
     # Loc danh sach cac khach hang co phat sinh giao dich (thanh toan, cong no)
     order_query = Erp::Orders::Order.all_confirmed
       .purchase_orders
-      .payment_for_contact_orders(from_date: @from, to_date: @to)
+      .payment_for_contact_orders #(from_date: @from, to_date: @to)
       .select('supplier_id')
 
     product_return_query = Erp::Qdeliveries::Delivery.all_delivered
       .purchase_export_deliveries
-      .get_deliveries_with_payment_for_contact(from_date: @from, to_date: @to)
+      .get_deliveries_with_payment_for_contact #(from_date: @from, to_date: @to)
       .select('supplier_id')
 
     payment_query = Erp::Payments::PaymentRecord.all_done
       .select('supplier_id')
       .where(payment_type_id: Erp::Payments::PaymentType.find_by_code(Erp::Payments::PaymentType::CODE_SUPPLIER).id)
-      .where("payment_date >= ? AND payment_date <= ?", @from, @to)
+      #.where("payment_date >= ? AND payment_date <= ?", @from, @to)
 
     payment_by_period_query = Erp::Payments::PaymentRecord.all_done
       .joins(:period)
       .select('supplier_id')
       .where(payment_type_id: Erp::Payments::PaymentType.find_by_code(Erp::Payments::PaymentType::CODE_SUPPLIER).id)
-      .where("erp_periods_periods.from_date >= ? AND erp_periods_periods.to_date <= ?",
-             @from.beginning_of_month.beginning_of_day, @to.end_of_month.end_of_day)
+      #.where("erp_periods_periods.from_date >= ? AND erp_periods_periods.to_date <= ?",
+      #       @from.beginning_of_month.beginning_of_day, @to.end_of_month.end_of_day)
 
     self.where("erp_contacts_contacts.id IN (?) OR erp_contacts_contacts.id IN (?) OR erp_contacts_contacts.id IN (?) OR erp_contacts_contacts.id IN (?)",
                order_query, product_return_query, payment_query, payment_by_period_query)
