@@ -266,10 +266,11 @@ module Erp
           end
           
           # @todo only show related contacts, lien he co phat sinh moi show
-          @customers = @customers.get_sales_payment_chasing_contacts(
-            from_date: @from,
-            to_date: @to
-          )
+          @customers = @customers.get_sales_payment_chasing_contacts
+          #(
+          #  from_date: @from,
+          #  to_date: @to
+          #)
           
           File.open("tmp/report_customer_liabilities_xlsx.yml", "w+") do |f|
             f.write({
@@ -320,10 +321,11 @@ module Erp
           end
           
           # @todo only show related contacts, lien he co phat sinh moi show
-          @suppliers = @suppliers.get_purchase_payment_chasing_contacts(
-            from_date: @from,
-            to_date: @to
-          )
+          @suppliers = @suppliers.get_purchase_payment_chasing_contacts
+          #(
+          #  from_date: @from,
+          #  to_date: @to
+          #)
           
           File.open("tmp/report_supplier_liabilities_xlsx.yml", "w+") do |f|
             f.write({
