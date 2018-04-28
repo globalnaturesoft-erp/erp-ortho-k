@@ -124,7 +124,7 @@ function checkSchecks() {
 
 $(document).ready(function() {
     getNotification(false);
-    setInterval(function() {getNotification(true);}, 5000);
+    setInterval(function() {getNotification(true);}, 30000);
 
     // Stock importing action
     $(document).on('click', '.custom-submit-button', function(e) {
