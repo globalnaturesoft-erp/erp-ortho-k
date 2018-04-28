@@ -1115,72 +1115,33 @@ module Erp
           if @global_filters[:state_ids].present?
             @states = Erp::Products::State.where(id: @global_filters[:state_ids])
           end
+          
+          File.open("tmp/report_custom_area_v2.yml", "w+") do |f|
+            f.write({
+              global_filters: @global_filters,
+              period: @period,
+              from_date: @from_date,
+              to_date: @to_date,
+              multi_rows: @multi_rows,
+              #product_query: @product_query,
+              states: @states
+            }.to_yaml)
+          end
         end
 
-        def report_custom_area_v2_xlsx
-          @global_filters = params.to_unsafe_hash[:global_filter]
-
-          # if has period
-          if @global_filters[:period].present?
-            @period = Erp::Periods::Period.find(@global_filters[:period])
-            @global_filters[:from_date] = @period.from_date
-            @global_filters[:to_date] = @period.to_date
-          end
-
-          @from_date = @global_filters[:from_date].to_date
-          @to_date = @global_filters[:to_date].to_date
+        def report_custom_area_v2_xlsx          
+          data = YAML.load_file("tmp/report_custom_area_v2.yml")
           
-          if !@from_date.present?
-            @from_date = Time.now.beginning_of_month
-            @global_filters[:from_date] = @from_date
-          end
+          @global_filters = data[:global_filters]
+          @period = data[:period]
+          @from_date = data[:from_date]
+          @to_date = data[:to_date]
+          @multi_rows = data[:multi_rows]
+          #@product_query = data[:product_query]
+          @states = data[:states]
           
-          if !@to_date.present?
-            @to_date = Time.now
-            @global_filters[:to_date] = @to_date
-          end
-          
-          @multi_rows = []
-          
-          @global_filters[:areas].each do |arow|
-              filters = arow[1]
-            
-              # area array
-              rows = []
-              # categories each
-              if filters[:categories].present? and filters[:letters].present? and filters[:numbers_diameters].present?
-                filters[:categories] = filters[:categories].kind_of?(Array) ? filters[:categories] : [filters[:categories]]
-                filters[:categories].each do |category_id|
-                  span = (filters[:letters].count)
-                  row = {category: Erp::Products::Category.find(category_id), letter_groups: [], span: 0}
-    
-                  # letters each
-                  filters[:letters].each do |lrow|
-                    row_2 = {letter_ids: lrow[1], numbers_diameters: []}
-    
-                    # numbers diameters
-                    filters[:numbers_diameters].each do |ndrow|
-                      row_2[:numbers_diameters] << {number_ids: ndrow[1][:numbers], diameter_ids: ndrow[1][:diameters]}
-                    end
-    
-                    # letters
-                    row[:letter_groups] << row_2
-                  end
-    
-                  rows << row
-                end
-              end
-              
-            @multi_rows << rows if !rows.empty?
-          end
-
           @product_query = Erp::Products::Product.get_active
-
-          # state
-          @states = Erp::Products::State.all_active
-          if @global_filters[:state_ids].present?
-            @states = Erp::Products::State.where(id: @global_filters[:state_ids])
-          end
+          
 
           respond_to do |format|
             format.xlsx {
