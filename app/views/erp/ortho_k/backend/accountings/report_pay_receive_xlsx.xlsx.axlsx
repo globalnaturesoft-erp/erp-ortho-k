@@ -64,7 +64,7 @@ wb.styles do |s|
       
       num_col += 1
       column_widths << 30
-    end    
+    end
     if get_columns(params).include?("voucher_date")
       header[:columns] << t('.voucher_date')
       header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(bold))
@@ -104,6 +104,17 @@ wb.styles do |s|
       
       num_col += 1
       column_widths << 15
+      total_merge_col = num_col - 1
+    end
+    if get_columns(params).include?("salesperson") or get_columns(params).empty?
+      header[:columns] << t('.salesperson')
+      header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(bold))
+  
+      footer[:columns] << nil
+      footer[:styles] << (s.add_style bg_footer.deep_merge(border))
+      
+      num_col += 1
+      column_widths << 20
     end
 
     sheet.add_row header[:columns], style: header[:styles], height: 25
@@ -137,6 +148,10 @@ wb.styles do |s|
         row[:columns] << payment_record.amount
         row[:styles] << (s.add_style text_right.deep_merge(vertical_center).deep_merge(number).merge(border))
       end
+      if get_columns(params).include?("salesperson") or get_columns(params).empty?
+        row[:columns] << payment_record.employee_name
+        row[:styles] << (s.add_style text_left.deep_merge(vertical_center).deep_merge(number).merge(border))
+      end
 
       sheet.add_row row[:columns], style: row[:styles]
       num_row += 1
@@ -145,7 +160,7 @@ wb.styles do |s|
     # footer
     sheet.add_row footer[:columns], style: footer[:styles], height: 25
     num_row += 1
-    sheet.merge_cells("#{('A'.codepoints.first).chr}#{num_row}:#{('A'.codepoints.first + (num_col - 1)).chr}#{num_row}")
+    sheet.merge_cells("#{('A'.codepoints.first).chr}#{num_row}:#{('A'.codepoints.first + total_merge_col).chr}#{num_row}")
     
     # setup
     sheet.merge_cells("#{('A'.codepoints.first).chr}4:#{('A'.codepoints.first + num_col).chr}4")

@@ -15,14 +15,14 @@ module Erp
             @to = (@global_filters.present? and @global_filters[:to_date].present?) ? @global_filters[:to_date].to_date : nil
           end
 
-          @payment_records = Erp::Payments::PaymentRecord.search(params)
+          @payment_records = Erp::Payments::PaymentRecord.all_done.search(params)
 
           @payment_records = @payment_records.where(
             payment_type_id: [
               Erp::Payments::PaymentType.find_by_code(Erp::Payments::PaymentType::CODE_CUSTOMER).id,
               Erp::Payments::PaymentType.find_by_code(Erp::Payments::PaymentType::CODE_SALES_ORDER).id
             ]
-          ).order('payment_date ASC')
+          ).order('erp_payments_payment_records.payment_date ASC')
           
           File.open("tmp/report_pay_receive_xlsx.yml", "w+") do |f|
             f.write({
@@ -67,8 +67,8 @@ module Erp
           end
 
           @payment_types = Erp::Payments::PaymentType.all_active
-          @payables = @payment_types.where(is_payable: true).order('name ASC')
-          @receivables = @payment_types.where(is_receivable: true).order('name ASC')
+          @payables = @payment_types.where(is_payable: true).order('erp_payments_payment_types.name ASC')
+          @receivables = @payment_types.where(is_receivable: true).order('erp_payments_payment_types.name ASC')
           
           File.open("tmp/report_synthesis_pay_receive_xlsx.yml", "w+") do |f|
             f.write({
@@ -95,8 +95,8 @@ module Erp
           @receivables = data[:receivables]
           
           @payment_types = Erp::Payments::PaymentType.where(id: (@payment_types.map{|i| i.id}))
-          @payables = @payment_types.where(id: (@payables.map{|i| i.id})).order('name ASC')
-          @receivables = @payment_types.where(id: (@receivables.map{|i| i.id})).order('name ASC')
+          @payables = @payment_types.where(id: (@payables.map{|i| i.id})).order('erp_payments_payment_types.name ASC')
+          @receivables = @payment_types.where(id: (@receivables.map{|i| i.id})).order('erp_payments_payment_types.name ASC')
 
           respond_to do |format|
             format.xlsx {
@@ -164,8 +164,8 @@ module Erp
             @to = (@global_filters.present? and @global_filters[:to_date].present?) ? @global_filters[:to_date].to_date : nil
           end
           
-          @payables = Erp::Payments::PaymentType.get_custom_payment_types.payables.order('name ASC')
-          @receivables = Erp::Payments::PaymentType.get_custom_payment_types.receivables.order('name ASC')
+          @payables = Erp::Payments::PaymentType.get_custom_payment_types.payables.order('erp_payments_payment_types.name ASC')
+          @receivables = Erp::Payments::PaymentType.get_custom_payment_types.receivables.order('erp_payments_payment_types.name ASC')
           
           File.open("tmp/report_income_statement_xlsx.yml", "w+") do |f|
             f.write({
@@ -189,8 +189,8 @@ module Erp
           @payables = data[:payables]
           @receivables = data[:receivables]
           
-          @payables = Erp::Payments::PaymentType.where(id: (@payables.map{|i| i.id})).order('name ASC')
-          @receivables = Erp::Payments::PaymentType.where(id: (@receivables.map{|i| i.id})).order('name ASC')
+          @payables = Erp::Payments::PaymentType.where(id: (@payables.map{|i| i.id})).order('erp_payments_payment_types.name ASC')
+          @receivables = Erp::Payments::PaymentType.where(id: (@receivables.map{|i| i.id})).order('erp_payments_payment_types.name ASC')
           
           respond_to do |format|
             format.xlsx {

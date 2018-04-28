@@ -57,6 +57,9 @@
                 <% if get_columns(params).include?("amount") %>
                     <th width="15%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Số tiền</th>
                 <% end %>
+                <% if get_columns(params).include?("salesperson") %>
+                    <th width="15%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">NV phụ trách</th>
+                <% end %>
             </tr>
         </thead>
         <tbody>
@@ -69,6 +72,9 @@
                     <tr>
                         <td class="bg-green-jungle bg-font-green-jungle text-center" colspan="<%= total_colspan %>"><strong> TỔNG CỘNG </strong></td>
                         <td class="bg-green-jungle bg-font-green-jungle text-right"><strong><%= format_number(@payment_records.remain_amount(from_date: @from, to_date: @to)) %></strong></td>
+                        <% if get_columns(params).include?("salesperson") %>
+                            <td class="bg-green-jungle bg-font-green-jungle text-right"></td>
+                        <% end %>
                     </tr>
                 <% end %>
             <% end %>
@@ -78,7 +84,7 @@
                         <td class="text-center"><%= index+1 %></td>
                     <% end %>
                     <% if get_columns(params).include?("contact_name") %>
-                        <td class="text-left"><%= payment_record.customer_name if payment_record.customer != Erp::Contacts::Contact.get_main_contact %></td>
+                        <td class="text-left"><%= payment_record.customer_name %></td>
                     <% end %>
                     <% if get_columns(params).include?("voucher_date") %>
                         <td class="text-left"><%= format_date(payment_record.payment_date) %></td>
@@ -93,6 +99,9 @@
                     <% end %>
                     <% if get_columns(params).include?("amount") %>
                         <td class="text-right font-yellow-gold"><%= format_number(payment_record.amount) %></td>
+                    <% end %>
+                    <% if get_columns(params).include?("salesperson") %>
+                        <td class="text-left"><%= payment_record.employee_name %></td>
                     <% end %>
                 </tr>
             <% end %>
