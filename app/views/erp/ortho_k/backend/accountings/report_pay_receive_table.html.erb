@@ -84,7 +84,7 @@
                         <td class="text-center"><%= index+1 %></td>
                     <% end %>
                     <% if get_columns(params).include?("contact_name") %>
-                        <td class="text-left"><%= payment_record.customer_name %></td>
+                        <td class="text-left text-nowrap"><%= payment_record.customer_name %></td>
                     <% end %>
                     <% if get_columns(params).include?("voucher_date") %>
                         <td class="text-left"><%= format_date(payment_record.payment_date) %></td>
