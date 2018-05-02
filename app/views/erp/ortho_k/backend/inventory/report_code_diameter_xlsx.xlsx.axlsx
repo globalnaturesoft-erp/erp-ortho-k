@@ -32,7 +32,7 @@ wb.styles do |s|
     product_ids = @product_query.select('id')
     product_ids = -1 if product_ids.count == 0
     filters = @global_filters.clone.merge({product_id: product_ids})
-    filters[:state_id] = Erp::Products::State.get_new_state.id
+    filters[:state_ids] = Erp::Products::State.get_new_state.id
 
     begin_params = filters.clone
     begin_params[:to_date] = (filters[:from_date].to_date - 1.day).to_s
@@ -54,6 +54,11 @@ wb.styles do |s|
             Erp::Qdeliveries::Delivery::TYPE_PURCHASE_IMPORT
           ]
       }))
+    toprow[:columns] << count
+    toprow[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_toprow).deep_merge(bold))
+    
+    count = Erp::Products::Product.get_stock_check_import(filters)
+    count += Erp::Products::Product.get_state_check_import(filters) if filters[:state_ids].present?
     toprow[:columns] << count
     toprow[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_toprow).deep_merge(bold))
 
@@ -88,7 +93,7 @@ wb.styles do |s|
     toprow[:columns] << count
     toprow[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_toprow).deep_merge(bold))
 
-    count = (filters[:state_id].present? ? Erp::Products::Product.get_state_check_export(filters) : '--')
+    count = (filters[:state_ids].present? ? Erp::Products::Product.get_state_check_export(filters) : '--')
     toprow[:columns] << count
     toprow[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_toprow).deep_merge(bold))
 
@@ -126,6 +131,13 @@ wb.styles do |s|
     sheet.merge_cells("#{('A'.codepoints.first + kt).chr}5:#{('A'.codepoints.first + kt).chr}6")
 
     header[:columns] << 'Nhập NCC'
+    header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
+    subheader[:columns] << ''
+    subheader[:styles] << (s.add_style bg_info.deep_merge(text_right).deep_merge(border).merge(bold))
+    kt += 1
+    sheet.merge_cells("#{('A'.codepoints.first + kt).chr}5:#{('A'.codepoints.first + kt).chr}6")
+    
+    header[:columns] << 'Nhập KK'
     header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
     subheader[:columns] << ''
     subheader[:styles] << (s.add_style bg_info.deep_merge(text_right).deep_merge(border).merge(bold))
@@ -186,7 +198,7 @@ wb.styles do |s|
           
         product_ids = -1 if product_ids.count == 0
         filters = @global_filters.clone.merge(product_id: product_ids)
-        filters[:state_id] = Erp::Products::State.get_new_state.id
+        filters[:state_ids] = Erp::Products::State.get_new_state.id
 
         row[:columns] << (diameter_index == 0 ? letter.value : '')
         row[:styles] << (s.add_style text_left.deep_merge(border).deep_merge(middle_align))
@@ -207,6 +219,11 @@ wb.styles do |s|
               Erp::Qdeliveries::Delivery::TYPE_PURCHASE_IMPORT
             ]
         }))
+        row[:columns] << count
+        row[:styles] << (s.add_style text_center.deep_merge(border))
+        
+        count = Erp::Products::Product.get_stock_check_import(filters)
+        count += Erp::Products::Product.get_state_check_import(filters) if filters[:state_ids].present?
         row[:columns] << count
         row[:styles] << (s.add_style text_center.deep_merge(border))
 
@@ -240,7 +257,7 @@ wb.styles do |s|
         row[:columns] << count
         row[:styles] << (s.add_style text_center.deep_merge(border))
 
-        count = (filters[:state_id].present? ? Erp::Products::Product.get_state_check_export(filters) : '--')
+        count = (filters[:state_ids].present? ? Erp::Products::Product.get_state_check_export(filters) : '--')
         row[:columns] << count
         row[:styles] << (s.add_style text_center.deep_merge(border))
 
@@ -256,7 +273,7 @@ wb.styles do |s|
       product_ids = @product_query.select('id').where("erp_products_products.cache_properties LIKE '%[\"#{letter.id}\",%'")
       product_ids = -1 if product_ids.count == 0
       filters = @global_filters.clone.merge({product_id: product_ids})
-      filters[:state_id] = Erp::Products::State.get_new_state.id
+      filters[:state_ids] = Erp::Products::State.get_new_state.id
 
       subrow[:columns] << ''
       subrow[:styles] << (s.add_style text_right.deep_merge(border).deep_merge(bg_subrow).merge(bold))
@@ -276,6 +293,11 @@ wb.styles do |s|
             Erp::Qdeliveries::Delivery::TYPE_PURCHASE_IMPORT
           ]
       }))
+      subrow[:columns] << count
+      subrow[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_subrow).merge(bold))
+      
+      count = Erp::Products::Product.get_stock_check_import(filters)
+      count += Erp::Products::Product.get_state_check_import(filters) if filters[:state_ids].present?
       subrow[:columns] << count
       subrow[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_subrow).merge(bold))
 
@@ -305,7 +327,7 @@ wb.styles do |s|
       subrow[:columns] << count
       subrow[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_subrow).merge(bold))
 
-      count = (filters[:state_id].present? ? Erp::Products::Product.get_state_check_export(filters) : '--')
+      count = (filters[:state_ids].present? ? Erp::Products::Product.get_state_check_export(filters) : '--')
       subrow[:columns] << count
       subrow[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_subrow).merge(bold))
 

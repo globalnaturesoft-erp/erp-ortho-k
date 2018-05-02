@@ -1,4 +1,4 @@
-wb = xlsx_package.workbook
+hwb = xlsx_package.workbook
 xlsx_package.use_autowidth = true
 wb.styles do |s|
   wb.styles.fonts.first.name = 'Calibri'

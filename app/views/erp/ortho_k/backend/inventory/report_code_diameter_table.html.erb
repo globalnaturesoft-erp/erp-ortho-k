@@ -98,7 +98,7 @@
           </td>
           <td class="text-center bg-grey text-bold">
             <%
-                count = (filters[:state_id].present? ? Erp::Products::Product.get_state_check_export(filters) : '--')
+                count = (filters[:state_ids].present? ? Erp::Products::Product.get_state_check_export(filters) : '--')
             %>
             <%= count %>
           </td>
@@ -116,7 +116,7 @@
           <th rowspan="2" class="text-center bg-primary">Đường kính</th>
           <th rowspan="2" class="text-center bg-primary">Dư đầu</th>
           <th rowspan="2" class="text-center bg-primary" title="Nhập NCC">Nhập NCC</th>
-          <th rowspan="2" class="text-center bg-primary" title="Nhập kiểm kho">Nhập KK</th>
+          <th rowspan="2" class="text-center bg-primary" title="Nhập kiểm kho; Kiểm TT">Nhập KK</th>
           <th colspan="<%= @states.count %>" class="text-center bg-primary text-nowrap" title="Khách trả; Ký gửi trả">Hoàn kho</th>
           <th rowspan="2" class="text-center bg-primary" title="Xuất bán; Cho mượn/Ký gửi; Tặng quà">Xuất</th>
           <th rowspan="2" class="text-center bg-primary" title="Hủy kho; Kiểm kho">Xuất KK</th>
@@ -207,7 +207,7 @@
           </td>
           <td class="text-center">
             <%
-              count = (filters[:state_id].present? ? Erp::Products::Product.get_state_check_export(filters) : '--')
+              count = (filters[:state_ids].present? ? Erp::Products::Product.get_state_check_export(filters) : '--')
             %>
             <%= count %>
           </td>
@@ -251,6 +251,7 @@
         <td class="text-center bg-grey text-bold">
             <%
                 count = Erp::Products::Product.get_stock_check_import(filters)
+                count += Erp::Products::Product.get_state_check_import(filters) if filters[:state_ids].present?
             %>
             <%= count %>
         </td>
@@ -292,7 +293,7 @@
         </td>
         <td class="text-center bg-grey text-bold">
           <%
-            count = (filters[:state_id].present? ? Erp::Products::Product.get_state_check_export(filters) : '--')
+            count = (filters[:state_ids].present? ? Erp::Products::Product.get_state_check_export(filters) : '--')
           %>
           <%= count %>
         </td>
