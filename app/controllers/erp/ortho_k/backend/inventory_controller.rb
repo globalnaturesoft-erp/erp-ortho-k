@@ -63,10 +63,18 @@ module Erp
           if @global_filters[:state_ids].present?
             @states = Erp::Products::State.where(id: @global_filters[:state_ids])
           end
+          
+          File.open("tmp/report_category_diameter_#{current_user.id}.yml", "w+") do |f|
+            f.write({
+              global_filters: @global_filters
+            }.to_yaml)
+          end
         end
 
         def report_category_diameter_xlsx
-          @global_filters = params.to_unsafe_hash[:global_filter]
+          data = YAML.load_file("tmp/report_category_diameter_#{current_user.id}.yml")
+          
+          @global_filters = data[:global_filters]
 
           # if has period
           if @global_filters[:period].present?
@@ -98,6 +106,7 @@ module Erp
 
           # product query
           @product_query = Erp::Products::Product.get_active.where(category_id: category_ids)
+
           # filter by diameters
           if !diameter_ids.kind_of?(Array)
             @product_query = @product_query.where("erp_products_products.cache_properties LIKE '%[\"#{diameter_ids}\",%'")
@@ -241,10 +250,19 @@ module Erp
           if @global_filters[:state_ids].present?
             @states = Erp::Products::State.where(id: @global_filters[:state_ids])
           end
+          
+          File.open("tmp/report_product_#{current_user.id}.yml", "w+") do |f|
+            f.write({
+              global_filters: @global_filters,
+              params: params,
+            }.to_yaml)
+          end
         end
 
         def report_product_xlsx
-          @global_filters = params.to_unsafe_hash[:global_filter]
+          data = YAML.load_file("tmp/report_product_#{current_user.id}.yml")
+          params = data[:params]
+          @global_filters = data[:global_filters]
 
           @is_set_type_selected = @global_filters[:categories] == Erp::Products::Category.get_set.id.to_s
 
@@ -419,10 +437,18 @@ module Erp
 
           # warehouses
           @warehouses = Erp::Warehouses::Warehouse.where(id: @global_filters["warehouse_ids"])
+          
+          File.open("tmp/report_central_area_#{current_user.id}.yml", "w+") do |f|
+            f.write({
+              global_filters: @global_filters,
+            }.to_yaml)
+          end
         end
 
         def report_central_area_xlsx
-          @global_filters = params.to_unsafe_hash[:global_filter]
+          data = YAML.load_file("tmp/report_central_area_#{current_user.id}.yml")
+
+          @global_filters = data[:global_filters]
 
           # if has period
           if @global_filters[:period].present?
@@ -510,10 +536,20 @@ module Erp
 
           # warehouses
           @warehouses = Erp::Warehouses::Warehouse.where(id: @global_filters["warehouse_ids"])
+          
+          File.open("tmp/report_warehouse_#{current_user.id}.yml", "w+") do |f|
+            f.write({
+              global_filters: @global_filters,
+            }.to_yaml)
+          end
         end
 
         def report_warehouse_xlsx
-          @global_filters = params.to_unsafe_hash[:global_filter]
+          data = YAML.load_file("tmp/report_warehouse_#{current_user.id}.yml")
+
+          @global_filters = data[:global_filters]
+          
+          
           @to_date = @global_filters[:to_date].to_date          
           if !@to_date.present?
             @to_date = Time.now
@@ -609,10 +645,18 @@ module Erp
               end
             end
           end
+          
+          File.open("tmp/report_custom_area_#{current_user.id}.yml", "w+") do |f|
+            f.write({
+              global_filters: @global_filters,
+            }.to_yaml)
+          end
         end
 
         def report_custom_area_xlsx
-          @global_filters = params.to_unsafe_hash[:global_filter]
+          data = YAML.load_file("tmp/report_custom_area_#{current_user.id}.yml")
+
+          @global_filters = data[:global_filters]
 
           # if has period
           if @global_filters[:period].present?
@@ -821,7 +865,7 @@ module Erp
             end
           end
           
-          File.open("tmp/report_outside_product.yml", "w+") do |f|
+          File.open("tmp/report_outside_product_#{current_user.id}.yml", "w+") do |f|
             f.write({
               period: @period,
               from_date: @from_date,
@@ -833,7 +877,7 @@ module Erp
         end
 
         def report_outside_product_xlsx
-          data = YAML.load_file("tmp/report_outside_product.yml")
+          data = YAML.load_file("tmp/report_outside_product_#{current_user.id}.yml")
           
           @period = data[:period]
           @from_date = data[:from_date]
@@ -944,11 +988,19 @@ module Erp
 
           # products
           @products = @product_query.order('ordered_code, name').paginate(:page => params[:page], :per_page => 20)
+          
+          File.open("tmp/report_product_warehouse_#{current_user.id}.yml", "w+") do |f|
+            f.write({
+              global_filters: @global_filters,
+              params: params,
+            }.to_yaml)
+          end
         end
 
         def report_product_warehouse_xlsx
-          @global_filters = params.to_unsafe_hash[:global_filter]
-          @to_date = @global_filters[:to_date].to_date
+          data = YAML.load_file("tmp/report_product_warehouse_#{current_user.id}.yml")
+          params = data[:params]
+          @global_filters = data[:global_filters]
           
           if !@to_date.present?
             @to_date = Time.now
@@ -1116,7 +1168,7 @@ module Erp
             @states = Erp::Products::State.where(id: @global_filters[:state_ids])
           end
           
-          File.open("tmp/report_custom_area_v2.yml", "w+") do |f|
+          File.open("tmp/report_custom_area_v2_#{current_user.id}.yml", "w+") do |f|
             f.write({
               global_filters: @global_filters,
               period: @period,
@@ -1130,7 +1182,7 @@ module Erp
         end
 
         def report_custom_area_v2_xlsx          
-          data = YAML.load_file("tmp/report_custom_area_v2.yml")
+          data = YAML.load_file("tmp/report_custom_area_v2_#{current_user.id}.yml")
           
           @global_filters = data[:global_filters]
           @period = data[:period]
@@ -1290,7 +1342,7 @@ module Erp
             @matrixes << self.get_product_request_matrixes(filters)
           # end
 
-          File.open("tmp/report_product_request.yml", "w+") do |f|
+          File.open("tmp/report_product_request_#{current_user.id}.yml", "w+") do |f|
             f.write(@matrixes.to_yaml)
           end
 
@@ -1298,7 +1350,7 @@ module Erp
         end
 
         def report_product_request_xlsx
-          @matrixes = YAML.load_file("tmp/report_product_request.yml")
+          @matrixes = YAML.load_file("tmp/report_product_request_#{current_user.id}.yml")
 
           respond_to do |format|
             format.xlsx {
@@ -1447,7 +1499,7 @@ module Erp
             @matrixes << self.get_product_ordered_matrixes(filters)
           # end
 
-          File.open("tmp/report_product_ordered.yml", "w+") do |f|
+          File.open("tmp/report_product_ordered_#{current_user.id}.yml", "w+") do |f|
             f.write(@matrixes.to_yaml)
           end
 
@@ -1455,7 +1507,7 @@ module Erp
         end
 
         def report_product_ordered_xlsx
-          @matrixes = YAML.load_file("tmp/report_product_ordered.yml")
+          @matrixes = YAML.load_file("tmp/report_product_ordered_#{current_user.id}.yml")
 
           respond_to do |format|
             format.xlsx {
@@ -1607,10 +1659,19 @@ module Erp
           if @global_filters[:state_ids].present?
             @states = Erp::Products::State.where(id: @global_filters[:state_ids])
           end
+          
+          File.open("tmp/report_custom_product_#{current_user.id}.yml", "w+") do |f|
+            f.write({
+              global_filters: @global_filters,
+              params: params,
+            }.to_yaml)
+          end
         end
 
         def report_custom_product_xlsx
-          @global_filters = params.to_unsafe_hash[:global_filter]
+          data = YAML.load_file("tmp/report_custom_product_#{current_user.id}.yml")
+          params = data[:params]
+          @global_filters = data[:global_filters]
 
           @is_set_type_selected = @global_filters[:categories] == Erp::Products::Category.get_set.id.to_s
 
@@ -1826,21 +1887,17 @@ module Erp
             @states = Erp::Products::State.where(id: @global_filters[:state_ids])
           end
           
-          File.open("tmp/report_code_diameter.yml", "w+") do |f|
+          File.open("tmp/report_code_diameter_#{current_user.id}.yml", "w+") do |f|
             f.write({
               global_filters: @global_filters,
-              from_date: @from_date,
-              to_date: @to_date,
-              letters: @letters,
-              diameters: @diameters,
-              product_query: @product_query,
-              states: @states
             }.to_yaml)
           end
         end
 
         def report_code_diameter_xlsx
-          @global_filters = params.to_unsafe_hash[:global_filter]
+          data = YAML.load_file("tmp/report_code_diameter_#{current_user.id}.yml")
+          
+          @global_filters = data[:global_filters]
 
           # if has period
           if @global_filters[:period].present?
