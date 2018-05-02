@@ -1374,12 +1374,12 @@ module Erp
           
           if !@from_date.present?
             @from_date = Time.now.beginning_of_month
-            @global_filters[:from_date] = @from_date
+            @global_filter[:from_date] = @from_date
           end
           
           if !@to_date.present?
             @to_date = Time.now
-            @global_filters[:to_date] = @to_date
+            @global_filter[:to_date] = @to_date
           end
 
           # product query
