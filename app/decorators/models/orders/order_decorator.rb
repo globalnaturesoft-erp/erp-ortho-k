@@ -761,14 +761,16 @@ Erp::Orders::Order.class_eval do
           sales_price = product.get_sales_price(quantity: row[1])
           price = sales_price.present? ? sales_price.price : 0.0
         end
-      
-        self.order_details.build(
-          id: nil,
-          product_id: product_id,
-          quantity: row["quantity"],
-          serials: row["serials"],
-          price: price,
-        )
+        
+        if row["quantity"].to_i > 0
+          self.order_details.build(
+            id: nil,
+            product_id: product_id,
+            quantity: row["quantity"],
+            serials: row["serials"],
+            price: price,
+          )
+        end
       end
     end
   end
