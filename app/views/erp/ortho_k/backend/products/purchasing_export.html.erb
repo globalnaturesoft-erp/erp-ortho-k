@@ -20,6 +20,7 @@
     <div class="row">
         <div class="col-md-11 addable-container">
             <div class="addable-boxes border-top" data-pattern=".patterns-matrix">
+                <% box_index = 0 %>
                 <% (0..20).each do |number| %>
                     <% if dfilters["filters[#{number}][categories]"].present? or
                         dfilters["filters[#{number}][diameters]"].present? or
@@ -31,14 +32,14 @@
                                 <div class="col-md-2">
                                     <%= erp_form_control('date', {
                                         label: 'Đến ngày',
-                                        name: 'filters['+number.to_s+'][to_date]',
+                                        name: 'filters['+box_index.to_s+'][to_date]',
                                         value: nil,
                                         placeholder: 'Chọn ngày cuối kỳ'
                                     }) %>
                                 </div>
                                 <div class="col-md-2">
                                     <%= erp_form_control("dataselect", {
-                                        name: 'filters['+number.to_s+'][categories]',
+                                        name: 'filters['+box_index.to_s+'][categories]',
                                         values: (
                                             dfilters["filters[#{number}][categories]"].present? ?
                                             (Erp::Products::Category.where(id: dfilters["filters[#{number}][categories]"]).map{|i| {text: i.name, value: i.id}})
@@ -54,7 +55,7 @@
                                 <div class="col-md-2">
                                     <% diameter = Erp::Products::Property.where(name: "Đường kính").first %>
                                     <%= erp_form_control("dataselect", {
-                                        name: 'filters['+number.to_s+'][diameters]',
+                                        name: 'filters['+box_index.to_s+'][diameters]',
                                         values: (
                                             dfilters["filters[#{number}][diameters]"].present? ?
                                             (Erp::Products::PropertiesValue.where(id: dfilters["filters[#{number}][diameters]"]).map{|i| {text: i.value, value: i.id}})
@@ -69,7 +70,7 @@
                                 </div>
                                 <div class="col-md-2">
                                     <%= erp_form_control("dataselect", {
-                                        name: 'filters['+number.to_s+'][warehouses]',
+                                        name: 'filters['+box_index.to_s+'][warehouses]',
                                         values: (
                                             dfilters["filters[#{number}][warehouses]"].present? ?
                                             (Erp::Warehouses::Warehouse.where(id: dfilters["filters[#{number}][warehouses]"]).map{|i| {text: i.name, value: i.id}})
@@ -83,7 +84,7 @@
                                 </div>
                                 <div class="col-md-2">
                                     <%= erp_form_control("dataselect", {
-                                        name: 'filters['+number.to_s+'][states]',
+                                        name: 'filters['+box_index.to_s+'][states]',
                                         values: (
                                             dfilters["filters[#{number}][states]"].present? ?
                                             (Erp::Products::State.where(id: dfilters["filters[#{number}][states]"]).map{|i| {text: i.name, value: i.id}})
@@ -100,6 +101,7 @@
                                 </div>
                             </div>
                         </div>
+                        <% box_index += 1 %>
                     <% end %>
                 <% end %>
             </div>

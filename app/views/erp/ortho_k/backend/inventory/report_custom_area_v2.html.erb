@@ -66,13 +66,14 @@
     </div>
     <div class=" addable-container">
         <div class="addable-boxes" data-pattern=".patterns-lvl0">
+            <% box1_index = 0 %>
             <% (0..20).each do |number0| %>
                 <% if dfilters["areas[#{number0}][categories]"].present? %>
                     <div class="addable-box">
                         <div class="row">
                             <div class="col-md-3">
                                 <%= erp_form_control("dataselect", {
-                                    name: "areas[#{number0}][categories]",
+                                    name: "areas[#{box1_index}][categories]",
                                     values: (
                                         dfilters["areas[#{number0}][categories]"].present? ?
                                         (Erp::Products::Category.where(id: dfilters["areas[#{number0}][categories]"]).map{|i| {text: i.name, value: i.id}})
@@ -94,7 +95,7 @@
                                                     <div class="col-md-10">
                                                         <% letter = Erp::Products::Property.where(name: "Chữ").first %>
                                                         <%= erp_form_control("dataselect", {
-                                                            name: "areas[#{number0}][letters][#{number}]",
+                                                            name: "areas[#{box1_index}][letters][#{number}]",
                                                             values: (
                                                                 dfilters["areas[#{number0}][letters][#{number}]"].present? ?
                                                                 (Erp::Products::PropertiesValue.where(id: dfilters["areas[#{number0}][letters][#{number}]"]).map{|i| {text: i.value, value: i.id}})
@@ -129,7 +130,7 @@
                                                     <div class="col-md-5">
                                                         <% number = Erp::Products::Property.where(name: "Số").first %>
                                                         <%= erp_form_control("dataselect", {
-                                                            name: "areas[#{number0}][numbers_diameters][#{num}][numbers]",
+                                                            name: "areas[#{box1_index}][numbers_diameters][#{num}][numbers]",
                                                             values: (
                                                                 dfilters["areas[#{number0}][numbers_diameters][#{num}][numbers]"].present? ?
                                                                 (Erp::Products::PropertiesValue.where(id: dfilters["areas[#{number0}][numbers_diameters][#{num}][numbers]"]).map{|i| {text: i.value, value: i.id}})
@@ -145,7 +146,7 @@
                                                     <div class="col-md-5">
                                                         <% diameter = Erp::Products::Property.where(name: "Đường kính").first %>
                                                         <%= erp_form_control("dataselect", {
-                                                            name: "areas[#{number0}][numbers_diameters][#{num}][diameters]",
+                                                            name: "areas[#{box1_index}][numbers_diameters][#{num}][diameters]",
                                                             values: (
                                                                 dfilters["areas[#{number0}][numbers_diameters][#{num}][diameters]"].present? ?
                                                                 (Erp::Products::PropertiesValue.where(id: dfilters["areas[#{number0}][numbers_diameters][#{num}][diameters]"]).map{|i| {text: i.value, value: i.id}})
@@ -170,7 +171,8 @@
                             </div>
                         </div>            
                     </div>
-                <% end %>
+                    <% box1_index += 1 %>
+                <% end %>                
             <% end %>
         </div>
         <div class="text-left mb-10" style="border-top: solid 1px #aaa">
