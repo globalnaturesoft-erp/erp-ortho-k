@@ -24,7 +24,7 @@ function getNotification(show_alert) {
                     current_bagde = '';
                 }
 
-                if (current_bagde.length) {
+                //if (current_bagde.length) {
                     if ((current_bagde.trim() == '' && new_badge.trim() != '') || (new_badge != '' && current_bagde != '' && parseInt(new_badge) > parseInt(current_bagde))) {
                         if (cl == 'notification-inventory_stock_checking_orders_count') {
                             msg = 'Có đơn hàng mới cần kiểm tra';
@@ -39,7 +39,7 @@ function getNotification(show_alert) {
                             new_noti = true;
                         }
                     }
-                }
+                //}
             }
         });
         if (new_noti && show_alert) {
