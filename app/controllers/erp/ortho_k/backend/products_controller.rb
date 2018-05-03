@@ -459,7 +459,7 @@ module Erp
             end
           end
           
-          File.open("tmp/import_export_report_table.yml", "w+") do |f|
+          File.open("tmp/import_export_report_table_#{current_user.id}.yml", "w+") do |f|
             f.write({
               global_filters: @global_filters,
               period: @period,
@@ -476,7 +476,7 @@ module Erp
         end
 
         def import_export_report_xlsx
-          data = YAML.load_file("tmp/import_export_report_table.yml")
+          data = YAML.load_file("tmp/import_export_report_table_#{current_user.id}.yml")
           
           @global_filters = data[:global_filters]
           @period = data[:period]     

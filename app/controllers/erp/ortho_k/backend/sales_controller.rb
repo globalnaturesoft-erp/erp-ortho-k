@@ -79,7 +79,7 @@ module Erp
             end
           end
           
-          File.open("tmp/report_sales_details_xlsx.yml", "w+") do |f|
+          File.open("tmp/report_sales_details_xlsx_#{current_user.id}.yml", "w+") do |f|
             f.write({
               global_filters: @global_filters,
               period: @period,
@@ -97,7 +97,7 @@ module Erp
         
         # Xuat file excel //So chi tiet ban hang
         def report_sales_details_xlsx
-          data = YAML.load_file("tmp/report_sales_details_xlsx.yml")
+          data = YAML.load_file("tmp/report_sales_details_xlsx_#{current_user.id}.yml")
           
           @global_filters = data[:global_filters]
           @period = data[:period]
