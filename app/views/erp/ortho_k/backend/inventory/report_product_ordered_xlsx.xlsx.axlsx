@@ -39,8 +39,8 @@ wb.styles do |s|
           italic = {i: true}
 
           # Top head
-          sheet.add_row ["CÔNG TY TNHH ORTHO-K VIỆT NAM"], b: true
-          sheet.add_row ["535 An Dương Vương, P.8, Q.5, TP. Hồ Chí Minh"], b: true
+          sheet.add_row ["Chi nhánh tại Hà Nội - Công ty TNHH Ortho-K Việt Nam"], b: true
+          sheet.add_row ["87 Trần Quang Diệu, Phường Quang Trung, Quận Đống Đa, Hà Nội"], b: true
 
           # add empty row
           sheet.add_row ['']
