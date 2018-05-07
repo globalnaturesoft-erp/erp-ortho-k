@@ -2492,13 +2492,14 @@ Erp::Products::Product.class_eval do
 
         products = Erp::Products::Product.where('erp_products_products.name LIKE ?', pname)
 
-        # min
-        if options[:min_stock].present?
-          products = products.where('cache_stock >= ?', options[:min_stock])
-        end
+        ## min
+        #if options[:min_stock].present?
+        #  products = products.where('cache_stock >= ?', options[:min_stock])
+        #end
 
         products.each do |p|
-          a_products << {product: p, index: item[:index]} if p.cache_stock.to_i > 0
+          stock = p.get_stock(warehouse_id: options[:warehouse_id])
+          a_products << {product: p, index: item[:index], stock: stock} if stock >= options[:min_stock].to_i
         end
       end
     end
