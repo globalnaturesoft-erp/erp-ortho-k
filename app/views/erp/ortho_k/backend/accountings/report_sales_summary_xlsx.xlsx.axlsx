@@ -106,7 +106,7 @@ wb.styles do |s|
     row[:columns] = []
     row[:columns] << ''
     row[:styles] << (s.add_style text_center.deep_merge(border))
-    row[:columns] << 'Tổng bán'
+    row[:columns] << 'Tổng trả'
     row[:styles] << (s.add_style bold.deep_merge(border))
     row[:columns] << @data[:returns][:total][:quantity]
     row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border).merge(bold))
