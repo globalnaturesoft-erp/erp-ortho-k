@@ -952,7 +952,19 @@ vi:
           report_sell_and_return_table:
             please_select_filter: "Vui lòng chọn thời gian trên bộ lọc"
             no_matching_records_found: "Nội dung báo cáo không được tìm thấy. Vui lòng chọn các điều kiện khác để xem."
-          report_sell_and_return_xlsx:
+          report_sell_and_return_order_xlsx:
+            ordinal_number: "STT"
+            customer_name: "Khách hàng"
+            patient_name: "Bệnh nhân"
+            patient_state_name: "TT BN"
+            employee_name: "NV phụ trách"
+            product_name: "Sản phẩm"
+            quantity: "Số lượng"
+            price: "Đơn giá"
+            discount: "Giảm giá"
+            amount: "Thành tiền"
+            note: "Ghi chú"
+          report_sell_and_return_state_xlsx:
             ordinal_number: "STT"
             customer_name: "Khách hàng"
             patient_name: "Bệnh nhân"

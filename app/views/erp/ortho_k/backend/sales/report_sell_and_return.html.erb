@@ -88,6 +88,20 @@
             }) %>
         </div>
     </div>
+    <div class="row">
+        <div class="col-md-3">
+            <%= erp_form_control('select', {
+                name: 'group_by',
+                label: 'Nhóm theo',
+                value: (dfilters["group_by"].present? ? dfilters["group_by"] : nil),
+                placeholder: 'Chọn nhóm theo...',
+                options: [
+                    {text: "Chứng từ", value: 'order'},
+                    {text: "Trạng thái", value: 'state'},
+                ]
+            }) %>
+        </div>
+    </div>
 <% end %>
 
 <%= erp_datalist(
@@ -97,7 +111,7 @@
             text: t('.patient'), name: 'patient', value: true, checked: false
         },
         {
-            text: t('.patient_state'), name: 'patient_state', value: true, checked: false
+            text: 'Tình trạng', name: 'patient_state', value: true, checked: false
         }
     ]
 ) %>
