@@ -4,7 +4,7 @@ module Erp
       class SalesController < Erp::Backend::BackendController
         # Bao cao ban va tra hang
         def report_sell_and_return_table
-                      glb = params.to_unsafe_hash[:global_filter]
+          glb = params.to_unsafe_hash[:global_filter]
           @global_filters = params.to_unsafe_hash[:global_filter]
           if @global_filters[:period].present?
             @period_name = Erp::Periods::Period.find(@global_filters[:period]).name
@@ -21,6 +21,15 @@ module Erp
           @deliveries = Erp::Qdeliveries::Delivery.all_delivered.search(params)
                           .where(delivery_type: Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT)
           
+          if glb[:group_by] == 'state'
+            @order_details = Erp::Orders::OrderDetail.includes(:order).where(order_id: @orders.select(:id)).order("erp_orders_orders.patient_state_id")
+            @delivery_details = Erp::Qdeliveries::DeliveryDetail.where(delivery_id: @deliveries.select(:id))
+            
+            # order details rows
+            @od_rows = @order_details.group_by { |d| d.order.patient_state }
+            @dd_rows = @delivery_details.group_by { |d| d.state }
+          end
+          
           File.open("tmp/report_sell_and_return_xlsx.yml", "w+") do |f|
             f.write({
               global_filters: @global_filters,
@@ -28,9 +37,13 @@ module Erp
               from_date: @from,
               to_date: @to,
               orders: @orders,
-              deliveries: @deliveries
+              deliveries: @deliveries,
+              od_rows: @od_rows,
+              dd_rows: @dd_rows,
             }.to_yaml)
           end
+          
+          render "report_sell_and_return_#{glb[:group_by]}_table"
         end
 
         def report_sell_and_return_xlsx
@@ -42,13 +55,15 @@ module Erp
           @to = data[:to_date]
           @orders = data[:orders]
           @deliveries = data[:deliveries]
+          @od_rows = data[:od_rows]
+          @dd_rows = data[:dd_rows]
           
           @orders = Erp::Orders::Order.where(id: (@orders.map{|i| i.id}))
           @deliveries = Erp::Qdeliveries::Delivery.where(id: (@deliveries.map{|i| i.id}))
 
           respond_to do |format|
             format.xlsx {
-              response.headers['Content-Disposition'] = 'attachment; filename="Bao cao ban va tra hang.xlsx"'
+              render xlsx: "report_sell_and_return_#{@global_filters[:group_by]}_xlsx", filename: "Bao cao ban va tra hang.xlsx"
             }
           end
         end
