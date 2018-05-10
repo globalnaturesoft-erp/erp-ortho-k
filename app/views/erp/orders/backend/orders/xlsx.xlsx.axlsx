@@ -221,7 +221,7 @@ wb.styles do |s|
       
       num_col += 1
     end
-    if get_columns(params).include?("discount")
+    if get_columns(params).include?("discount") or get_columns(params).empty?
       header[:columns] << t('.discount')
       header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border))
 
@@ -237,7 +237,7 @@ wb.styles do |s|
       num_col += 1
     end
     col_total = 0
-    if get_columns(params).include?("total")
+    if get_columns(params).include?("total") or get_columns(params).empty?
       header[:columns] << t('.total')
       header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border))
 
@@ -253,7 +253,7 @@ wb.styles do |s|
       num_col += 1
       col_total = num_col
     end
-    if get_columns(params).include?("note")
+    if get_columns(params).include?("note") or get_columns(params).empty?
       header[:columns] << t('.note')
       header[:styles] << (s.add_style bg_info.deep_merge(border).deep_merge(text_middle))
 
@@ -292,11 +292,11 @@ wb.styles do |s|
         row[:columns] << order_detail.product_unit_name
         row[:styles] << (s.add_style text_center.deep_merge(border))
       end
-      if get_columns(params).include?("serials")
+      if get_columns(params).include?("serials") or get_columns(params).empty?
         row[:columns] << order_detail.serials
         row[:styles] << (s.add_style text_center.deep_merge(border))
       end
-      if get_columns(params).include?("eye_position")
+      if get_columns(params).include?("eye_position") or get_columns(params).empty?
         row[:columns] << order_detail.display_eye_position
         row[:styles] << (s.add_style text_center.deep_merge(border))
       end
@@ -312,15 +312,15 @@ wb.styles do |s|
         row[:columns] << order_detail.subtotal
         row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
       end
-      if get_columns(params).include?("discount")
+      if get_columns(params).include?("discount") or get_columns(params).empty?
         row[:columns] << order_detail.discount_amount
         row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
       end
-      if get_columns(params).include?("total")
+      if get_columns(params).include?("total") or get_columns(params).empty?
         row[:columns] << order_detail.total
         row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
       end
-      if get_columns(params).include?("note")
+      if get_columns(params).include?("note") or get_columns(params).empty?
         row[:columns] << order_detail.description
         row[:styles] << (s.add_style border)
       end
