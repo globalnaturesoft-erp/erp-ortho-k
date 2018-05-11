@@ -22,4 +22,32 @@ Erp::Qdeliveries::DeliveryDetail.class_eval do
   def patient_state_name
     (patient_state.present? ? patient_state.name : '')
   end
+  
+  def get_patient
+    # patient from order first
+    if self.delivery.get_related_order.present?
+      return delivery.get_related_order.patient
+    end
+    
+    #
+    return self.patient
+  end
+  
+  def get_patient_name
+    self.get_patient.present? ? self.get_patient.name : ''
+  end
+  
+  def get_patient_state
+    # patient from order first
+    if self.delivery.get_related_order.present?
+      return self.delivery.get_related_order.patient_state
+    end
+    
+    #
+    return self.patient_state
+  end
+  
+  def get_patient_state_name
+    self.get_patient_state.present? ? self.get_patient_state.name : ''
+  end
 end

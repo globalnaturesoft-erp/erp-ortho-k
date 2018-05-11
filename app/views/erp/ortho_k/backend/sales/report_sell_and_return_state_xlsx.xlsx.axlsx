@@ -376,12 +376,12 @@ wb.styles do |s|
         row[:styles] << (s.add_style text_left.deep_merge(border))
         
         if get_columns(params).include?("patient")
-          row[:columns] << (delivery.get_related_order.present? ? delivery.get_related_order.patient_name : nil)
+          row[:columns] << delivery_detail.get_patient_name
           row[:styles] << (s.add_style text_left.deep_merge(border))
         end
         
         if get_columns(params).include?("patient_state")
-          row[:columns] << (state.present? ? state.name : '')
+          row[:columns] << delivery_detail.get_patient_state_name
           row[:styles] << (s.add_style text_left.deep_merge(border))
         end
         

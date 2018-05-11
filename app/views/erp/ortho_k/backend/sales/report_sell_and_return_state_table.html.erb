@@ -151,12 +151,12 @@
                         <td class="text-left bold"><%= delivery.customer_name %></td>
                         <% if get_columns(params).include?("patient") %>
                             <td class="text-left">
-                                <%= delivery.get_related_order.patient_name if delivery.get_related_order.present? %>
+                                <%= delivery_detail.get_patient_name %>
                             </td>
                         <% end %>
                         <% if get_columns(params).include?("patient_state") %>
                             <td class="text-left">
-                                <%= state.name if state.present? %>
+                                <%= delivery_detail.get_patient_state_name %>
                             </td>
                         <% end %>
                         <% if get_columns(params).include?("product_state") %>
