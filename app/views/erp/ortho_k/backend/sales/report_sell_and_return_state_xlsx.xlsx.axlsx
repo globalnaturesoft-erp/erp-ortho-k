@@ -35,11 +35,13 @@ wb.styles do |s|
     row_num = 5
     
     add_patient_num = (get_columns(params).include?("patient") ? 1 : 0) +
-                      (get_columns(params).include?("patient_state") ? 1 : 0)
+                      (get_columns(params).include?("patient_state") ? 1 : 0) +
+                      (get_columns(params).include?("product_state") ? 1 : 0)
     
     patient_col_widths = []
     patient_col_widths << 15 if get_columns(params).include?("patient")
     patient_col_widths << 15 if get_columns(params).include?("patient_state")
+    patient_col_widths << 15 if get_columns(params).include?("product_state")
     
     # ============================= SALES REPORT ================================
     # add empty row
@@ -206,6 +208,11 @@ wb.styles do |s|
       subrow[:styles] << (s.add_style text_left.deep_merge(border).deep_merge(bg_subrow))
       
       if get_columns(params).include?("patient")
+        subrow[:columns] << nil
+        subrow[:styles] << (s.add_style text_left.deep_merge(border).deep_merge(bg_subrow))
+      end
+      
+      if get_columns(params).include?("patient_state")
         subrow[:columns] << nil
         subrow[:styles] << (s.add_style text_left.deep_merge(border).deep_merge(bg_subrow))
       end
