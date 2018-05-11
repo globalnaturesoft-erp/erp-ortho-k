@@ -5,10 +5,12 @@
     <%
         sales_total_colspan = 7 +
             (get_columns(params).include?("patient") ? 1 : 0) +
-            (get_columns(params).include?("patient_state") ? 1 : 0)
+            (get_columns(params).include?("patient_state") ? 1 : 0) +
+            (get_columns(params).include?("product_state") ? 1 : 0)
         return_total_colspan = 6 +
             (get_columns(params).include?("patient") ? 1 : 0) +
-            (get_columns(params).include?("patient_state") ? 1 : 0)
+            (get_columns(params).include?("patient_state") ? 1 : 0) +
+            (get_columns(params).include?("product_state") ? 1 : 0)
     %>
     
     <div class="text-right mb-10">
@@ -41,6 +43,9 @@
                     <th class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Bệnh nhân</th>
                 <% end %>
                 <% if get_columns(params).include?("patient_state") %>
+                    <th class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">TT BN</th>
+                <% end %>
+                <% if get_columns(params).include?("product_state") %>
                     <th class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">TT SP</th>
                 <% end %>
                 <th class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">NV phụ trách</th>
@@ -64,10 +69,13 @@
                         <td class="text-center text-center"><%= index %></td>
                         <td class="text-left bold"><%= order.customer_name %></td>
                         <% if get_columns(params).include?("patient") %>
-                            <td class="text-left bold"><%= order.patient_name %></td>
+                            <td class="text-left"><%= order.patient_name %></td>
                         <% end %>
                         <% if get_columns(params).include?("patient_state") %>
-                            <td class="text-left bold"><%= order.patient_state_name %></td>
+                            <td class="text-left"><%= order.patient_state_name %></td>
+                        <% end %>
+                        <% if get_columns(params).include?("product_state") %>
+                            <td class="text-left">Mới</td>
                         <% end %>
                         <td class="text-center"><%= order.customer.salesperson_name %></td>
                         <td class="text-justify"><%= order_detail.product_name %></td>
@@ -117,7 +125,10 @@
                     <th class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Bệnh nhân</th>
                 <% end %>
                 <% if get_columns(params).include?("patient_state") %>
-                    <th class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">TTBN</th>
+                    <th class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">TT BN</th>
+                <% end %>
+                <% if get_columns(params).include?("product_state") %>
+                    <th class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">TT SP</th>
                 <% end %>
                 <th class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">NV phụ trách</th>
                 <th class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Sản phẩm</th>
@@ -139,12 +150,17 @@
                         <td class="text-center text-center"><%= index %></td>
                         <td class="text-left bold"><%= delivery.customer_name %></td>
                         <% if get_columns(params).include?("patient") %>
-                            <td class="text-left bold">
+                            <td class="text-left">
                                 <%= delivery.get_related_order.patient_name if delivery.get_related_order.present? %>
                             </td>
                         <% end %>
                         <% if get_columns(params).include?("patient_state") %>
-                            <td class="text-left bold">
+                            <td class="text-left">
+                                <%= state.name if state.present? %>
+                            </td>
+                        <% end %>
+                        <% if get_columns(params).include?("product_state") %>
+                            <td class="text-left">
                                 <%= delivery_detail.state_name %>
                             </td>
                         <% end %>

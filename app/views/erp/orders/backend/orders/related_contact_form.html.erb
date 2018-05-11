@@ -21,13 +21,7 @@
             modal_size: "full"
         },
     }) %>
-
-    <div class="ajax-box"
-        data-url='<%= erp_ortho_k.patient_info_backend_orders_path(patient_id: @order.patient_id, order_id: @order.id) %>'
-        data-control='input[name="order[patient_id]"]'
-        >
-
-    </div>
+    <div class="padding: 10px;"></div>
  <% end %>
 
  <% if [Erp::Contacts::ContactGroup.get_hospital,

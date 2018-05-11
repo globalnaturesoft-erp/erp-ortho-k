@@ -89,7 +89,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-2">
             <%= erp_form_control('select', {
                 name: 'group_by',
                 label: 'Nhóm theo',
@@ -101,6 +101,9 @@
                 ]
             }) %>
         </div>
+        <div class="col-md-10 mt-25 text-right">
+            <a class="btn btn-primary global-filter-button">Báo cáo</a>
+        </div>
     </div>
 <% end %>
 
@@ -111,7 +114,12 @@
             text: t('.patient'), name: 'patient', value: true, checked: false
         },
         {
-            text: 'Tình trạng', name: 'patient_state', value: true, checked: false
+            text: 'TT BN', name: 'patient_state', value: true, checked: false
+        },
+        {
+            text: 'TT SP', name: 'product_state', value: true, checked: false
         }
-    ]
+    ],
+    autoload: false,
+    placeholder: 'Vui lòng chọn vùng cần xem và nhấn Báo cáo'
 ) %>

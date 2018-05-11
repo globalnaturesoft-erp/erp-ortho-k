@@ -27,7 +27,7 @@ module Erp
             
             # order details rows
             @od_rows = @order_details.group_by { |d| d.order.patient_state }
-            @dd_rows = @delivery_details.group_by { |d| d.state }
+            @dd_rows = @delivery_details.group_by { |d| (d.delivery.get_related_order.present? ? d.delivery.get_related_order.patient_state : nil) }
           end
           
           File.open("tmp/report_sell_and_return_xlsx.yml", "w+") do |f|
