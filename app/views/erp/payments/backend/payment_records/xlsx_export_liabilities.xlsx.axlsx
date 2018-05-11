@@ -843,8 +843,8 @@ wb.styles do |s|
     end
     
     num_col += 1
-    begin_sales_debt_by_period_amount = @customer.sales_debt_by_period_amount(to_date: (@from - 1.day))
-    rw1[:columns] << begin_sales_debt_by_period_amount
+    begin_sales_debt_amount = @customer.sales_debt_amount(to_date: (@from - 1.day))
+    rw1[:columns] << begin_sales_debt_amount
     rw1[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border_dotted_bottom).deep_merge(bold))
     
     sales_order_total_amount = @orders.sum(:cache_total)
@@ -859,12 +859,12 @@ wb.styles do |s|
     rw4[:columns] << period_amount
     rw4[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border_dotted_bottom).deep_merge(bold))
     
-    sales_paid_by_period_amount = @customer.sales_paid_by_period_amount(from_date: @from, to_date: @to)
-    rw5[:columns] << sales_paid_by_period_amount
+    sales_paid_amount = @customer.sales_paid_amount(from_date: @from, to_date: @to)
+    rw5[:columns] << sales_paid_amount
     rw5[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border_dotted_bottom))
     
-    end_sales_debt_by_period_amount = @customer.sales_debt_by_period_amount(to_date: @to)
-    rw6[:columns] << end_sales_debt_by_period_amount
+    end_sales_debt_amount = @customer.sales_debt_amount(to_date: @to)
+    rw6[:columns] << end_sales_debt_amount
     rw6[:styles] << (s.add_style bg_footer.deep_merge(text_right).deep_merge(number).deep_merge(border_dotted_bottom).deep_merge(bold))
     
     sheet.add_row rw1[:columns], style: rw1[:styles]
@@ -886,20 +886,11 @@ wb.styles do |s|
     num_row += 1
     sheet.merge_cells("#{('A'.codepoints.first + 1).chr}#{num_row}:#{('A'.codepoints.first + 5 + add_patient_num).chr}#{num_row}")
     
-    
-    # ############################ Footer Signature ############################
-    
     # add empty row
     sheet.add_row [nil]
     num_row += 1
-    sheet.add_row ["\'- Số này có 2 trang, đánh số từ trang số 1 đến trang 2"]
-    num_row += 1
-    sheet.add_row ["\'- Ngày mở sổ ....."]
-    num_row += 1
-    sheet.add_row [nil]
-    num_row += 1
-    sheet.add_row [nil]
-    num_row += 1
+    
+    # ############################ Footer Signature ############################
     
     sign = {columns: [], styles: []}
     sign1 = {columns: [], styles: []}
