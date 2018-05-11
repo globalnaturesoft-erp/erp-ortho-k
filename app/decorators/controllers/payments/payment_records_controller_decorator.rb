@@ -667,7 +667,7 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
           sheet.merge_cells("#{('A'.codepoints.first + c).chr}#{num_row+1}:#{('A'.codepoints.first + c).chr}#{num_row+2}")
           
           if params[:patient_col].present?
-            header_2[:columns] << 'Bênh nhân'
+            header_2[:columns] << 'Bệnh nhân'
             header_2[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
             subheader_2[:columns] << nil
             subheader_2[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
@@ -712,7 +712,7 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
           
           header_2[:columns] << 'Doanh thu trả lại'
           header_2[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))    
-          subheader_2[:columns] << 'Giá mua'
+          subheader_2[:columns] << 'Đơn giá'
           subheader_2[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
           c += 1
           sheet.merge_cells("#{('A'.codepoints.first + c).chr}#{num_row+1}:#{('A'.codepoints.first + (c+return_price_merge_num)).chr}#{num_row+1}")
@@ -1024,22 +1024,22 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
         rw6 = {columns: [], styles: []}
         
         rw1[:columns] << '1'
-        rw1[:styles] << (s.add_style text_center.deep_merge(bold).deep_merge(border).deep_merge(border_dotted_bottom))
+        rw1[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(border_dotted_bottom))
         num_row_total_1 = num_row + 1
         rw2[:columns] << '2'
-        rw2[:styles] << (s.add_style text_center.deep_merge(italic).deep_merge(border).deep_merge(border_dotted_bottom))
+        rw2[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(border_dotted_bottom))
         num_row_total_2 = num_row + 2
         rw3[:columns] << '3'
-        rw3[:styles] << (s.add_style text_center.deep_merge(italic).deep_merge(border).deep_merge(border_dotted_bottom))
+        rw3[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(border_dotted_bottom))
         num_row_total_3 = num_row + 3
         rw4[:columns] << '4'
-        rw4[:styles] << (s.add_style text_center.deep_merge(bold).deep_merge(border).deep_merge(border_dotted_bottom))
+        rw4[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(border_dotted_bottom))
         num_row_total_4 = num_row + 4
         rw5[:columns] << '5'
         rw5[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(border_dotted_bottom))
         num_row_total_5 = num_row + 5
         rw6[:columns] << '6'
-        rw6[:styles] << (s.add_style bg_footer.deep_merge(text_center).deep_merge(bold).deep_merge(border).deep_merge(border_dotted_bottom))
+        rw6[:styles] << (s.add_style bg_footer.deep_merge(text_center).deep_merge(border).deep_merge(border_dotted_bottom))
         num_row_total_6 = num_row + 6
         num_col = 0
         
@@ -1074,8 +1074,8 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
         end
         
         num_col += 1
-        begin_sales_debt_amount = @customer.sales_debt_amount(to_date: (@from - 1.day))
-        rw1[:columns] << begin_sales_debt_amount
+        begin_sales_debt_by_period_amount = @customer.sales_debt_by_period_amount(to_date: (@from - 1.day))
+        rw1[:columns] << begin_sales_debt_by_period_amount
         rw1[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border_dotted_bottom).deep_merge(bold))
         
         sales_order_total_amount = @orders.sum(:cache_total)
@@ -1090,12 +1090,12 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
         rw4[:columns] << period_amount
         rw4[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border_dotted_bottom).deep_merge(bold))
         
-        sales_paid_amount = @customer.sales_paid_amount(from_date: @from, to_date: @to)
-        rw5[:columns] << sales_paid_amount
+        sales_paid_by_period_amount = @customer.sales_paid_by_period_amount(from_date: @from, to_date: @to)
+        rw5[:columns] << sales_paid_by_period_amount
         rw5[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border_dotted_bottom))
         
-        end_sales_debt_amount = @customer.sales_debt_amount(to_date: @to)
-        rw6[:columns] << end_sales_debt_amount
+        end_sales_debt_by_period_amount = @customer.sales_debt_by_period_amount(to_date: @to)
+        rw6[:columns] << end_sales_debt_by_period_amount
         rw6[:styles] << (s.add_style bg_footer.deep_merge(text_right).deep_merge(number).deep_merge(border_dotted_bottom).deep_merge(bold))
         
         sheet.add_row rw1[:columns], style: rw1[:styles]
@@ -1158,12 +1158,18 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
         sign[:styles] << (s.add_style {})
         sign[:columns] << nil
         sign[:styles] << (s.add_style {})
-        sign[:columns] << nil
-        sign[:styles] << (s.add_style {})
-        sign[:columns] << nil
-        sign[:styles] << (s.add_style {})
-        sign[:columns] << nil
-        sign[:styles] << (s.add_style {})
+        if params[:return_amount_col].present?
+          sign[:columns] << nil
+          sign[:styles] << (s.add_style {})
+        end
+        if params[:return_discount_col].present?
+          sign[:columns] << nil
+          sign[:styles] << (s.add_style {})
+        end
+        if params[:return_total_col].present?
+          sign[:columns] << nil
+          sign[:styles] << (s.add_style {})
+        end
         sign[:columns] << Time.now.strftime('Ngày %d tháng %m năm %Y')
         sign[:styles] << (s.add_style text_center.merge(italic))
         
@@ -1189,12 +1195,18 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
         sign1[:styles] << (s.add_style {})
         sign1[:columns] << nil
         sign1[:styles] << (s.add_style {})
-        sign1[:columns] << nil
-        sign1[:styles] << (s.add_style {})
-        sign1[:columns] << nil
-        sign1[:styles] << (s.add_style {})
-        sign1[:columns] << nil
-        sign1[:styles] << (s.add_style {})
+        if params[:return_amount_col].present?
+          sign1[:columns] << nil
+          sign1[:styles] << (s.add_style {})
+        end
+        if params[:return_discount_col].present?
+          sign1[:columns] << nil
+          sign1[:styles] << (s.add_style {})
+        end
+        if params[:return_total_col].present?
+          sign1[:columns] << nil
+          sign1[:styles] << (s.add_style {})
+        end
         sign1[:columns] << 'Kế toán trưởng'
         sign1[:styles] << (s.add_style text_center.merge(bold))
         
@@ -1220,12 +1232,18 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
         sign2[:styles] << (s.add_style {})
         sign2[:columns] << nil
         sign2[:styles] << (s.add_style {})
-        sign2[:columns] << nil
-        sign2[:styles] << (s.add_style {})
-        sign2[:columns] << nil
-        sign2[:styles] << (s.add_style {})
-        sign2[:columns] << nil
-        sign2[:styles] << (s.add_style {})
+        if params[:return_amount_col].present?
+          sign2[:columns] << nil
+          sign2[:styles] << (s.add_style {})
+        end
+        if params[:return_discount_col].present?
+          sign2[:columns] << nil
+          sign2[:styles] << (s.add_style {})
+        end
+        if params[:return_total_col].present?
+          sign2[:columns] << nil
+          sign2[:styles] << (s.add_style {})
+        end
         sign2[:columns] << '(Ký, họ tên)'
         sign2[:styles] << (s.add_style text_center.merge(italic))
         
@@ -1244,15 +1262,27 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
           patient_col_widths << 10
         end
         
+        price_col_widths = []
+        if params[:return_amount_col].present? or params[:sales_total_without_tax_col].present?
+          price_col_widths << 12
+        end
+        if params[:return_discount_col].present? or params[:sales_discount_col].present?
+          price_col_widths << 12
+        end
+        if params[:return_total_col].present? or params[:sales_total_col].present?
+          price_col_widths << 12
+        end
+        if params[:sales_tax_col].present?
+          price_col_widths << 12
+        end
+        
         # Setup
         sheet.merge_cells("#{('A'.codepoints.first).chr}4:#{('A'.codepoints.first + (c.to_i)).chr}4")
         sheet.merge_cells("#{('A'.codepoints.first).chr}5:#{('A'.codepoints.first + (c.to_i)).chr}5")
         sheet.merge_cells("#{('A'.codepoints.first).chr}6:#{('A'.codepoints.first + (c.to_i)).chr}6")
-        sheet.column_widths 15, 15, 35, *patient_col_widths, 7, 7, 10, 12, 12, 12, 12, 12, 12, 12
+        sheet.column_widths 15, 15, 40, *patient_col_widths, 7, 7, 10, 12, *price_col_widths, 12, 12
       end
     end
-
-
     
     xlsx_package.serialize (tmp_path + file_name)
   end
