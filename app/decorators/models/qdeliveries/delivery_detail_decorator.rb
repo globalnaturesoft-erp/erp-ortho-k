@@ -23,15 +23,19 @@ Erp::Qdeliveries::DeliveryDetail.class_eval do
     (patient_state.present? ? patient_state.name : '')
   end
   
+  def get_order
+    self.order_detail.present? ? self.order_detail.order : nil
+  end
+  
   def get_patient
     # patient from order first
-    if self.delivery.get_related_order.present?
-      return delivery.get_related_order.patient
+    if self.get_order.present?
+      return self.get_order.patient
     end
     
     #
     return self.patient
-  end
+  end 
   
   def get_patient_name
     self.get_patient.present? ? self.get_patient.name : ''
@@ -39,8 +43,8 @@ Erp::Qdeliveries::DeliveryDetail.class_eval do
   
   def get_patient_state
     # patient from order first
-    if self.delivery.get_related_order.present?
-      return self.delivery.get_related_order.patient_state
+    if self.get_order.present?
+      return self.get_order.patient_state
     end
     
     #
