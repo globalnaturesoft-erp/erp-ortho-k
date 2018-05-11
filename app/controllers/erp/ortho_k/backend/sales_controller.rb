@@ -21,13 +21,19 @@ module Erp
           @deliveries = Erp::Qdeliveries::Delivery.all_delivered.search(params)
                           .where(delivery_type: Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT)
           
-          if glb[:group_by] == 'state'
+          if glb[:group_by].include? '_state'
             @order_details = Erp::Orders::OrderDetail.includes(:order).where(order_id: @orders.select(:id)).order("erp_orders_orders.patient_state_id")
             @delivery_details = Erp::Qdeliveries::DeliveryDetail.where(delivery_id: @deliveries.select(:id))
             
-            # order details rows
-            @od_rows = @order_details.group_by { |d| d.order.patient_state }
-            @dd_rows = @delivery_details.group_by { |d| (d.get_patient_state.present? ? d.get_patient_state.id : 10000) }
+            if glb[:group_by].include? 'patient_state'
+              # order details rows
+              @od_rows = @order_details.group_by { |d| d.order.patient_state }
+              @dd_rows = @delivery_details.group_by { |d| (d.get_patient_state.present? ? d.get_patient_state.id : 10000) }
+            elsif glb[:group_by].include? 'product_state'
+              @od_rows = @order_details.group_by { |d| Erp::Products::State.get_new_state }
+              @dd_rows = @delivery_details.group_by { |d| (d.state.present? ? d.state.id : 10000) }
+            end
+            
             @dd_rows = Hash[@dd_rows.sort_by{|k,v| k}]
           end
           
@@ -44,7 +50,11 @@ module Erp
             }.to_yaml)
           end
           
-          render "report_sell_and_return_#{glb[:group_by]}_table"
+          if glb[:group_by].include? '_state'
+            render "report_sell_and_return_state_table"
+          else
+            render "report_sell_and_return_order_table"
+          end
         end
 
         def report_sell_and_return_xlsx
@@ -64,7 +74,12 @@ module Erp
 
           respond_to do |format|
             format.xlsx {
-              render xlsx: "report_sell_and_return_#{@global_filters[:group_by]}_xlsx", filename: "Bao cao ban va tra hang.xlsx"
+              if @global_filters[:group_by].include? '_state'
+                t = "report_sell_and_return_state_xlsx"
+              else
+                t = "report_sell_and_return_order_xlsx"
+              end
+              render xlsx: t, filename: "Bao cao ban va tra hang.xlsx"
             }
           end
         end
