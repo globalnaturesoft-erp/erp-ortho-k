@@ -310,7 +310,7 @@ wb.styles do |s|
     end
 
     # Setup
-    sheet.column_widths 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15
+    sheet.column_widths 35, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15
     sheet.merge_cells("A2:M2")
     sheet.merge_cells("A4:D4")
   end
