@@ -187,7 +187,7 @@ module Erp
 
           # product query
           @product_query = Erp::Products::Product.get_active.joins(:category).where(category_id: category_ids)
-            .order('erp_products_products.ordered_code')
+            .order('erp_products_products.ordered_code, erp_products_products.name')
           # single keyword
           if params.to_unsafe_hash[:keyword].present?
             keyword = params.to_unsafe_hash[:keyword].strip.downcase
@@ -305,7 +305,7 @@ module Erp
 
           # product query
           @product_query = Erp::Products::Product.get_active.where(category_id: category_ids)
-            .order('erp_products_products.ordered_code')
+            .order('erp_products_products.ordered_code, erp_products_products.name')
           # single keyword
           if params.to_unsafe_hash[:keyword].present?
             keyword = params.to_unsafe_hash[:keyword].strip.downcase
