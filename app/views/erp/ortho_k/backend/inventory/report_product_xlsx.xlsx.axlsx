@@ -227,7 +227,7 @@ wb.styles do |s|
         filters[:state_ids] = Erp::Products::State.get_new_state.id
 
         row[:columns] << product.code
-        row[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(middle_align))
+        row[:styles] << (s.add_style text_center.deep_merge(border))
 
         row[:columns] << product.get_diameter
         row[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(middle_align))
