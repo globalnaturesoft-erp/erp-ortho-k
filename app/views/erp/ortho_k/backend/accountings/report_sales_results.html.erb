@@ -6,28 +6,6 @@
     <i class="fa fa-archive"></i> <%= t('.report_sales_results') %>
 <% end %>
 
-<% content_for :page_toolbar do %>
-    <%= actions = []
-        actions << {
-            text: '<i class="fa fa-file-pdf-o"></i> ' + t(".export_pdf"),
-            url: ''
-        }
-        actions << {
-            text: '<i class="fa fa-file-excel-o"></i> ' + t('.export_excel'),
-            url: ''
-        }
-        actions << {
-            text: '<i class="fa fa-print"></i> ' + t('.print'),
-            url: ''
-        }
-        erp_component('button/actions', {
-        actions: actions,
-        text: t('.options'),
-        class: 'btn-noborder btn-sm',
-        icon: 'fa fa-gear'
-    }) %>
-<% end %>
-
 <% content_for :global_filter do %>
     <% dfilters = current_user.get_filters(request.path+"_table").present? ? current_user.get_filters(request.path+"_table") : {}  %>
     <div class="row">
