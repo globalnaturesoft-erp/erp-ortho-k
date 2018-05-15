@@ -3,7 +3,8 @@
                                          (params[:controller] == "erp/ortho_k/backend/sales" && params[:action] == "report_product_sold") ||
                                          (params[:controller] == "erp/ortho_k/backend/sales" && params[:action] == "report_product_return") ||
                                          (params[:controller] == "erp/ortho_k/backend/sales" && params[:action] == "report_product_return_by_pstate") ||
-                                         (params[:controller] == "erp/ortho_k/backend/sales" && params[:action] == "report_new_patient") %>">
+                                         (params[:controller] == "erp/ortho_k/backend/sales" && params[:action] == "report_new_patient") ||
+                                         (params[:controller] == "erp/ortho_k/backend/sales" && params[:action] == "report_new_patient_v2") %>">
     <a href="javascript:;" class="nav-link nav-toggle">
         <span class="title">Bán hàng</span>
         <% if false %>
@@ -30,7 +31,10 @@
             <%= link_to "Thống kê SL hàng trả (2)", erp_ortho_k.report_product_return_by_pstate_backend_sales_path, class: "nav-link ", title: 'Báo cáo khách hàng trả hàng (Len theo tình trạng bệnh nhân, chuyên mục khác,..)' %>
         </li>
         <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/sales" && params[:action] == "report_new_patient" %>">
-            <%= link_to "BN/PK mới", erp_ortho_k.report_new_patient_backend_sales_path, class: "nav-link ", title: 'Danh sách và số lượng bệnh nhân/Phòng khám mới' %>
+            <%= link_to "BN/PK mới", erp_ortho_k.report_new_patient_backend_sales_path, class: "nav-link ", title: 'Danh sách và số lượng bệnh nhân (tất cả khách hàng và phòng khám)' %>
+        </li>
+        <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/sales" && params[:action] == "report_new_patient_v2" %>">
+            <%= link_to "SL BN mới (khách hàng)", erp_ortho_k.report_new_patient_v2_backend_sales_path, class: "nav-link ", title: 'Danh sách và số lượng bệnh nhân (theo khách hàng)' %>
         </li>
     </ul>
 </li>

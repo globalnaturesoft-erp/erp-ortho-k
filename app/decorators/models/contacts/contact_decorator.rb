@@ -463,6 +463,10 @@ Erp::Contacts::Contact.class_eval do
     patient_ids = patient_ids.where.not(patient_id: nil)      
     patient_ids = patient_ids.where(patient_state_id: options[:patient_state_id]) if options[:patient_state_id].present?
     
+    if options[:customer_id].present?
+      patient_ids = patient_ids.where(customer_id: options[:customer_id])
+    end
+    
     if options[:from].present?
       patient_ids = patient_ids.where('order_date >= ?', options[:from].beginning_of_day)
     end
