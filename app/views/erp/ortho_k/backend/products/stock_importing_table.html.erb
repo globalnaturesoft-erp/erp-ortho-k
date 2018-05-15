@@ -37,8 +37,8 @@
                         </td>
                     </tr>
                     <%
-                        purchase_count += 1
-                        central_count += 1 if area_type == 'area_central'
+                        purchase_count += total_quantity
+                        central_count += total_quantity if area_type == 'area_central'
                     %>
                 <% end %>
             <% end %>

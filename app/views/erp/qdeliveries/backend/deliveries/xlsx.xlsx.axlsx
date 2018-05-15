@@ -327,11 +327,11 @@ wb.styles do |s|
         row[:styles] << (s.add_style text_center.deep_merge(border))
       end
       if get_columns(params).include?("patient_state")
-        row[:columns] << (delivery_detail.get_order.present? ? delivery_detail.get_order.display_patient_info[:state] : nil)
+        row[:columns] << delivery_detail.get_patient_name
         row[:styles] << (s.add_style border)
       end
       if get_columns(params).include?("patient_name")
-        row[:columns] <<  (delivery_detail.get_order.present? ? delivery_detail.get_order.display_patient_info[:name] : nil)
+        row[:columns] <<  delivery_detail.get_patient_state_name
         row[:styles] << (s.add_style border)
       end
       if get_columns(params).include?("warehouse")
