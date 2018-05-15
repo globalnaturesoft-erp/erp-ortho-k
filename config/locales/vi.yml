@@ -915,7 +915,7 @@ vi:
             no_matching_records_found: "Nội dung báo cáo không được tìm thấy. Vui lòng chọn các điều kiện khác để xem."
         sales:
           report_new_patient:
-            report_new_patient: "Báo cáo - Số lượng bệnh nhân mới"
+            report_new_patient: "Báo cáo - Số lượng bệnh nhân (khách hàng và phòng khám)"
             from_date: "Từ ngày"
             to_date: "Đến ngày"
             select_from_date: "Chọn lọc theo ngày đầu kỳ"
@@ -929,6 +929,19 @@ vi:
             export_excel: "Xuất ra Excel"
             print: "In ấn / Print"
           report_new_patient_table:
+            please_select_filter: "Vui lòng chọn thời gian trên bộ lọc"
+            no_matching_records_found: "Nội dung báo cáo không được tìm thấy. Vui lòng chọn các điều kiện khác để xem."
+          report_new_patient_v2:
+            report_new_patient_v2: "Báo cáo - Số lượng bệnh nhân theo khách hàng"
+            from_date: "Từ ngày"
+            to_date: "Đến ngày"
+            select_from_date: "Chọn lọc theo ngày đầu kỳ"
+            select_to_date: "Chọn lọc theo ngày cuối kỳ"
+            filter_period: "Thời gian cố định"
+            choose_period: "Chọn lọc theo thời gian cố định"
+            filter_customer: "Khách hàng"
+            choose_customer: "Chọn lọc theo khách hàng"
+          report_new_patient_v2_table:
             please_select_filter: "Vui lòng chọn thời gian trên bộ lọc"
             no_matching_records_found: "Nội dung báo cáo không được tìm thấy. Vui lòng chọn các điều kiện khác để xem."
           report_sell_and_return:
