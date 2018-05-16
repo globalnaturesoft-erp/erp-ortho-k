@@ -5,7 +5,7 @@ wb.styles do |s|
   wb.add_worksheet(name: 'Báo cáo BN-PK mới') do |sheet|
     # style
     bg_info = {:bg_color => "305496", :fg_color => "FF"}
-    bg_footer = {:bg_color => "dbdbdb", :fg_color => "3a3838"}
+    bg_footer = {:bg_color => "ffff00", :fg_color => "c52f24"}
     text_center = {alignment: { horizontal: :center }}
     text_left = {alignment: { horizontal: :left }}
     text_right = {alignment: { horizontal: :right }}
@@ -27,13 +27,14 @@ wb.styles do |s|
     sheet.add_row ['DANH SÁCH SỐ LƯỢNG BỆNH NHÂN CỦA KHÁCH HÀNG / PHÒNG KHÁM'], sz: 16, b: true, bg_color: "ffc801", style: (s.add_style text_center)
     #row_num += 1
 
-    sheet.add_row [date], sz: 14, bg_color: "ffc801", style: (s.add_style text_center)
+    sheet.add_row ["(#{date})"], sz: 14, bg_color: "ffc801", style: (s.add_style text_center)
     #row_num += 1
 
     # add empty row
     sheet.add_row ['']
 
     patient_states = Erp::OrthoK::PatientState.get_active
+    counts = {}
     
     # header
     header = {columns: [], styles: []}
@@ -74,29 +75,35 @@ wb.styles do |s|
       ps_first = col_num if index==0
       ps_last = col_num if (index+1) == patient_states.count
       
-      liability_count = Erp::Contacts::Contact.get_patients_by_state(
+      liability_patient_ids = Erp::Contacts::Contact.get_patients_by_state(
         payment_for: Erp::Orders::Order::PAYMENT_FOR_CONTACT,
         patient_state_id: ps.id,
         from: @from,
         to: @to
-      ).count
-      row_1[:columns] << liability_count
+      ).map(&:patient_id).uniq
+      
+      liability_patients = Erp::Contacts::Contact.where(id: liability_patient_ids)
+      
+      counts[ps.id] = liability_patients.count
+      
+      row_1[:columns] << liability_patients.count
       row_1[:styles] << (s.add_style text_center.deep_merge(number).deep_merge(border).deep_merge(middle_align))
       
-      retail_count = Erp::Contacts::Contact.get_patients_by_state(
+      retail_patient_ids = Erp::Contacts::Contact.get_patients_by_state(
         payment_for: Erp::Orders::Order::PAYMENT_FOR_ORDER,
         patient_state_id: ps.id,
         from: @from,
         to: @to
-      ).count
-      row_2[:columns] << retail_count
+      ).map(&:patient_id).uniq
+  
+      retail_patients = Erp::Contacts::Contact.where(id: retail_patient_ids)
+      
+      counts[ps.id] += retail_patients.count
+      
+      row_2[:columns] << retail_patients.count
       row_2[:styles] << (s.add_style text_center.deep_merge(number).deep_merge(border).deep_merge(middle_align))
       
-      total_count = Erp::Contacts::Contact.get_patients_by_state(
-          patient_state_id: ps.id,
-          from: @from,
-          to: @to
-      ).count
+      total_count = counts[ps.id]
       footer[:columns] << total_count
       footer[:styles] << (s.add_style bg_footer.deep_merge(text_center).deep_merge(border).deep_merge(bold))
       

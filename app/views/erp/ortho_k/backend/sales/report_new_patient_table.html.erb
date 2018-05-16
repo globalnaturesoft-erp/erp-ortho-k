@@ -25,6 +25,7 @@
     
     <% patient_states = Erp::OrthoK::PatientState.get_active %>
     <% colspan_qty = patient_states.count %>
+    <% counts = {} %>
     
     <table class="table table-bordered order-column">
         <thead class="">
@@ -44,17 +45,22 @@
                 <td class="text-center uppercase bold"><%= 'Khách hàng công ty' %></td>
                 <% patient_states.each do |ps| %>
                     <td class="text-center bold">
-                        <%= Erp::Contacts::Contact.get_patients_by_state(
-                            payment_for: Erp::Orders::Order::PAYMENT_FOR_CONTACT,
-                            patient_state_id: ps.id,
-                            from: @from,
-                            to: @to
-                        ).count %>
+                        <% liability_patient_ids = Erp::Contacts::Contact.get_patients_by_state(
+                                payment_for: Erp::Orders::Order::PAYMENT_FOR_CONTACT,
+                                patient_state_id: ps.id,
+                                from: @from,
+                                to: @to
+                            ).map(&:patient_id).uniq
+                                    
+                            liability_patients = Erp::Contacts::Contact.where(id: liability_patient_ids)
+                        %>
+                        <% counts[ps.id] = liability_patients.count %>
+                        <%= liability_patients.count %>
                     </td>
                 <% end %>
                 <td class="text-justify font-yellow-gold">
                     <% @liability_new_patients.each_with_index do |patient,index| %>
-                        <%= patient.name %><%= ' | ' if index+1 < @liability_new_patients.count %>
+                        <%= patient.name %> <% if index+1 < @liability_new_patients.count %><i class='fa fa-genderless bg-font-default'></i><% end %>
                     <% end %>
                 </td>
             </tr>
@@ -62,17 +68,22 @@
                 <td class="text-center uppercase bold"><%= 'Phòng khám Ortho-K' %></td>
                 <% patient_states.each do |ps| %>
                     <td class="text-center bold">
-                        <%= Erp::Contacts::Contact.get_patients_by_state(
-                            payment_for: Erp::Orders::Order::PAYMENT_FOR_ORDER,
-                            patient_state_id: ps.id,
-                            from: @from,
-                            to: @to
-                        ).count %>
+                        <% retail_patient_ids = Erp::Contacts::Contact.get_patients_by_state(
+                                payment_for: Erp::Orders::Order::PAYMENT_FOR_ORDER,
+                                patient_state_id: ps.id,
+                                from: @from,
+                                to: @to
+                            ).map(&:patient_id).uniq
+                        
+                            retail_patients = Erp::Contacts::Contact.where(id: retail_patient_ids)
+                        %>
+                        <% counts[ps.id] += retail_patients.count %>
+                        <%= retail_patients.count %>
                     </td>
                 <% end %>
                 <td class="text-justify font-yellow-gold">
                     <% @retail_new_patients.each_with_index do |patient, index| %>
-                        <%= patient.name %><%= ' | ' if index+1 < @retail_new_patients.count %>
+                        <%= patient.name %> <% if index+1 < @retail_new_patients.count %><i class='fa fa-genderless bg-font-default'></i><% end %>
                     <% end %>
                 </td>
             </tr>
@@ -80,11 +91,7 @@
                 <td class="bg-green-jungle bg-font-green-jungle text-center uppercase bold"><%= 'Tổng cộng' %></td>
                 <% patient_states.each do |ps| %>
                     <td class="bg-green-jungle bg-font-green-jungle text-center bold">
-                        <%= Erp::Contacts::Contact.get_patients_by_state(
-                            patient_state_id: ps.id,
-                            from: @from,
-                            to: @to
-                        ).count %>
+                        <%= counts[ps.id] %>
                     </td>
                 <% end %>
                 
