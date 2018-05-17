@@ -67,6 +67,12 @@ wb.styles do |s|
     footer[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(border).deep_merge(text_center))
     col_num = 0
     
+    header[:columns] << 'Mã khách hàng'
+    header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
+    footer[:columns] << nil
+    footer[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(border))
+    col_num += 1
+    
     header[:columns] << t('.customer_name')
     header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
     footer[:columns] << nil
@@ -158,6 +164,9 @@ wb.styles do |s|
         row[:columns] << (index_1)
         row[:styles] << (s.add_style text_center.deep_merge(border))
         
+        row[:columns] << order.customer_code
+        row[:styles] << (s.add_style text_left.deep_merge(border))
+        
         row[:columns] << order.customer_name
         row[:styles] << (s.add_style text_left.deep_merge(border))
         
@@ -203,6 +212,9 @@ wb.styles do |s|
       subrow = {columns: [], styles: []}
       subrow[:columns] << nil
       subrow[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_subrow))
+      
+      subrow[:columns] << nil
+      subrow[:styles] << (s.add_style text_left.deep_merge(border).deep_merge(bg_subrow))
       
       subrow[:columns] << nil
       subrow[:styles] << (s.add_style text_left.deep_merge(border).deep_merge(bg_subrow))
@@ -280,6 +292,12 @@ wb.styles do |s|
     footer[:columns] << "TỔNG CỘNG"
     footer[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(border).deep_merge(text_center))
     col_num = 0
+    
+    header[:columns] << 'Mã khách hàng'
+    header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
+    footer[:columns] << nil
+    footer[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(border))
+    col_num += 1
     
     header[:columns] << t('.customer_name')
     header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
@@ -372,6 +390,9 @@ wb.styles do |s|
         row[:columns] << (index_2)
         row[:styles] << (s.add_style text_center.deep_merge(border))
         
+        row[:columns] << delivery.customer_code
+        row[:styles] << (s.add_style text_left.deep_merge(border))
+        
         row[:columns] << delivery.customer_name
         row[:styles] << (s.add_style text_left.deep_merge(border))
         
@@ -417,6 +438,9 @@ wb.styles do |s|
       subrow = {columns: [], styles: []}
       subrow[:columns] << nil
       subrow[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_subrow))
+      
+      subrow[:columns] << nil
+      subrow[:styles] << (s.add_style text_left.deep_merge(border).deep_merge(bg_subrow))
       
       subrow[:columns] << nil
       subrow[:styles] << (s.add_style text_left.deep_merge(border).deep_merge(bg_subrow))
@@ -474,6 +498,6 @@ wb.styles do |s|
     # Merge date row
     sheet.merge_cells("#{('A'.codepoints.first).chr}5:#{('A'.codepoints.first + col_num).chr}5")
     
-    sheet.column_widths 5, nil, *patient_col_widths, 15, 25, 12, 12, 12, 12, 25
+    sheet.column_widths 5, nil, nil, *patient_col_widths, 15, 25, 12, 12, 12, 12, 25
   end
 end
