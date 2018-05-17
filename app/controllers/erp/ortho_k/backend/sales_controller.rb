@@ -37,7 +37,7 @@ module Erp
             @dd_rows = Hash[@dd_rows.sort_by{|k,v| k}]
           end
           
-          File.open("tmp/report_sell_and_return_xlsx.yml", "w+") do |f|
+          File.open("tmp/report_sell_and_return_xlsx_#{current_user.id}.yml", "w+") do |f|
             f.write({
               global_filters: @global_filters,
               period_name: @period_name,
@@ -58,7 +58,7 @@ module Erp
         end
 
         def report_sell_and_return_xlsx
-          data = YAML.load_file("tmp/report_sell_and_return_xlsx.yml")
+          data = YAML.load_file("tmp/report_sell_and_return_xlsx_#{current_user.id}.yml")
           
           @global_filters = data[:global_filters]
           @period_name = data[:period_name]

@@ -35,7 +35,8 @@ wb.styles do |s|
     row_num = 5
     
     add_patient_num = (get_columns(params).include?("patient") ? 1 : 0) +
-                      (get_columns(params).include?("patient_state") ? 1 : 0)
+                      (get_columns(params).include?("patient_state") ? 1 : 0) +
+                      (get_columns(params).include?("product_state") ? 1 : 0)
     
     patient_col_widths = []
     patient_col_widths << 15 if get_columns(params).include?("patient")
@@ -87,6 +88,14 @@ wb.styles do |s|
     
     if get_columns(params).include?("patient_state")
       header[:columns] << t('.patient_state_name')
+      header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
+      footer[:columns] << nil
+      footer[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(border))
+      col_num += 1
+    end
+    
+    if get_columns(params).include?("product_state")
+      header[:columns] << 'TT SP'
       header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
       footer[:columns] << nil
       footer[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(border))
@@ -166,6 +175,11 @@ wb.styles do |s|
           row[:styles] << (s.add_style text_left.deep_merge(border))
         end
         
+        if get_columns(params).include?("product_state")
+          row[:columns] << 'Mới'
+          row[:styles] << (s.add_style text_left.deep_merge(border))
+        end
+        
         row[:columns] << order.employee_name
         row[:styles] << (s.add_style text_left.deep_merge(border))
         
@@ -206,6 +220,11 @@ wb.styles do |s|
       end
       
       if get_columns(params).include?("patient_state")
+        subrow[:columns] << nil
+        subrow[:styles] << (s.add_style text_left.deep_merge(border).deep_merge(bg_subrow))
+      end
+      
+      if get_columns(params).include?("product_state")
         subrow[:columns] << nil
         subrow[:styles] << (s.add_style text_left.deep_merge(border).deep_merge(bg_subrow))
       end
@@ -297,6 +316,14 @@ wb.styles do |s|
       col_num += 1
     end
     
+    if get_columns(params).include?("product_state")
+      header[:columns] << 'TT SP'
+      header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
+      footer[:columns] << nil
+      footer[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(border))
+      col_num += 1
+    end
+    
     header[:columns] << t('.employee_name')
     header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
     footer[:columns] << nil
@@ -361,12 +388,17 @@ wb.styles do |s|
         row[:styles] << (s.add_style text_left.deep_merge(border))
         
         if get_columns(params).include?("patient")
-          row[:columns] << (delivery.get_related_order.present? ? delivery.get_related_order.patient_name : nil)
+          row[:columns] << delivery_detail.get_patient_name
           row[:styles] << (s.add_style text_left.deep_merge(border))
         end
         
         if get_columns(params).include?("patient_state")
-          row[:columns] << (delivery.get_related_order.present? ? delivery.get_related_order.patient_state_name : nil)
+          row[:columns] << delivery_detail.get_patient_state_name
+          row[:styles] << (s.add_style text_left.deep_merge(border))
+        end
+        
+        if get_columns(params).include?("product_state")
+          row[:columns] << delivery_detail.state_name
           row[:styles] << (s.add_style text_left.deep_merge(border))
         end
         
@@ -410,6 +442,11 @@ wb.styles do |s|
       end
       
       if get_columns(params).include?("patient_state")
+        subrow[:columns] << nil
+        subrow[:styles] << (s.add_style text_left.deep_merge(border).deep_merge(bg_subrow))
+      end
+      
+      if get_columns(params).include?("product_state")
         subrow[:columns] << nil
         subrow[:styles] << (s.add_style text_left.deep_merge(border).deep_merge(bg_subrow))
       end

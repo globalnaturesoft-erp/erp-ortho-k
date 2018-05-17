@@ -3,11 +3,11 @@
       params.to_unsafe_hash[:global_filter][:period].present? %>
     
     <%
-        sales_total_colspan = 7 +
+        sales_total_colspan = 8 +
             (get_columns(params).include?("patient") ? 1 : 0) +
             (get_columns(params).include?("patient_state") ? 1 : 0) +
             (get_columns(params).include?("product_state") ? 1 : 0)
-        return_total_colspan = 6 +
+        return_total_colspan = 7 +
             (get_columns(params).include?("patient") ? 1 : 0) +
             (get_columns(params).include?("patient_state") ? 1 : 0) +
             (get_columns(params).include?("product_state") ? 1 : 0)
@@ -38,6 +38,7 @@
         <thead class="flip-content">
             <tr>
                 <th width="5%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">STT</th>
+                <th class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Mã KH</th>
                 <th class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Khách hàng</th>
                 <% if get_columns(params).include?("patient") %>
                     <th class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Bệnh nhân</th>
@@ -67,6 +68,7 @@
                     <% order = order_detail.order %>
                     <tr>
                         <td class="text-center text-center"><%= index %></td>
+                        <td class="text-left bold"><%= order.customer_code %></td>
                         <td class="text-left bold"><%= order.customer_name %></td>
                         <% if get_columns(params).include?("patient") %>
                             <td class="text-left"><%= order.patient_name %></td>
@@ -120,6 +122,7 @@
         <thead class="flip-content">
             <tr>
                 <th width="5%"  class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">STT</th>
+                <th class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Mã KH</th>
                 <th class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Khách hàng</th>
                 <% if get_columns(params).include?("patient") %>
                     <th class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Bệnh nhân</th>
@@ -148,6 +151,7 @@
                     <% delivery = delivery_detail.delivery %>
                     <tr>
                         <td class="text-center text-center"><%= index %></td>
+                        <td class="text-left bold"><%= delivery.customer_code %></td>
                         <td class="text-left bold"><%= delivery.customer_name %></td>
                         <% if get_columns(params).include?("patient") %>
                             <td class="text-left">
