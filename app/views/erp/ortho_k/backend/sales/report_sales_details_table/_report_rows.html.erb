@@ -89,6 +89,11 @@
             <%= row[:sales_total_amount].present? ? format_number(row[:sales_total_amount]) : '--' %>
         </td>
         <% end %>
+        <% if get_columns(params).include?("doctor_name") %>
+        <td class="text-<%= row[:doctor_name].present? ? 'left' : 'center' %> text-nowrap">
+            <%= row[:doctor_name].present? ? row[:doctor_name] : '--' %>
+        </td>
+        <% end %>
         <% if get_columns(params).include?("patient_name") %>
         <td class="text-<%= row[:patient_name].present? ? 'left' : 'center' %> text-nowrap">
             <%= row[:patient_name].present? ? row[:patient_name] : '--' %>

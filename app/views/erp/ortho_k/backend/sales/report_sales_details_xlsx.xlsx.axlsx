@@ -125,6 +125,9 @@ wb.styles do |s|
     footer[:columns] << ''
     footer[:styles] << (s.add_style text_right.deep_merge(middle_align).deep_merge(border).deep_merge(wrap).deep_merge(bold).deep_merge(number).deep_merge(bg_footer))
     
+    footer[:columns] << ''
+    footer[:styles] << (s.add_style text_right.deep_merge(middle_align).deep_merge(border).deep_merge(wrap).deep_merge(bold).deep_merge(number).deep_merge(bg_footer))
+    
     footer[:columns] << @totals[:salesperson_commission_amount]
     footer[:styles] << (s.add_style text_right.deep_merge(middle_align).deep_merge(border).deep_merge(wrap).deep_merge(bold).deep_merge(number).deep_merge(bg_footer))
     
@@ -150,6 +153,7 @@ wb.styles do |s|
     subheader_row_num = header_row_num + 1
     
     col_num = 0
+    column_widths = []
 
     header[:columns] << "Ngày ghi sổ"
     header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
@@ -157,6 +161,7 @@ wb.styles do |s|
     subheader[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(border).merge(bold))
     col_num = col_num
     sheet.merge_cells("#{axlsx_get_letter_by_index(col_num)}#{header_row_num}:#{axlsx_get_letter_by_index(col_num)}#{subheader_row_num}")
+    column_widths << 15
 
     header[:columns] << "Ngày chứng từ"
     header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
@@ -164,6 +169,7 @@ wb.styles do |s|
     subheader[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(border).merge(bold))
     col_num += 1
     sheet.merge_cells("#{axlsx_get_letter_by_index(col_num)}#{header_row_num}:#{axlsx_get_letter_by_index(col_num)}#{subheader_row_num}")
+    column_widths << 15
 
     header[:columns] << "Số chứng từ"
     header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
@@ -171,6 +177,7 @@ wb.styles do |s|
     subheader[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(border).merge(bold))
     col_num += 1
     sheet.merge_cells("#{axlsx_get_letter_by_index(col_num)}#{header_row_num}:#{axlsx_get_letter_by_index(col_num)}#{subheader_row_num}")
+    column_widths << 15
 
     header[:columns] << 'Khách hàng'
     header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
@@ -178,6 +185,7 @@ wb.styles do |s|
     subheader[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(border).merge(bold))
     col_num += 1
     khach_hang_first = col_num
+    column_widths << 15
 
     header[:columns] << ''
     header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
@@ -186,6 +194,7 @@ wb.styles do |s|
     col_num += 1
     khach_hang_last = col_num
     sheet.merge_cells("#{axlsx_get_letter_by_index(khach_hang_first)}#{header_row_num}:#{axlsx_get_letter_by_index(khach_hang_last)}#{header_row_num}")
+    column_widths << 25
 
     header[:columns] << 'Mã hàng hóa'
     header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
@@ -193,12 +202,14 @@ wb.styles do |s|
     subheader[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(border).merge(bold))
     col_num += 1
     ma_hang_first = col_num
+    column_widths << 15
 
     header[:columns] << ''
     header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
     subheader[:columns] << 'Đường kính'
     subheader[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(border).merge(bold))
     col_num += 1
+    column_widths << 15
 
     header[:columns] << ''
     header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
@@ -207,6 +218,7 @@ wb.styles do |s|
     col_num += 1
     ma_hang_last = col_num
     sheet.merge_cells("#{axlsx_get_letter_by_index(ma_hang_first)}#{header_row_num}:#{axlsx_get_letter_by_index(ma_hang_last)}#{header_row_num}")
+    column_widths << 15
 
     header[:columns] << 'Tên hàng hóa'
     header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
@@ -215,6 +227,7 @@ wb.styles do |s|
     col_num += 1
     product_name_col_num = col_num
     sheet.merge_cells("#{axlsx_get_letter_by_index(col_num)}#{header_row_num}:#{axlsx_get_letter_by_index(col_num)}#{subheader_row_num}")
+    column_widths << 25
     
     header[:columns] << 'Diễn giải'
     header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
@@ -222,6 +235,7 @@ wb.styles do |s|
     subheader[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(border).merge(bold))
     col_num += 1
     sheet.merge_cells("#{axlsx_get_letter_by_index(col_num)}#{header_row_num}:#{axlsx_get_letter_by_index(col_num)}#{subheader_row_num}")
+    column_widths << 20
     
     header[:columns] << 'Tình trạng'
     header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
@@ -229,6 +243,7 @@ wb.styles do |s|
     subheader[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(border).merge(bold))
     col_num += 1
     sheet.merge_cells("#{axlsx_get_letter_by_index(col_num)}#{header_row_num}:#{axlsx_get_letter_by_index(col_num)}#{subheader_row_num}")
+    column_widths << 10
     
     header[:columns] << 'Kho'
     header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
@@ -236,6 +251,7 @@ wb.styles do |s|
     subheader[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(border).merge(bold))
     col_num += 1
     sheet.merge_cells("#{axlsx_get_letter_by_index(col_num)}#{header_row_num}:#{axlsx_get_letter_by_index(col_num)}#{subheader_row_num}")
+    column_widths << 10
     
     header[:columns] << 'ĐVT'
     header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
@@ -244,6 +260,7 @@ wb.styles do |s|
     col_num += 1
     sheet.merge_cells("#{axlsx_get_letter_by_index(col_num)}#{header_row_num}:#{axlsx_get_letter_by_index(col_num)}#{subheader_row_num}")
     unit_col = col_num
+    column_widths << 10
     
     header[:columns] << 'Số lượng'
     header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
@@ -251,6 +268,7 @@ wb.styles do |s|
     subheader[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(border).merge(bold))
     col_num += 1
     sheet.merge_cells("#{axlsx_get_letter_by_index(col_num)}#{header_row_num}:#{axlsx_get_letter_by_index(col_num)}#{subheader_row_num}")
+    column_widths << 10
     
     header[:columns] << 'Giá mua/nhập'
     header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
@@ -258,12 +276,14 @@ wb.styles do |s|
     subheader[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(border).merge(bold))
     col_num += 1
     purchase_first = col_num
+    column_widths << 12
 
     header[:columns] << ''
     header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
     subheader[:columns] << 'Tiền thuế'
     subheader[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(border).merge(bold))
     col_num += 1
+    column_widths << 12
 
     header[:columns] << ''
     header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
@@ -272,6 +292,7 @@ wb.styles do |s|
     col_num += 1
     purchase_last = col_num
     sheet.merge_cells("#{axlsx_get_letter_by_index(purchase_first)}#{header_row_num}:#{axlsx_get_letter_by_index(purchase_last)}#{header_row_num}")
+    column_widths << 12
     
     header[:columns] << 'Giá bán/xuất'
     header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
@@ -279,18 +300,21 @@ wb.styles do |s|
     subheader[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(border).merge(bold))
     col_num += 1
     sales_first = col_num
+    column_widths << 12
 
     header[:columns] << ''
     header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
     subheader[:columns] << 'Tiền thuế'
     subheader[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(border).merge(bold))
     col_num += 1
+    column_widths << 12
 
     header[:columns] << ''
     header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
     subheader[:columns] << 'Giảm giá'
     subheader[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(border).merge(bold))
     col_num += 1
+    column_widths << 12
 
     header[:columns] << ''
     header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
@@ -299,6 +323,16 @@ wb.styles do |s|
     col_num += 1
     sales_last = col_num
     sheet.merge_cells("#{axlsx_get_letter_by_index(sales_first)}#{header_row_num}:#{axlsx_get_letter_by_index(sales_last)}#{header_row_num}")
+    column_widths << 12
+    
+    header[:columns] << 'Bác sĩ'
+    header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
+    subheader[:columns] << ''
+    subheader[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(border).merge(bold))
+    col_num += 1
+    doctor_name_col_num = col_num
+    sheet.merge_cells("#{axlsx_get_letter_by_index(col_num)}#{header_row_num}:#{axlsx_get_letter_by_index(col_num)}#{subheader_row_num}")
+    column_widths << 15
     
     header[:columns] << 'Bệnh nhân'
     header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
@@ -306,12 +340,14 @@ wb.styles do |s|
     subheader[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(border).merge(bold))
     col_num += 1
     patient_first = col_num
+    column_widths << 15
 
     header[:columns] << ''
     header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
     subheader[:columns] << 'Tình trạng'
     subheader[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(border).merge(bold))
     col_num += 1
+    column_widths << 10
 
     header[:columns] << ''
     header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
@@ -320,6 +356,7 @@ wb.styles do |s|
     col_num += 1
     patient_last = col_num
     sheet.merge_cells("#{axlsx_get_letter_by_index(patient_first)}#{header_row_num}:#{('A'.codepoints.first+ patient_last).chr}#{header_row_num}")
+    column_widths << 10
     
     header[:columns] << 'Nhân viên kinh doanh'
     header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
@@ -327,12 +364,14 @@ wb.styles do |s|
     subheader[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(border).merge(bold))
     col_num += 1
     salesperson_first = col_num
+    column_widths << 15
     
     header[:columns] << ''
     header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
     subheader[:columns] << 'Phần trăm'
     subheader[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(border).merge(bold))
     col_num += 1
+    column_widths << 10
     
     header[:columns] << (col_num+1)
     header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
@@ -341,6 +380,7 @@ wb.styles do |s|
     col_num += 1
     salesperson_last = col_num
     sheet.merge_cells("#{axlsx_get_letter_by_index(salesperson_first)}#{header_row_num}:#{axlsx_get_letter_by_index(salesperson_last)}#{header_row_num}")
+    column_widths << 10
     
     header[:columns] << 'Chiết khấu KH'
     header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
@@ -348,6 +388,7 @@ wb.styles do |s|
     subheader[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(border).merge(bold))
     col_num += 1
     customer_commission_first = col_num
+    column_widths << 10
     
     header[:columns] << ''
     header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
@@ -356,6 +397,7 @@ wb.styles do |s|
     col_num += 1
     customer_commission_last = col_num
     sheet.merge_cells("#{axlsx_get_letter_by_index(customer_commission_first)}#{header_row_num}:#{axlsx_get_letter_by_index(customer_commission_last)}#{header_row_num}")
+    column_widths << 10
     
     header[:columns] << 'Ghi chú'
     header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
@@ -363,6 +405,7 @@ wb.styles do |s|
     subheader[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(border).merge(bold))
     col_num += 1
     sheet.merge_cells("#{axlsx_get_letter_by_index(col_num)}#{header_row_num}:#{axlsx_get_letter_by_index(col_num)}#{subheader_row_num}")
+    column_widths << 25
 
     last_col_num = col_num
 
@@ -386,7 +429,7 @@ wb.styles do |s|
     end
 
     # Setup
-    sheet.column_widths 15, 15, 15, 15, 25, 15, 15, 15, 25, 20, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 15, 10, 10, 15, 10, 10, 10, 10, 25
+    sheet.column_widths *column_widths
     sheet.merge_cells("#{('A'.codepoints.first).chr}4:#{('A'.codepoints.first+ product_name_col_num).chr}4")
     sheet.merge_cells("#{('A'.codepoints.first).chr}5:#{('A'.codepoints.first+ product_name_col_num).chr}5")
     sheet.merge_cells("#{axlsx_get_letter_by_index(0)}#{footer_row_num}:#{axlsx_get_letter_by_index(unit_col)}#{footer_row_num}")
