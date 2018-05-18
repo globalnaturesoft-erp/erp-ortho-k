@@ -38,20 +38,18 @@ module Erp
               @dd_rows = Hash[@dd_rows.sort_by{|k,v| k}]
             end
             
-            @dd_rows = Hash[@dd_rows.sort_by{|k,v| k}]
-          end
-          
-          File.open("tmp/report_sell_and_return_xlsx_#{current_user.id}.yml", "w+") do |f|
-            f.write({
-              global_filters: @global_filters,
-              period_name: @period_name,
-              from_date: @from,
-              to_date: @to,
-              orders: @orders,
-              deliveries: @deliveries,
-              od_rows: @od_rows,
-              dd_rows: @dd_rows,
-            }.to_yaml)
+            File.open("tmp/report_sell_and_return_xlsx_#{current_user.id}.yml", "w+") do |f|
+              f.write({
+                global_filters: @global_filters,
+                period_name: @period_name,
+                from_date: @from,
+                to_date: @to,
+                orders: @orders,
+                deliveries: @deliveries,
+                od_rows: @od_rows,
+                dd_rows: @dd_rows,
+              }.to_yaml)
+            end
           end
           
           if glb[:group_by].include? '_state'
