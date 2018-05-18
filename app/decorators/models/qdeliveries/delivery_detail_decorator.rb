@@ -54,4 +54,17 @@ Erp::Qdeliveries::DeliveryDetail.class_eval do
   def get_patient_state_name
     self.get_patient_state.present? ? self.get_patient_state.name : ''
   end
+  
+  def get_doctor
+    # doctor from order first
+    if self.get_order.present?
+      return self.get_order.doctor
+    else
+      nil
+    end
+  end 
+  
+  def get_doctor_name
+    self.get_doctor.present? ? self.get_doctor.name : ''
+  end
 end
