@@ -148,14 +148,15 @@
             }) %>
         </div>
     </div>
+    <div class="row">
+        <div class="col-md-12 mb-15 text-right">
+            <a class="btn green-jungle global-filter-button">Lọc báo cáo</a>
+        </div>
+    </div>
 <% end %>
 
 <%= erp_datalist(
     url: erp_ortho_k.report_sales_details_table_backend_sales_path,
-    sortable: true,
-    filters: [
-
-    ],
     columns: [
         {
             text: t('.record_date'), name: 'record_date', value: true, checked: true
@@ -250,5 +251,7 @@
         {
             text: t('.note'), name: 'note', value: true, checked: true
         },
-    ]
+    ],
+    autoload: false,
+    placeholder: 'Vui lòng chọn điều kiện cần xem và nhấn "Lọc báo cáo"'
 ) %>

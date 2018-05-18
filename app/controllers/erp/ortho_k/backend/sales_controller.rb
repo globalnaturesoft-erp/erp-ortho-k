@@ -16,38 +16,40 @@ module Erp
             @to = (@global_filters.present? and @global_filters[:to_date].present?) ? @global_filters[:to_date].to_date : nil
           end
 
-          @orders = Erp::Orders::Order.sales_orders.all_confirmed.search(params)
-
-          @deliveries = Erp::Qdeliveries::Delivery.all_delivered.search(params)
-                          .where(delivery_type: Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT)
-          
-          if glb[:group_by].include? '_state'
-            @order_details = Erp::Orders::OrderDetail.includes(:order).where(order_id: @orders.select(:id)).order("erp_orders_orders.patient_state_id")
-            @delivery_details = Erp::Qdeliveries::DeliveryDetail.where(delivery_id: @deliveries.select(:id))
+          if @from.present? and @to.present?
+            @orders = Erp::Orders::Order.sales_orders.all_confirmed.search(params)
+  
+            @deliveries = Erp::Qdeliveries::Delivery.all_delivered.search(params)
+                            .where(delivery_type: Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT)
             
-            if glb[:group_by].include? 'patient_state'
-              # order details rows
-              @od_rows = @order_details.group_by { |d| d.order.patient_state }
-              @dd_rows = @delivery_details.group_by { |d| (d.get_patient_state.present? ? d.get_patient_state.id : 10000) }
-            elsif glb[:group_by].include? 'product_state'
-              @od_rows = @order_details.group_by { |d| Erp::Products::State.get_new_state }
-              @dd_rows = @delivery_details.group_by { |d| (d.state.present? ? d.state.id : 10000) }
+            if glb[:group_by].include? '_state'
+              @order_details = Erp::Orders::OrderDetail.includes(:order).where(order_id: @orders.select(:id)).order("erp_orders_orders.patient_state_id")
+              @delivery_details = Erp::Qdeliveries::DeliveryDetail.where(delivery_id: @deliveries.select(:id))
+              
+              if glb[:group_by].include? 'patient_state'
+                # order details rows
+                @od_rows = @order_details.group_by { |d| d.order.patient_state }
+                @dd_rows = @delivery_details.group_by { |d| (d.get_patient_state.present? ? d.get_patient_state.id : 10000) }
+              elsif glb[:group_by].include? 'product_state'
+                @od_rows = @order_details.group_by { |d| Erp::Products::State.get_new_state }
+                @dd_rows = @delivery_details.group_by { |d| (d.state.present? ? d.state.id : 10000) }
+              end
+              
+              @dd_rows = Hash[@dd_rows.sort_by{|k,v| k}]
             end
             
-            @dd_rows = Hash[@dd_rows.sort_by{|k,v| k}]
-          end
-          
-          File.open("tmp/report_sell_and_return_xlsx_#{current_user.id}.yml", "w+") do |f|
-            f.write({
-              global_filters: @global_filters,
-              period_name: @period_name,
-              from_date: @from,
-              to_date: @to,
-              orders: @orders,
-              deliveries: @deliveries,
-              od_rows: @od_rows,
-              dd_rows: @dd_rows,
-            }.to_yaml)
+            File.open("tmp/report_sell_and_return_xlsx_#{current_user.id}.yml", "w+") do |f|
+              f.write({
+                global_filters: @global_filters,
+                period_name: @period_name,
+                from_date: @from,
+                to_date: @to,
+                orders: @orders,
+                deliveries: @deliveries,
+                od_rows: @od_rows,
+                dd_rows: @dd_rows,
+              }.to_yaml)
+            end
           end
           
           if glb[:group_by].include? '_state'
