@@ -367,6 +367,7 @@ Erp::Orders::Order.class_eval do
           sales_tax_amount: sales_tax_amount,
           sales_discount: sales_discount,
           sales_total_amount: sales_total_amount,
+          doctor_name: order_detail.order.doctor_name,
           eye_position: order_detail.display_eye_position,
           patient_name: order_detail.order.patient_name,
           patient_state_name: order_detail.order.patient_state_name,
@@ -452,8 +453,9 @@ Erp::Orders::Order.class_eval do
           unit: delivery_detail.order_detail.product.unit_name,
           note: delivery_detail.note,
           eye_position: delivery_detail.order_detail.display_eye_position,
-          patient_name: delivery_detail.order_detail.order.patient_name,
-          patient_state_name: delivery_detail.order_detail.order.patient_state_name,
+          doctor_name: delivery_detail.get_doctor_name,
+          patient_name: delivery_detail.get_patient_name,
+          patient_state_name: delivery_detail.get_patient_state_name,
           salesperson_name: delivery_detail.delivery.employee_name,
         }
         total[:quantity] += qty
@@ -524,6 +526,9 @@ Erp::Orders::Order.class_eval do
           warehouse: delivery_detail.warehouse_name,
           unit: delivery_detail.product.unit_name,
           note: delivery_detail.note,
+          doctor_name: delivery_detail.get_doctor_name,
+          patient_name: delivery_detail.get_patient_name,
+          patient_state_name: delivery_detail.get_patient_state_name,
           salesperson_name: delivery_detail.delivery.employee_name,
         }
         total[:quantity] += qty

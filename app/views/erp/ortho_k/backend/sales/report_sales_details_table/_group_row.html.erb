@@ -50,6 +50,9 @@
         <%= item[:sales_total_amount].present? ? format_number(item[:sales_total_amount]) : '' %>
     </td>
     <% end %>
+    <% if get_columns(params).include?("doctor_name") %>
+    <td class="bg-grey text-center text-nowrap"></td>
+    <% end %>
     <% if get_columns(params).include?("patient_name") %>
     <td class="bg-grey text-center text-nowrap"></td>
     <% end %>
