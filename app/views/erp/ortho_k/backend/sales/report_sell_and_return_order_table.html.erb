@@ -1,5 +1,5 @@
-<% if params.to_unsafe_hash[:global_filter][:from_date].present? ||
-      params.to_unsafe_hash[:global_filter][:to_date].present? ||
+<% if (params.to_unsafe_hash[:global_filter][:from_date].present? and
+      params.to_unsafe_hash[:global_filter][:to_date].present?) ||
       params.to_unsafe_hash[:global_filter][:period].present? %>
     
     <%
@@ -184,5 +184,11 @@
         </tbody>
     </table>
 <% else %>
-    <div class="alert alert-warning"><%= t('.please_select_filter') %></div>
+    <div class="alert alert-warning">
+        <p>
+            <strong>Vui lòng chọn các tham số bắt buộc:</strong><br>
+            - Thời gian cố định <i>hoặc</i> Từ ngày - đến ngày <br>
+            - Điều kiện nhóm theo (Chứng từ, TT BN, TT SP)
+        </p>
+    </div>
 <% end %>
