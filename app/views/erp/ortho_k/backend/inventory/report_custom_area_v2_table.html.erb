@@ -53,6 +53,7 @@
       <% @rows = rows %>
       <% @rows.each_with_index do |row, index| %>
           <% counts[row[:category].name] = {} %>
+          <% counts[row[:category].name][3] = {} %>
           <% row[:letter_groups].each_with_index do |lg,index2| %>
               <% lg[:numbers_diameters].each_with_index do |nd,index3| %>                
                   <%
@@ -140,8 +141,7 @@
                           <% else %>
                             <%= count %>
                           <% end %>
-                      </td>
-                      <% counts[row[:category].name][3] = {} %>
+                      </td>                      
                       <% @states.each do |state| %>
                           <td class="text-center">
                               <%
