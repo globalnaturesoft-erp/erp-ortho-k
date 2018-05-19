@@ -181,6 +181,7 @@ wb.styles do |s|
       counts = {}
       @rows.each_with_index do |rw, index|
         counts[rw[:category].name] = {}
+        counts[rw[:category].name][3] = {}
         rw[:letter_groups].each_with_index do |lg,index2|
           lg[:numbers_diameters].each_with_index do |nd,index3|
   
@@ -242,8 +243,9 @@ wb.styles do |s|
                   Erp::Qdeliveries::Delivery::TYPE_PURCHASE_IMPORT
                 ]
             }))
-            row[:columns] << (counts[rw[:category].name][1] = counts[rw[:category].name][1].to_i + count)
+            row[:columns] << count
             row[:styles] << (s.add_style text_center.deep_merge(middle_align).deep_merge(border).deep_merge(wrap))
+            counts[rw[:category].name][1] = counts[rw[:category].name][1].to_i + count
   
             count = Erp::Products::Product.get_stock_check_import(filters)
             row[:columns] << count
@@ -259,7 +261,6 @@ wb.styles do |s|
             end
             row[:styles] << (s.add_style text_center.deep_merge(middle_align).deep_merge(border).deep_merge(wrap))
   
-            counts[rw[:category].name][3] = {}
             @states.each do |state|
               count = Erp::Products::Product.get_qdelivery_import(filters.clone.merge({
                 delivery_type: [                
@@ -271,7 +272,7 @@ wb.styles do |s|
                   state: state
               }))
               row[:columns] << count
-              counts[rw[:category].name][3][state.id] = count
+              counts[rw[:category].name][3][state.id] = counts[rw[:category].name][3][state.id].to_i + count
               
               row[:styles] << (s.add_style text_center.deep_merge(middle_align).deep_merge(border).deep_merge(wrap))
             end

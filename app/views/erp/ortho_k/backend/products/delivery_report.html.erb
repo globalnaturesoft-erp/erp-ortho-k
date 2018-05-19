@@ -128,6 +128,9 @@
                 multiple: true
             }) %>
         </div>
+        <div class="col-md-3 text-right mt-25">
+            <a href="#" class="btn btn-primary global-filter-button">Kiểm kho</a>
+        </div>
     </div>
 <% end %>
 
@@ -135,6 +138,7 @@
     url: erp_ortho_k.delivery_report_table_backend_products_path,
     sortable: true,
     keyword: true,
+    autoload: false,
     filters: [
         {
             text: t('.show_virtual'), name: 'show_virtual', value: true, checked: false
@@ -142,5 +146,5 @@
     ],
     columns: [
     ],
-    header: 'dddddd'
+    placeholder: 'Vui lòng chọn vùng cần xem và nhấn Kiểm kho'
 ) %>
