@@ -325,7 +325,7 @@ Erp::Orders::Order.class_eval do
       end
 
       if params[:warehouse_id].present?
-        query = query.where(erp_orders_orders: {warehouse_id: params[:warehouse_id]})
+        query = query.where(warehouse_id: params[:warehouse_id])
       end
 
       if params[:category_id].present?
@@ -360,7 +360,7 @@ Erp::Orders::Order.class_eval do
           product_name: order_detail.product_name,
           description: order_detail.order.note,
           state: 'Mới',
-          warehouse: order_detail.order.warehouse_name,
+          warehouse: order_detail.warehouse_name,
           unit: order_detail.product.unit_name,
           quantity: order_detail.quantity,
           sales_price: sales_price,
