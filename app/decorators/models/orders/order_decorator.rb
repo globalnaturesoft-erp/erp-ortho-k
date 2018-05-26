@@ -736,7 +736,9 @@ Erp::Orders::Order.class_eval do
   end
 
   #
-  def import(file)
+  def import(file, order_params={})
+    self.order_details = []
+    
     spreadsheet = Roo::Spreadsheet.open(file.path)
     header = spreadsheet.row(1)
     (2..spreadsheet.last_row).each do |i|
@@ -768,6 +770,10 @@ Erp::Orders::Order.class_eval do
           price = sales_price.present? ? sales_price.price : 0.0
         end
         
+        # warehouse
+        warehouse = row["warehouse"].present? ? Erp::Warehouses::Warehouse.where(name: row["warehouse"].strip).first : nil
+        warehouse_id = warehouse.present? ? warehouse.id : order_params[:warehouse_id]        
+        
         if row["quantity"].to_i > 0
           self.order_details.build(
             id: nil,
@@ -775,6 +781,7 @@ Erp::Orders::Order.class_eval do
             quantity: row["quantity"],
             serials: row["serials"],
             price: price,
+            warehouse_id: warehouse_id,
           )
         end
       end

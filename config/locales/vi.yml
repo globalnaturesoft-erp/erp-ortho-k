@@ -1086,7 +1086,7 @@ vi:
             doctor_name: "Bác sĩ"
             patient_name: "Tên bệnh nhân"
             patient_state: "Tình trạng"
-            eye_info: "Thông tin mắt"
+            eye_info: "MT/MP"
             salesperson_name: "Tên nhân viên"
             salesperson_percent: "Phần trăm hoa hồng (NV)"
             salesperson_commission_amount: "Thành tiền"
@@ -1227,7 +1227,7 @@ vi:
             product_code: "Mã SP"
             diameter: "Đ.kính"
             category: "Loại"
-            eye_position: "Thông tin mắt"
+            eye_position: "MT/MP"
           show:
             serials: "Số lô"
             eye_position: "MT/MP"
