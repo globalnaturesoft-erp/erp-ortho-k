@@ -25,7 +25,7 @@ Erp::Orders::Backend::OrdersController.class_eval do
       @order.assign_attributes(order_params)
 
       if params[:import_file].present?
-        @order.import(params[:import_file])
+        @order.import(params[:import_file], order_params)
       end
 
       render :edit
@@ -33,7 +33,7 @@ Erp::Orders::Backend::OrdersController.class_eval do
       @order = Erp::Orders::Order.new(order_params)
 
       if params[:import_file].present?
-        @order.import(params[:import_file])
+        @order.import(params[:import_file], order_params)
       end
 
       render :new
