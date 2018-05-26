@@ -2498,7 +2498,7 @@ Erp::Products::Product.class_eval do
         #end
 
         products.each do |p|
-          stock = p.get_stock(warehouse_id: options[:warehouse_id])
+          stock = p.get_stock(warehouse_ids: options[:warehouse_id])
           a_products << {product: p, index: item[:index], stock: stock} if stock >= options[:min_stock].to_i
         end
       end
