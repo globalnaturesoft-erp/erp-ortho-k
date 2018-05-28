@@ -2,7 +2,7 @@
     <% product_ids = @products_query.select('id') %>
     <% product_ids = -1 if product_ids.count == 0 %>
     <tr>
-        <td class="text-right text-nowrap">Tổng cộng</td>
+        <td class="text-right">Tổng cộng</td>
         <td class="text-center stock-num text-bold bg-warning">
             <%
                 begin_params = @global_filters.clone
@@ -165,18 +165,16 @@
             <%
                 end_params = @global_filters.clone
                 end_params[:from_date] = nil
-                end_params[:product_id] = @products_query.select('id')
+                end_params[:product_id] = product_ids
             %>
             <%= Erp::Products::Product.get_stock_real(end_params) %>
         </td>
     </tr>
     <tr>
-        <th class="bg-primary text-center" rowspan="2">
-            <%= Erp::Products::Property.find(@group_by_property).name %>
-        </th>
+        <th class="bg-primary text-center" rowspan="2" width="20%">Tên sản phẩm</th>
         <th class="bg-primary text-center" rowspan="2" width="7%">Đầu kỳ</th>
-        <th class="bg-primary text-center" colspan="7">Nhập</th>
-        <th class="bg-primary text-center text-center" colspan="9">Xuất</th>
+        <th class="bg-primary text-center" colspan="7">Nhập kho</th>
+        <th class="bg-primary text-center text-center" colspan="9">Xuất kho</th>
         <th class="bg-primary text-center" rowspan="2">Cuối kỳ</th>
     </tr>
     <tr>
@@ -197,30 +195,23 @@
         <th class="bg-primary text-center" width="7%" title="">Khác</th>
         <th class="bg-primary text-center" width="7%">Tổng</th>
     </tr>
-    <% @properties_values.each_with_index do |properties_value,index| %>
-        <% product_ids = @products_query.select('id').where("erp_products_products.cache_properties LIKE '%[\"#{properties_value.id}\",%'") %>
-        <% product_ids = -1 if product_ids.count == 0 %>
-
+    <% @products.each_with_index do |product,index| %>
         <tr>
-            <td class="text-left"><%= properties_value.value %></td>
-
-
+            <td class="text-left"><%= product.name %></td>
             <td class="text-center stock-num text-bold bg-warning">
                 <%
                     begin_params = @global_filters.clone
                     begin_params[:to_date] = (@global_filters[:from_date].to_date - 1.day).to_s
                     begin_params[:from_date] = nil
-                    begin_params[:product_id] = product_ids
                 %>
-                <%= Erp::Products::Product.get_stock_real(begin_params) %>
+                <%= product.get_stock(begin_params) %>
             </td>
 
             <% total_import = 0 %>
             <td class="text-center stock-num">
                 <%
-                    filters = @global_filters.clone
-                    count = Erp::Products::Product.get_qdelivery_import(filters.merge({
-                        product_id: product_ids,
+                    count = Erp::Products::Product.get_qdelivery_import(@global_filters.merge({
+                        product_id: product.id,
                         delivery_type: Erp::Qdeliveries::Delivery::TYPE_PURCHASE_IMPORT
                     }))
                     total_import += count
@@ -229,9 +220,8 @@
             </td>
             <td class="text-center stock-num">
                 <%
-                    filters = @global_filters.clone
-                    count = Erp::Products::Product.get_qdelivery_import(filters.merge({
-                        product_id: product_ids,
+                    count = Erp::Products::Product.get_qdelivery_import(@global_filters.merge({
+                        product_id: product.id,
                         delivery_type: Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT
                     }))
                     total_import += count
@@ -241,7 +231,7 @@
             <td class="text-center stock-num">
                 <%
                     count = Erp::Products::Product.get_transfer_import(@global_filters.merge({
-                        product_id: product_ids,
+                        product_id: product.id,
                     }))
                     total_import += count
                 %>
@@ -250,7 +240,7 @@
             <td class="text-center stock-num">
                 <%
                     count = Erp::Products::Product.get_cs_return_import(@global_filters.merge({
-                        product_id: product_ids,
+                        product_id: product.id,
                     }))
                     total_import += count
                 %>
@@ -259,10 +249,10 @@
             <td class="text-center stock-num">
                 <%
                     count = Erp::Products::Product.get_stock_check_import(@global_filters.merge({
-                        product_id: product_ids,
+                        product_id: product.id,
                     }))
                     count += Erp::Products::Product.get_state_check_import(@global_filters.merge({
-                        product_id: product_ids,
+                        product_id: product.id,
                     }))
                     total_import += count
                 %>
@@ -270,9 +260,8 @@
             </td>
             <td class="text-center stock-num">
                 <%
-                    filters = @global_filters.clone
-                    count = Erp::Products::Product.get_qdelivery_import(filters.merge({
-                        product_id: product_ids,
+                    count = Erp::Products::Product.get_qdelivery_import(@global_filters.merge({
+                        product_id: product.id,
                         delivery_type: Erp::Qdeliveries::Delivery::TYPE_CUSTOM_IMPORT
                     }))
                     total_import += count
@@ -283,11 +272,13 @@
                 <%= total_import %>
             </td>
 
+
+
             <% total_export = 0 %>
             <td class="text-center stock-num">
                 <%
                     count = Erp::Products::Product.get_qdelivery_export(@global_filters.merge({
-                        product_id: product_ids,
+                        product_id: product.id,
                         delivery_type: Erp::Qdeliveries::Delivery::TYPE_SALES_EXPORT
                     }))
                     total_export += count
@@ -297,7 +288,7 @@
             <td class="text-center stock-num">
                 <%
                     count = Erp::Products::Product.get_qdelivery_export(@global_filters.merge({
-                        product_id: product_ids,
+                        product_id: product.id,
                         delivery_type: Erp::Qdeliveries::Delivery::TYPE_PURCHASE_EXPORT
                     }))
                     total_export += count
@@ -307,7 +298,7 @@
             <td class="text-center stock-num">
                 <%
                     count = Erp::Products::Product.get_consignment_export(@global_filters.merge({
-                        product_id: product_ids,
+                        product_id: product.id,
                     }))
                     total_export += count
                 %>
@@ -316,7 +307,7 @@
             <td class="text-center stock-num">
                 <%
                     count = Erp::Products::Product.get_transfer_export(@global_filters.merge({
-                        product_id: product_ids,
+                        product_id: product.id,
                     }))
                     total_export += count
                 %>
@@ -325,7 +316,7 @@
             <td class="text-center stock-num">
                 <%
                     count = Erp::Products::Product.get_gift_given_export(@global_filters.merge({
-                        product_id: product_ids,
+                        product_id: product.id,
                     }))
                     total_export += count
                 %>
@@ -334,7 +325,7 @@
             <td class="text-center stock-num">
                 <%
                     count = Erp::Products::Product.get_damage_record_export(@global_filters.merge({
-                        product_id: product_ids,
+                        product_id: product.id,
                     }))
                     total_export += count
                 %>
@@ -343,10 +334,10 @@
             <td class="text-center stock-num">
                 <%
                     count = Erp::Products::Product.get_stock_check_export(@global_filters.merge({
-                        product_id: product_ids,
+                        product_id: product.id,
                     }))
                     count += Erp::Products::Product.get_state_check_export(@global_filters.merge({
-                        product_id: product_ids,
+                        product_id: product.id,
                     }))
                     total_export += count
                 %>
@@ -354,11 +345,11 @@
             </td>
             <td class="text-center stock-num">
                 <%
-                    count = Erp::Products::Product.get_qdelivery_export(@global_filters.merge({
-                        product_id: product_ids,
+                    count = Erp::Products::Product.get_qdelivery_import(@global_filters.merge({
+                        product_id: product.id,
                         delivery_type: Erp::Qdeliveries::Delivery::TYPE_CUSTOM_EXPORT
                     }))
-                    total_export += count
+                    total_import += count
                 %>
                 <%= count %>
             </td>
@@ -371,10 +362,10 @@
                 <%
                     end_params = @global_filters.clone
                     end_params[:from_date] = nil
-                    end_params[:product_id] = product_ids
                 %>
-                <%= Erp::Products::Product.get_stock_real(end_params) %>
+                <%= product.get_stock(end_params) %>
             </td>
         </tr>
     <% end %>
 </table>
+<%= erp_datalist_pagination(@products) %>

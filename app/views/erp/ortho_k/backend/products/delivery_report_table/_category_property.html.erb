@@ -35,7 +35,7 @@
         </td>
         <td class="text-center stock-num">
             <%
-                count = Erp::Products::Product.get_cs_return_import(@global_filters.merge({
+                count = Erp::Products::Product.get_transfer_import(@global_filters.merge({
                     product_id: product_ids,
                 }))
                 total_import += count
@@ -44,7 +44,7 @@
         </td>
         <td class="text-center stock-num">
             <%
-                count = Erp::Products::Product.get_transfer_import(@global_filters.merge({
+                count = Erp::Products::Product.get_cs_return_import(@global_filters.merge({
                     product_id: product_ids,
                 }))
                 total_import += count
@@ -188,8 +188,8 @@
         <th class="bg-primary text-center" width="7%" title="Chuyển kho">CK</th>
         <th class="bg-primary text-center" width="7%" title="Trả hàng ký gởi/Cho mượn">TKG</th>
         <th class="bg-primary text-center" width="7%" title="Kiểm kho">KK</th>
-        <th class="bg-primary text-center" width="7%" title="Kiểm kho">Khác</th>
-        <th class="bg-primary text-center" width="7%" title="Tổng cộng">Tổng</th>
+        <th class="bg-primary text-center" width="7%" title="Nhập khác">Khác</th>
+        <th class="bg-primary text-center" width="7%" title="Tổng nhập">Tổng</th>
         <th class="bg-primary text-center" width="7%" title="Xuất kho bán">XK</th>
         <th class="bg-primary text-center" width="7%" title="Trả nhà CC">TNCC</th>
         <th class="bg-primary text-center" width="7%" title="Ký gởi/Cho mượn">KG</th>
@@ -197,8 +197,8 @@
         <th class="bg-primary text-center" width="7%" title="Tặng quà">TQ</th>
         <th class="bg-primary text-center" width="7%" title="Hủy kho">HuyK</th>
         <th class="bg-primary text-center" width="7%" title="Kiểm kho">KK</th>
-        <th class="bg-primary text-center" width="7%" title="">Khác</th>
-        <th class="bg-primary text-center" width="7%">Tổng</th>
+        <th class="bg-primary text-center" width="7%" title="Xuất khác">Khác</th>
+        <th class="bg-primary text-center" width="7%" title="Tổng xuất">Tổng</th>
     </tr>
     <% @categories.each_with_index do |category,index| %>
         <% rowspan = @properties_values.count %>

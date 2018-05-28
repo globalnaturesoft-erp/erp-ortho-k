@@ -238,6 +238,15 @@ module Erp
         def delivery_report_table
           # group bys
           @global_filters = params.to_unsafe_hash[:global_filter]
+          
+          # period
+          @from_date = @global_filters[:from_date].present? ? @global_filters[:from_date].to_date : nil
+          @to_date = @global_filters[:to_date].present? ? @global_filters[:to_date].to_date : nil
+          if @global_filters[:period].present?
+            @period = Erp::Periods::Period.find(@global_filters[:period])
+            @from_date = @period.from_date
+            @to_date = @period.to_date
+          end
 
           @group_by_category = (@global_filters.present? and @global_filters[:group_by_category].present?) ? @global_filters[:group_by_category] : nil
           @group_by_property = (@global_filters.present? and @global_filters[:group_by_property].present?) ? @global_filters[:group_by_property] : nil
@@ -261,10 +270,67 @@ module Erp
               @products_query = @products_query.where(category_id: @group_by_category)
             end
           end
-
-          @products = @products_query.order("code").paginate(:page => params[:page], :per_page => 50)
+          
+          @products = @products_query.order(:ordered_code)
+          
+          File.open("tmp/delivery_report.yml", "w+") do |f|
+            f.write({
+              from_date: @from_date,
+              to_date: @to_date,
+              global_filters: @global_filters,
+              group_by_category: @group_by_category,
+              group_by_property: @group_by_property,
+              properties_value_ids: @properties_value_ids,
+              properties_values: @properties_values,
+              categories: @categories,
+              params: params
+            }.to_yaml)
+          end
+          
+          @products = @products.paginate(:page => params[:page], :per_page => 50)
 
           render layout: nil
+        end
+        
+        def delivery_report_xlsx
+          data = YAML.load_file("tmp/delivery_report.yml")
+          
+          @from_date = data[:from_date]
+          @to_date = data[:to_date]
+          @global_filters = data[:global_filters]
+          @group_by_category = data[:group_by_category]
+          @group_by_property = data[:group_by_property]
+          @properties_value_ids = data[:properties_value_ids]
+          @properties_values = data[:properties_values]
+          @categories = data[:categories]
+          params = data[:params]
+          
+          @products_query = Erp::Products::Product.get_active.search(params).delivery_report(filters: @global_filters)
+          
+          if @group_by_category.present?
+            @categories = @group_by_category == 'all' ? Erp::Products::Category.order('name') : Erp::Products::Category.where(id: @group_by_category)
+
+            # IF GROUP BY CATEGORY
+            if @group_by_category != 'all'
+              @products_query = @products_query.where(category_id: @group_by_category)
+            end
+          end
+          
+          @products = @products_query.order(:ordered_code)
+          
+          respond_to do |format|
+            format.xlsx {
+                if @group_by_category.nil? and @group_by_property.nil?
+                    render xlsx: "delivery_report_products_xlsx", filename: "Bao-cao-xuat-nhap-ton-loai-2.xlsx"
+                elsif @group_by_property.nil?
+                    render xlsx: "delivery_report_category_xlsx", filename: "Bao-cao-xuat-nhap-ton-loai-3.xlsx"
+                elsif !@group_by_category.nil?
+                    render xlsx: "delivery_report_category_property_xlsx", filename: "Bao-cao-xuat-nhap-ton-loai-4.xlsx"
+                else
+                    render xlsx: "delivery_report_property_xlsx", filename: "Bao-cao-xuat-nhap-ton-loai-1.xlsx"
+                end
+            }
+          end
         end
 
         # Warehouses report
