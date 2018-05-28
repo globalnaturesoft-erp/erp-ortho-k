@@ -310,6 +310,12 @@ vi:
             total_row: "Tổng cộng"
             diameter: "Đường kính"
             category: "Loại hàng"
+            category:
+              category: "Loại mặt hàng"
+              begin: "Đầu kỳ"
+              end: "Cuối kỳ"
+              import: "Nhập"
+              export: "Xuất"
           warehouses_report:
             name: "Tên hàng"
             warehouses_report: "Báo cáo kho - Tồn kho"
