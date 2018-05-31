@@ -1,5 +1,7 @@
 <% if @warehouses.present? %>
     <form class="stock-importing-form" action="<%= erp_orders.new_type_backend_orders_path(type: Erp::Orders::Order::TYPE_PURCHASE_ORDER) %>" method="POST">
+        <input type="hidden" name="warehouse_id" value="<%= @warehouse_ids %>" />
+        
         <table class="table table-bordered table-advance order-column" id="">
             <tr>
                 <!--<th class="bg-grey text-center" width="1%"><%= t('.number') %></th>-->
