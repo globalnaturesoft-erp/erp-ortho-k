@@ -76,7 +76,7 @@ wb.styles do |s|
       subheader_1[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
       c += 1
       sheet.merge_cells("#{('A'.codepoints.first + c).chr}#{num_row+1}:#{('A'.codepoints.first + c).chr}#{num_row+2}")
-      column_widths << 40
+      column_widths << 30
       
       if params[:doctor_col].present?
         header_1[:columns] << 'Bác sĩ'
@@ -108,13 +108,24 @@ wb.styles do |s|
         column_widths << 10
       end
       
-      header_1[:columns] << 'Kho'
-      header_1[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
-      subheader_1[:columns] << nil
-      subheader_1[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
-      c += 1
-      sheet.merge_cells("#{('A'.codepoints.first + c).chr}#{num_row+1}:#{('A'.codepoints.first + c).chr}#{num_row+2}")
-      column_widths << 5
+      if params[:product_state_col].present?
+        header_1[:columns] << 'TT SP'
+        header_1[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
+        subheader_1[:columns] << nil
+        subheader_1[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
+        c += 1
+        sheet.merge_cells("#{('A'.codepoints.first + c).chr}#{num_row+1}:#{('A'.codepoints.first + c).chr}#{num_row+2}")
+        column_widths << 10
+      end
+      if params[:warehouse_col].present?
+        header_1[:columns] << 'Kho'
+        header_1[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
+        subheader_1[:columns] << nil
+        subheader_1[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
+        c += 1
+        sheet.merge_cells("#{('A'.codepoints.first + c).chr}#{num_row+1}:#{('A'.codepoints.first + c).chr}#{num_row+2}")
+        column_widths << 5
+      end
       
       header_1[:columns] << 'ĐVT'
       header_1[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
@@ -308,8 +319,15 @@ wb.styles do |s|
             row_1[:styles] << (s.add_style text_left.deep_merge(border))
           end
           
-          row_1[:columns] << order_detail.order.warehouse_name
-          row_1[:styles] << (s.add_style text_center.deep_merge(number).deep_merge(border))
+          if params[:product_state_col].present?
+            row_1[:columns] << 'Mới'
+            row_1[:styles] << (s.add_style text_left.deep_merge(border))
+          end
+          
+          if params[:warehouse_col].present?
+            row_1[:columns] << order_detail.order.warehouse_name
+            row_1[:styles] << (s.add_style text_center.deep_merge(number).deep_merge(border))
+          end
           
           row_1[:columns] << order_detail.product_unit_name
           row_1[:styles] << (s.add_style text_center.deep_merge(number).deep_merge(border))
@@ -390,10 +408,19 @@ wb.styles do |s|
         col_ft_merge += 1
       end
       
-      footer_1[:columns] << nil
-      footer_1[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(border))
-      col_ft_1 += 1
-      col_ft_merge += 1
+      if params[:product_state_col].present?
+        footer_1[:columns] << nil
+        footer_1[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(border))
+        col_ft_1 += 1
+        col_ft_merge += 1
+      end
+      
+      if params[:warehouse_col].present?
+        footer_1[:columns] << nil
+        footer_1[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(border))
+        col_ft_1 += 1
+        col_ft_merge += 1
+      end
       
       footer_1[:columns] << nil
       footer_1[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(border))
@@ -513,12 +540,23 @@ wb.styles do |s|
         sheet.merge_cells("#{('A'.codepoints.first + c).chr}#{num_row+1}:#{('A'.codepoints.first + c).chr}#{num_row+2}")
       end
       
-      header_2[:columns] << 'Kho'
-      header_2[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
-      subheader_2[:columns] << nil
-      subheader_2[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
-      c += 1
-      sheet.merge_cells("#{('A'.codepoints.first + c).chr}#{num_row+1}:#{('A'.codepoints.first + c).chr}#{num_row+2}")
+      if params[:product_state_col].present?
+        header_2[:columns] << 'TT SP'
+        header_2[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
+        subheader_2[:columns] << nil
+        subheader_2[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
+        c += 1
+        sheet.merge_cells("#{('A'.codepoints.first + c).chr}#{num_row+1}:#{('A'.codepoints.first + c).chr}#{num_row+2}")
+      end
+      
+      if params[:warehouse_col].present?
+        header_2[:columns] << 'Kho'
+        header_2[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
+        subheader_2[:columns] << nil
+        subheader_2[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
+        c += 1
+        sheet.merge_cells("#{('A'.codepoints.first + c).chr}#{num_row+1}:#{('A'.codepoints.first + c).chr}#{num_row+2}")
+      end
       
       header_2[:columns] << 'ĐVT'
       header_2[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
@@ -623,8 +661,15 @@ wb.styles do |s|
           row_2[:styles] << (s.add_style border.deep_merge(bg_subrow))
         end
         
-        row_2[:columns] << nil
-        row_2[:styles] << (s.add_style border.deep_merge(bg_subrow))
+        if params[:product_state_col].present?
+          row_2[:columns] << nil
+          row_2[:styles] << (s.add_style border.deep_merge(bg_subrow))
+        end
+        
+        if params[:warehouse_col].present?
+          row_2[:columns] << nil
+          row_2[:styles] << (s.add_style border.deep_merge(bg_subrow))
+        end
         
         row_2[:columns] << nil
         row_2[:styles] << (s.add_style border.deep_merge(bg_subrow))
@@ -689,8 +734,15 @@ wb.styles do |s|
             row_2[:styles] << (s.add_style text_center.deep_merge(border))
           end
           
-          row_2[:columns] << delivery_detail.warehouse_name
-          row_2[:styles] << (s.add_style text_center.deep_merge(number).deep_merge(border))
+          if params[:product_state_col].present?
+            row_2[:columns] << delivery_detail.state_name
+            row_2[:styles] << (s.add_style text_center.deep_merge(border))
+          end
+          
+          if params[:warehouse_col].present?
+            row_2[:columns] << delivery_detail.warehouse_name
+            row_2[:styles] << (s.add_style text_center.deep_merge(number).deep_merge(border))
+          end
           
           row_2[:columns] << delivery_detail.product_unit
           row_2[:styles] << (s.add_style text_center.deep_merge(number).deep_merge(border))
@@ -766,10 +818,19 @@ wb.styles do |s|
         col_ft_merge += 1
       end
       
-      footer_2[:columns] << nil
-      footer_2[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(border))
-      col_ft_2 += 1
-      col_ft_merge += 1
+      if params[:product_state_col].present?
+        footer_2[:columns] << nil
+        footer_2[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(border))
+        col_ft_2 += 1
+        col_ft_merge += 1
+      end
+      
+      if params[:warehouse_col].present?
+        footer_2[:columns] << nil
+        footer_2[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(border))
+        col_ft_2 += 1
+        col_ft_merge += 1
+      end
       
       footer_2[:columns] << nil
       footer_2[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(border))
@@ -823,7 +884,9 @@ wb.styles do |s|
     
     add_patient_num = (params[:doctor_col].present? ? 1 : 0) +
                       (params[:patient_col].present? ? 1 : 0) +
-                      (params[:patient_state_col].present? ? 1 : 0)
+                      (params[:patient_state_col].present? ? 1 : 0) +
+                      (params[:product_state_col].present? ? 1 : 0) +
+                      (params[:warehouse_col].present? ? 1 : 0)
     
     # add empty row
     sheet.add_row [nil]
@@ -858,8 +921,15 @@ wb.styles do |s|
       header_3[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
     end
     
-    header_3[:columns] << nil
-    header_3[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
+    if params[:product_state_col].present?
+      header_3[:columns] << nil
+      header_3[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
+    end
+    
+    if params[:warehouse_col].present?
+      header_3[:columns] << nil
+      header_3[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
+    end
     
     header_3[:columns] << nil
     header_3[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
@@ -872,7 +942,7 @@ wb.styles do |s|
     
     sheet.add_row header_3[:columns], style: header_3[:styles]
     num_row += 1
-    sheet.merge_cells("#{('A'.codepoints.first + 1).chr}#{num_row}:#{('A'.codepoints.first + 5 + add_patient_num).chr}#{num_row}")
+    sheet.merge_cells("#{('A'.codepoints.first + 1).chr}#{num_row}:#{('A'.codepoints.first + 3 + add_patient_num).chr}#{num_row}")
     
     # Add rows
     rw1 = {columns: [], styles: []}
@@ -916,7 +986,7 @@ wb.styles do |s|
     rw6[:styles] << (s.add_style bg_footer.deep_merge(text_left).deep_merge(bold).deep_merge(border_dotted_bottom))
     num_col += 1
     
-    (num_col..(num_col+3+add_patient_num)).each do |c|
+    (num_col..(num_col+2+add_patient_num)).each do |c|
       num_col += 1
       rw1[:columns] << nil
       rw1[:styles] << (s.add_style border_dotted_bottom)
@@ -959,28 +1029,29 @@ wb.styles do |s|
     
     sheet.add_row rw1[:columns], style: rw1[:styles]
     num_row += 1
-    sheet.merge_cells("#{('A'.codepoints.first + 1).chr}#{num_row}:#{('A'.codepoints.first + 5 + add_patient_num).chr}#{num_row}")
+    sheet.merge_cells("#{('A'.codepoints.first + 1).chr}#{num_row}:#{('A'.codepoints.first + 4 + add_patient_num).chr}#{num_row}")
     sheet.add_row rw2[:columns], style: rw2[:styles]
     num_row += 1
-    sheet.merge_cells("#{('A'.codepoints.first + 1).chr}#{num_row}:#{('A'.codepoints.first + 5 + add_patient_num).chr}#{num_row}")
+    sheet.merge_cells("#{('A'.codepoints.first + 1).chr}#{num_row}:#{('A'.codepoints.first + 4 + add_patient_num).chr}#{num_row}")
     sheet.add_row rw3[:columns], style: rw3[:styles]
     num_row += 1
-    sheet.merge_cells("#{('A'.codepoints.first + 1).chr}#{num_row}:#{('A'.codepoints.first + 5 + add_patient_num).chr}#{num_row}")
+    sheet.merge_cells("#{('A'.codepoints.first + 1).chr}#{num_row}:#{('A'.codepoints.first + 4 + add_patient_num).chr}#{num_row}")
     sheet.add_row rw4[:columns], style: rw4[:styles]
     num_row += 1
-    sheet.merge_cells("#{('A'.codepoints.first + 1).chr}#{num_row}:#{('A'.codepoints.first + 5 + add_patient_num).chr}#{num_row}")
+    sheet.merge_cells("#{('A'.codepoints.first + 1).chr}#{num_row}:#{('A'.codepoints.first + 4 + add_patient_num).chr}#{num_row}")
     sheet.add_row rw5[:columns], style: rw5[:styles]
     num_row += 1
-    sheet.merge_cells("#{('A'.codepoints.first + 1).chr}#{num_row}:#{('A'.codepoints.first + 5 + add_patient_num).chr}#{num_row}")
+    sheet.merge_cells("#{('A'.codepoints.first + 1).chr}#{num_row}:#{('A'.codepoints.first + 4 + add_patient_num).chr}#{num_row}")
     sheet.add_row rw6[:columns], style: rw6[:styles]
     num_row += 1
-    sheet.merge_cells("#{('A'.codepoints.first + 1).chr}#{num_row}:#{('A'.codepoints.first + 5 + add_patient_num).chr}#{num_row}")
+    sheet.merge_cells("#{('A'.codepoints.first + 1).chr}#{num_row}:#{('A'.codepoints.first + 4 + add_patient_num).chr}#{num_row}")
     
+    # ############################ Footer Signature ############################
     # add empty row
     sheet.add_row [nil]
     num_row += 1
-    
-    # ############################ Footer Signature ############################
+    sheet.add_row ['4. Phần xác nhận đối chiếu công nợ:'], b: true
+    num_row += 1
     
     sign = {columns: [], styles: []}
     sign1 = {columns: [], styles: []}
@@ -988,8 +1059,8 @@ wb.styles do |s|
     
     sign[:columns] << nil
     sign[:styles] << (s.add_style {})
-    sign[:columns] << nil
-    sign[:styles] << (s.add_style {})
+    sign[:columns] << Time.now.strftime('Ngày %d tháng %m năm %Y')
+    sign[:styles] << (s.add_style text_center.merge(italic))
     sign[:columns] << nil
     sign[:styles] << (s.add_style {})
     if params[:doctor_col].present?
@@ -1004,8 +1075,14 @@ wb.styles do |s|
       sign[:columns] << nil
       sign[:styles] << (s.add_style {})
     end
-    sign[:columns] << nil
-    sign[:styles] << (s.add_style {})
+    if params[:product_state_col].present?
+      sign[:columns] << nil
+      sign[:styles] << (s.add_style {})
+    end
+    if params[:warehouse_col].present?
+      sign[:columns] << nil
+      sign[:styles] << (s.add_style {})
+    end
     sign[:columns] << nil
     sign[:styles] << (s.add_style {})
     sign[:columns] << nil
@@ -1024,12 +1101,12 @@ wb.styles do |s|
       sign[:columns] << nil
       sign[:styles] << (s.add_style {})
     end
-    sign[:columns] << Time.now.strftime('Ngày %d tháng %m năm %Y')
+    sign[:columns] << nil
     sign[:styles] << (s.add_style text_center.merge(italic))
     
     sign1[:columns] << nil
     sign1[:styles] << (s.add_style {})
-    sign1[:columns] << 'Người lập biểu'
+    sign1[:columns] << 'KẾ TOÁN - CÔNG TY TNHH ORTHO-K VIỆT NAM'
     sign1[:styles] << (s.add_style text_center.merge(bold))
     sign1[:columns] << nil
     sign1[:styles] << (s.add_style {})
@@ -1065,7 +1142,7 @@ wb.styles do |s|
       sign1[:columns] << nil
       sign1[:styles] << (s.add_style {})
     end
-    sign1[:columns] << 'Kế toán trưởng'
+    sign1[:columns] << "KHÁCH HÀNG - #{@customer.name}"
     sign1[:styles] << (s.add_style text_center.merge(bold))
     
     sign2[:columns] << nil
