@@ -128,6 +128,11 @@
             }) %>
         </div>
     </div>
+    <div class="row">
+        <div class="col-md-12 text-right mb-10">
+            <a href="#" class="btn btn-primary global-filter-button">Kiểm kho</a>
+        </div>
+    </div>
 <% end %>
 
 <%= erp_datalist(
@@ -135,6 +140,7 @@
     sortable: true,
     scroll_page: true,
     keyword: true,
+    autoload: false,
     #filters: [
     #    {
     #        text: t('.show_virtual'), name: 'show_virtual', value: true, checked: false
@@ -142,4 +148,5 @@
     #],
     columns: [
     ],
+    placeholder: 'Vui lòng chọn thông tin cần lọc và nhấn Kiểm tra'
 ) %>
