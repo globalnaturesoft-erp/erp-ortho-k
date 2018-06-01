@@ -41,6 +41,9 @@
             <%= @total[:col3] %>
           </td>
           <td class="text-center bg-grey text-bold">
+            <%= @total[:col5] %>
+          </td>
+          <td class="text-center bg-grey text-bold">
             <%= @total[:col4] %>
           </td>
           <td class="text-center bg-info text-bold">
@@ -56,6 +59,7 @@
           <th class="text-center bg-primary" title="Nhập NCC">Nhập NCC</th>
           <th class="text-center bg-primary" title="Khách trả; Ký gửi trả">Hoàn kho</th>
           <th class="text-center bg-primary" title="Xuất bán; Cho mượn/Ký gửi; Tặng quà">Xuất</th>
+          <th class="text-center bg-primary" title="Trả NCC">Trả NCC</th>
           <th class="text-center bg-primary" title="Hủy kho; Kiểm kho">Hư/Mất</th>
           <th class="text-center bg-primary">Dư cuối</th>
           <th class="text-left bg-primary">Ngày nhập</th>
@@ -78,6 +82,9 @@
         </td>
         <td class="text-center">
           <%= row[:col3] %>
+        </td>
+        <td class="text-center">
+          <%= row[:col5] %>
         </td>
         <td class="text-center">
           <%= row[:col4] %>

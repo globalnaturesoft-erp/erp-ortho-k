@@ -815,6 +815,12 @@ module Erp
           
           @total[:col4] = Erp::Products::Product.get_damage_record_export(filters) + Erp::Products::Product.get_stock_check_export(filters)
           
+          @total[:col5] = Erp::Products::Product.get_qdelivery_export(filters.clone.merge({
+              delivery_type: [                  
+                Erp::Qdeliveries::Delivery::TYPE_PURCHASE_EXPORT
+              ]
+          }))
+          
           end_params = filters.clone
           end_params[:from_date] = nil        
           @total[:end] = e_stock = Erp::Products::Product.get_stock_real(end_params)
@@ -851,9 +857,15 @@ module Erp
                   Erp::Qdeliveries::Delivery::TYPE_CUSTOM_EXPORT,
                   Erp::Qdeliveries::Delivery::TYPE_SALES_EXPORT
                 ]
-            })) + Erp::Products::Product.get_gift_given_export(filters)
+            })) + Erp::Products::Product.get_gift_given_export(filters) + Erp::Products::Product.get_consignment_export(filters)
             
             row[:col4] = Erp::Products::Product.get_damage_record_export(filters) + Erp::Products::Product.get_stock_check_export(filters)
+            
+            row[:col5] = Erp::Products::Product.get_qdelivery_export(filters.clone.merge({
+                delivery_type: [                  
+                  Erp::Qdeliveries::Delivery::TYPE_PURCHASE_EXPORT
+                ]
+            }))
             
             end_params = filters.clone
             end_params[:from_date] = nil
