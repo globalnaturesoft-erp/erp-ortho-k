@@ -71,7 +71,9 @@
                                     ],
                                     state: state
                                 }))
-                                count += Erp::Products::Product.get_gift_given_export(filters)
+                                count += Erp::Products::Product.get_cs_return_import(filters.clone.merge({
+                                    state: state
+                                }))
                             %>
                             <%= count %>
                         </td>
@@ -85,6 +87,17 @@
                             ]
                         }))
                         count += Erp::Products::Product.get_gift_given_export(filters)
+                        count += Erp::Products::Product.get_consignment_export(filters)
+                    %>
+                    <%= count %>
+                  </td>
+                  <td class="text-center bg-grey text-bold">
+                    <%
+                        count = Erp::Products::Product.get_qdelivery_export(filters.clone.merge({
+                            delivery_type: [
+                                Erp::Qdeliveries::Delivery::TYPE_PURCHASE_EXPORT
+                            ]
+                        }))
                     %>
                     <%= count %>
                   </td>
@@ -126,6 +139,7 @@
                   <th rowspan="2" class="text-center bg-primary" title="Nhập kiểm kho; Kiểm TT">Nhập KK</th>
                   <th colspan="<%= @states.count %>" class="text-center bg-primary text-nowrap" title="Khách trả; Ký gửi trả">Hoàn kho</th>
                   <th rowspan="2" class="text-center bg-primary" title="Xuất bán; Cho mượn/Ký gửi; Tặng quà">Xuất</th>
+                  <th rowspan="2" class="text-center bg-primary" title="Trả NCC">TNCC</th>
                   <th rowspan="2" class="text-center bg-primary" title="Hủy kho; Kiểm kho">Xuất KK</th>
                   <th rowspan="2" class="text-center bg-primary" title="Kiểm trạng thái">Xuất KTT</th>
                   <th rowspan="2" class="text-center bg-primary">Dư cuối</th>
@@ -197,6 +211,9 @@
                                     ],
                                     state: state
                               }))
+                              count += Erp::Products::Product.get_cs_return_import(filters.clone.merge({
+                                state: state
+                              }))
                             %>
                             <%= count %>
                         </td>
@@ -210,6 +227,17 @@
                                 ]
                             }))
                             count += Erp::Products::Product.get_gift_given_export(filters)
+                            count += Erp::Products::Product.get_consignment_export(filters)
+                        %>
+                        <%= count %>
+                    </td>
+                    <td class="text-center">
+                        <%
+                            count = Erp::Products::Product.get_qdelivery_export(filters.clone.merge({
+                                delivery_type: [
+                                    Erp::Qdeliveries::Delivery::TYPE_PURCHASE_EXPORT
+                                ]
+                            }))
                         %>
                         <%= count %>
                     </td>
