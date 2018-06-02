@@ -331,6 +331,9 @@ wb.styles do |s|
             ],
             state: state
         }))
+        count += Erp::Products::Product.get_cs_return_import(filters.clone.merge({
+            state: state
+        }))
         subrow[:columns] << count
         subrow[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_subrow).merge(bold))
       end
