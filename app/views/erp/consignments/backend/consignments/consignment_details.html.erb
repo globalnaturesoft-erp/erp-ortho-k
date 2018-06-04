@@ -24,7 +24,7 @@
                     <i class="fa fa-warning"></i> <%= t("."+@consignment.consignment_type) %> không thể giao hàng do số lượng tồn kho không đủ!
                 </div>
             <% end %>
-            <% colspan_total = 3 + ((@consignment.is_draft? or @consignment.is_active?) ? 1 : 0) %>
+            <% colspan_total = 4 + ((@consignment.is_draft? or @consignment.is_active?) ? 1 : 0) %>
             <table class="table table-bordered table-striped flip-content">
                 <thead class="flip-content">
                     <tr>
@@ -37,6 +37,7 @@
                         <th class="bg-blue-madison bg-font-blue-madison border-blue-madison text-nowrap text-left">Sản phẩm</th>
                         <th width="10%" class="bg-blue-madison bg-font-blue-madison border-blue-madison text-nowrap text-center">ĐVT</th>
                         <th width="12%" class="bg-blue-madison bg-font-blue-madison border-blue-madison text-nowrap text-center">Tình trạng</th>
+                        <th width="12%" class="bg-blue-madison bg-font-blue-madison border-blue-madison text-nowrap text-center">Số Lô/Sê-ri</th>
                         <% if @consignment.is_draft? or @consignment.is_active? %>
                             <th width="12%" class="bg-blue-madison bg-font-blue-madison border-blue-madison text-nowrap text-center"><%= 'Tồn kho' %></th>
                         <% end %>
@@ -61,6 +62,9 @@
                             </td>
                             <td class="text-center">
                                 <%= consignment_detail.state_name %>
+                            </td>
+                            <td class="text-center">
+                                <%= consignment_detail.serials %>
                             </td>
                             <% if @consignment.is_draft? or @consignment.is_active? %>
                                 <td class="text-center stock-num-<%= (qty > stock) ? 'false' : 'true' %>">
