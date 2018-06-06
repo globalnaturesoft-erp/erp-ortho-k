@@ -103,6 +103,7 @@
                             <th class="bg-blue-madison bg-font-blue-madison border-blue-madison text-nowrap text-left">Sản phẩm</th>
                             <th class="bg-blue-madison bg-font-blue-madison border-blue-madison text-nowrap text-center">ĐVT</th>
                             <th class="bg-blue-madison bg-font-blue-madison border-blue-madison text-nowrap text-center">Tình trạng</th>
+                            <th class="bg-blue-madison bg-font-blue-madison border-blue-madison text-nowrap text-center">Số lô/Sê-ri</th>
                             <th class="bg-blue-madison bg-font-blue-madison border-blue-madison text-nowrap text-center">Số lượng</th>
                             <th class="bg-blue-madison bg-font-blue-madison border-blue-madison text-nowrap text-left">Ghi chú</th>
                             <th class="bg-blue-madison bg-font-blue-madison border-blue-madison text-nowrap text-center"><%= 'Tác vụ' %></th>
@@ -114,7 +115,7 @@
                                 <td class="bg-grey bg-font-grey text-left text-nowrap bold"><%= cs_return.code %></td>
                                 <td class="bg-grey bg-font-grey text-left bold"><%= format_date(cs_return.return_date) %></td>
                                 <td class="bg-grey bg-font-grey text-left bold"><%= cs_return.contact_name %></td>
-                                <td class="bg-grey bg-font-grey text-center bold" colspan="3"></td>
+                                <td class="bg-grey bg-font-grey text-center bold" colspan="4"></td>
                                 <td class="bg-grey bg-font-grey text-center bold"><%= cs_return.total_quantity %></td>
                                 <td class="bg-grey bg-font-grey text-left"><%= cs_return.note.html_safe if cs_return.note.present? %></td>
                                 <td class="bg-grey bg-font-grey text-left">
@@ -127,6 +128,7 @@
                                     <td class="text-nowrap text-left"><%= return_detail.get_product_name %></td>
                                     <td class="text-center"><%= return_detail.get_product_unit %></td>
                                     <td class="text-center"><%= return_detail.state_name %></td>
+                                    <td class="text-center"><%= return_detail.serials %></td>
                                     <td class="text-center"><%= return_detail.quantity %></td>
                                     <td class="text-left" colspan="2"></td>
                                 </tr>
