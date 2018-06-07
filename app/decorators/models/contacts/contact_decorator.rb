@@ -161,10 +161,10 @@ Erp::Contacts::Contact.class_eval do
       .get_deliveries_with_payment_for_contact #(from_date: @from, to_date: @to)
       .select('customer_id')
 
-    #payment_query = Erp::Payments::PaymentRecord.all_done
-    #  .select('customer_id')
-    #  .where(payment_type_id: Erp::Payments::PaymentType.find_by_code(Erp::Payments::PaymentType::CODE_CUSTOMER).id)
-    #  .where("payment_date >= ? AND payment_date <= ?", @from, @to)
+    payment_query = Erp::Payments::PaymentRecord.all_done
+      .select('customer_id')
+      .where(payment_type_id: Erp::Payments::PaymentType.find_by_code(Erp::Payments::PaymentType::CODE_CUSTOMER).id)
+      #.where("payment_date >= ? AND payment_date <= ?", @from, @to)
     
     self.where("erp_contacts_contacts.id IN (?) OR erp_contacts_contacts.id IN (?)",
                order_query, product_return_query)
@@ -195,10 +195,10 @@ Erp::Contacts::Contact.class_eval do
       .get_deliveries_with_payment_for_contact #(from_date: @from, to_date: @to)
       .select('supplier_id')
 
-    #payment_query = Erp::Payments::PaymentRecord.all_done
-    #  .select('supplier_id')
-    #  .where(payment_type_id: Erp::Payments::PaymentType.find_by_code(Erp::Payments::PaymentType::CODE_SUPPLIER).id)
-    #  .where("payment_date >= ? AND payment_date <= ?", @from, @to)
+    payment_query = Erp::Payments::PaymentRecord.all_done
+      .select('supplier_id')
+      .where(payment_type_id: Erp::Payments::PaymentType.find_by_code(Erp::Payments::PaymentType::CODE_SUPPLIER).id)
+      #.where("payment_date >= ? AND payment_date <= ?", @from, @to)
 
     self.where("erp_contacts_contacts.id IN (?) OR erp_contacts_contacts.id IN (?)",
                order_query, product_return_query)
