@@ -2618,22 +2618,22 @@ Erp::Products::Product.class_eval do
   # purchase
   def get_purchase_price(options={})
     Erp::Prices::Price.get_by_product(
-      contact_id: nil,
+      contact_id: options[:contact_id],
       category_id: self.category_id,
       properties_value_id: self.get_diameter_id,
       quantity: options[:quantity].to_i,
-      type: 'purchase'
+      type: Erp::Prices::Price::TYPE_SALES
     )
   end
   
-  # purchase
+  # sales price
   def get_sales_price(options={})
     Erp::Prices::Price.get_by_product(
       contact_id: options[:contact_id],
       category_id: self.category_id,
       properties_value_id: self.get_diameter_id,
       quantity: options[:quantity].to_i,
-      type: 'purchase'
+      type: Erp::Prices::Price::TYPE_PURCHASE
     )
   end
 

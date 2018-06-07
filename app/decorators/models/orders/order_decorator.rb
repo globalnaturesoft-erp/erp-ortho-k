@@ -763,10 +763,10 @@ Erp::Orders::Order.class_eval do
 
       if product.present?
         if self.purchase?
-          purchase_price = product.get_purchase_price(quantity: row[1])
+          purchase_price = product.get_default_purchase_price(quantity: row[1])
           price = purchase_price.present? ? purchase_price.price : 0.0
         else
-          sales_price = product.get_sales_price(quantity: row[1])
+          sales_price = product.get_default_sales_price(quantity: row[1])
           price = sales_price.present? ? sales_price.price : 0.0
         end
         
