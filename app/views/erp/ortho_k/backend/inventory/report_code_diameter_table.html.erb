@@ -47,7 +47,6 @@
             <%
               count = Erp::Products::Product.get_qdelivery_import(filters.clone.merge({
                   delivery_type: [
-                    Erp::Qdeliveries::Delivery::TYPE_CUSTOM_IMPORT,
                     Erp::Qdeliveries::Delivery::TYPE_PURCHASE_IMPORT
                   ]
               }))
@@ -56,7 +55,13 @@
           </td>
           <td class="text-center bg-grey text-bold">
                 <%
-                    count = Erp::Products::Product.get_stock_check_import(filters)
+                    count = Erp::Products::Product.get_qdelivery_import(filters.clone.merge({
+                        delivery_type: [
+                          Erp::Qdeliveries::Delivery::TYPE_CUSTOM_IMPORT
+                        ]
+                    }))
+                    count += Erp::Products::Product.get_stock_check_import(filters)
+                    count += Erp::Products::Product.get_state_check_import(filters) if filters[:state_ids].present?
                 %>
                 <%= count %>
           </td>
@@ -126,7 +131,7 @@
           <th rowspan="2" class="text-center bg-primary">Đường kính</th>
           <th rowspan="2" class="text-center bg-primary">Dư đầu</th>
           <th rowspan="2" class="text-center bg-primary" title="Nhập NCC">Nhập NCC</th>
-          <th rowspan="2" class="text-center bg-primary" title="Nhập kiểm kho; Kiểm TT">Nhập KK</th>
+          <th rowspan="2" class="text-center bg-primary" title="Nhập kiểm kho; Kiểm TT; Nhập tùy chỉnh">Nhập KK</th>
           <th colspan="<%= @states.count %>" class="text-center bg-primary text-nowrap" title="Khách trả; Ký gửi trả">Hoàn kho</th>
           <th rowspan="2" class="text-center bg-primary" title="Xuất bán; Cho mượn/Ký gửi; Tặng quà">Xuất</th>
           <th rowspan="2" class="text-center bg-primary" title="Trả NCC">TNCC</th>
@@ -167,7 +172,6 @@
             <%
               count = Erp::Products::Product.get_qdelivery_import(filters.clone.merge({
                   delivery_type: [
-                    Erp::Qdeliveries::Delivery::TYPE_CUSTOM_IMPORT,
                     Erp::Qdeliveries::Delivery::TYPE_PURCHASE_IMPORT
                   ]
               }))
@@ -176,7 +180,13 @@
           </td>
           <td class="text-center">
               <%
-                  count = Erp::Products::Product.get_stock_check_import(filters)
+                  count = Erp::Products::Product.get_qdelivery_import(filters.clone.merge({
+                      delivery_type: [
+                        Erp::Qdeliveries::Delivery::TYPE_CUSTOM_IMPORT
+                      ]
+                  }))
+                  count += Erp::Products::Product.get_stock_check_import(filters)
+                  count += Erp::Products::Product.get_state_check_import(filters) if filters[:state_ids].present?
               %>
               <%= count %>
           </td>
@@ -262,7 +272,6 @@
           <%
             count = Erp::Products::Product.get_qdelivery_import(filters.clone.merge({
                 delivery_type: [
-                  Erp::Qdeliveries::Delivery::TYPE_CUSTOM_IMPORT,
                   Erp::Qdeliveries::Delivery::TYPE_PURCHASE_IMPORT
                 ]
             }))
@@ -271,7 +280,12 @@
         </td>
         <td class="text-center bg-grey text-bold">
             <%
-                count = Erp::Products::Product.get_stock_check_import(filters)
+                count = Erp::Products::Product.get_qdelivery_import(filters.clone.merge({
+                    delivery_type: [
+                      Erp::Qdeliveries::Delivery::TYPE_CUSTOM_IMPORT
+                    ]
+                }))
+                count += Erp::Products::Product.get_stock_check_import(filters)
                 count += Erp::Products::Product.get_state_check_import(filters) if filters[:state_ids].present?
             %>
             <%= count %>
