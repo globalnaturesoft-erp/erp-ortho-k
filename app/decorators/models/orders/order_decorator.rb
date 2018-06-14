@@ -807,4 +807,19 @@ Erp::Orders::Order.class_eval do
   def doctor_name
     doctor.present? ? doctor.name : ''
   end
+  
+  def update_default_prices
+    self.order_details.each do |od|
+      p = 0.0
+      
+      if self.sales?
+        pp = od.product.get_default_sales_price(quantity: od.quantity)
+      elsif self.purchase?
+        pp = od.product.get_default_purchase_price(quantity: od.quantity)
+      end
+      
+      p = pp.price if pp.present?
+      od.update_attribute(:price, p)
+    end 
+  end
 end
