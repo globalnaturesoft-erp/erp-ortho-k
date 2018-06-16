@@ -21,9 +21,9 @@ wb.styles do |s|
         wb.add_worksheet(name: sheet_name) do |sheet|
           # style
           bg_info = {:bg_color => "e5e5e5", :fg_color => "00"}
-          bg_stock_0 = {:bg_color => "fbe1e3", :fg_color => "00"}
-          bg_stock_1 = {:bg_color => "f9e491", :fg_color => "00"}
-          bg_stock_2 = {:bg_color => "e0ebf9", :fg_color => "00"}
+          bg_stock_0 = {:bg_color => "ff3399", :fg_color => "00"}
+          bg_stock_1 = {:bg_color => "ffff00", :fg_color => "00"}
+          bg_stock_2 = {:bg_color => "0099ff", :fg_color => "00"}
           bg_stock_3 = {:bg_color => "ed6b75", :fg_color => "ff"}
           bg_general = {:bg_color => "a9d08e", :fg_color => "00"}
           text_center = {alignment: { horizontal: :center }}
