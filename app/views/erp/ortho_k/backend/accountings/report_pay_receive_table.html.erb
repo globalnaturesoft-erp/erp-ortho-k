@@ -46,16 +46,19 @@
                     <th class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Tên khách hàng</th>
                 <% end %>
                 <% if get_columns(params).include?("voucher_date") %>
-                    <th width="15%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Ngày thanh toán</th>
+                    <th width="12%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Ngày thanh toán</th>
                 <% end %>
                 <% if get_columns(params).include?("pay_receive") %>
                     <th width="15%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Loại phiếu</th>
                 <% end %>
                 <% if get_columns(params).include?("description") %>
-                    <th width="25%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Diễn giải</th>
+                    <th width="15%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Diễn giải</th>
                 <% end %>
                 <% if get_columns(params).include?("amount") %>
-                    <th width="15%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Số tiền</th>
+                    <th width="12%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Số tiền</th>
+                <% end %>
+                <% if get_columns(params).include?("account") %>
+                    <th width="15%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">TK thanh toán</th>
                 <% end %>
                 <% if get_columns(params).include?("salesperson") %>
                     <th width="15%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">NV phụ trách</th>
@@ -72,6 +75,9 @@
                     <tr>
                         <td class="bg-green-jungle bg-font-green-jungle text-center" colspan="<%= total_colspan %>"><strong> TỔNG CỘNG </strong></td>
                         <td class="bg-green-jungle bg-font-green-jungle text-right"><strong><%= format_number(@payment_records.remain_amount(from_date: @from, to_date: @to)) %></strong></td>
+                        <% if get_columns(params).include?("account") %>
+                            <td class="bg-green-jungle bg-font-green-jungle text-right"></td>
+                        <% end %>
                         <% if get_columns(params).include?("salesperson") %>
                             <td class="bg-green-jungle bg-font-green-jungle text-right"></td>
                         <% end %>
@@ -84,7 +90,7 @@
                         <td class="text-center"><%= index+1 %></td>
                     <% end %>
                     <% if get_columns(params).include?("contact_name") %>
-                        <td class="text-left text-nowrap"><%= payment_record.customer_name %></td>
+                        <td class="text-left"><%= payment_record.customer_name %></td>
                     <% end %>
                     <% if get_columns(params).include?("voucher_date") %>
                         <td class="text-left"><%= format_date(payment_record.payment_date) %></td>
@@ -98,7 +104,10 @@
                         <td class="text-left"><%= payment_record.description.html_safe %></td>
                     <% end %>
                     <% if get_columns(params).include?("amount") %>
-                        <td class="text-right font-yellow-gold"><%= format_number(payment_record.amount) %></td>
+                        <td class="text-right"><%= format_number(payment_record.amount) %></td>
+                    <% end %>
+                    <% if get_columns(params).include?("account") %>
+                        <td class="text-left"><%= payment_record.account_name %></td>
                     <% end %>
                     <% if get_columns(params).include?("salesperson") %>
                         <td class="text-left"><%= payment_record.employee_name %></td>
