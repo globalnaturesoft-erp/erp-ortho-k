@@ -425,7 +425,7 @@ Erp::Orders::Order.class_eval do
       end
 
       if params[:product_id].present?
-        query = query.where(erp_orders_order_details: {product_id: params[:product_id]})
+        query = query.where(product_id: params[:product_id])
       end
 
       query.each do |delivery_detail|
