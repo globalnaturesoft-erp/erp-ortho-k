@@ -480,16 +480,23 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
               row_1[:styles] << (s.add_style border.deep_merge(bg_subrow))
             end
             
-            row_1[:columns] << nil
+            if params[:product_state_col].present?
+              row_1[:columns] << nil
+              row_1[:styles] << (s.add_style border.deep_merge(bg_subrow))
+            end
+            
+            if params[:warehouse_col].present?
+              row_1[:columns] << nil
+              row_1[:styles] << (s.add_style border.deep_merge(bg_subrow))
+            end
+            
+            row_1[:columns] << nil # ĐVT
             row_1[:styles] << (s.add_style border.deep_merge(bg_subrow))
             
-            row_1[:columns] << nil
-            row_1[:styles] << (s.add_style border.deep_merge(bg_subrow))
-            
-            row_1[:columns] << order.items_count
+            row_1[:columns] << order.items_count # SO LUONG
             row_1[:styles] << (s.add_style border.deep_merge(number).deep_merge(bold).deep_merge(bg_subrow).deep_merge(text_center))
             
-            row_1[:columns] << nil
+            row_1[:columns] << nil # DON GIA
             row_1[:styles] << (s.add_style border.deep_merge(number).deep_merge(bold).deep_merge(bg_subrow))
             
             if params[:sales_discount_col].present?
@@ -806,6 +813,7 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
           
           return_price_merge_num = (params[:return_amount_col].present? ? 1 : 0) +
             (params[:return_discount_col].present? ? 1 : 0) +
+            (params[:return_tax_col].present? ? 1 : 0) +
             (params[:return_total_col].present? ? 1 : 0)
           
           header_2[:columns] << 'Doanh thu trả lại'
@@ -816,6 +824,15 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
           sheet.merge_cells("#{('A'.codepoints.first + c).chr}#{num_row+1}:#{('A'.codepoints.first + (c+return_price_merge_num)).chr}#{num_row+1}")
           giamua = c
           
+          if params[:return_discount_col].present?
+            header_2[:columns] << nil
+            header_2[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
+            subheader_2[:columns] << 'Giảm giá'
+            subheader_2[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
+            c += 1
+            giamgia = c
+          end
+          
           if params[:return_amount_col].present?
             header_2[:columns] << nil
             header_2[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
@@ -825,13 +842,13 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
             thanhtien = c
           end
           
-          if params[:return_discount_col].present?
+          if params[:return_amount_col].present?
             header_2[:columns] << nil
             header_2[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
-            subheader_2[:columns] << 'Giảm giá'
+            subheader_2[:columns] << 'Tiền thuế'
             subheader_2[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
             c += 1
-            giamgia = c
+            tienthue = c
           end
           
           if params[:return_total_col].present?
@@ -902,27 +919,32 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
               row_2[:styles] << (s.add_style border.deep_merge(bg_subrow))
             end
             
-            row_2[:columns] << nil
+            row_2[:columns] << nil # ĐVT
             row_2[:styles] << (s.add_style border.deep_merge(bg_subrow))
             
-            row_2[:columns] << delivery.total_delivery_quantity
+            row_2[:columns] << delivery.total_delivery_quantity # SO LUONG
             row_2[:styles] << (s.add_style border.deep_merge(number).deep_merge(bold).deep_merge(bg_subrow.deep_merge(text_center)))
             
-            row_2[:columns] << nil
+            row_2[:columns] << nil # DON GIA
             row_2[:styles] << (s.add_style border.deep_merge(bg_subrow))
-            
-            if params[:return_amount_col].present?
-              row_2[:columns] << delivery.ordered_subtotal
-              row_2[:styles] << (s.add_style border.deep_merge(number).deep_merge(bold).deep_merge(bg_subrow))
-            end
             
             if params[:return_discount_col].present?
               row_2[:columns] << delivery.discount
               row_2[:styles] << (s.add_style border.deep_merge(number).deep_merge(bold).deep_merge(bg_subrow))
             end
             
+            if params[:return_amount_col].present?
+              row_2[:columns] << delivery.total_without_tax
+              row_2[:styles] << (s.add_style border.deep_merge(number).deep_merge(bold).deep_merge(bg_subrow))
+            end
+            
+            if params[:return_tax_col].present?
+              row_2[:columns] << delivery.tax_amount
+              row_2[:styles] << (s.add_style border.deep_merge(number).deep_merge(bold).deep_merge(bg_subrow))
+            end
+            
             if params[:return_total_col].present?
-              row_2[:columns] << delivery.total_amount
+              row_2[:columns] << delivery.total
               row_2[:styles] << (s.add_style border.deep_merge(number).deep_merge(bold).deep_merge(bg_subrow))
             end
             
@@ -981,21 +1003,28 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
               row_2[:columns] << delivery_detail.quantity
               row_2[:styles] << (s.add_style text_center.deep_merge(number).deep_merge(border))
               
-              row_2[:columns] << delivery_detail.ordered_price
+              #row_2[:columns] << delivery_detail.ordered_price
+              row_2[:columns] << delivery_detail.price
               row_2[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
-              
-              if params[:return_amount_col].present?
-                row_2[:columns] << delivery_detail.ordered_subtotal
-                row_2[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
-              end
               
               if params[:return_discount_col].present?
                 row_2[:columns] << delivery_detail.discount
                 row_2[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
               end
               
+              if params[:return_amount_col].present?
+                #row_2[:columns] << delivery_detail.ordered_subtotal
+                row_2[:columns] << delivery_detail.total_without_tax
+                row_2[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
+              end
+              
               if params[:return_total_col].present?
-                row_2[:columns] << delivery_detail.cache_total
+                row_2[:columns] << delivery_detail.tax_amount
+                row_2[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
+              end
+              
+              if params[:return_total_col].present?
+                row_2[:columns] << delivery_detail.total # OR cache_total
                 row_2[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
               end
               
@@ -1076,20 +1105,28 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
           footer_2[:styles] << (s.add_style bg_footer.deep_merge(number).deep_merge(bold).deep_merge(text_right).deep_merge(border))
           col_ft_2 += 1
           
-          if params[:return_amount_col].present?
-            footer_2[:columns] << @product_returns.ordered_subtotal #@product_returns.ordered_subtotal#"=SUM(#{('A'.codepoints.first + thanhtien).chr}#{delivery_num_row_first}:#{('A'.codepoints.first + thanhtien).chr}#{num_row})"
-            footer_2[:styles] << (s.add_style bg_footer.deep_merge(number).deep_merge(bold).deep_merge(text_right).deep_merge(border))
-            col_ft_2 += 1
-          end
-          
           if params[:return_discount_col].present?
             footer_2[:columns] << @product_returns.discount #@product_returns.discount#"=SUM(#{('A'.codepoints.first + giamgia).chr}#{delivery_num_row_first}:#{('A'.codepoints.first + giamgia).chr}#{num_row})"
             footer_2[:styles] << (s.add_style bg_footer.deep_merge(number).deep_merge(bold).deep_merge(text_right).deep_merge(border))
             col_ft_2 += 1
           end
           
+          if params[:return_amount_col].present?
+            #footer_2[:columns] << @product_returns.ordered_subtotal #@product_returns.ordered_subtotal#"=SUM(#{('A'.codepoints.first + thanhtien).chr}#{delivery_num_row_first}:#{('A'.codepoints.first + thanhtien).chr}#{num_row})"
+            footer_2[:columns] << @product_returns.total_without_tax
+            footer_2[:styles] << (s.add_style bg_footer.deep_merge(number).deep_merge(bold).deep_merge(text_right).deep_merge(border))
+            col_ft_2 += 1
+          end
+          
+          if params[:return_amount_col].present?
+            footer_2[:columns] << @product_returns.tax_amount
+            footer_2[:styles] << (s.add_style bg_footer.deep_merge(number).deep_merge(bold).deep_merge(text_right).deep_merge(border))
+            col_ft_2 += 1
+          end
+          
           if params[:return_total_col].present?
-            footer_2[:columns] << @product_returns.cache_total_amount #"=SUM(#{('A'.codepoints.first + tongcong).chr}#{delivery_num_row_first}:#{('A'.codepoints.first + tongcong).chr}#{num_row})"
+            #footer_2[:columns] << @product_returns.cache_total_amount #"=SUM(#{('A'.codepoints.first + tongcong).chr}#{delivery_num_row_first}:#{('A'.codepoints.first + tongcong).chr}#{num_row})"
+            footer_2[:columns] << @product_returns.total
             footer_2[:styles] << (s.add_style bg_footer.deep_merge(number).deep_merge(bold).deep_merge(text_right).deep_merge(border))
             col_ft_2 += 1
           end
