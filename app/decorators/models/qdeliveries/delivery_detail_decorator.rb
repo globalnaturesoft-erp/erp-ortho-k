@@ -67,4 +67,24 @@ Erp::Qdeliveries::DeliveryDetail.class_eval do
   def get_doctor_name
     self.get_doctor.present? ? self.get_doctor.name : ''
   end
+  
+  # update cache sales debt amount //contact
+  after_save :update_contact_cache_sales_debt_amount
+  def update_contact_cache_sales_debt_amount
+    if [Erp::Qdeliveries::Delivery::TYPE_SALES_EXPORT,Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT].include?(delivery.delivery_type)
+      if delivery.customer.present?
+        delivery.customer.update_cache_sales_debt_amount
+      end
+    end
+  end
+  
+  # update cache purchase debt amount //contact
+  after_save :update_contact_cache_purchase_debt_amount
+  def update_contact_cache_purchase_debt_amount
+    if [Erp::Qdeliveries::Delivery::TYPE_PURCHASE_IMPORT,Erp::Qdeliveries::Delivery::TYPE_PURCHASE_EXPORT].include?(delivery.delivery_type)
+      if delivery.supplier.present?
+        delivery.supplier.update_cache_purchase_debt_amount
+      end
+    end
+  end
 end

@@ -485,4 +485,16 @@ Erp::Contacts::Contact.class_eval do
     
     self.where(id: query)
   end
+  
+  # START - Update cache sales/purchase debt amount
+  after_save :update_cache_sales_debt_amount
+  def update_cache_sales_debt_amount
+    self.update_column(:cache_sales_debt_amount, self.sales_debt_amount)
+  end
+  
+  after_save :update_cache_purchase_debt_amount
+  def update_cache_purchase_debt_amount
+    self.update_column(:cache_purchase_debt_amount, self.purchase_debt_amount)
+  end
+  # END - Update cache sales/purchase debt amount
 end

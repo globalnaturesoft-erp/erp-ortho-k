@@ -39,4 +39,24 @@ Erp::Qdeliveries::Delivery.class_eval do
       end
     end
   end
+  
+  # update cache sales debt amount //contact
+  after_save :update_contact_cache_sales_debt_amount
+  def update_contact_cache_sales_debt_amount
+    if [Erp::Qdeliveries::Delivery::TYPE_SALES_EXPORT,Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT].include?(delivery_type)
+      if customer.present?
+        customer.update_cache_sales_debt_amount
+      end
+    end
+  end
+  
+  # update cache purchase debt amount //contact
+  after_save :update_contact_cache_purchase_debt_amount
+  def update_contact_cache_purchase_debt_amount
+    if [Erp::Qdeliveries::Delivery::TYPE_PURCHASE_IMPORT,Erp::Qdeliveries::Delivery::TYPE_PURCHASE_EXPORT].include?(delivery_type)
+      if supplier.present?
+        supplier.update_cache_purchase_debt_amount
+      end
+    end
+  end
 end

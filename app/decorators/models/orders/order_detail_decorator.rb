@@ -39,4 +39,20 @@ Erp::Orders::OrderDetail.class_eval do
       return 0
     end
   end
+  
+  # update cache sales debt amount //contact
+  after_save :update_contact_cache_sales_debt_amount
+  def update_contact_cache_sales_debt_amount
+    if order.customer.present? and self.order.sales?
+      order.customer.update_cache_sales_debt_amount
+    end
+  end
+  
+  # update cache purchase debt amount //contact
+  after_save :update_contact_cache_purchase_debt_amount
+  def update_contact_cache_purchase_debt_amount
+    if order.supplier.present? and self.order.purchase?
+      order.supplier.update_cache_purchase_debt_amount
+    end
+  end
 end
