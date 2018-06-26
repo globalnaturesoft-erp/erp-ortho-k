@@ -822,4 +822,20 @@ Erp::Orders::Order.class_eval do
       od.update_attribute(:price, p)
     end 
   end
+  
+  # update cache sales debt amount //contact
+  after_save :update_contact_cache_sales_debt_amount
+  def update_contact_cache_sales_debt_amount
+    if customer.present? and self.sales?
+      customer.update_cache_sales_debt_amount
+    end
+  end
+  
+  # update cache purchase debt amount //contact
+  after_save :update_contact_cache_purchase_debt_amount
+  def update_contact_cache_purchase_debt_amount
+    if supplier.present? and self.purchase?
+      supplier.update_cache_purchase_debt_amount
+    end
+  end
 end
