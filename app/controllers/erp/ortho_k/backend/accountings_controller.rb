@@ -265,12 +265,8 @@ module Erp
             @customers = Erp::Contacts::Contact.where.not(id: Erp::Contacts::Contact.get_main_contact.id)
           end
           
-          # @todo only show related contacts, lien he co phat sinh moi show
-          @customers = @customers.get_sales_payment_chasing_contacts
-          #(
-          #  from_date: @from,
-          #  to_date: @to
-          #)
+          #@customers = @customers.get_sales_payment_chasing_contacts#(from_date: @from, to_date: @to) # có phát sinh
+          @customers = @customers.get_sales_liabilities_contacts(from_date: @from, to_date: @to) # còn nợ và có phát sinh
           
           File.open("tmp/report_customer_liabilities_xlsx.yml", "w+") do |f|
             f.write({
@@ -320,12 +316,8 @@ module Erp
             @suppliers = Erp::Contacts::Contact.where.not(id: Erp::Contacts::Contact.get_main_contact.id)
           end
           
-          # @todo only show related contacts, lien he co phat sinh moi show
-          @suppliers = @suppliers.get_purchase_payment_chasing_contacts
-          #(
-          #  from_date: @from,
-          #  to_date: @to
-          #)
+          @suppliers = @suppliers.get_purchase_payment_chasing_contacts(from_date: @from, to_date: @to) # có phát sinh
+          #@suppliers = @suppliers.get_purchase_liabilities_contacts(from_date: @from, to_date: @to) # còn nợ và có phát sinh
           
           File.open("tmp/report_supplier_liabilities_xlsx.yml", "w+") do |f|
             f.write({
