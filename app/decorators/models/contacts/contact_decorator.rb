@@ -153,18 +153,18 @@ Erp::Contacts::Contact.class_eval do
     # Loc danh sach cac khach hang co phat sinh giao dich (thanh toan, cong no)
     order_query = Erp::Orders::Order.all_confirmed
       .sales_orders
-      .payment_for_contact_orders #(from_date: @from, to_date: @to)
+      .payment_for_contact_orders(from_date: @from, to_date: @to)
       .select('customer_id')
 
     product_return_query = Erp::Qdeliveries::Delivery.all_delivered
       .sales_import_deliveries
-      .get_deliveries_with_payment_for_contact #(from_date: @from, to_date: @to)
+      .get_deliveries_with_payment_for_contact(from_date: @from, to_date: @to)
       .select('customer_id')
 
     payment_query = Erp::Payments::PaymentRecord.all_done
       .select('customer_id')
       .where(payment_type_id: Erp::Payments::PaymentType.find_by_code(Erp::Payments::PaymentType::CODE_CUSTOMER).id)
-      #.where("payment_date >= ? AND payment_date <= ?", @from, @to)
+      .where("payment_date >= ? AND payment_date <= ?", @from, @to)
     
     self.where("erp_contacts_contacts.id IN (?) OR erp_contacts_contacts.id IN (?) OR erp_contacts_contacts.id IN (?)",
                order_query, product_return_query, payment_query)
@@ -497,4 +497,21 @@ Erp::Contacts::Contact.class_eval do
     self.update_column(:cache_purchase_debt_amount, self.purchase_debt_amount)
   end
   # END - Update cache sales/purchase debt amount
+  
+  def self.get_sales_debt_amount_residual_contacts(options={})
+    self.all_active.where("erp_contacts_contacts.cache_sales_debt_amount != ?", 0.0)
+  end
+  
+  def self.get_purchase_debt_amount_residual_contacts(options={})
+    self.all_active.where("erp_contacts_contacts.cache_purchase_debt_amount != ?", 0.0)
+  end
+  
+  # Get liabilities contacts //in_period_active and is_debt_active
+  def self.get_sales_liabilities_contacts(options={})
+    self.get_sales_payment_chasing_contacts(options).or(self.get_sales_debt_amount_residual_contacts)
+  end
+  
+  def self.get_purchase_liabilities_contacts(options={})
+    self.get_purchase_payment_chasing_contacts(options).or(self.get_purchase_debt_amount_residual_contacts)
+  end
 end
