@@ -1,0 +1,145 @@
+wb = xlsx_package.workbook
+xlsx_package.use_autowidth = true
+wb.styles do |s|
+  wb.styles.fonts.first.name = 'Calibri'
+  wb.add_worksheet(name: 'Danh sách công nợ') do |sheet|
+    # style
+    bg_info = {:bg_color => "00b050", :fg_color => "FF"}
+    bg_row = {:bg_color => "daeef3", :fg_color => "00"}
+    bg_footer = {:bg_color => "00b050", :fg_color => "FF"}
+    text_center = {alignment: { horizontal: :center }}
+    text_left = {alignment: { horizontal: :left }}
+    text_right = {alignment: { horizontal: :right }}
+    vertical_center = {alignment: { vertical: :center }}
+    text_middle = {alignment: { horizontal: :center, vertical: :center }}
+    number = {format_code: '#,##0'}
+    border = {border: { style: :thin, color: "525252", :edges => [:left, :right, :top, :bottom] }}
+    bold = {b: true}
+    italic = {i: true}
+    
+    # Top head
+    sheet.add_row ["CÔNG TY TNHH ORTHO-K VIỆT NAM"], b: true
+    sheet.add_row ["535 An Dương Vương, Phường 8, Quận 5, TP. Hồ Chí Minh, Việt Nam"], b: true
+    
+    # add empty row
+    sheet.add_row [nil]
+    
+    date = "#{'TỪ ' + @from.to_date.strftime('%d/%m/%Y') if !@from.nil?}#{' ĐẾN ' + @to.to_date.strftime('%d/%m/%Y') if !@to.nil?}"
+    
+    sheet.add_row ['CÔNG NỢ KHÁCH HÀNG'], sz: 16, b: true, style: (s.add_style text_center)
+    sheet.add_row ["(#{date})"], sz: 12, style: (s.add_style text_center)
+    
+    # add empty row
+    sheet.add_row [nil]
+    
+    num_row = 6
+    
+    # header
+    header = {columns: [], styles: []}
+    footer = {columns: [], styles: []}
+    column_widths = []
+    
+    header[:columns] << t('.ordinal_number')
+    header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold).deep_merge(border))
+    footer[:columns] << "Tổng cộng"
+    footer[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(border).deep_merge(text_middle))
+    num_col = 0
+    column_widths << 5
+    
+    header[:columns] << t('.customer_code')
+    header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold).deep_merge(border))
+    footer[:columns] << nil
+    footer[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(border).deep_merge(text_left))
+    num_col += 1
+    column_widths << 10
+    
+    header[:columns] << t('.customer_name')
+    header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold).deep_merge(border))
+    footer[:columns] << nil
+    footer[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(border).deep_merge(text_left))
+    num_col += 1
+    column_widths << 35
+    
+    header[:columns] << t('.begin_debt_amount')
+    header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold).deep_merge(border))
+    footer[:columns] << @customers.sales_debt_amount(to_date: (!@from.nil? ? (@from-1.day) : @from))
+    footer[:styles] << (s.add_style bg_footer.deep_merge(number).deep_merge(bold).deep_merge(border).deep_merge(vertical_center))
+    num_col += 1
+    column_widths << 20
+    
+    header[:columns] << t('.total_debt_amount')
+    header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold).deep_merge(border))
+    footer[:columns] << @customers.sales_total_amount(from_date: @from, to_date: @to)
+    footer[:styles] << (s.add_style bg_footer.deep_merge(number).deep_merge(bold).deep_merge(border).deep_merge(vertical_center))
+    num_col += 1
+    column_widths << 20
+    
+    header[:columns] << t('.total_paid_amount')
+    header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold).deep_merge(border))
+    footer[:columns] << @customers.sales_paid_amount(from_date: @from, to_date: @to)
+    footer[:styles] << (s.add_style bg_footer.deep_merge(number).deep_merge(bold).deep_merge(border).deep_merge(vertical_center))
+    num_col += 1
+    column_widths << 20
+    
+    header[:columns] << t('.end_debt_amount')
+    header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold).deep_merge(border))
+    footer[:columns] << @customers.sales_debt_amount(to_date: @to)
+    footer[:styles] << (s.add_style bg_footer.deep_merge(number).deep_merge(bold).deep_merge(border).deep_merge(vertical_center))
+    num_col += 1
+    column_widths << 20
+    
+    header[:columns] << t('.salesperson')
+    header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold).deep_merge(border))
+    footer[:columns] << nil
+    footer[:styles] << (s.add_style bg_footer.deep_merge(border))
+    num_col += 1
+    column_widths << 25
+    
+    sheet.add_row header[:columns], style: header[:styles], height: 25
+    num_row += 1
+    
+    # rows
+    @customers.each_with_index do |customer,index|
+      row = {columns: [], styles: []}
+      row[:columns] = []
+    
+      row[:columns] << index+1
+      row[:styles] << (s.add_style text_center.deep_merge(vertical_center).deep_merge(border).deep_merge(bg_row))
+    
+      row[:columns] << customer.code
+      row[:styles] << (s.add_style text_left.deep_merge(vertical_center).deep_merge(border).deep_merge(bg_row))
+    
+      row[:columns] << customer.name
+      row[:styles] << (s.add_style text_left.deep_merge(vertical_center).deep_merge(border).deep_merge(bg_row))
+    
+      row[:columns] << customer.sales_debt_amount(to_date: (!@from.nil? ? (@from-1.day) : @from))
+      row[:styles] << (s.add_style text_right.deep_merge(vertical_center).deep_merge(number).deep_merge(border).deep_merge(bg_row))
+    
+      row[:columns] << customer.sales_total_amount(from_date: @from, to_date: @to)
+      row[:styles] << (s.add_style text_right.deep_merge(vertical_center).deep_merge(number).deep_merge(border).deep_merge(bg_row))
+    
+      row[:columns] << customer.sales_paid_amount(from_date: @from, to_date: @to)
+      row[:styles] << (s.add_style text_right.deep_merge(vertical_center).deep_merge(number).deep_merge(border).deep_merge(bg_row))
+    
+      row[:columns] << customer.sales_debt_amount(to_date: @to)
+      row[:styles] << (s.add_style text_right.deep_merge(vertical_center).deep_merge(number).deep_merge(border).deep_merge(bg_row))
+    
+      row[:columns] << (!customer.salesperson.nil? ? customer.salesperson_name : nil)
+      row[:styles] << (s.add_style text_left.deep_merge(vertical_center).deep_merge(border).deep_merge(bg_row))
+    
+      sheet.add_row row[:columns], style: row[:styles], height: 18
+      num_row += 1
+    end
+    
+    # footer
+    sheet.add_row footer[:columns], style: footer[:styles], height: 25
+    num_row += 1
+    sheet.merge_cells("A#{num_row}:C#{num_row}")
+    
+    # Setup
+    sheet.merge_cells("#{('A'.codepoints.first).chr}4:#{('A'.codepoints.first + num_col).chr}4")
+    sheet.merge_cells("#{('A'.codepoints.first).chr}5:#{('A'.codepoints.first + num_col).chr}5")
+    
+    sheet.column_widths *column_widths
+  end
+end
