@@ -4,14 +4,15 @@ wb.styles do |s|
   wb.styles.fonts.first.name = 'Calibri'
   wb.add_worksheet(name: 'BN mới theo KH') do |sheet|
     # style
-    bg_info = {:bg_color => "305496", :fg_color => "FF"}
-    bg_footer = {:bg_color => "ffff00", :fg_color => "c52f24"}
+    bg_info = {:bg_color => "00b050", :fg_color => "FF"}
+    bg_footer = {:bg_color => "00b050", :fg_color => "FF"}
+    bg_row = {:bg_color => "daeef3", :fg_color => "00"}
     text_center = {alignment: { horizontal: :center }}
     text_left = {alignment: { horizontal: :left }}
     text_right = {alignment: { horizontal: :right }}
     middle_align = {alignment: { vertical: :center }}
     number = {format_code: '#,##0'}
-    border = {border: { style: :thin, color: "00", :edges => [:top, :right, :bottom, :left] }}
+    border = {border: { style: :thin, color: "525252", :edges => [:top, :right, :bottom, :left] }}
     bold = {b: true}
     wrap = { alignment: {wrap_text: true} }
     if @period_name.nil?
@@ -20,9 +21,14 @@ wb.styles do |s|
       date = "#{@period_name}"
     end
     
+    # Top head
+    sheet.add_row ["CÔNG TY TNHH ORTHO-K VIỆT NAM"], b: true
+    sheet.add_row ["535 An Dương Vương, P.8, Q.5, TP. Hồ Chí Minh"], b: true
+    row_num = 2
+    
     # add empty row
-    sheet.add_row ['']
-    row_num = 1
+    sheet.add_row [nil]
+    row_num += 1
 
     # Title
     sheet.add_row ['BÁO CÁO SỐ LƯỢNG BỆNH NHÂN THEO KHÁCH HÀNG'], sz: 16, b: true, bg_color: "ffc801", style: (s.add_style text_center)
@@ -31,7 +37,7 @@ wb.styles do |s|
     row_num += 1
 
     # add empty row
-    sheet.add_row ['']
+    sheet.add_row [nil]
     row_num += 1
 
     patient_states = Erp::OrthoK::PatientState.get_active
@@ -45,16 +51,39 @@ wb.styles do |s|
     header_row_num = row_num + 1
     subheader_row_num = row_num + 2
     
-    header[:columns] << 'Đối tượng khách hàng'
+    header[:columns] << 'STT'
     header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
-    subheader[:columns] << ''
-    subheader[:styles] << (s.add_style bg_info.deep_merge(text_right).deep_merge(border).merge(bold))
+    subheader[:columns] << nil
+    subheader[:styles] << (s.add_style bg_info.deep_merge(text_right).deep_merge(middle_align).deep_merge(border).merge(bold))
     
     footer[:columns] << 'TỔNG CỘNG'
-    footer[:styles] << (s.add_style bg_footer.deep_merge(text_center).deep_merge(border).merge(bold))
-    column_widths << 25
+    footer[:styles] << (s.add_style bg_footer.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
+    column_widths << 5
     col_num += 1
     sheet.merge_cells("#{('A'.codepoints.first + col_num).chr}#{header_row_num}:#{('A'.codepoints.first + col_num).chr}#{subheader_row_num}")
+    
+    header[:columns] << 'Khách hàng'
+    header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
+    subheader[:columns] << 'Mã số KH'
+    subheader[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
+    
+    footer[:columns] << nil
+    footer[:styles] << (s.add_style bg_footer.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
+    column_widths << 15
+    col_num += 1
+    customer_col_num_first = col_num
+    
+    header[:columns] << nil
+    header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
+    subheader[:columns] << 'Tên KH'
+    subheader[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
+    
+    footer[:columns] << nil
+    footer[:styles] << (s.add_style bg_footer.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
+    column_widths << 30
+    col_num += 1
+    customer_col_num_last = col_num
+    sheet.merge_cells("#{('A'.codepoints.first + customer_col_num_first).chr}#{header_row_num}:#{('A'.codepoints.first + customer_col_num_last).chr}#{header_row_num}")
     
     ps_first = 0
     ps_last = 0
@@ -68,14 +97,14 @@ wb.styles do |s|
           
       patients = Erp::Contacts::Contact.where(id: patient_ids)
       
-      header[:columns] << (index==0 ? 'Số lượng BN' : '')
+      header[:columns] << (index==0 ? 'Số lượng BN' : nil)
       header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
       subheader[:columns] << ps.name
-      subheader[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(border).merge(bold))
+      subheader[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
       
       footer[:columns] << patients.count
-      footer[:styles] << (s.add_style bg_footer.deep_merge(text_center).deep_merge(border).deep_merge(bold))
-      column_widths << nil
+      footer[:styles] << (s.add_style bg_footer.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).deep_merge(bold))
+      column_widths << 16
       col_num += 1
       ps_first = col_num if index==0
       ps_last = col_num if (index+1) == patient_states.count
@@ -84,26 +113,33 @@ wb.styles do |s|
     
     header[:columns] << 'Danh sách BN mới'
     header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
-    subheader[:columns] << ''
+    subheader[:columns] << nil
     subheader[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
     
-    footer[:columns] << ''
-    footer[:styles] << (s.add_style bg_footer.deep_merge(border))
+    footer[:columns] << nil
+    footer[:styles] << (s.add_style bg_footer.deep_merge(border).deep_merge(middle_align))
     column_widths << 100
     col_num += 1
     sheet.merge_cells("#{('A'.codepoints.first + col_num).chr}#{header_row_num}:#{('A'.codepoints.first + col_num).chr}#{subheader_row_num}")
     
-    sheet.add_row header[:columns], style: header[:styles]
+    sheet.add_row header[:columns], style: header[:styles], height: 25
     row_num += 1
-    sheet.add_row subheader[:columns], style: subheader[:styles]
+    sheet.add_row subheader[:columns], style: subheader[:styles], height: 25
     row_num += 1
     
-    @customers.each do |customer|
+    # rows
+    @customers.each_with_index do |customer,index|
       row = {columns: [], styles: []}
       row = {columns: [], styles: []}
       
+      row[:columns] << index+1
+      row[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(middle_align).deep_merge(bold).deep_merge(bg_row))
+      
+      row[:columns] << customer.code
+      row[:styles] << (s.add_style text_left.deep_merge(border).deep_merge(middle_align).deep_merge(bold).deep_merge(bg_row))
+      
       row[:columns] << customer.contact_name
-      row[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(middle_align).deep_merge(bold))
+      row[:styles] << (s.add_style text_left.deep_merge(border).deep_merge(middle_align).deep_merge(bold).deep_merge(bg_row))
       
       patient_states.each_with_index do |ps,index|
         patient_ids = Erp::Contacts::Contact.get_patients_by_state(
@@ -116,7 +152,7 @@ wb.styles do |s|
         patients = Erp::Contacts::Contact.where(id: patient_ids)
         
         row[:columns] << patients.count
-        row[:styles] << (s.add_style text_center.deep_merge(number).deep_merge(border).deep_merge(middle_align))
+        row[:styles] << (s.add_style text_center.deep_merge(number).deep_merge(border).deep_merge(middle_align).deep_merge(bg_row))
       end
       
       patient_ids = Erp::Contacts::Contact.get_patients_by_state(
@@ -129,18 +165,19 @@ wb.styles do |s|
       new_patients = Erp::Contacts::Contact.where(id: patient_ids)
       
       row[:columns] << (new_patients.map(&:name).map {|i| i.strip}).join(', ')
-      row[:styles] << (s.add_style text_left.deep_merge(border).deep_merge(wrap))
+      row[:styles] << (s.add_style text_left.deep_merge(border).deep_merge(wrap).deep_merge(bg_row))
       
       sheet.add_row row[:columns], style: row[:styles]
       row_num += 1
     end
     
-    sheet.add_row footer[:columns], style: footer[:styles]
+    sheet.add_row footer[:columns], style: footer[:styles], height: 25
     row_num += 1
     
     # Setup
     sheet.column_widths *column_widths
-    sheet.merge_cells("#{('A'.codepoints.first).chr}2:#{('A'.codepoints.first + col_num).chr}2")
-    sheet.merge_cells("#{('A'.codepoints.first).chr}3:#{('A'.codepoints.first + col_num).chr}3")
+    sheet.merge_cells("#{('A'.codepoints.first).chr}#{row_num}:#{('A'.codepoints.first + 2).chr}#{row_num}")
+    sheet.merge_cells("#{('A'.codepoints.first).chr}4:#{('A'.codepoints.first + col_num).chr}4")
+    sheet.merge_cells("#{('A'.codepoints.first).chr}5:#{('A'.codepoints.first + col_num).chr}5")
   end
 end

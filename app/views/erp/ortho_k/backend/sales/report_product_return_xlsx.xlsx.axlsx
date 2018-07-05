@@ -2,39 +2,53 @@ wb = xlsx_package.workbook
 xlsx_package.use_autowidth = true
 wb.styles do |s|
   wb.styles.fonts.first.name = 'Calibri'
-  wb.add_worksheet(name: 'Báo cáo trả hàng') do |sheet|
+  wb.add_worksheet(name: 'Báo cáo trả hàng (theo loại SP)') do |sheet|
     # style
-    bg_info = {:bg_color => "305496", :fg_color => "FF"}
-    bg_subrow = {:bg_color => "dbdbdb", :fg_color => "3a3838"}
-    bg_toprow = {:bg_color => "dbdbdb", :fg_color => "00"}
+    bg_info = {:bg_color => "00b050", :fg_color => "FF"}
+    bg_toprow = {:bg_color => "ffffff", :fg_color => "ff0000"}
+    bg_row = {:bg_color => "daeef3", :fg_color => "00"}
     text_center = {alignment: { horizontal: :center }}
     text_left = {alignment: { horizontal: :left }}
     text_right = {alignment: { horizontal: :right }}
     middle_align = {alignment: { vertical: :center }}
     number = {format_code: '#,##0'}
-    border = {border: { style: :thin, color: "00", :edges => [:top, :right, :bottom, :left] }}
+    border = {border: { style: :thin, color: "525252", :edges => [:top, :right, :bottom, :left] }}
     bold = {b: true}
-    if (!@from_date.nil? and !@to_date.nil?) and (@from_date.to_date == @to_date.to_date)
-      date = "#{' NGÀY ' + @from_date.to_date.strftime('%d/%m/%Y')}"
-    else
-      date = "#{' TỪ ' + @from_date.to_date.strftime('%d/%m/%Y') if !@from_date.nil?}#{' ĐẾN ' + @to_date.to_date.strftime('%d/%m/%Y') if !@to_date.nil?}"
+    
+    if @from.present? || @to.present?
+      if @period_name.nil?
+        date = "(#{'TỪ ' + @from.strftime('%d/%m/%Y') if !@from.nil?}#{' ĐẾN ' + @to.strftime('%d/%m/%Y') if !@to.nil?})"
+      else
+        date = "(#{@period_name})"
+      end
     end
 
+    # Top head
+    sheet.add_row ["CÔNG TY TNHH ORTHO-K VIỆT NAM"], b: true
+    sheet.add_row ["535 An Dương Vương, P.8, Q.5, TP. Hồ Chí Minh"], b: true
+    row_num = 2
+    
     # add empty row
     sheet.add_row ['']
+    row_num += 1
 
     # Title
-    sheet.add_row ['DANH SÁCH KHÁCH HÀNG TRẢ HÀNG' + date], sz: 16, b: true, bg_color: "ffc801", style: (s.add_style text_center)
+    sheet.add_row ['DANH SÁCH KHÁCH HÀNG TRẢ HÀNG (MẪU 1)'], sz: 16, b: true, bg_color: "ffc801", style: (s.add_style text_center)
+    row_num += 1
 
+    sheet.add_row [date], sz: 14, bg_color: "ffc801", style: (s.add_style text_center)
+    row_num += 1
+    
     # add empty row
     sheet.add_row ['']
+    row_num += 1
 
     toprow = {columns: [], styles: []}
     toprow[:columns] << 'TỔNG CỘNG'
-    toprow[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_toprow).deep_merge(bold))
+    toprow[:styles] << (s.add_style text_center.deep_merge(middle_align).deep_merge(border).deep_merge(bg_toprow).deep_merge(bold))
 
     toprow[:columns] << ''
-    toprow[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_toprow).deep_merge(bold))
+    toprow[:styles] << (s.add_style text_center.deep_merge(middle_align).deep_merge(border).deep_merge(bg_toprow).deep_merge(bold))
 
     Erp::Products::State.all_active.each do |state|
       count = Erp::Products::Product.get_qdelivery_import({
@@ -47,7 +61,7 @@ wb.styles do |s|
           state: state
       })
       toprow[:columns] << count
-      toprow[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_toprow).deep_merge(bold))
+      toprow[:styles] << (s.add_style text_center.deep_merge(middle_align).deep_merge(border).deep_merge(bg_toprow).deep_merge(bold))
     end
     
     count = Erp::Products::Product.get_qdelivery_import({
@@ -59,7 +73,7 @@ wb.styles do |s|
         ]
     })
     toprow[:columns] << count
-    toprow[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_toprow).deep_merge(bold))
+    toprow[:styles] << (s.add_style text_center.deep_merge(middle_align).deep_merge(border).deep_merge(bg_toprow).deep_merge(bold))
     
     @categories.each do |category|
       product_ids = Erp::Products::Product.where(category_id: category.id).select('id')
@@ -73,67 +87,75 @@ wb.styles do |s|
           ]
       })
       toprow[:columns] << count
-      toprow[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_toprow).deep_merge(bold))
+      toprow[:styles] << (s.add_style text_center.deep_merge(middle_align).deep_merge(border).deep_merge(bg_toprow).deep_merge(bold))
     end
 
-    sheet.add_row toprow[:columns], style: toprow[:styles]
+    sheet.add_row toprow[:columns], style: toprow[:styles], height: 25
+    row_num += 1
+    sheet.merge_cells("#{('A'.codepoints.first).chr}#{row_num}:#{('A'.codepoints.first + 1).chr}#{row_num}")
 
     # header
     header = {columns: [], styles: []}
     subheader = {columns: [], styles: []}
-    header[:columns] = []
+    header_row_num = row_num + 1
+    subheader_row_num = row_num + 2
+    column_widths = []
 
     header[:columns] << 'STT'
     header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
     subheader[:columns] << ''
     subheader[:styles] << (s.add_style bg_info.deep_merge(text_right).deep_merge(border).merge(bold))
-    kt = 0
-    sheet.merge_cells("#{('A'.codepoints.first + kt).chr}5:#{('A'.codepoints.first + kt).chr}6")
+    col_num = 0
+    column_widths << 5
+    sheet.merge_cells("#{('A'.codepoints.first + col_num).chr}#{header_row_num}:#{('A'.codepoints.first + col_num).chr}#{subheader_row_num}")
 
     header[:columns] << 'Khách hàng'
     header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
     subheader[:columns] << ''
     subheader[:styles] << (s.add_style bg_info.deep_merge(text_right).deep_merge(border).merge(bold))
-    kt += 1
-    sheet.merge_cells("#{('A'.codepoints.first + kt).chr}5:#{('A'.codepoints.first + kt).chr}6")
+    col_num += 1
+    column_widths << nil
+    sheet.merge_cells("#{('A'.codepoints.first + col_num).chr}#{header_row_num}:#{('A'.codepoints.first + col_num).chr}#{subheader_row_num}")
 
     Erp::Products::State.all_active.each_with_index do |state,index|
       header[:columns] << (index==0 ? 'LEN' : '')
       header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
       subheader[:columns] << state.name
       subheader[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
-      kt += 1
+      col_num += 1
+      column_widths << 15
     end
     
     header[:columns] << ''
     header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
     subheader[:columns] << 'Tổng'
-    subheader[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(border).merge(bold))
-    kt += 1
-    sheet.merge_cells("#{('A'.codepoints.first + (kt-(Erp::Products::State.all_active.count))).chr}5:#{('A'.codepoints.first + kt).chr}5")
+    subheader[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
+    col_num += 1
+    column_widths << 15
+    sheet.merge_cells("#{('A'.codepoints.first + (col_num-(Erp::Products::State.all_active.count))).chr}#{header_row_num}:#{('A'.codepoints.first + col_num).chr}#{header_row_num}")
     
     @categories.each do |category|
       header[:columns] << category.name
       header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
       subheader[:columns] << ''
       subheader[:styles] << (s.add_style bg_info.deep_merge(text_right).deep_merge(border).merge(bold))
-      kt += 1
-      sheet.merge_cells("#{('A'.codepoints.first + kt).chr}5:#{('A'.codepoints.first + kt).chr}6")
+      col_num += 1
+      column_widths << 15
+      sheet.merge_cells("#{('A'.codepoints.first + col_num).chr}#{header_row_num}:#{('A'.codepoints.first + col_num).chr}#{subheader_row_num}")
     end
 
-    sheet.add_row header[:columns], style: header[:styles]
-    sheet.add_row subheader[:columns], style: subheader[:styles]
+    sheet.add_row header[:columns], style: header[:styles], height: 25
+    sheet.add_row subheader[:columns], style: subheader[:styles], height: 25
 
     # rows
     @customers.each_with_index do |customer,index|
       row = {columns: [], styles: []}
-      row[:columns] = []
   
       row[:columns] << (index+1)
-      row[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(middle_align))
+      row[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(middle_align).deep_merge(bg_row))
   
       row[:columns] << customer.contact_name
-      row[:styles] << (s.add_style text_left.deep_merge(border))
+      row[:styles] << (s.add_style text_left.deep_merge(border).deep_merge(bg_row))
   
       Erp::Products::State.all_active.each do |state|
         count = Erp::Products::Product.get_qdelivery_import({
@@ -147,7 +169,7 @@ wb.styles do |s|
             customer_id: customer.id
         })
         row[:columns] << count
-        row[:styles] << (s.add_style text_center.deep_merge(number).deep_merge(border))
+        row[:styles] << (s.add_style text_center.deep_merge(number).deep_merge(border).deep_merge(bg_row))
       end
       
       count = Erp::Products::Product.get_qdelivery_import({
@@ -160,7 +182,7 @@ wb.styles do |s|
           customer_id: customer.id
       })
       row[:columns] << count
-      row[:styles] << (s.add_style text_center.deep_merge(number).deep_merge(border))
+      row[:styles] << (s.add_style text_center.deep_merge(number).deep_merge(border).deep_merge(bg_row))
       
       @categories.each do |category|
         product_ids = Erp::Products::Product.where(category_id: category.id).select('id')
@@ -175,15 +197,15 @@ wb.styles do |s|
             customer_id: customer.id
         })
         row[:columns] << count
-        row[:styles] << (s.add_style text_center.deep_merge(border))
+        row[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_row))
       end
       
       sheet.add_row row[:columns], style: row[:styles]
     end
 
     # Setup
-    sheet.column_widths 5, 30, 15, 15, 15, 15, 15, 15, 15
-    sheet.merge_cells("#{('A'.codepoints.first).chr}2:#{('A'.codepoints.first + kt).chr}2")
-    sheet.merge_cells("A4:B4")
+    sheet.column_widths *column_widths
+    sheet.merge_cells("#{('A'.codepoints.first).chr}4:#{('A'.codepoints.first + col_num).chr}4")
+    sheet.merge_cells("#{('A'.codepoints.first).chr}5:#{('A'.codepoints.first + col_num).chr}5")
   end
 end

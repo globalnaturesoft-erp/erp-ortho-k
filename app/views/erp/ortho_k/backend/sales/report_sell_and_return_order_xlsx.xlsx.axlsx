@@ -2,17 +2,19 @@ wb = xlsx_package.workbook
 xlsx_package.use_autowidth = true
 wb.styles do |s|
   wb.styles.fonts.first.name = 'Calibri'
-  wb.add_worksheet(name: 'Báo cáo bán và trả hàng') do |sheet|
+  wb.add_worksheet(name: 'BC bán và trả (theo CT)') do |sheet|
     # style
-    bg_info = {:bg_color => "305496", :fg_color => "FF"}
-    bg_subrow = {:bg_color => "dbdbdb", :fg_color => "00"}
-    bg_footer = {:bg_color => "ffd966", :fg_color => "00"}
+    bg_info = {:bg_color => "00b050", :fg_color => "FF"}
+    bg_row = {:bg_color => "daeef3", :fg_color => "00"}
+    bg_subrow = {:bg_color => "8ea9db", :fg_color => "00"}
+    bg_footer = {:bg_color => "00b050", :fg_color => "FF"}
     text_center = {alignment: { horizontal: :center }}
     text_left = {alignment: { horizontal: :left }}
     text_right = {alignment: { horizontal: :right }}
+    vertical_center = {alignment: {vertical: :center}}
     text_middle = {alignment: { horizontal: :center, vertical: :center }}
     number = {format_code: '#,##0'}
-    border = {border: { style: :thin, color: "00", :edges => [:left, :right, :bottom] }}
+    border = {border: { style: :thin, color: "525252", :edges => [:left, :right, :bottom] }}
     bold = {b: true}
     if !@from.nil? and !@to.nil? and (@from.to_date == @to.to_date)
       date = "#{' NGÀY ' + @from.to_date.strftime('%d/%m/%Y')}"
@@ -30,7 +32,7 @@ wb.styles do |s|
     sheet.add_row [nil]
     
     sheet.add_row ['BÁO CÁO BÁN VÀ TRẢ HÀNG'], sz: 16, b: true, style: (s.add_style text_center)
-    sheet.add_row ["(#{date})"], sz: 12, i: true, style: (s.add_style text_center)
+    sheet.add_row ["(#{date})"], sz: 12, style: (s.add_style text_center)
     
     row_num = 5
     
@@ -41,6 +43,7 @@ wb.styles do |s|
     patient_col_widths = []
     patient_col_widths << 15 if get_columns(params).include?("patient")
     patient_col_widths << 15 if get_columns(params).include?("patient_state")
+    patient_col_widths << 15 if get_columns(params).include?("product_state")
     
     # ============================= SALES REPORT ================================
     # add empty row
@@ -63,26 +66,26 @@ wb.styles do |s|
     header[:columns] << t('.ordinal_number')
     header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
     footer[:columns] << "TỔNG CỘNG"
-    footer[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(border).deep_merge(text_center))
+    footer[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(border).deep_merge(text_middle))
     col_num = 0
     
     header[:columns] << 'Mã khách hàng'
     header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
     footer[:columns] << nil
-    footer[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(border))
+    footer[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(border).deep_merge(vertical_center))
     col_num += 1
     
     header[:columns] << t('.customer_name')
     header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
     footer[:columns] << nil
-    footer[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(border))
+    footer[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(border).deep_merge(vertical_center))
     col_num += 1
     
     if get_columns(params).include?("patient")
       header[:columns] << t('.patient_name')
       header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
       footer[:columns] << nil
-      footer[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(border))
+      footer[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(border).deep_merge(vertical_center))
       col_num += 1
     end
     
@@ -90,7 +93,7 @@ wb.styles do |s|
       header[:columns] << t('.patient_state_name')
       header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
       footer[:columns] << nil
-      footer[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(border))
+      footer[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(border).deep_merge(vertical_center))
       col_num += 1
     end
     
@@ -98,54 +101,54 @@ wb.styles do |s|
       header[:columns] << 'TT SP'
       header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
       footer[:columns] << nil
-      footer[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(border))
+      footer[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(border).deep_merge(vertical_center))
       col_num += 1
     end
     
     header[:columns] << t('.employee_name')
     header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
     footer[:columns] << nil
-    footer[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(border))
+    footer[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(border).deep_merge(vertical_center))
     col_num += 1
     
     header[:columns] << t('.product_name')
     header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
     footer[:columns] << nil
-    footer[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(border))
+    footer[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(border).deep_merge(vertical_center))
     col_num += 1
     
     header[:columns] << t('.quantity')
     header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
     footer[:columns] << nil
-    footer[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(number).deep_merge(border))
+    footer[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(number).deep_merge(border).deep_merge(vertical_center))
     col_num += 1
     
     header[:columns] << t('.price')
     header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
     footer[:columns] << nil
-    footer[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(number).deep_merge(border))
+    footer[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(number).deep_merge(border).deep_merge(vertical_center))
     col_num += 1
     
     header[:columns] << t('.discount')
     header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
     footer[:columns] << nil
-    footer[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(number).deep_merge(border))
+    footer[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(number).deep_merge(border).deep_merge(vertical_center))
     col_num += 1
     discount_col_num = col_num
     
     header[:columns] << t('.amount')
     header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
     footer[:columns] << @orders.cache_total
-    footer[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(number).deep_merge(border))
+    footer[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(number).deep_merge(border).deep_merge(vertical_center))
     col_num += 1
     
     header[:columns] << t('.note')
-    header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(text_middle).merge(bold))
+    header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(text_middle).merge(bold).deep_merge(vertical_center))
     footer[:columns] << nil
     footer[:styles] << (s.add_style bg_footer.deep_merge(border))
     col_num += 1
     
-    sheet.add_row header[:columns], style: header[:styles], height: 30
+    sheet.add_row header[:columns], style: header[:styles], height: 25
     row_num += 1
     
     # rows
@@ -157,49 +160,49 @@ wb.styles do |s|
         
         index_1 += 1
         row[:columns] << (index_1)
-        row[:styles] << (s.add_style text_center.deep_merge(border))
+        row[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_row))
         
         row[:columns] << order.customer_code
-        row[:styles] << (s.add_style text_left.deep_merge(border))
+        row[:styles] << (s.add_style text_left.deep_merge(border).deep_merge(bg_row))
         
         row[:columns] << order.customer_name
-        row[:styles] << (s.add_style text_left.deep_merge(border))
+        row[:styles] << (s.add_style text_left.deep_merge(border).deep_merge(bg_row))
         
         if get_columns(params).include?("patient")
           row[:columns] << order.patient_name
-          row[:styles] << (s.add_style text_left.deep_merge(border))
+          row[:styles] << (s.add_style text_left.deep_merge(border).deep_merge(bg_row))
         end
         
         if get_columns(params).include?("patient_state")
           row[:columns] << order.patient_state_name
-          row[:styles] << (s.add_style text_left.deep_merge(border))
+          row[:styles] << (s.add_style text_left.deep_merge(border).deep_merge(bg_row))
         end
         
         if get_columns(params).include?("product_state")
           row[:columns] << 'Mới'
-          row[:styles] << (s.add_style text_left.deep_merge(border))
+          row[:styles] << (s.add_style text_left.deep_merge(border).deep_merge(bg_row))
         end
         
         row[:columns] << order.employee_name
-        row[:styles] << (s.add_style text_left.deep_merge(border))
+        row[:styles] << (s.add_style text_left.deep_merge(border).deep_merge(bg_row))
         
         row[:columns] << order_detail.product_name
-        row[:styles] << (s.add_style text_left.deep_merge(border))
+        row[:styles] << (s.add_style text_left.deep_merge(border).deep_merge(bg_row))
         
         row[:columns] << order_detail.quantity
-        row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
+        row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border).deep_merge(bg_row))
         
         row[:columns] << order_detail.price
-        row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
+        row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border).deep_merge(bg_row))
         
         row[:columns] << order_detail.discount_amount
-        row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
+        row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border).deep_merge(bg_row))
         
         row[:columns] << order_detail.total
-        row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
+        row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border).deep_merge(bg_row))
         
         row[:columns] << order_detail.description
-        row[:styles] << (s.add_style text_center.deep_merge(border))
+        row[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_row))
         
         sheet.add_row row[:columns], style: row[:styles]
         row_num += 1
@@ -255,7 +258,7 @@ wb.styles do |s|
     end
     
     # footer
-    sheet.add_row footer[:columns], style: footer[:styles]
+    sheet.add_row footer[:columns], style: footer[:styles], height: 25
     row_num += 1
     
     # Merge footer cols // sales
@@ -285,26 +288,26 @@ wb.styles do |s|
     header[:columns] << t('.ordinal_number')
     header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
     footer[:columns] << "TỔNG CỘNG"
-    footer[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(border).deep_merge(text_center))
+    footer[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(border).deep_merge(text_middle))
     col_num = 0
     
     header[:columns] << 'Mã khách hàng'
     header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
     footer[:columns] << nil
-    footer[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(border))
+    footer[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(border).deep_merge(vertical_center))
     col_num += 1
     
     header[:columns] << t('.customer_name')
     header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
     footer[:columns] << nil
-    footer[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(border))
+    footer[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(border).deep_merge(vertical_center))
     col_num += 1
     
     if get_columns(params).include?("patient")
       header[:columns] << t('.patient_name')
       header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
       footer[:columns] << nil
-      footer[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(border))
+      footer[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(border).deep_merge(vertical_center))
       col_num += 1
     end
     
@@ -312,7 +315,7 @@ wb.styles do |s|
       header[:columns] << t('.patient_state_name')
       header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
       footer[:columns] << nil
-      footer[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(border))
+      footer[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(border).deep_merge(vertical_center))
       col_num += 1
     end
     
@@ -320,54 +323,54 @@ wb.styles do |s|
       header[:columns] << 'TT SP'
       header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
       footer[:columns] << nil
-      footer[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(border))
+      footer[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(border).deep_merge(vertical_center))
       col_num += 1
     end
     
     header[:columns] << t('.employee_name')
     header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
     footer[:columns] << nil
-    footer[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(border))
+    footer[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(border).deep_merge(vertical_center))
     col_num += 1
     
     header[:columns] << t('.product_name')
     header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
     footer[:columns] << nil
-    footer[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(border))
+    footer[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(border).deep_merge(vertical_center))
     col_num += 1
     
     header[:columns] << t('.quantity')
     header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
     footer[:columns] << nil
-    footer[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(number).deep_merge(border))
+    footer[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(number).deep_merge(border).deep_merge(vertical_center))
     col_num += 1
     
     header[:columns] << t('.price')
     header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
     footer[:columns] << nil
-    footer[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(number).deep_merge(border))
+    footer[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(number).deep_merge(border).deep_merge(vertical_center))
     col_num += 1
     
     header[:columns] << t('.discount')
     header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
     footer[:columns] << nil
-    footer[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(number).deep_merge(border))
+    footer[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(number).deep_merge(border).deep_merge(vertical_center))
     col_num += 1
     discount_col_num = col_num
     
     header[:columns] << t('.amount')
     header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
     footer[:columns] << @deliveries.total_amount
-    footer[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(number).deep_merge(border))
+    footer[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(number).deep_merge(border).deep_merge(vertical_center))
     col_num += 1
     
     header[:columns] << t('.note')
     header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
     footer[:columns] << nil
-    footer[:styles] << (s.add_style bg_footer.deep_merge(border))
+    footer[:styles] << (s.add_style bg_footer.deep_merge(border).deep_merge(vertical_center))
     col_num += 1
     
-    sheet.add_row header[:columns], style: header[:styles], height: 30
+    sheet.add_row header[:columns], style: header[:styles], height: 25
     row_num += 1
     
     # rows
@@ -379,49 +382,49 @@ wb.styles do |s|
         
         index_2 += 1
         row[:columns] << (index_2)
-        row[:styles] << (s.add_style text_center.deep_merge(border))
+        row[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_row))
         
         row[:columns] << delivery.customer_code
-        row[:styles] << (s.add_style text_left.deep_merge(border))
+        row[:styles] << (s.add_style text_left.deep_merge(border).deep_merge(bg_row))
         
         row[:columns] << delivery.customer_name
-        row[:styles] << (s.add_style text_left.deep_merge(border))
+        row[:styles] << (s.add_style text_left.deep_merge(border).deep_merge(bg_row))
         
         if get_columns(params).include?("patient")
           row[:columns] << delivery_detail.get_patient_name
-          row[:styles] << (s.add_style text_left.deep_merge(border))
+          row[:styles] << (s.add_style text_left.deep_merge(border).deep_merge(bg_row))
         end
         
         if get_columns(params).include?("patient_state")
           row[:columns] << delivery_detail.get_patient_state_name
-          row[:styles] << (s.add_style text_left.deep_merge(border))
+          row[:styles] << (s.add_style text_left.deep_merge(border).deep_merge(bg_row))
         end
         
         if get_columns(params).include?("product_state")
           row[:columns] << delivery_detail.state_name
-          row[:styles] << (s.add_style text_left.deep_merge(border))
+          row[:styles] << (s.add_style text_left.deep_merge(border).deep_merge(bg_row))
         end
         
         row[:columns] << delivery.customer.salesperson_name 
-        row[:styles] << (s.add_style text_left.deep_merge(border))
+        row[:styles] << (s.add_style text_left.deep_merge(border).deep_merge(bg_row))
         
         row[:columns] << delivery_detail.product_name
-        row[:styles] << (s.add_style text_left.deep_merge(border))
+        row[:styles] << (s.add_style text_left.deep_merge(border).deep_merge(bg_row))
         
         row[:columns] << delivery_detail.quantity
-        row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
+        row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border).deep_merge(bg_row))
         
         row[:columns] << delivery_detail.ordered_price
-        row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
+        row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border).deep_merge(bg_row))
         
         row[:columns] << delivery_detail.discount
-        row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
+        row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border).deep_merge(bg_row))
         
         row[:columns] << delivery_detail.cache_total
-        row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
+        row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border).deep_merge(bg_row))
         
         row[:columns] << delivery_detail.note
-        row[:styles] << (s.add_style text_center.deep_merge(border))
+        row[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_row))
         
         sheet.add_row row[:columns], style: row[:styles]
         row_num += 1
@@ -477,7 +480,7 @@ wb.styles do |s|
     end
     
     # footer
-    sheet.add_row footer[:columns], style: footer[:styles]
+    sheet.add_row footer[:columns], style: footer[:styles], height: 25
     row_num += 1
     
     # Merge footer cols // returns
@@ -489,6 +492,6 @@ wb.styles do |s|
     # Merge date row
     sheet.merge_cells("#{('A'.codepoints.first).chr}5:#{('A'.codepoints.first + col_num).chr}5")
     
-    sheet.column_widths 5, nil, nil, *patient_col_widths, 15, 25, 12, 12, 12, 12, 25
+    sheet.column_widths 5, 15, nil, *patient_col_widths, 20, nil, 12, 12, 12, 12, 20
   end
 end
