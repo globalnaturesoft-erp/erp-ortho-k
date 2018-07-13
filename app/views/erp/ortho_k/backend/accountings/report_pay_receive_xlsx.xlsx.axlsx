@@ -6,8 +6,9 @@ wb.styles do |s|
   wb.styles.fonts.first.name = 'Calibri'
   wb.add_worksheet(name: (thu + chi + 'tiền hàng').capitalize) do |sheet|
     # style
-    bg_info = {:bg_color => "305496", :fg_color => "FF"}
-    bg_footer = {:bg_color => "ffff00", :fg_color => "c52f24"}
+    bg_info = {:bg_color => "00b050", :fg_color => "FF"}
+    bg_footer = {:bg_color => "00b050", :fg_color => "FF"}
+    bg_row = {:bg_color => "daeef3", :fg_color => "00"}
     text_center = {alignment: { horizontal: :center }}
     text_left = {alignment: { horizontal: :left }}
     text_right = {alignment: { horizontal: :right }}
@@ -15,7 +16,7 @@ wb.styles do |s|
     text_middle = {alignment: { horizontal: :center, vertical: :center }}
     text_wrap = { alignment: {wrap_text: true} }
     number = {format_code: '#,##0'}
-    border = {border: { style: :thin, color: "00", :edges => [:left, :right, :bottom] }}
+    border = {border: { style: :thin, color: "525252", :edges => [:left, :right, :bottom] }}
     bold = {b: true}
     italic = {i: true}
     
@@ -133,38 +134,37 @@ wb.styles do |s|
     # rows
     @payment_records.each_with_index do |payment_record, index|
       row = {columns: [], styles: []}
-      row[:columns] = []
       if get_columns(params).include?("ordinal_number") or get_columns(params).empty?  
         row[:columns] << index+1
-        row[:styles] << (s.add_style text_middle.deep_merge(border))
+        row[:styles] << (s.add_style text_middle.deep_merge(border).deep_merge(bg_row))
       end
       if get_columns(params).include?("contact_name") or get_columns(params).empty?
         row[:columns] << payment_record.customer_name if payment_record.customer != Erp::Contacts::Contact.get_main_contact
-        row[:styles] << (s.add_style text_left.deep_merge(vertical_center).deep_merge(border))
+        row[:styles] << (s.add_style text_left.deep_merge(vertical_center).deep_merge(border).deep_merge(bg_row))
       end
       if get_columns(params).include?("voucher_date")
         row[:columns] << payment_record.payment_date.strftime('%d/%m/%Y')
-        row[:styles] << (s.add_style text_left.deep_merge(vertical_center).deep_merge(border))
+        row[:styles] << (s.add_style text_left.deep_merge(vertical_center).deep_merge(border).deep_merge(bg_row))
       end
       if get_columns(params).include?("pay_receive") or get_columns(params).empty?
         row[:columns] << t(".#{display_payment_record_type(payment_record)}")
-        row[:styles] << (s.add_style text_left.deep_merge(vertical_center).deep_merge(border))
+        row[:styles] << (s.add_style text_left.deep_merge(vertical_center).deep_merge(border).deep_merge(bg_row))
       end
       if get_columns(params).include?("description")
         row[:columns] << payment_record.description
-        row[:styles] << (s.add_style text_left.deep_merge(vertical_center).deep_merge(border).deep_merge(text_wrap))
+        row[:styles] << (s.add_style text_left.deep_merge(vertical_center).deep_merge(border).deep_merge(text_wrap).deep_merge(bg_row))
       end
       if get_columns(params).include?("amount") or get_columns(params).empty?
         row[:columns] << payment_record.amount
-        row[:styles] << (s.add_style text_right.deep_merge(vertical_center).deep_merge(number).merge(border))
+        row[:styles] << (s.add_style text_right.deep_merge(vertical_center).deep_merge(number).merge(border).deep_merge(bg_row))
       end
       if get_columns(params).include?("account")
         row[:columns] << payment_record.account_name
-        row[:styles] << (s.add_style text_left.deep_merge(vertical_center).deep_merge(border).deep_merge(text_wrap))
+        row[:styles] << (s.add_style text_left.deep_merge(vertical_center).deep_merge(border).deep_merge(text_wrap).deep_merge(bg_row))
       end
       if get_columns(params).include?("salesperson") or get_columns(params).empty?
         row[:columns] << payment_record.employee_name
-        row[:styles] << (s.add_style text_left.deep_merge(vertical_center).deep_merge(number).merge(border))
+        row[:styles] << (s.add_style text_left.deep_merge(vertical_center).deep_merge(number).merge(border).deep_merge(bg_row))
       end
 
       sheet.add_row row[:columns], style: row[:styles]

@@ -4,15 +4,16 @@ wb.styles do |s|
   wb.styles.fonts.first.name = 'Calibri'
   wb.add_worksheet(name: 'Danh sách KH phát sinh') do |sheet|
     # style
-    bg_info = {:bg_color => "305496", :fg_color => "FF"}
-    bg_footer = {:bg_color => "ffff00", :fg_color => "c52f24"}
+    bg_info = {:bg_color => "00b050", :fg_color => "FF"}
+    bg_footer = {:bg_color => "00b050", :fg_color => "FF"}
+    bg_row = {:bg_color => "daeef3", :fg_color => "00"}
     text_center = {alignment: { horizontal: :center }}
     text_left = {alignment: { horizontal: :left }}
     text_right = {alignment: { horizontal: :right }}
     vertical_center = {alignment: { vertical: :center }}
     text_middle = {alignment: { horizontal: :center, vertical: :center }}
     number = {format_code: '#,##0'}
-    border = {border: { style: :thin, color: "00", :edges => [:left, :right, :bottom] }}
+    border = {border: { style: :thin, color: "525252", :edges => [:left, :right, :bottom] }}
     bold = {b: true}
     
     # Top head
@@ -92,28 +93,28 @@ wb.styles do |s|
       row = {columns: [], styles: []}
     
       row[:columns] << index+1
-      row[:styles] << (s.add_style text_center.deep_merge(border))
+      row[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_row))
     
       row[:columns] << customer.name
-      row[:styles] << (s.add_style text_left.deep_merge(border))
+      row[:styles] << (s.add_style text_left.deep_merge(border).deep_merge(bg_row))
     
       row[:columns] << customer.state_name
-      row[:styles] << (s.add_style text_left.deep_merge(border))
+      row[:styles] << (s.add_style text_left.deep_merge(border).deep_merge(bg_row))
     
       row[:columns] << sales_total
-      row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
+      row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border).deep_merge(bg_row))
     
       row[:columns] << sales_paid_arising
-      row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
+      row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border).deep_merge(bg_row))
     
       row[:columns] << sales_debt_remain
-      row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
+      row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border).deep_merge(bg_row))
     
       row[:columns] << (!customer.salesperson.nil? ? customer.salesperson_name : '')
-      row[:styles] << (s.add_style text_left.deep_merge(border))
+      row[:styles] << (s.add_style text_left.deep_merge(border).deep_merge(bg_row))
     
       row[:columns] << ''
-      row[:styles] << (s.add_style text_center.deep_merge(border))
+      row[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_row))
     
       sheet.add_row row[:columns], style: row[:styles]
       row_num += 1

@@ -4,15 +4,16 @@ wb.styles do |s|
   wb.styles.fonts.first.name = 'Calibri'
   wb.add_worksheet(name: 'Kết quả bán hàng') do |sheet|
     # style
-    header_bg_info = {:bg_color => "305496", :fg_color => "FF"}
-    footer_bg_info = {:bg_color => "a9d08e", :fg_color => "833c0c"}
+    bg_info = {:bg_color => "00b050", :fg_color => "FF"}
+    bg_footer = {:bg_color => "00b050", :fg_color => "FF"}
+    bg_row = {:bg_color => "daeef3", :fg_color => "00"}
     text_center = {alignment: { horizontal: :center }}
     text_left = {alignment: { horizontal: :left }}
     text_right = {alignment: { horizontal: :right }}
     vertical_center = {alignment: { vertical: :center }}
     text_middle = {alignment: { horizontal: :center, vertical: :center }}
     number = {format_code: '#,##0'}
-    border = {border: { style: :thin, color: "00", :edges => [:left, :right, :bottom] }}
+    border = {border: { style: :thin, color: "525252", :edges => [:left, :right, :bottom] }}
     bold = {b: true}
     italic = {i: true}
     
@@ -42,27 +43,27 @@ wb.styles do |s|
     column_widths = []
     
     header[:columns] << nil
-    header[:styles] << (s.add_style header_bg_info.deep_merge(text_middle).merge(bold))
+    header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
     footer[:columns] << "KẾT QUẢ"
-    footer[:styles] << (s.add_style footer_bg_info.deep_merge(text_middle).deep_merge(border).merge(bold))
+    footer[:styles] << (s.add_style bg_footer.deep_merge(text_middle).deep_merge(border).merge(bold))
     column_widths << 25
     
     header[:columns] << 'Loại hàng'
-    header[:styles] << (s.add_style header_bg_info.deep_merge(text_middle).merge(bold))
+    header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
     footer[:columns] << nil
     footer[:styles] << (s.add_style bold.deep_merge(border))
     column_widths << 40
     
     header[:columns] << 'Số lượng'
-    header[:styles] << (s.add_style header_bg_info.deep_merge(text_middle).merge(bold))
+    header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
     footer[:columns] << @categories.total_sales_quantity_without_return(from_date: @from, to_date: @to)
-    footer[:styles] << (s.add_style footer_bg_info.deep_merge(number).deep_merge(border).merge(bold).deep_merge(vertical_center))
+    footer[:styles] << (s.add_style bg_footer.deep_merge(number).deep_merge(border).merge(bold).deep_merge(vertical_center))
     column_widths << 15
     
     header[:columns] << 'Thành tiền'
-    header[:styles] << (s.add_style header_bg_info.deep_merge(text_middle).merge(bold))
+    header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
     footer[:columns] << @categories.total_sales_amount_without_return(from_date: @from, to_date: @to)
-    footer[:styles] << (s.add_style footer_bg_info.deep_merge(number).deep_merge(border).merge(bold).deep_merge(vertical_center))
+    footer[:styles] << (s.add_style bg_footer.deep_merge(number).deep_merge(border).merge(bold).deep_merge(vertical_center))
     column_widths << 15
     
     sheet.add_row header[:columns], style: header[:styles], height: 25
@@ -81,16 +82,16 @@ wb.styles do |s|
         row[:columns] = []
       
         row[:columns] << (index == 0 ? 'XUẤT BÁN HÀNG' : nil)
-        row[:styles] << (s.add_style text_center.deep_merge(vertical_center).deep_merge(border).merge(bold))
+        row[:styles] << (s.add_style text_center.deep_merge(vertical_center).deep_merge(border).merge(bold).deep_merge(bg_row))
       
         row[:columns] << cat.name
-        row[:styles] << (s.add_style text_left.deep_merge(border))
+        row[:styles] << (s.add_style text_left.deep_merge(border).deep_merge(bg_row))
       
         row[:columns] << cat.get_sales_quantity(from_date: @from, to_date: @to)
-        row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
+        row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border).deep_merge(bg_row))
       
         row[:columns] << cat.get_sales_amount(from_date: @from, to_date: @to)
-        row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
+        row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border).deep_merge(bg_row))
       
         sheet.add_row row[:columns], style: row[:styles]
         row_num += 1
@@ -103,11 +104,11 @@ wb.styles do |s|
     row[:columns] << nil
     row[:styles] << (s.add_style text_center.deep_merge(border))
     row[:columns] << 'Tổng bán'
-    row[:styles] << (s.add_style bold.deep_merge(border))
+    row[:styles] << (s.add_style bold.deep_merge(border).deep_merge(bg_row))
     row[:columns] << @categories.total_sales_quantity(from_date: @from, to_date: @to)
-    row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border).merge(bold))
+    row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border).merge(bold).deep_merge(bg_row))
     row[:columns] << @categories.total_sales_amount(from_date: @from, to_date: @to)
-    row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border).merge(bold))
+    row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border).merge(bold).deep_merge(bg_row))
     sheet.add_row row[:columns], style: row[:styles]
     row_num += 1
     sales_cell_last = row_num
@@ -122,16 +123,16 @@ wb.styles do |s|
         row[:columns] = []
       
         row[:columns] << (index==0 ? 'HÀNG BỊ TRẢ LẠI' : nil)
-        row[:styles] << (s.add_style text_center.deep_merge(vertical_center).deep_merge(border).merge(bold))
+        row[:styles] << (s.add_style text_center.deep_merge(vertical_center).deep_merge(border).merge(bold).deep_merge(bg_row))
       
         row[:columns] << cat.name
-        row[:styles] << (s.add_style text_left.deep_merge(border))
+        row[:styles] << (s.add_style text_left.deep_merge(border).deep_merge(bg_row))
       
         row[:columns] << cat.get_return_quantity(from_date: @from, to_date: @to)
-        row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
+        row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border).deep_merge(bg_row))
       
         row[:columns] << cat.get_return_amount(from_date: @from, to_date: @to)
-        row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
+        row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border).deep_merge(bg_row))
       
         sheet.add_row row[:columns], style: row[:styles]
         row_num += 1
@@ -142,13 +143,13 @@ wb.styles do |s|
     row = {columns: [], styles: []}
     row[:columns] = []
     row[:columns] << nil
-    row[:styles] << (s.add_style text_center.deep_merge(border))
+    row[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_row))
     row[:columns] << 'Tổng trả'
-    row[:styles] << (s.add_style bold.deep_merge(border))
+    row[:styles] << (s.add_style bold.deep_merge(border).deep_merge(bg_row))
     row[:columns] << @categories.total_return_quantity(from_date: @from, to_date: @to)
-    row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border).merge(bold))
+    row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border).merge(bold).deep_merge(bg_row))
     row[:columns] << @categories.total_return_amount(from_date: @from, to_date: @to)
-    row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border).merge(bold))
+    row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border).merge(bold).deep_merge(bg_row))
     sheet.add_row row[:columns], style: row[:styles]
     row_num += 1
     return_cell_last = row_num

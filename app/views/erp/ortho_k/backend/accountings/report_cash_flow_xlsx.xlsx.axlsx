@@ -4,15 +4,16 @@ wb.styles do |s|
   wb.styles.fonts.first.name = 'Calibri'
   wb.add_worksheet(name: 'Dòng tiền theo tài khoản') do |sheet|
     # style
-    bg_info = {:bg_color => "305496", :fg_color => "FF"}
-    bg_footer = {:bg_color => "ffff00", :fg_color => "c52f24"}
+    bg_info = {:bg_color => "00b050", :fg_color => "FF"}
+    bg_footer = {:bg_color => "00b050", :fg_color => "FF"}
+    bg_row = {:bg_color => "daeef3", :fg_color => "00"}
     text_center = {alignment: { horizontal: :center }}
     text_left = {alignment: { horizontal: :left }}
     text_right = {alignment: { horizontal: :right }}
     vertical_center =  {alignment: { vertical: :center }}
     text_middle = {alignment: { horizontal: :center, vertical: :center }}
     number = {format_code: '#,##0'}
-    border = {border: { style: :thin, color: "00", :edges => [:left, :right, :bottom] }}
+    border = {border: { style: :thin, color: "525252", :edges => [:left, :right, :bottom] }}
     bold = {b: true}
     
     # Top head
@@ -30,7 +31,7 @@ wb.styles do |s|
     end
     
     sheet.add_row ['BÁO CÁO DÒNG TIỀN'], sz: 16, b: true, style: (s.add_style text_center)
-    sheet.add_row ["(#{date.upcase})"], sz: 12, style: (s.add_style text_center)
+    sheet.add_row ["(#{date})"], sz: 12, style: (s.add_style text_center)
     
     # add empty row
     sheet.add_row [nil]
@@ -85,19 +86,19 @@ wb.styles do |s|
       row = {columns: [], styles: []}
     
       row[:columns] << account.name
-      row[:styles] << (s.add_style text_left.deep_merge(vertical_center).deep_merge(border))
+      row[:styles] << (s.add_style text_left.deep_merge(vertical_center).deep_merge(border).deep_merge(bg_row))
     
       row[:columns] << account.account_balance(to_date: (!@from.nil? ? (@from-1.day) : @from))
-      row[:styles] << (s.add_style text_right.deep_merge(vertical_center).deep_merge(number).deep_merge(border))
+      row[:styles] << (s.add_style text_right.deep_merge(vertical_center).deep_merge(number).deep_merge(border).deep_merge(bg_row))
     
       row[:columns] << account.received(from_date: @from, to_date: @to)
-      row[:styles] << (s.add_style text_right.deep_merge(vertical_center).deep_merge(number).deep_merge(border))
+      row[:styles] << (s.add_style text_right.deep_merge(vertical_center).deep_merge(number).deep_merge(border).deep_merge(bg_row))
     
       row[:columns] << account.paid(from_date: @from, to_date: @to)
-      row[:styles] << (s.add_style text_right.deep_merge(vertical_center).deep_merge(number).deep_merge(border))
+      row[:styles] << (s.add_style text_right.deep_merge(vertical_center).deep_merge(number).deep_merge(border).deep_merge(bg_row))
     
       row[:columns] << account.account_balance(to_date: @to)
-      row[:styles] << (s.add_style text_right.deep_merge(vertical_center).deep_merge(number).deep_merge(border))
+      row[:styles] << (s.add_style text_right.deep_merge(vertical_center).deep_merge(number).deep_merge(border).deep_merge(bg_row))
     
       sheet.add_row row[:columns], style: row[:styles], height: 20
       row_num += 1

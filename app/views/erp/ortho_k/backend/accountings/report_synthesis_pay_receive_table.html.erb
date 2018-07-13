@@ -26,7 +26,9 @@
     <table class="table table-bordered order-column">
         <thead class="flip-content">
             <tr>
-                <th width="25%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Từ <%= format_date(Time.now-1.week) %> đến <%= format_date(Time.now) %></th>
+                <th width="25%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">
+                    <%= 'Từ ' + @from.strftime('%d/%m/%Y') if !@from.nil? %> <%= ' đến ' + @to.strftime('%d/%m/%Y') if !@to.nil? %>
+                </th>
                 <th class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Diễn giải</th>
                 <th width="15%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Số tiền</th>
             </tr>
