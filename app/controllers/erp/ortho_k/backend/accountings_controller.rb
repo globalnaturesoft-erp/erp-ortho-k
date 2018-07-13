@@ -456,8 +456,8 @@ module Erp
             @to = @period.to_date.end_of_day
           else
             @period = nil
-            @from = (glb.present? and glb[:from_date].present?) ? glb[:from_date].to_date : nil
-            @to = (glb.present? and glb[:to_date].present?) ? glb[:to_date].to_date : nil
+            @from = (glb.present? and glb[:from_date].present?) ? glb[:from_date].to_date : Time.now.beginning_of_month
+            @to = (glb.present? and glb[:to_date].present?) ? glb[:to_date].to_date : Time.now.end_of_month
           end
           
           # repaired data

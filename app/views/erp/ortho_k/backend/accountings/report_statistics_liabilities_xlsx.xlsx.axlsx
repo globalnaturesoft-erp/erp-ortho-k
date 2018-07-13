@@ -4,15 +4,16 @@ wb.styles do |s|
   wb.styles.fonts.first.name = 'Calibri'
   wb.add_worksheet(name: 'Thống kê công nợ KH') do |sheet|
     # style
-    bg_info = {:bg_color => "305496", :fg_color => "FF"}
-    bg_footer = {:bg_color => "a9d08e", :fg_color => "833c0c"}
+    bg_info = {:bg_color => "00b050", :fg_color => "FF"}
+    bg_footer = {:bg_color => "00b050", :fg_color => "FF"}
+    bg_row = {:bg_color => "daeef3", :fg_color => "00"}
     text_center = {alignment: { horizontal: :center }}
     text_left = {alignment: { horizontal: :left }}
     text_right = {alignment: { horizontal: :right }}
     vertical_center = {alignment: { vertical: :center }}
     text_middle = {alignment: { horizontal: :center, vertical: :center }}
     number = {format_code: '#,##0'}
-    border = {border: { style: :thin, color: "00", :edges => [:left, :right, :bottom] }}
+    border = {border: { style: :thin, color: "525252", :edges => [:left, :right, :bottom] }}
     bold = {b: true}
     
     # Top head
@@ -70,16 +71,16 @@ wb.styles do |s|
       
       if total_amount > 0 or paid_amount > 0 or debt_amount > 0
         row[:columns] << period[:name]
-        row[:styles] << (s.add_style text_middle.deep_merge(border))
+        row[:styles] << (s.add_style text_middle.deep_merge(border).deep_merge(bg_row))
       
         row[:columns] << total_amount
-        row[:styles] << (s.add_style text_right.deep_merge(vertical_center).deep_merge(number).deep_merge(border))
+        row[:styles] << (s.add_style text_right.deep_merge(vertical_center).deep_merge(number).deep_merge(border).deep_merge(bg_row))
       
         row[:columns] << paid_amount
-        row[:styles] << (s.add_style text_right.deep_merge(vertical_center).deep_merge(number).deep_merge(border))
+        row[:styles] << (s.add_style text_right.deep_merge(vertical_center).deep_merge(number).deep_merge(border).deep_merge(bg_row))
       
         row[:columns] << debt_amount
-        row[:styles] << (s.add_style text_right.deep_merge(vertical_center).deep_merge(number).deep_merge(border))
+        row[:styles] << (s.add_style text_right.deep_merge(vertical_center).deep_merge(number).deep_merge(border).deep_merge(bg_row))
       
         sheet.add_row row[:columns], style: row[:styles], height: 22
         row_num += 1

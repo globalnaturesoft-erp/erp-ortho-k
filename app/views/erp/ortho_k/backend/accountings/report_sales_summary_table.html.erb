@@ -1,13 +1,15 @@
 <div class="custom-show text-center">
-    <h4 class="font-yellow bold uppercase mb-15">
-        Báo cáo tồn kho
-        <% if @period.present? %>
-            <%= @period.name %>
-        <% else %>
-            <%= 'Từ ' + @from_date.strftime('%d/%m/%Y') if !@from_date.nil? %> <%= ' Đến ' + @to_date.strftime('%d/%m/%Y') if !@to_date.nil? %>
-        <% end %>
-    </h4>
-</div>
+        <h4 class="font-blue-madison bold uppercase mb-15">
+            THỐNG KÊ BÁN HÀNG - TRẢ HÀNG BÁN <br>
+            <span class="font-sm">
+                <% if @period_name.nil? %>
+                    (<%= 'Từ ' + @from.strftime('%d/%m/%Y') if !@from.nil? %> <%= ' Đến ' + @to.strftime('%d/%m/%Y') if !@to.nil? %>)
+                <% else %>
+                    (<%= @period_name %>)
+                <% end %>
+            </span>
+        </h4>
+    </div>
 
 <div class="text-right mb-10">
     <a target="_blank"

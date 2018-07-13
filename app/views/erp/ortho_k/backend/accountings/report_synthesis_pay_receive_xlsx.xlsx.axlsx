@@ -4,15 +4,16 @@ wb.styles do |s|
   wb.styles.fonts.first.name = 'Calibri'
   wb.add_worksheet(name: 'Tổng hợp thu chi') do |sheet|
     # style
-    header_bg_info = {:bg_color => "305496", :fg_color => "FF"}
-    footer_bg_info = {:bg_color => "a9d08e", :fg_color => "833c0c"}
+    bg_info = {:bg_color => "00b050", :fg_color => "FF"}
+    bg_footer = {:bg_color => "00b050", :fg_color => "FF"}
+    bg_row = {:bg_color => "daeef3", :fg_color => "00"}
     text_center = {alignment: { horizontal: :center }}
     text_left = {alignment: { horizontal: :left }}
     text_right = {alignment: { horizontal: :right }}
     text_middle = {alignment: { horizontal: :center, vertical: :center }}
     vertical_center = {alignment: { vertical: :center }}
     number = {format_code: '#,##0'}
-    border = {border: { style: :thin, color: "00", :edges => [:left, :right, :bottom] }}
+    border = {border: { style: :thin, color: "525252", :edges => [:left, :right, :bottom] }}
     bold = {b: true}
     
     # Top head
@@ -36,21 +37,21 @@ wb.styles do |s|
     column_widths = []
     
     header[:columns] << nil
-    header[:styles] << (s.add_style header_bg_info.deep_merge(text_middle).merge(bold))
+    header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
     footer[:columns] << "KẾT TOÁN"
-    footer[:styles] << (s.add_style footer_bg_info.deep_merge(text_middle).deep_merge(border).merge(bold))
+    footer[:styles] << (s.add_style bg_footer.deep_merge(text_middle).deep_merge(border).merge(bold))
     column_widths << 15
     
     header[:columns] << 'Diễn giải'
-    header[:styles] << (s.add_style header_bg_info.deep_merge(text_middle).merge(bold))
+    header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
     footer[:columns] << nil
     footer[:styles] << (s.add_style bold.deep_merge(border))
     column_widths << 60
     
     header[:columns] << 'Số tiền'
-    header[:styles] << (s.add_style header_bg_info.deep_merge(text_middle).merge(bold))
+    header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
     footer[:columns] << @payment_types.remain_amount_by_payment_type(from_date: @from, to_date: @to)
-    footer[:styles] << (s.add_style footer_bg_info.deep_merge(number).deep_merge(border).deep_merge(vertical_center).merge(bold))
+    footer[:styles] << (s.add_style bg_footer.deep_merge(number).deep_merge(border).deep_merge(vertical_center).merge(bold))
     column_widths << 25
     
     sheet.add_row header[:columns], style: header[:styles], height: 25
@@ -61,16 +62,15 @@ wb.styles do |s|
       amount = receive.receive_amount_by_payment_type(from_date: @from, to_date: @to)
       if amount.to_f > 0
         row = {columns: [], styles: []}
-        row[:columns] = []
       
         row[:columns] << (re_count==0 ? 'PHẦN THU' : nil)
-        row[:styles] << (s.add_style text_middle.deep_merge(border).merge(bold))
+        row[:styles] << (s.add_style text_middle.deep_merge(border).merge(bold).deep_merge(bg_row))
       
         row[:columns] << receive.name
-        row[:styles] << (s.add_style text_left.deep_merge(border))
+        row[:styles] << (s.add_style text_left.deep_merge(border).deep_merge(bg_row))
       
         row[:columns] << amount
-        row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
+        row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border).deep_merge(bg_row))
       
         sheet.add_row row[:columns], style: row[:styles]
         
@@ -82,9 +82,9 @@ wb.styles do |s|
     row[:columns] << nil
     row[:styles] << (s.add_style border)
     row[:columns] << 'Tổng thu'
-    row[:styles] << (s.add_style bold.deep_merge(border))
+    row[:styles] << (s.add_style bold.deep_merge(border).deep_merge(bg_row))
     row[:columns] << @receivables.receive_amount_by_payment_type(from_date: @from, to_date: @to)
-    row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border).merge(bold))
+    row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border).merge(bold).deep_merge(bg_row))
     sheet.add_row row[:columns], style: row[:styles]
     
     # rows 2
@@ -96,13 +96,13 @@ wb.styles do |s|
         row[:columns] = []
       
         row[:columns] << (pa_count==0 ? 'PHẦN CHI' : nil)
-        row[:styles] << (s.add_style text_middle.deep_merge(border).merge(bold))
+        row[:styles] << (s.add_style text_middle.deep_merge(border).merge(bold).deep_merge(bg_row))
       
         row[:columns] << pay.name
-        row[:styles] << (s.add_style text_left.deep_merge(border))
+        row[:styles] << (s.add_style text_left.deep_merge(border).deep_merge(bg_row))
       
         row[:columns] << amount
-        row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
+        row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border).deep_merge(bg_row))
       
         sheet.add_row row[:columns], style: row[:styles]
         
@@ -114,9 +114,9 @@ wb.styles do |s|
     row[:columns] << nil
     row[:styles] << (s.add_style border)
     row[:columns] << 'Tổng chi'
-    row[:styles] << (s.add_style bold.deep_merge(border))
+    row[:styles] << (s.add_style bold.deep_merge(border).deep_merge(bg_row))
     row[:columns] << @payables.paid_amount_by_payment_type(from_date: @from, to_date: @to)
-    row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border).merge(bold))
+    row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border).merge(bold).deep_merge(bg_row))
     sheet.add_row row[:columns], style: row[:styles]
     
     # footer
