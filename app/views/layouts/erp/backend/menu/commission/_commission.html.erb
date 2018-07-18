@@ -1,0 +1,21 @@
+<li class="nav-item <%= "active open" if  (params[:controller] == "erp/payments/backend/payment_records" && params[:action] == "commission") ||
+                                          (params[:controller] == "erp/payments/backend/payment_records" && params[:action] == "target_commission") %>">
+    <a href="javascript:;" class="nav-link nav-toggle">
+        <span class="title"><%= 'Hoa hồng nhân viên' %></span>
+        <% if (params[:controller] == "erp/payments/backend/payment_records" && params[:action] == "commission") ||
+              (params[:controller] == "erp/payments/backend/payment_records" && params[:action] == "target_commission") %>
+            <span class="selected"></span>
+            <span class="arrow open"></span>
+        <% else %>
+            <span class="arrow"></span>
+        <% end %>
+    </a>
+    <ul class="sub-menu">
+        <li class="nav-item <%= "active" if (params[:controller] == "erp/payments/backend/payment_records" && params[:action] == "commission") %>">
+            <%= link_to 'Thưởng bán hàng', erp_payments.commission_backend_payment_records_path, class: "nav-link ", title: 'Theo dõi tiền hoa hồng nhân viên theo đơn bán lẻ và thu công nợ' %>
+        </li>
+        <li class="nav-item <%= "active" if (params[:controller] == "erp/payments/backend/payment_records" && params[:action] == "target_commission") %>">
+            <%= link_to 'Thưởng theo target', erp_payments.target_commission_backend_payment_records_path, class: "nav-link ", title: 'Theo dõi tiền thưởng cho nhân viên theo target tháng, năm + doanh thu công ty' %>
+        </li>
+    </ul>
+</li>
