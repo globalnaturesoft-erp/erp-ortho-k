@@ -1,12 +1,14 @@
 <li class="nav-item <%= "active open" if
   (params[:controller] == "erp/payments/backend/payment_records" && params[:action] == "customer_commission") ||
-  (params[:controller] == "erp/payments/backend/payment_records" && params[:action] == "commission")
+  (params[:controller] == "erp/payments/backend/payment_records" && params[:action] == "commission") ||
+  (params[:controller] == "erp/payments/backend/payment_records" && params[:action] == "target_commission")
 %>">
     <a href="javascript:;" class="nav-link nav-toggle">
         <span class="title">Hoa hồng & Chiết khấu</span>
         <% if
           (params[:controller] == "erp/payments/backend/payment_records" && params[:action] == "customer_commission") ||
-          (params[:controller] == "erp/payments/backend/payment_records" && params[:action] == "commission")
+          (params[:controller] == "erp/payments/backend/payment_records" && params[:action] == "commission") ||
+          (params[:controller] == "erp/payments/backend/payment_records" && params[:action] == "target_commission")
         %>
             <span class="selected"></span>
             <span class="arrow open"></span>
@@ -16,7 +18,8 @@
     </a>
     <ul class="sub-menu" <% if
         (params[:controller] == "erp/payments/backend/payment_records" && params[:action] == "customer_commission") ||
-        (params[:controller] == "erp/payments/backend/payment_records" && params[:action] == "commission")
+        (params[:controller] == "erp/payments/backend/payment_records" && params[:action] == "commission") ||
+        (params[:controller] == "erp/payments/backend/payment_records" && params[:action] == "target_commission")
     %>
       style="display: block;"
     <% else %>style="display: none;"<% end %>>
@@ -25,10 +28,6 @@
                 <span class="title">Chiết khấu khách hàng</span>
             </a>
         </li>
-        <li class="nav-item  <%= "active open" if (params[:controller] == "erp/payments/backend/payment_records" && params[:action] == "commission") %>">
-            <a href="<%= erp_payments.commission_backend_payment_records_path %>" class="nav-link ">
-                <span class="title">Hoa hồng nhân viên</span>
-            </a>
-        </li>
+        <%= render "layouts/erp/backend/menu/commission/commission" %>
     </ul>
 </li>
