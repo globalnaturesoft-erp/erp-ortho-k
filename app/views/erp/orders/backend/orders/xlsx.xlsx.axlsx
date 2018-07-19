@@ -83,6 +83,7 @@ wb.styles do |s|
     footer_1 = {columns: [], styles: []}
     footer_2 = {columns: [], styles: []}
     footer_3 = {columns: [], styles: []}
+    footer_4 = {columns: [], styles: []}
     
     header[:columns] = []
     if get_columns(params).include?("ordinal_number") or get_columns(params).empty?
@@ -90,10 +91,13 @@ wb.styles do |s|
       header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border))
       sheet.column_info.first.width = 5
 
+      footer_4[:columns] << 'Tổng số lượng:'
+      footer_4[:styles] << (s.add_style text_right.deep_merge(border))
+
       footer_1[:columns] << 'Cộng tiền hàng:'
       footer_1[:styles] << (s.add_style text_right.deep_merge(border))
 
-      footer_2[:columns] << "Tiền thuế (#{@order.tax.present? ? @order.tax.short_name : '0%'})"
+      footer_2[:columns] << "Tiền thuế (#{@order.tax.present? ? @order.tax.short_name : '0%'}):"
       footer_2[:styles] << (s.add_style text_right.deep_merge(border))
 
       footer_3[:columns] << 'Tổng cần thanh toán:'
@@ -104,6 +108,9 @@ wb.styles do |s|
     if get_columns(params).include?("items") or get_columns(params).empty?
       header[:columns] << t('.items')
       header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border))
+
+      footer_4[:columns] << nil
+      footer_4[:styles] << (s.add_style border)
 
       footer_1[:columns] << nil
       footer_1[:styles] << (s.add_style border)
@@ -120,6 +127,9 @@ wb.styles do |s|
       header[:columns] << t('.category')
       header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border))
 
+      footer_4[:columns] << nil
+      footer_4[:styles] << (s.add_style border)
+
       footer_1[:columns] << nil
       footer_1[:styles] << (s.add_style border)
 
@@ -134,6 +144,9 @@ wb.styles do |s|
     if get_columns(params).include?("units") or get_columns(params).empty?
       header[:columns] << t('.units')
       header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border))
+
+      footer_4[:columns] << nil
+      footer_4[:styles] << (s.add_style border)
 
       footer_1[:columns] << nil
       footer_1[:styles] << (s.add_style border)
@@ -150,6 +163,9 @@ wb.styles do |s|
       header[:columns] << t('.serials')
       header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border))
 
+      footer_4[:columns] << nil
+      footer_4[:styles] << (s.add_style border)
+
       footer_1[:columns] << nil
       footer_1[:styles] << (s.add_style border)
 
@@ -164,6 +180,9 @@ wb.styles do |s|
     if get_columns(params).include?("eye_position") or get_columns(params).empty?
       header[:columns] << t('.eye_position')
       header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border))
+
+      footer_4[:columns] << nil
+      footer_4[:styles] << (s.add_style border)
 
       footer_1[:columns] << nil
       footer_1[:styles] << (s.add_style border)
@@ -180,6 +199,9 @@ wb.styles do |s|
       header[:columns] << t('.quantity')
       header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border))
 
+      footer_4[:columns] << nil
+      footer_4[:styles] << (s.add_style border)
+
       footer_1[:columns] << nil
       footer_1[:styles] << (s.add_style text_center.deep_merge(border))
 
@@ -194,6 +216,9 @@ wb.styles do |s|
     if get_columns(params).include?("price") or get_columns(params).empty?
       header[:columns] << t('.price')
       header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border))
+
+      footer_4[:columns] << nil
+      footer_4[:styles] << (s.add_style border)
 
       footer_1[:columns] << nil
       footer_1[:styles] << (s.add_style border)
@@ -210,6 +235,9 @@ wb.styles do |s|
       header[:columns] << t('.total_amount')
       header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border))
 
+      footer_4[:columns] << nil
+      footer_4[:styles] << (s.add_style border)
+
       footer_1[:columns] << nil
       footer_1[:styles] << (s.add_style border)
 
@@ -224,6 +252,9 @@ wb.styles do |s|
     if get_columns(params).include?("discount") or get_columns(params).empty?
       header[:columns] << t('.discount')
       header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border))
+
+      footer_4[:columns] << nil
+      footer_4[:styles] << (s.add_style border)
 
       footer_1[:columns] << nil
       footer_1[:styles] << (s.add_style border)
@@ -241,6 +272,9 @@ wb.styles do |s|
       header[:columns] << t('.total')
       header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border))
 
+      footer_4[:columns] << @order.items_count
+      footer_4[:styles] << (s.add_style text_right.deep_merge(bold).deep_merge(number).deep_merge(border))
+
       footer_1[:columns] << @order.total_without_tax
       footer_1[:styles] << (s.add_style text_right.deep_merge(bold).deep_merge(number).deep_merge(border))
 
@@ -256,6 +290,9 @@ wb.styles do |s|
     if get_columns(params).include?("note") or get_columns(params).empty?
       header[:columns] << t('.note')
       header[:styles] << (s.add_style bg_info.deep_merge(border).deep_merge(text_middle))
+
+      footer_4[:columns] << nil
+      footer_4[:styles] << (s.add_style border)
 
       footer_1[:columns] << nil
       footer_1[:styles] << (s.add_style text_right.deep_merge(border))
@@ -330,6 +367,10 @@ wb.styles do |s|
     end
 
     # footer
+    sheet.add_row footer_4[:columns], style: footer_4[:styles]
+    num_row += 1
+    row_ft_4 = num_row
+    
     sheet.add_row footer_1[:columns], style: footer_1[:styles]
     num_row += 1
     row_ft_1 = num_row
@@ -342,6 +383,7 @@ wb.styles do |s|
     num_row += 1
     row_ft_3 = num_row
     
+    sheet.merge_cells("#{('A'.codepoints.first).chr}#{row_ft_4}:#{('A'.codepoints.first + (col_total - 1)).chr}#{row_ft_4}")
     sheet.merge_cells("#{('A'.codepoints.first).chr}#{row_ft_1}:#{('A'.codepoints.first + (col_total - 1)).chr}#{row_ft_1}")
     sheet.merge_cells("#{('A'.codepoints.first).chr}#{row_ft_2}:#{('A'.codepoints.first + (col_total - 1)).chr}#{row_ft_2}")
     sheet.merge_cells("#{('A'.codepoints.first).chr}#{row_ft_3}:#{('A'.codepoints.first + (col_total - 1)).chr}#{row_ft_3}")
