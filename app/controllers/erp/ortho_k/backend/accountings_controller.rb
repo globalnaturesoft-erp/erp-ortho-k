@@ -11,8 +11,8 @@ module Erp
             @to = Erp::Periods::Period.find(@global_filters[:period]).to_date.end_of_day
           else
             @period_name = nil
-            @from = (@global_filters.present? and @global_filters[:from_date].present?) ? @global_filters[:from_date].to_date : nil
-            @to = (@global_filters.present? and @global_filters[:to_date].present?) ? @global_filters[:to_date].to_date : nil
+            @from = (@global_filters.present? and @global_filters[:from_date].present?) ? @global_filters[:from_date].to_date.beginning_of_day : nil
+            @to = (@global_filters.present? and @global_filters[:to_date].present?) ? @global_filters[:to_date].to_date.end_of_day : nil
           end
 
           @payment_records = Erp::Payments::PaymentRecord.all_done.search(params)
@@ -62,8 +62,8 @@ module Erp
             @to = Erp::Periods::Period.find(@global_filters[:period]).to_date.end_of_day
           else
             @period_name = nil
-            @from = (@global_filters.present? and @global_filters[:from_date].present?) ? @global_filters[:from_date].to_date : nil
-            @to = (@global_filters.present? and @global_filters[:to_date].present?) ? @global_filters[:to_date].to_date : nil
+            @from = (@global_filters.present? and @global_filters[:from_date].present?) ? @global_filters[:from_date].to_date.beginning_of_day : nil
+            @to = (@global_filters.present? and @global_filters[:to_date].present?) ? @global_filters[:to_date].to_date.end_of_day : nil
           end
 
           @payment_types = Erp::Payments::PaymentType.all_active
@@ -114,8 +114,8 @@ module Erp
             @to = Erp::Periods::Period.find(@global_filters[:period]).to_date.end_of_day
           else
             @period_name = nil
-            @from = (@global_filters.present? and @global_filters[:from_date].present?) ? @global_filters[:from_date].to_date : nil
-            @to = (@global_filters.present? and @global_filters[:to_date].present?) ? @global_filters[:to_date].to_date : nil
+            @from = (@global_filters.present? and @global_filters[:from_date].present?) ? @global_filters[:from_date].to_date.beginning_of_day : nil
+            @to = (@global_filters.present? and @global_filters[:to_date].present?) ? @global_filters[:to_date].to_date.end_of_day : nil
           end
 
           @categories = Erp::Products::Category.all_unarchive
@@ -160,8 +160,8 @@ module Erp
             @to = Erp::Periods::Period.find(@global_filters[:period]).to_date.end_of_day
           else
             @period_name = nil
-            @from = (@global_filters.present? and @global_filters[:from_date].present?) ? @global_filters[:from_date].to_date : nil
-            @to = (@global_filters.present? and @global_filters[:to_date].present?) ? @global_filters[:to_date].to_date : nil
+            @from = (@global_filters.present? and @global_filters[:from_date].present?) ? @global_filters[:from_date].to_date.beginning_of_day : nil
+            @to = (@global_filters.present? and @global_filters[:to_date].present?) ? @global_filters[:to_date].to_date.end_of_day : nil
           end
           
           @payables = Erp::Payments::PaymentType.get_custom_payment_types.payables.order('erp_payments_payment_types.name ASC')
@@ -208,8 +208,8 @@ module Erp
             @to = Erp::Periods::Period.find(@global_filters[:period]).to_date.end_of_day
           else
             @period_name = nil
-            @from = (@global_filters.present? and @global_filters[:from_date].present?) ? @global_filters[:from_date].to_date : nil
-            @to = (@global_filters.present? and @global_filters[:to_date].present?) ? @global_filters[:to_date].to_date : nil
+            @from = (@global_filters.present? and @global_filters[:from_date].present?) ? @global_filters[:from_date].to_date.beginning_of_day : nil
+            @to = (@global_filters.present? and @global_filters[:to_date].present?) ? @global_filters[:to_date].to_date.end_of_day : nil
           end
 
           @accounts = Erp::Payments::Account.all_active.search(params).order('erp_payments_accounts.name ASC') # .where('erp_payments_accounts.code LIKE ?', "1121%")
@@ -252,8 +252,8 @@ module Erp
             @to = Erp::Periods::Period.find(@global_filters[:period]).to_date.end_of_day
           else
             @period_name = nil
-            @from = (@global_filters.present? and @global_filters[:from_date].present?) ? @global_filters[:from_date].to_date : nil #Time.now.beginning_of_month
-            @to = (@global_filters.present? and @global_filters[:to_date].present?) ? @global_filters[:to_date].to_date : nil
+            @from = (@global_filters.present? and @global_filters[:from_date].present?) ? @global_filters[:from_date].to_date.beginning_of_day : nil #Time.now.beginning_of_month
+            @to = (@global_filters.present? and @global_filters[:to_date].present?) ? @global_filters[:to_date].to_date.end_of_day : nil
           end
           
           @from_date = @global_filters[:from_date].to_date
@@ -306,8 +306,8 @@ module Erp
             @to = Erp::Periods::Period.find(global_filters[:period]).to_date.end_of_day
           else
             @period_name = nil
-            @from = (global_filters.present? and global_filters[:from_date].present?) ? global_filters[:from_date].to_date : nil #Time.now.beginning_of_month
-            @to = (global_filters.present? and global_filters[:to_date].present?) ? global_filters[:to_date].to_date : nil
+            @from = (global_filters.present? and global_filters[:from_date].present?) ? global_filters[:from_date].to_date.beginning_of_day : nil #Time.now.beginning_of_month
+            @to = (global_filters.present? and global_filters[:to_date].present?) ? global_filters[:to_date].to_date.end_of_day : nil
           end
 
           if global_filters[:supplier].present?
@@ -385,8 +385,8 @@ module Erp
             @to = Erp::Periods::Period.find(@global_filters[:period]).to_date.end_of_day
           else
             @period_name = nil
-            @from = (@global_filters.present? and @global_filters[:from_date].present?) ? @global_filters[:from_date].to_date : nil #Time.now.beginning_of_month
-            @to = (@global_filters.present? and @global_filters[:to_date].present?) ? @global_filters[:to_date].to_date : nil
+            @from = (@global_filters.present? and @global_filters[:from_date].present?) ? @global_filters[:from_date].to_date.beginning_of_day : nil #Time.now.beginning_of_month
+            @to = (@global_filters.present? and @global_filters[:to_date].present?) ? @global_filters[:to_date].to_date.end_of_day : nil
           end
 
           if @global_filters[:customer].present?
@@ -456,8 +456,8 @@ module Erp
             @to = @period.to_date.end_of_day
           else
             @period = nil
-            @from = (glb.present? and glb[:from_date].present?) ? glb[:from_date].to_date : Time.now.beginning_of_month
-            @to = (glb.present? and glb[:to_date].present?) ? glb[:to_date].to_date : Time.now.end_of_month
+            @from = (glb.present? and glb[:from_date].present?) ? glb[:from_date].to_date.beginning_of_day : nil
+            @to = (glb.present? and glb[:to_date].present?) ? glb[:to_date].to_date.end_of_day : nil
           end
           
           # repaired data
