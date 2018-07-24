@@ -1,7 +1,5 @@
 # style
-bg_info = {:bg_color => "305496", :fg_color => "FF"}
-bg_footer = {:bg_color => "dbdbdb", :fg_color => "00"}
-bg_toprow = {:bg_color => "dbdbdb", :fg_color => "00"}
+bg_row = {:bg_color => "daeef3", :fg_color => "00"}
 text_center = {alignment: { horizontal: :center }}
 text_left = {alignment: { horizontal: :left }}
 text_right = {alignment: { horizontal: :right }}
@@ -18,79 +16,88 @@ rows.each_with_index do |rw,index|
   row[:columns] = []
 
   row[:columns] << "#{rw[:record_date].strftime('%d/%m/%Y')}"
-  row[:styles] << (s.add_style text_left.deep_merge(middle_align).deep_merge(border).deep_merge(wrap))
+  row[:styles] << (s.add_style text_left.deep_merge(middle_align).deep_merge(border).deep_merge(wrap).deep_merge(bg_row))
 
   row[:columns] << rw[:voucher_date].strftime('%d/%m/%Y')
-  row[:styles] << (s.add_style text_left.deep_merge(middle_align).deep_merge(border).deep_merge(wrap))
+  row[:styles] << (s.add_style text_left.deep_merge(middle_align).deep_merge(border).deep_merge(wrap).deep_merge(bg_row))
 
   row[:columns] << rw[:voucher_code]
-  row[:styles] << (s.add_style text_left.deep_merge(middle_align).deep_merge(border).deep_merge(wrap))
+  row[:styles] << (s.add_style text_left.deep_merge(middle_align).deep_merge(border).deep_merge(wrap).deep_merge(bg_row))
 
   row[:columns] << (rw[:related_order].present? ? rw[:related_order].code : '')
-  row[:styles] << (s.add_style text_left.deep_merge(middle_align).deep_merge(border).deep_merge(wrap))
+  row[:styles] << (s.add_style text_left.deep_merge(middle_align).deep_merge(border).deep_merge(wrap).deep_merge(bg_row))
 
   row[:columns] << rw[:supplier_code]
-  row[:styles] << (s.add_style text_left.deep_merge(middle_align).deep_merge(border).deep_merge(wrap))
+  row[:styles] << (s.add_style text_left.deep_merge(middle_align).deep_merge(border).deep_merge(wrap).deep_merge(bg_row))
 
   row[:columns] << rw[:supplier_name]
-  row[:styles] << (s.add_style text_left.deep_merge(middle_align).deep_merge(border).deep_merge(wrap))
+  row[:styles] << (s.add_style text_left.deep_merge(middle_align).deep_merge(border).deep_merge(wrap).deep_merge(bg_row))
 
   row[:columns] << rw[:customer_code]
-  row[:styles] << (s.add_style text_left.deep_merge(middle_align).deep_merge(border).deep_merge(wrap))
+  row[:styles] << (s.add_style text_left.deep_merge(middle_align).deep_merge(border).deep_merge(wrap).deep_merge(bg_row))
 
   row[:columns] << rw[:customer_name]
-  row[:styles] << (s.add_style text_left.deep_merge(middle_align).deep_merge(border).deep_merge(wrap))
+  row[:styles] << (s.add_style text_left.deep_merge(middle_align).deep_merge(border).deep_merge(wrap).deep_merge(bg_row))
 
   row[:columns] << rw[:product_code]
-  row[:styles] << (s.add_style text_left.deep_merge(middle_align).deep_merge(border).deep_merge(wrap))
+  row[:styles] << (s.add_style text_left.deep_merge(middle_align).deep_merge(border).deep_merge(wrap).deep_merge(bg_row))
 
   row[:columns] << rw[:diameter]
-  row[:styles] << (s.add_style text_left.deep_merge(middle_align).deep_merge(border).deep_merge(wrap))
+  row[:styles] << (s.add_style text_left.deep_merge(middle_align).deep_merge(border).deep_merge(wrap).deep_merge(bg_row))
 
   row[:columns] << rw[:category]
-  row[:styles] << (s.add_style text_left.deep_merge(middle_align).deep_merge(border).deep_merge(wrap))
+  row[:styles] << (s.add_style text_left.deep_merge(middle_align).deep_merge(border).deep_merge(wrap).deep_merge(bg_row))
 
   row[:columns] << rw[:product_name]
-  row[:styles] << (s.add_style text_left.deep_merge(middle_align).deep_merge(border).deep_merge(wrap))
+  row[:styles] << (s.add_style text_left.deep_merge(middle_align).deep_merge(border).deep_merge(wrap).deep_merge(bg_row))
 
   row[:columns] << t(".#{rw[:record_type]}")
-  row[:styles] << (s.add_style text_left.deep_merge(middle_align).deep_merge(border).deep_merge(wrap))
+  row[:styles] << (s.add_style text_left.deep_merge(middle_align).deep_merge(border).deep_merge(wrap).deep_merge(bg_row))
 
   row[:columns] << rw[:state]
-  row[:styles] << (s.add_style text_center.deep_merge(middle_align).deep_merge(border).deep_merge(wrap))
+  row[:styles] << (s.add_style text_center.deep_merge(middle_align).deep_merge(border).deep_merge(wrap).deep_merge(bg_row))
 
   row[:columns] << rw[:warehouse]
-  row[:styles] << (s.add_style text_center.deep_merge(middle_align).deep_merge(border).deep_merge(wrap))
+  row[:styles] << (s.add_style text_center.deep_merge(middle_align).deep_merge(border).deep_merge(wrap).deep_merge(bg_row))
 
   row[:columns] << rw[:unit]
-  row[:styles] << (s.add_style text_center.deep_merge(middle_align).deep_merge(border).deep_merge(wrap))
+  row[:styles] << (s.add_style text_center.deep_merge(middle_align).deep_merge(border).deep_merge(wrap).deep_merge(bg_row))
 
   row[:columns] << rw[:quantity]
-  row[:styles] << (s.add_style text_center.deep_merge(middle_align).deep_merge(border).deep_merge(wrap))
+  row[:styles] << (s.add_style text_center.deep_merge(middle_align).deep_merge(border).deep_merge(wrap).deep_merge(bg_row))
 
-  row[:columns] << rw[:purchase_price]
-  row[:styles] << (s.add_style text_right.deep_merge(middle_align).deep_merge(border).deep_merge(wrap).deep_merge(number))
+  row[:columns] << rw[:pay_price]
+  row[:styles] << (s.add_style text_right.deep_merge(middle_align).deep_merge(border).deep_merge(wrap).deep_merge(number).deep_merge(bg_row))
 
-  row[:columns] << rw[:purchase_tax_amount]
-  row[:styles] << (s.add_style text_right.deep_merge(middle_align).deep_merge(border).deep_merge(wrap).deep_merge(number))
+  row[:columns] << rw[:pay_subtotal]
+  row[:styles] << (s.add_style text_right.deep_merge(middle_align).deep_merge(border).deep_merge(wrap).deep_merge(number).deep_merge(bg_row))
 
-  row[:columns] << rw[:purchase_total_amount]
-  row[:styles] << (s.add_style text_right.deep_merge(middle_align).deep_merge(border).deep_merge(wrap).deep_merge(number))
+  row[:columns] << rw[:pay_discount]
+  row[:styles] << (s.add_style text_right.deep_merge(middle_align).deep_merge(border).deep_merge(wrap).deep_merge(number).deep_merge(bg_row))
 
-  row[:columns] << rw[:sales_price]
-  row[:styles] << (s.add_style text_right.deep_merge(middle_align).deep_merge(border).deep_merge(wrap).deep_merge(number))
+  row[:columns] << rw[:pay_tax_amount]
+  row[:styles] << (s.add_style text_right.deep_merge(middle_align).deep_merge(border).deep_merge(wrap).deep_merge(number).deep_merge(bg_row))
 
-  row[:columns] << rw[:sales_tax_amount]
-  row[:styles] << (s.add_style text_right.deep_merge(middle_align).deep_merge(border).deep_merge(wrap).deep_merge(number))
+  row[:columns] << rw[:pay_total_amount]
+  row[:styles] << (s.add_style text_right.deep_merge(middle_align).deep_merge(border).deep_merge(wrap).deep_merge(number).deep_merge(bg_row))
 
-  row[:columns] << rw[:sales_discount]
-  row[:styles] << (s.add_style text_right.deep_merge(middle_align).deep_merge(border).deep_merge(wrap).deep_merge(number))
+  row[:columns] << rw[:receive_price]
+  row[:styles] << (s.add_style text_right.deep_merge(middle_align).deep_merge(border).deep_merge(wrap).deep_merge(number).deep_merge(bg_row))
 
-  row[:columns] << rw[:sales_total_amount]
-  row[:styles] << (s.add_style text_right.deep_merge(middle_align).deep_merge(border).deep_merge(wrap).deep_merge(number))
+  row[:columns] << rw[:receive_subtotal]
+  row[:styles] << (s.add_style text_right.deep_merge(middle_align).deep_merge(border).deep_merge(wrap).deep_merge(number).deep_merge(bg_row))
+
+  row[:columns] << rw[:receive_discount]
+  row[:styles] << (s.add_style text_right.deep_merge(middle_align).deep_merge(border).deep_merge(wrap).deep_merge(number).deep_merge(bg_row))
+
+  row[:columns] << rw[:receive_tax_amount]
+  row[:styles] << (s.add_style text_right.deep_merge(middle_align).deep_merge(border).deep_merge(wrap).deep_merge(number).deep_merge(bg_row))
+
+  row[:columns] << rw[:receive_total_amount]
+  row[:styles] << (s.add_style text_right.deep_merge(middle_align).deep_merge(border).deep_merge(wrap).deep_merge(number).deep_merge(bg_row))
 
   row[:columns] << rw[:description]
-  row[:styles] << (s.add_style text_left.deep_merge(middle_align).deep_merge(border).deep_merge(wrap))
+  row[:styles] << (s.add_style text_left.deep_merge(middle_align).deep_merge(border).deep_merge(wrap).deep_merge(bg_row))
 
   sheet.add_row row[:columns], style: row[:styles]
   row_num += 1
