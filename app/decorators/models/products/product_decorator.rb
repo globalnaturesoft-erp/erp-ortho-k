@@ -262,20 +262,29 @@ Erp::Products::Product.class_eval do
         # quantity
         item[:quantity] = (item[:rows].map {|i| i[:quantity].to_i}).sum
 
-        # purchase_tax_amount
-        item[:purchase_tax_amount] = (item[:rows].map {|i| i[:purchase_tax_amount].to_f}).sum
+        # pay_subtotal
+        item[:pay_subtotal] = (item[:rows].map {|i| i[:pay_subtotal].to_f}).sum
 
-        # purchase_total_amount
-        item[:purchase_total_amount] = (item[:rows].map {|i| i[:purchase_total_amount].to_f}).sum
+        # pay_discount
+        item[:pay_discount] = (item[:rows].map {|i| i[:pay_discount].to_f}).sum
 
-        # sales_tax_amount
-        item[:sales_tax_amount] = (item[:rows].map {|i| i[:sales_tax_amount].to_f}).sum
+        # pay_tax_amount
+        item[:pay_tax_amount] = (item[:rows].map {|i| i[:pay_tax_amount].to_f}).sum
 
-        # sales_discount
-        item[:sales_discount] = (item[:rows].map {|i| i[:sales_discount].to_f}).sum
+        # pay_total_amount
+        item[:pay_total_amount] = (item[:rows].map {|i| i[:pay_total_amount].to_f}).sum
 
-        # sales_total_amount
-        item[:sales_total_amount] = (item[:rows].map {|i| i[:sales_total_amount].to_f}).sum
+        # receive_subtotal
+        item[:receive_subtotal] = (item[:rows].map {|i| i[:receive_subtotal].to_f}).sum
+
+        # receive_discount
+        item[:receive_discount] = (item[:rows].map {|i| i[:receive_discount].to_f}).sum
+
+        # receive_tax_amount
+        item[:receive_tax_amount] = (item[:rows].map {|i| i[:receive_tax_amount].to_f}).sum
+
+        # receive_total_amount
+        item[:receive_total_amount] = (item[:rows].map {|i| i[:receive_total_amount].to_f}).sum
 
         grouped_rows << item.clone
       end
@@ -302,20 +311,29 @@ Erp::Products::Product.class_eval do
         # quantity
         item[:quantity] = (item[:rows].map {|i| i[:quantity].to_i}).sum
 
-        # purchase_tax_amount
-        item[:purchase_tax_amount] = (item[:rows].map {|i| i[:purchase_tax_amount].to_f}).sum
+        # pay_subtotal
+        item[:pay_subtotal] = (item[:rows].map {|i| i[:pay_subtotal].to_f}).sum
 
-        # purchase_total_amount
-        item[:purchase_total_amount] = (item[:rows].map {|i| i[:purchase_total_amount].to_f}).sum
+        # pay_discount_amount
+        item[:pay_discount] = (item[:rows].map {|i| i[:pay_discount].to_f}).sum
 
-        # sales_tax_amount
-        item[:sales_tax_amount] = (item[:rows].map {|i| i[:sales_tax_amount].to_f}).sum
+        # pay_tax_amount
+        item[:pay_tax_amount] = (item[:rows].map {|i| i[:pay_tax_amount].to_f}).sum
 
-        # sales_discount
-        item[:sales_discount] = (item[:rows].map {|i| i[:sales_discount].to_f}).sum
+        # pay_total_amount
+        item[:pay_total_amount] = (item[:rows].map {|i| i[:pay_total_amount].to_f}).sum
 
-        # sales_total_amount
-        item[:sales_total_amount] = (item[:rows].map {|i| i[:sales_total_amount].to_f}).sum
+        # receive_subtotal
+        item[:receive_subtotal] = (item[:rows].map {|i| i[:receive_subtotal].to_f}).sum
+
+        # receive_discount
+        item[:receive_discount] = (item[:rows].map {|i| i[:receive_discount].to_f}).sum
+
+        # receive_tax_amount
+        item[:receive_tax_amount] = (item[:rows].map {|i| i[:receive_tax_amount].to_f}).sum
+
+        # receive_total_amount
+        item[:receive_total_amount] = (item[:rows].map {|i| i[:receive_total_amount].to_f}).sum
 
         grouped_rows << item.clone
       end
@@ -326,11 +344,16 @@ Erp::Products::Product.class_eval do
 
     totals = {}
     totals[:quantity] = (grouped_rows.map {|i| i[:quantity]}).sum
-    totals[:purchase_tax_amount] = (grouped_rows.map {|i| i[:purchase_tax_amount]}).sum
-    totals[:purchase_total_amount] = (grouped_rows.map {|i| i[:purchase_total_amount]}).sum
-    totals[:sales_tax_amount] = (grouped_rows.map {|i| i[:sales_tax_amount]}).sum
-    totals[:sales_discount] = (grouped_rows.map {|i| i[:sales_discount]}).sum
-    totals[:sales_total_amount] = (grouped_rows.map {|i| i[:sales_total_amount]}).sum
+    
+    totals[:pay_subtotal] = (grouped_rows.map {|i| i[:pay_subtotal]}).sum
+    totals[:pay_discount] = (grouped_rows.map {|i| i[:pay_discount]}).sum
+    totals[:pay_tax_amount] = (grouped_rows.map {|i| i[:pay_tax_amount]}).sum
+    totals[:pay_total_amount] = (grouped_rows.map {|i| i[:pay_total_amount]}).sum
+    
+    totals[:receive_subtotal] = (grouped_rows.map {|i| i[:receive_subtotal]}).sum
+    totals[:receive_discount] = (grouped_rows.map {|i| i[:receive_discount]}).sum
+    totals[:receive_tax_amount] = (grouped_rows.map {|i| i[:receive_tax_amount]}).sum
+    totals[:receive_total_amount] = (grouped_rows.map {|i| i[:receive_total_amount]}).sum
 
     return {
       groups: grouped_rows.sort_by! {|a| a[:group_sort_code].to_s},
@@ -344,11 +367,14 @@ Erp::Products::Product.class_eval do
 
     total = {
       quantity: 0,
-      purchase_tax_amount: 0,
-      purchase_total_amount: 0,
-      sales_tax_amount: 0,
-      sales_discount: 0,
-      sales_total_amount: 0
+      pay_subtotal: 0,
+      pay_discount: 0,
+      pay_tax_amount: 0,
+      pay_total_amount: 0,
+      receive_subtotal: 0,
+      receive_discount: 0,
+      receive_tax_amount: 0,
+      receive_total_amount: 0
     }
 
     # Qdelivery: Có Chứng Từ
@@ -411,16 +437,35 @@ Erp::Products::Product.class_eval do
         qty_import = delivery_detail.quantity
         destination_warehouse = delivery_detail.warehouse_name
       end
-
-      if delivery_detail.order_detail.order.purchase?
-        purchase_price = delivery_detail.order_detail.price
-        purchase_tax_amount = delivery_detail.order_detail.tax_amount
-        purchase_total_amount = delivery_detail.order_detail.subtotal
-      elsif delivery_detail.order_detail.order.sales?
-        sales_price = delivery_detail.order_detail.price
-        sales_tax_amount = delivery_detail.order_detail.tax_amount
-        sales_discount = delivery_detail.order_detail.discount_amount
-        sales_total_amount = delivery_detail.order_detail.subtotal
+      
+      if [Erp::Qdeliveries::Delivery::TYPE_SALES_EXPORT].include?(delivery_detail.delivery.delivery_type)
+        # XUAT BAN HANG
+        receive_price = delivery_detail.order_detail.price
+        receive_discount = delivery_detail.order_detail.discount_amount
+        receive_subtotal = delivery_detail.order_detail.subtotal
+        receive_tax_amount = delivery_detail.order_detail.tax_amount
+        receive_total_amount = delivery_detail.order_detail.total
+      elsif [Erp::Qdeliveries::Delivery::TYPE_PURCHASE_EXPORT].include?(delivery_detail.delivery.delivery_type)
+        # XUAT TRA LAI NCC
+        receive_price = delivery_detail.price
+        receive_subtotal = delivery_detail.subtotal
+        receive_discount = delivery_detail.discount
+        receive_tax_amount = delivery_detail.tax_amount
+        receive_total_amount = delivery_detail.total
+      elsif [Erp::Qdeliveries::Delivery::TYPE_PURCHASE_IMPORT].include?(delivery_detail.delivery.delivery_type)
+        # NHAP HANG TU NCC
+        pay_price = delivery_detail.order_detail.price
+        pay_subtotal = delivery_detail.order_detail.subtotal
+        pay_discount = delivery_detail.order_detail.discount_amount
+        pay_tax_amount = delivery_detail.order_detail.tax_amount
+        pay_total_amount = delivery_detail.order_detail.total
+      elsif [Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT].include?(delivery_detail.delivery.delivery_type)
+        # NHAP HOAN KHO (HANG BAN BI TRA LAI)
+        pay_price = delivery_detail.price
+        pay_subtotal = delivery_detail.subtotal
+        pay_discount = delivery_detail.discount
+        pay_tax_amount = delivery_detail.tax_amount
+        pay_total_amount = delivery_detail.total
       end
 
       result << {
@@ -447,20 +492,26 @@ Erp::Products::Product.class_eval do
         destination_warehouse: destination_warehouse,
         warehouse: delivery_detail.warehouse_name,
         unit: delivery_detail.order_detail.product.unit_name,
-        purchase_price: purchase_price.present? ? purchase_price : '',
-        purchase_tax_amount: purchase_tax_amount.present? ? purchase_tax_amount : '',
-        purchase_total_amount: purchase_total_amount.present? ? purchase_total_amount : '',
-        sales_price: sales_price.present? ? sales_price : '',
-        sales_tax_amount: sales_tax_amount.present? ? sales_tax_amount : '',
-        sales_discount: sales_discount.present? ? sales_discount : '',
-        sales_total_amount: sales_total_amount.present? ? sales_total_amount : ''
+        pay_price: pay_price.present? ? pay_price : '',
+        pay_subtotal: pay_subtotal.present? ? pay_subtotal : '',
+        pay_discount: pay_discount.present? ? pay_discount : '',
+        pay_tax_amount: pay_tax_amount.present? ? pay_tax_amount : '',
+        pay_total_amount: pay_total_amount.present? ? pay_total_amount : '',
+        receive_price: receive_price.present? ? receive_price : '',
+        receive_subtotal: receive_subtotal.present? ? receive_subtotal : '',
+        receive_discount: receive_discount.present? ? receive_discount : '',
+        receive_tax_amount: receive_tax_amount.present? ? receive_tax_amount : '',
+        receive_total_amount: receive_total_amount.present? ? receive_total_amount : ''
       }
       total[:quantity] += qty
-      total[:purchase_tax_amount] += purchase_tax_amount.to_f
-      total[:purchase_total_amount] += purchase_total_amount.to_f
-      total[:sales_tax_amount] += sales_tax_amount.to_f
-      total[:sales_discount] += sales_discount.to_f
-      total[:sales_total_amount] += sales_total_amount.to_f
+      total[:pay_subtotal] += pay_subtotal.to_f
+      total[:pay_discount] += pay_discount.to_f
+      total[:pay_tax_amount] += pay_tax_amount.to_f
+      total[:pay_total_amount] += pay_total_amount.to_f
+      total[:receive_subtotal] += receive_subtotal.to_f
+      total[:receive_discount] += receive_discount.to_f
+      total[:receive_tax_amount] += receive_tax_amount.to_f
+      total[:receive_total_amount] += receive_total_amount.to_f
     end
 
     # Qdelivery: Không Chứng Từ

@@ -52,11 +52,14 @@
         (get_columns(params).include?("diameter") ? 1 : 0) +
         (get_columns(params).include?("category") ? 1 : 0)
     purchase_price_colspan = (get_columns(params).include?("p_price") ? 1 : 0) +
+        (get_columns(params).include?("p_amount") ? 1 : 0) +
+        (get_columns(params).include?("p_discount") ? 1 : 0) +
         (get_columns(params).include?("p_tax_amount") ? 1 : 0) +
         (get_columns(params).include?("p_total") ? 1 : 0)
     sales_price_colspan = (get_columns(params).include?("s_price") ? 1 : 0) +
-        (get_columns(params).include?("s_tax_amount") ? 1 : 0) +
+        (get_columns(params).include?("s_amount") ? 1 : 0) +
         (get_columns(params).include?("s_discount") ? 1 : 0) +
+        (get_columns(params).include?("s_tax_amount") ? 1 : 0) +
         (get_columns(params).include?("s_total") ? 1 : 0)
     %>
 
@@ -65,37 +68,52 @@
                 <tr>
                     <%= "<td colspan='#{total_colspan_1}'></td>".html_safe if total_colspan_1 > 0 %>
                     <% if get_columns(params).include?("quantity") %>
-                    <td class="text-center stock-num text-bold bg-warning">
+                    <td class="text-center stock-num text-bold bg-info">
                         <%= @totals[:quantity] %>
                     </td>
                     <% end %>
                     <%= "<td colspan='#{total_colspan_2}'></td>".html_safe if total_colspan_2 > 0 %>
+                    <% if get_columns(params).include?("p_amount") %>
+                    <td class="text-right stock-num text-bold font-yellow-gold">
+                        <%= format_number(@totals[:pay_subtotal]) %>
+                    </td>
+                    <% end %>
+                    <% if get_columns(params).include?("p_discount") %>
+                    <td class="text-right stock-num text-bold font-yellow-gold">
+                        <%= format_number(@totals[:pay_discount]) %>
+                    </td>
+                    <% end %>
                     <% if get_columns(params).include?("p_tax_amount") %>
-                    <td class="text-right stock-num text-bold font-green-seagreen">
-                        <%= format_number(@totals[:purchase_tax_amount]) %>
+                    <td class="text-right stock-num text-bold font-yellow-gold">
+                        <%= format_number(@totals[:pay_tax_amount]) %>
                     </td>
                     <% end %>
                     <% if get_columns(params).include?("p_total") %>
-                    <td class="text-right stock-num text-bold font-green-seagreen">
-                        <%= format_number(@totals[:purchase_total_amount]) %>
+                    <td class="text-right stock-num text-bold font-yellow-gold">
+                        <%= format_number(@totals[:pay_total_amount]) %>
                     </td>
                     <% end %>
                     <% if get_columns(params).include?("s_price") %>
                     <td class="text-right stock-num text-bold font-yellow-gold"></td>
                     <% end %>
-                    <% if get_columns(params).include?("s_tax_amount") %>
+                    <% if get_columns(params).include?("s_amount") %>
                     <td class="text-right stock-num text-bold font-yellow-gold">
-                        <%= format_number(@totals[:sales_tax_amount]) %>
+                        <%= format_number(@totals[:receive_subtotal]) %>
                     </td>
                     <% end %>
                     <% if get_columns(params).include?("s_discount") %>
                     <td class="text-right stock-num text-bold font-yellow-gold">
-                        <%= format_number(@totals[:sales_discount]) %>
+                        <%= format_number(@totals[:receive_discount]) %>
+                    </td>
+                    <% end %>
+                    <% if get_columns(params).include?("s_tax_amount") %>
+                    <td class="text-right stock-num text-bold font-yellow-gold">
+                        <%= format_number(@totals[:receive_tax_amount]) %>
                     </td>
                     <% end %>
                     <% if get_columns(params).include?("s_total") %>
                     <td class="text-right stock-num text-bold font-yellow-gold">
-                        <%= format_number(@totals[:sales_total_amount]) %>
+                        <%= format_number(@totals[:receive_total_amount]) %>
                     </td>
                     <% end %>
                     <% if get_columns(params).include?("note") %>
@@ -142,10 +160,12 @@
                     <% if get_columns(params).include?("quantity") %>
                         <th class="bg-blue-oleo bg-font-blue-oleo text-center text-nowrap" rowspan="2" width="7%"><%= t('.quantity') %></th>
                     <% end %>
-                    <% if get_columns(params).include?("p_price") or get_columns(params).include?("p_tax_amount") or get_columns(params).include?("p_total") %>
+                    <% if get_columns(params).include?("p_price") or get_columns(params).include?("p_amount") or get_columns(params).include?("p_tax_amount") or
+                        get_columns(params).include?("p_discount") or get_columns(params).include?("p_total") %>
                         <th class="bg-blue-oleo bg-font-blue-oleo text-center text-nowrap" colspan="<%= purchase_price_colspan %>"><%= t('.purchase_price') %></th>
                     <% end %>
-                    <% if get_columns(params).include?("s_price") or get_columns(params).include?("s_tax_amount") or get_columns(params).include?("s_discount") or get_columns(params).include?("s_total") %>
+                    <% if get_columns(params).include?("s_price") or get_columns(params).include?("p_amount") or get_columns(params).include?("s_tax_amount") or
+                        get_columns(params).include?("s_discount") or get_columns(params).include?("s_total") %>
                         <th class="bg-blue-oleo bg-font-blue-oleo text-center text-nowrap" colspan="<%= sales_price_colspan %>"><%= t('.sales_price') %></th>
                     <% end %>
                     <% if get_columns(params).include?("note") %>
@@ -177,6 +197,12 @@
                     <% if get_columns(params).include?("p_price") %>
                     <th class="bg-blue-oleo bg-font-blue-oleo text-center text-nowrap" width="7%"><%= t('.price') %></th>
                     <% end %>
+                    <% if get_columns(params).include?("p_amount") %>
+                    <th class="bg-blue-oleo bg-font-blue-oleo text-center text-nowrap" width="7%"><%= t('.amount') %></th>
+                    <% end %>
+                    <% if get_columns(params).include?("p_discount") %>
+                    <th class="bg-blue-oleo bg-font-blue-oleo text-center text-nowrap" width="7%"><%= t('.discount') %></th>
+                    <% end %>
                     <% if get_columns(params).include?("p_tax_amount") %>
                     <th class="bg-blue-oleo bg-font-blue-oleo text-center text-nowrap" width="7%"><%= t('.tax_amount') %></th>
                     <% end %>
@@ -186,11 +212,14 @@
                     <% if get_columns(params).include?("s_price") %>
                     <th class="bg-blue-oleo bg-font-blue-oleo text-center text-nowrap" width="7%"><%= t('.price') %></th>
                     <% end %>
-                    <% if get_columns(params).include?("s_tax_amount") %>
-                    <th class="bg-blue-oleo bg-font-blue-oleo text-center text-nowrap" width="7%"><%= t('.tax_amount') %></th>
+                    <% if get_columns(params).include?("s_amount") %>
+                    <th class="bg-blue-oleo bg-font-blue-oleo text-center text-nowrap" width="7%"><%= t('.amount') %></th>
                     <% end %>
                     <% if get_columns(params).include?("s_discount") %>
                     <th class="bg-blue-oleo bg-font-blue-oleo text-center text-nowrap" width="7%"><%= t('.discount') %></th>
+                    <% end %>
+                    <% if get_columns(params).include?("s_tax_amount") %>
+                    <th class="bg-blue-oleo bg-font-blue-oleo text-center text-nowrap" width="7%"><%= t('.tax_amount') %></th>
                     <% end %>
                     <% if get_columns(params).include?("s_total") %>
                     <th class="bg-blue-oleo bg-font-blue-oleo text-center text-nowrap" width="7%"><%= t('.total_amount') %></th>

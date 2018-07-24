@@ -10,65 +10,80 @@
 %>
 
 <tr>
-    <%= "<td class=\"bg-grey bold\" colspan='#{group_name_colspan}'>#{item[:group_name]}</td>".html_safe if group_name_colspan > 0 %>
+    <%= "<td class=\"bg-grey bold font-blue-soft text-uppercase\" colspan='#{group_name_colspan}'>#{item[:group_name]}</td>".html_safe if group_name_colspan > 0 %>
     <% if get_columns(params).include?("code") %>
-    <td class="bg-grey text-left text-nowrap"></td>
+    <td class="bg-grey text-left text-nowrap font-blue-soft"></td>
     <% end %>
     <% if get_columns(params).include?("diameter") %>
-    <td class="bg-grey text-left text-nowrap"></td>
+    <td class="bg-grey text-left text-nowrap font-blue-soft"></td>
     <% end %>
     <% if get_columns(params).include?("category") %>
-    <td class="bg-grey text-left text-nowrap"></td>
+    <td class="bg-grey text-left text-nowrap font-blue-soft"></td>
     <% end %>
     <% if get_columns(params).include?("product_name") %>
-    <td class="bg-grey text-left text-nowrap"></td>
+    <td class="bg-grey text-left text-nowrap font-blue-soft"></td>
     <% end %>
     <% if get_columns(params).include?("description") %>
-    <td class="bg-grey text-left text-nowrap"></td>
+    <td class="bg-grey text-left text-nowrap font-blue-soft"></td>
     <% end %>
     <% if get_columns(params).include?("status") %>
-    <td class="bg-grey text-left text-nowrap"></td>
+    <td class="bg-grey text-left text-nowrap font-blue-soft"></td>
     <% end %>
     <% if get_columns(params).include?("warehouse") %>
-    <td class="bg-grey text-left text-nowrap"></td>
+    <td class="bg-grey text-left text-nowrap font-blue-soft"></td>
     <% end %>
     <% if get_columns(params).include?("unit") %>
-    <td class="bg-grey text-left text-nowrap"></td>
+    <td class="bg-grey text-left text-nowrap font-blue-soft"></td>
     <% end %>
     <% if get_columns(params).include?("quantity") %>
-    <td class="bg-grey text-center stock-num bg-warning">
+    <td class="bg-grey text-center stock-num font-blue-soft">
         <%= item[:quantity] %>
     </td>
     <% end %>
     <% if get_columns(params).include?("p_price") %>
-    <td class="bg-grey text-right stock-num text-primary"></td>
+    <td class="bg-grey text-right stock-num font-blue-soft"></td>
+    <% end %>
+    <% if get_columns(params).include?("p_amount") %>
+    <td class="bg-grey text-right stock-num font-blue-soft">
+        <%= format_number(item[:pay_subtotal]) %>
+    </td>
+    <% end %>
+    <% if get_columns(params).include?("p_discount") %>
+    <td class="bg-grey text-right stock-num font-blue-soft">
+        <%= format_number(item[:pay_discount]) %>
+    </td>
     <% end %>
     <% if get_columns(params).include?("p_tax_amount") %>
-    <td class="bg-grey text-right stock-num font-green-seagreen">
-        <%= format_number(item[:purchase_tax_amount]) %>
+    <td class="bg-grey text-right stock-num font-blue-soft">
+        <%= format_number(item[:pay_tax_amount]) %>
     </td>
     <% end %>
     <% if get_columns(params).include?("p_total") %>
-    <td class="bg-grey text-right stock-num font-green-seagreen">
-        <%= format_number(item[:purchase_total_amount]) %>
+    <td class="bg-grey text-right stock-num font-blue-soft">
+        <%= format_number(item[:pay_total_amount]) %>
     </td>
     <% end %>
     <% if get_columns(params).include?("s_price") %>
-    <td class="bg-grey text-right stock-num text-primary"></td>
+    <td class="bg-grey text-right stock-num font-blue-soft"></td>
     <% end %>
-    <% if get_columns(params).include?("s_tax_amount") %>
-    <td class="bg-grey text-right stock-num text-primary">
-        <%= format_number(item[:sales_tax_amount]) %>
+    <% if get_columns(params).include?("s_amount") %>
+    <td class="bg-grey text-right stock-num font-blue-soft">
+        <%= format_number(item[:receive_subtotal]) %>
     </td>
     <% end %>
     <% if get_columns(params).include?("s_discount") %>
-    <td class="bg-grey text-right stock-num font-yellow-gold">
-        <%= format_number(item[:sales_discount]) %>
+    <td class="bg-grey text-right stock-num font-blue-soft">
+        <%= format_number(item[:receive_discount]) %>
+    </td>
+    <% end %>
+    <% if get_columns(params).include?("s_tax_amount") %>
+    <td class="bg-grey text-right stock-num font-blue-soft">
+        <%= format_number(item[:receive_tax_amount]) %>
     </td>
     <% end %>
     <% if get_columns(params).include?("s_total") %>
-    <td class="bg-grey text-right stock-num font-yellow-gold">
-        <%= format_number(item[:sales_total_amount]) %>
+    <td class="bg-grey text-right stock-num font-blue-soft">
+        <%= format_number(item[:receive_total_amount]) %>
     </td>
     <% end %>
     <% if get_columns(params).include?("note") %>
