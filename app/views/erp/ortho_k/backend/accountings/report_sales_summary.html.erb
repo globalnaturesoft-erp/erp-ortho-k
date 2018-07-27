@@ -35,6 +35,15 @@
                 url: erp_periods.dataselect_backend_periods_path(format: 'json')
             }) %>
         </div>
+        <div class="col-md-3">
+            <%= erp_form_control('select', {
+                name: 'customer_group',
+                label: 'Nhóm khách hàng',
+                value: (dfilters["customer_group"].present? ? dfilters["customer_group"] : nil),
+                placeholder: 'Chọn nhóm theo...',
+                options: Erp::Contacts::Contact.get_contact_groups
+            }) %>
+        </div>
     </div>
 <% end %>
 

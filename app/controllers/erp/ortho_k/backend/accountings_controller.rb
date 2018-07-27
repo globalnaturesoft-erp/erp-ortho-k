@@ -460,6 +460,20 @@ module Erp
             @to = (glb.present? and glb[:to_date].present?) ? glb[:to_date].to_date.end_of_day : nil
           end
           
+          customers = Erp::Contacts::Contact.all
+          customer_ids = customers.map{|i| i.id}
+          if glb[:customer_group].present?
+            if glb[:customer_group] == Erp::Products::Product::CONTACT_GROUPS_FARGO_HN
+              customer_ids = customers.where(id: 128).map{|i| i.id}
+              @customer_name = customers.find(128).name
+            elsif glb[:customer_group] == Erp::Products::Product::CONTACT_GROUPS_NOT_FARGO_HN
+              customer_ids = customers.where.not(id: 128).map{|i| i.id}
+              @customer_name = 'Khách hàng khác'
+            else
+              customer_ids = customers.map{|i| i.id}
+            end
+          end
+          
           # repaired data
           @data = {
             sales: {
@@ -492,7 +506,7 @@ module Erp
           pst_ids << {name: 'Không có bệnh nhân', id: -1}
           pst_ids.each do |pst|
             
-            odsq = Erp::Orders::OrderDetail.get_sales_confirmed_order_details(from_date: @from, to_date: @to, patient_state_id: pst[:id])
+            odsq = Erp::Orders::OrderDetail.get_sales_confirmed_order_details(from_date: @from, to_date: @to, patient_state_id: pst[:id], customer_id: customer_ids)
               .joins(:product)
               .where(erp_products_products: {category_id: Erp::Products::Category.get_lens.select(:id)})
             
@@ -514,7 +528,7 @@ module Erp
           # other products
           not_len_products = Erp::Products::Product.get_sales_products_not_len(from_date: @from, to_date: @to)          
           not_len_products.each do |p|
-            odsq = p.get_sales_confirmed_order_details(from_date: @from, to_date: @to) 
+            odsq = p.get_sales_confirmed_order_details(from_date: @from, to_date: @to, customer_id: customer_ids) 
             
             quantity = odsq.sum(:quantity)
             amount = odsq.sum(&:total_without_tax)
@@ -538,7 +552,7 @@ module Erp
           pst_ids << {name: 'Không có bệnh nhân', id: -2}
           pst_ids.each do |pst|
             
-            ddsq = Erp::Qdeliveries::DeliveryDetail.get_returned_confirmed_delivery_details(from_date: @from, to_date: @to, patient_state_id: pst[:id])
+            ddsq = Erp::Qdeliveries::DeliveryDetail.get_returned_confirmed_delivery_details(from_date: @from, to_date: @to, patient_state_id: pst[:id], customer_id: customer_ids)
               .joins(:product)
               .where(erp_products_products: {category_id: Erp::Products::Category.get_lens.select(:id)})
             
@@ -560,7 +574,7 @@ module Erp
           # other products
           not_len_products = Erp::Products::Product.get_returned_products_not_len(from_date: @from, to_date: @to)          
           not_len_products.each do |p|
-            ddsq = p.get_returned_confirmed_delivery_details(from_date: @from, to_date: @to)         
+            ddsq = p.get_returned_confirmed_delivery_details(from_date: @from, to_date: @to, customer_id: customer_ids)         
             
             quantity = ddsq.sum(:quantity)
             amount = ddsq.sum(&:total_amount)
@@ -578,13 +592,19 @@ module Erp
           end
           
           File.open("tmp/report_sales_summary.yml", "w+") do |f|
-            f.write(@data.to_yaml)
+            f.write({
+              data: @data,
+              customer_name: @customer_name
+            }.to_yaml)
           end
           
         end
         # Sales summary excel
         def report_sales_summary_xlsx
-          @data = YAML.load_file("tmp/report_sales_summary.yml")
+          dt = YAML.load_file("tmp/report_sales_summary.yml")
+          
+          @data = dt[:data]
+          @customer_name = dt[:customer_name]
           
           respond_to do |format|
             format.xlsx {
