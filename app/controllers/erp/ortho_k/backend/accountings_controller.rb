@@ -450,141 +450,162 @@ module Erp
         # Sales summary table
         def report_sales_summary_table
           glb = params.to_unsafe_hash[:global_filter]
-          if glb[:period].present?
-            @period = Erp::Periods::Period.find(glb[:period])
-            @from = @period.from_date.beginning_of_day
-            @to = @period.to_date.end_of_day
-          else
-            @period = nil
-            @from = (glb.present? and glb[:from_date].present?) ? glb[:from_date].to_date.beginning_of_day : nil
-            @to = (glb.present? and glb[:to_date].present?) ? glb[:to_date].to_date.end_of_day : nil
-          end
-          
-          # repaired data
-          @data = {
-            sales: {
-              rows: [],
+          if (glb[:from_date].present? && glb[:to_date].present?) || glb[:period].present?
+            if glb[:period].present?
+              @period = Erp::Periods::Period.find(glb[:period])
+              @from = @period.from_date.beginning_of_day
+              @to = @period.to_date.end_of_day
+            else
+              @period = nil
+              @from = (glb.present? and glb[:from_date].present?) ? glb[:from_date].to_date.beginning_of_day : nil
+              @to = (glb.present? and glb[:to_date].present?) ? glb[:to_date].to_date.end_of_day : nil
+            end
+            
+            customers = Erp::Contacts::Contact.all
+            customer_ids = customers.map{|i| i.id}
+            if glb[:customer_group].present?
+              if glb[:customer_group] == Erp::Products::Product::CONTACT_GROUPS_FARGO_HN
+                customer_ids = customers.where(id: 128).map{|i| i.id}
+                @customer_name = customers.find(128).name
+              elsif glb[:customer_group] == Erp::Products::Product::CONTACT_GROUPS_NOT_FARGO_HN
+                customer_ids = customers.where.not(id: 128).map{|i| i.id}
+                @customer_name = 'Khách hàng khác'
+              else
+                customer_ids = customers.map{|i| i.id}
+              end
+            end
+            
+            # repaired data
+            @data = {
+              sales: {
+                rows: [],
+                total: {
+                  quantity: 0,
+                  amount: 0.0
+                }
+              },
+              returns: {
+                rows: [],
+                total: {
+                  quantity: 0,
+                  amount: 0.0
+                }
+              },
               total: {
                 quantity: 0,
                 amount: 0.0
-              }
-            },
-            returns: {
-              rows: [],
-              total: {
-                quantity: 0,
-                amount: 0.0
-              }
-            },
-            total: {
-              quantity: 0,
-              amount: 0.0
-            },
-            from: @from,
-            to: @to
-          }
-          
-          # sales table
-          
-          # by patient state
-          patient_states = Erp::OrthoK::PatientState.all
-          pst_ids = patient_states.map {|p| {name: p.name, id: p.id} }
-          pst_ids << {name: 'Không có bệnh nhân', id: -1}
-          pst_ids.each do |pst|
+              },
+              from: @from,
+              to: @to
+            }
             
-            odsq = Erp::Orders::OrderDetail.get_sales_confirmed_order_details(from_date: @from, to_date: @to, patient_state_id: pst[:id])
-              .joins(:product)
-              .where(erp_products_products: {category_id: Erp::Products::Category.get_lens.select(:id)})
+            # sales table
             
-            quantity = odsq.sum(:quantity)
-            amount = odsq.sum(&:total_without_tax)
-            
-            if quantity + amount > 0
-              @data[:sales][:rows] << {
-                name: "Len (#{pst[:name]})",
-                quantity: quantity,
-                amount: amount
-              }
+            # by patient state
+            patient_states = Erp::OrthoK::PatientState.all
+            pst_ids = patient_states.map {|p| {name: p.name, id: p.id} }
+            pst_ids << {name: 'Không có bệnh nhân', id: -1}
+            pst_ids.each do |pst|
               
-              @data[:sales][:total][:quantity] += quantity
-              @data[:sales][:total][:amount] += amount
+              odsq = Erp::Orders::OrderDetail.get_sales_confirmed_order_details(from_date: @from, to_date: @to, patient_state_id: pst[:id], customer_id: customer_ids)
+                .joins(:product)
+                .where(erp_products_products: {category_id: Erp::Products::Category.get_lens.select(:id)})
+              
+              quantity = odsq.sum(:quantity)
+              amount = odsq.sum(&:total_without_tax)
+              
+              if quantity + amount > 0
+                @data[:sales][:rows] << {
+                  name: "Len (#{pst[:name]})",
+                  quantity: quantity,
+                  amount: amount
+                }
+                
+                @data[:sales][:total][:quantity] += quantity
+                @data[:sales][:total][:amount] += amount
+              end
+            end
+            
+            # other products
+            not_len_products = Erp::Products::Product.get_sales_products_not_len(from_date: @from, to_date: @to)          
+            not_len_products.each do |p|
+              odsq = p.get_sales_confirmed_order_details(from_date: @from, to_date: @to, customer_id: customer_ids) 
+              
+              quantity = odsq.sum(:quantity)
+              amount = odsq.sum(&:total_without_tax)
+              
+              if quantity + amount > 0
+                @data[:sales][:rows] << {
+                  name: p.name,
+                  quantity: quantity,
+                  amount: amount
+                }
+                
+                @data[:sales][:total][:quantity] += quantity
+                @data[:sales][:total][:amount] += amount
+              end
+            end
+            
+            # returns table
+            patient_states = Erp::OrthoK::PatientState.get_active
+            pst_ids = patient_states.map {|p| {name: p.name, id: p.id} }
+            pst_ids << {name: 'Không chứng từ', id: -1}
+            pst_ids << {name: 'Không có bệnh nhân', id: -2}
+            pst_ids.each do |pst|
+              
+              ddsq = Erp::Qdeliveries::DeliveryDetail.get_returned_confirmed_delivery_details(from_date: @from, to_date: @to, patient_state_id: pst[:id], customer_id: customer_ids)
+                .joins(:product)
+                .where(erp_products_products: {category_id: Erp::Products::Category.get_lens.select(:id)})
+              
+              quantity = ddsq.sum(:quantity)
+              amount = ddsq.sum(&:total_amount)
+              
+              if quantity + amount > 0
+                @data[:returns][:rows] << {
+                  name: "Len (#{pst[:name]})",
+                  quantity: quantity,
+                  amount: amount
+                }
+                
+                @data[:returns][:total][:quantity] += quantity
+                @data[:returns][:total][:amount] += amount
+              end
+            end
+            
+            # other products
+            not_len_products = Erp::Products::Product.get_returned_products_not_len(from_date: @from, to_date: @to)          
+            not_len_products.each do |p|
+              ddsq = p.get_returned_confirmed_delivery_details(from_date: @from, to_date: @to, customer_id: customer_ids)         
+              
+              quantity = ddsq.sum(:quantity)
+              amount = ddsq.sum(&:total_amount)
+              
+              if quantity + amount > 0
+                @data[:returns][:rows] << {
+                  name: p.name,
+                  quantity: quantity,
+                  amount: amount
+                }
+                
+                @data[:returns][:total][:quantity] += quantity
+                @data[:returns][:total][:amount] += amount
+              end
+            end
+            
+            File.open("tmp/report_sales_summary.yml", "w+") do |f|
+              f.write({
+                data: @data,
+                customer_name: @customer_name
+              }.to_yaml)
             end
           end
-          
-          # other products
-          not_len_products = Erp::Products::Product.get_sales_products_not_len(from_date: @from, to_date: @to)          
-          not_len_products.each do |p|
-            odsq = p.get_sales_confirmed_order_details(from_date: @from, to_date: @to) 
-            
-            quantity = odsq.sum(:quantity)
-            amount = odsq.sum(&:total_without_tax)
-            
-            if quantity + amount > 0
-              @data[:sales][:rows] << {
-                name: p.name,
-                quantity: quantity,
-                amount: amount
-              }
-              
-              @data[:sales][:total][:quantity] += quantity
-              @data[:sales][:total][:amount] += amount
-            end
-          end
-          
-          # returns table
-          patient_states = Erp::OrthoK::PatientState.get_active
-          pst_ids = patient_states.map {|p| {name: p.name, id: p.id} }
-          pst_ids << {name: 'Không chứng từ', id: -1}
-          pst_ids << {name: 'Không có bệnh nhân', id: -2}
-          pst_ids.each do |pst|
-            
-            ddsq = Erp::Qdeliveries::DeliveryDetail.get_returned_confirmed_delivery_details(from_date: @from, to_date: @to, patient_state_id: pst[:id])
-              .joins(:product)
-              .where(erp_products_products: {category_id: Erp::Products::Category.get_lens.select(:id)})
-            
-            quantity = ddsq.sum(:quantity)
-            amount = ddsq.sum(&:total_amount)
-            
-            if quantity + amount > 0
-              @data[:returns][:rows] << {
-                name: "Len (#{pst[:name]})",
-                quantity: quantity,
-                amount: amount
-              }
-              
-              @data[:returns][:total][:quantity] += quantity
-              @data[:returns][:total][:amount] += amount
-            end
-          end
-          
-          # other products
-          not_len_products = Erp::Products::Product.get_returned_products_not_len(from_date: @from, to_date: @to)          
-          not_len_products.each do |p|
-            ddsq = p.get_returned_confirmed_delivery_details(from_date: @from, to_date: @to)         
-            
-            quantity = ddsq.sum(:quantity)
-            amount = ddsq.sum(&:total_amount)
-            
-            if quantity + amount > 0
-              @data[:returns][:rows] << {
-                name: p.name,
-                quantity: quantity,
-                amount: amount
-              }
-              
-              @data[:returns][:total][:quantity] += quantity
-              @data[:returns][:total][:amount] += amount
-            end
-          end
-          
-          File.open("tmp/report_sales_summary.yml", "w+") do |f|
-            f.write(@data.to_yaml)
-          end
-          
         end
         # Sales summary excel
         def report_sales_summary_xlsx
-          @data = YAML.load_file("tmp/report_sales_summary.yml")
+          dt = YAML.load_file("tmp/report_sales_summary.yml")
+          
+          @data = dt[:data]
+          @customer_name = dt[:customer_name]
           
           respond_to do |format|
             format.xlsx {

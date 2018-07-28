@@ -850,7 +850,7 @@ module Erp
                   @totals[area_name] = stock
                   
                   # all total
-                  @all_total += stock
+                  @all_total += stock if stock != "--"
                 end
   
                 # find by code

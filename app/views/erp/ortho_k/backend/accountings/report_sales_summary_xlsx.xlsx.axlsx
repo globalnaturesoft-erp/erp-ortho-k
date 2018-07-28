@@ -27,7 +27,7 @@ wb.styles do |s|
     
     # Title
     date = "#{'TỪ ' + @data[:from].to_date.strftime('%d/%m/%Y') if !@data[:from].nil?}#{' ĐẾN ' + @data[:to].to_date.strftime('%d/%m/%Y') if !@data[:to].nil?}"
-    sheet.add_row [('THỐNG KÊ BÁN HÀNG - TRẢ HÀNG BÁN').upcase], sz: 16, b: true, style: (s.add_style text_center)
+    sheet.add_row [("THỐNG KÊ BÁN HÀNG - TRẢ HÀNG BÁN #{('(' + @customer_name + ')') if @customer_name.present?}").upcase], sz: 16, b: true, style: (s.add_style text_center)
     row_num += 1
     sheet.add_row ["(#{date})"], sz: 14, b: true, bg_color: "ffc801", style: (s.add_style text_center)
     row_num += 1

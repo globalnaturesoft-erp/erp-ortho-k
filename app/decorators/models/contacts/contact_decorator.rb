@@ -514,4 +514,25 @@ Erp::Contacts::Contact.class_eval do
   def self.get_purchase_liabilities_contacts(options={})
     self.get_purchase_payment_chasing_contacts(options).or(self.get_purchase_debt_amount_residual_contacts)
   end
+  
+  CONTACT_GROUPS_ALL = 'contact_all'
+  CONTACT_GROUPS_FARGO_HN = 'contact_is_fargo_hn'
+  CONTACT_GROUPS_NOT_FARGO_HN = 'contact_is_not_fargo_hn'
+  
+  def self.get_contact_groups()
+    [
+      {
+        text: 'Tất cả các khách hàng',
+        value: Erp::Products::Product::CONTACT_GROUPS_ALL
+      },
+      {
+        text: 'Chi nhánh Fargo Hà Nội',
+        value: Erp::Products::Product::CONTACT_GROUPS_FARGO_HN
+      },
+      {
+        text: 'Không phải Fargo Hà Nội',
+        value: Erp::Products::Product::CONTACT_GROUPS_NOT_FARGO_HN
+      }
+    ]
+  end
 end
