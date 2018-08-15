@@ -262,7 +262,7 @@ wb.styles do |s|
         row_1[:columns] << nil # ĐVT
         row_1[:styles] << (s.add_style border.deep_merge(bg_subrow))
         
-        row_1[:columns] << order.items_count # SO LUONG
+        row_1[:columns] << nil # order.items_count # SO LUONG
         row_1[:styles] << (s.add_style border.deep_merge(number).deep_merge(bold).deep_merge(bg_subrow).deep_merge(text_center))
         
         row_1[:columns] << nil # DON GIA
@@ -691,7 +691,7 @@ wb.styles do |s|
         row_2[:columns] << nil # ĐVT
         row_2[:styles] << (s.add_style border.deep_merge(bg_subrow))
         
-        row_2[:columns] << delivery.total_delivery_quantity # SO LUONG
+        row_2[:columns] << nil # delivery.total_delivery_quantity # SO LUONG
         row_2[:styles] << (s.add_style border.deep_merge(number).deep_merge(bold).deep_merge(bg_subrow.deep_merge(text_center)))
         
         row_2[:columns] << nil # DON GIA
