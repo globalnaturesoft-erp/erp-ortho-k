@@ -13,7 +13,7 @@
             <%= erp_form_control('date', {
                 label: 'Từ ngày',
                 name: 'from_date',
-                value: (dfilters["from_date"].present? ? dfilters["from_date"].to_date : nil),
+                value: nil,#(dfilters["from_date"].present? ? dfilters["from_date"].to_date : nil),
                 placeholder: 'Chọn ngày đầu kỳ'
             }) %>
         </div>
@@ -21,7 +21,7 @@
             <%= erp_form_control('date', {
                 label: 'Đến ngày',
                 name: 'to_date',
-                value: (dfilters["to_date"].present? ? dfilters["to_date"].to_date : nil),
+                value: nil,#(dfilters["to_date"].present? ? dfilters["to_date"].to_date : nil),
                 placeholder: 'Chọn ngày cuối kỳ'
             }) %>
         </div>
