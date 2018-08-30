@@ -273,29 +273,29 @@ wb.styles do |s|
         row_1[:columns] << nil # ĐVT
         row_1[:styles] << (s.add_style border.deep_merge(bg_subrow))
         
-        row_1[:columns] << nil # order.items_count # SO LUONG
+        row_1[:columns] << order.items_count # SO LUONG
         row_1[:styles] << (s.add_style border.deep_merge(number).deep_merge(bold).deep_merge(bg_subrow).deep_merge(text_center))
         
         row_1[:columns] << nil # DON GIA
         row_1[:styles] << (s.add_style border.deep_merge(number).deep_merge(bold).deep_merge(bg_subrow))
         
         if params[:sales_discount_col].present?
-          row_1[:columns] << nil # order.discount_amount
+          row_1[:columns] << order.discount_amount
           row_1[:styles] << (s.add_style border.deep_merge(number).deep_merge(bold).deep_merge(bg_subrow))
         end
         
         if params[:sales_total_without_tax_col].present?
-          row_1[:columns] << nil # order.total_without_tax
+          row_1[:columns] << order.total_without_tax
           row_1[:styles] << (s.add_style border.deep_merge(number).deep_merge(bold).deep_merge(bg_subrow))
         end
         
         if params[:sales_tax_col].present?
-          row_1[:columns] << nil # order.tax_amount
+          row_1[:columns] << order.tax_amount
           row_1[:styles] << (s.add_style border.deep_merge(number).deep_merge(bold).deep_merge(bg_subrow))
         end
         
         if params[:sales_total_col].present?
-          row_1[:columns] << nil # order.cache_total
+          row_1[:columns] << order.cache_total
           row_1[:styles] << (s.add_style border.deep_merge(number).deep_merge(bold).deep_merge(bg_subrow))
         end
         
@@ -720,29 +720,29 @@ wb.styles do |s|
         row_2[:columns] << nil # ĐVT
         row_2[:styles] << (s.add_style border.deep_merge(bg_subrow))
         
-        row_2[:columns] << nil # delivery.total_delivery_quantity # SO LUONG
+        row_2[:columns] << delivery.total_delivery_quantity # SO LUONG
         row_2[:styles] << (s.add_style border.deep_merge(number).deep_merge(bold).deep_merge(bg_subrow.deep_merge(text_center)))
         
         row_2[:columns] << nil # DON GIA
         row_2[:styles] << (s.add_style border.deep_merge(bg_subrow))
         
         if params[:return_discount_col].present?
-          row_2[:columns] << nil # delivery.discount
+          row_2[:columns] << delivery.discount
           row_2[:styles] << (s.add_style border.deep_merge(number).deep_merge(bold).deep_merge(bg_subrow))
         end
         
         if params[:return_amount_col].present?
-          row_2[:columns] << nil # delivery.total_without_tax
+          row_2[:columns] << delivery.total_without_tax
           row_2[:styles] << (s.add_style border.deep_merge(number).deep_merge(bold).deep_merge(bg_subrow))
         end
         
         if params[:return_tax_col].present?
-          row_2[:columns] << nil # delivery.tax_amount
+          row_2[:columns] << delivery.tax_amount
           row_2[:styles] << (s.add_style border.deep_merge(number).deep_merge(bold).deep_merge(bg_subrow))
         end
         
         if params[:return_total_col].present?
-          row_2[:columns] << nil # delivery.total
+          row_2[:columns] << delivery.total
           row_2[:styles] << (s.add_style border.deep_merge(number).deep_merge(bold).deep_merge(bg_subrow))
         end
         
