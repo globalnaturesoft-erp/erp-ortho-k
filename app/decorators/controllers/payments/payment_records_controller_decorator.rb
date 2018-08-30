@@ -175,27 +175,53 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
     end
 
     #filters
+    in_period_active = false
+    is_debt_active = false
     if params.to_unsafe_hash["filters"].present?
       params.to_unsafe_hash["filters"].each do |ft|
         ft[1].each do |cond|
-          if cond[1]["name"] == 'in_period_active'
-            @customers = @customers.get_sales_payment_chasing_contacts(
-              from_date: @from,
-              to_date: @to
-            )
+          if (cond[1]["name"] == 'in_period_active')
+            in_period_active = true
+          end
+          if (cond[1]["name"] == 'is_debt_active')
+            is_debt_active = true
           end
         end
       end
     end
     
-    @full_customers = @customers
+    if (in_period_active == true) && (is_debt_active == true)
+      @customers = @customers.get_sales_liabilities_contacts(from_date: @from, to_date: @to)
+    else
+      if in_period_active == true
+        @customers = @customers.get_sales_payment_chasing_contacts(from_date: @from, to_date: @to)
+      elsif is_debt_active == true
+        @customers = @customers.get_sales_debt_amount_residual_contacts
+      end
+    end
+    
+    ##filters
+    #if params.to_unsafe_hash["filters"].present?
+    #  params.to_unsafe_hash["filters"].each do |ft|
+    #    ft[1].each do |cond|
+    #      if cond[1]["name"] == 'in_period_active'
+    #        @customers = @customers.get_sales_payment_chasing_contacts(
+    #          from_date: @from,
+    #          to_date: @to
+    #        )
+    #      end
+    #    end
+    #  end
+    #end
+    #
+    #@full_customers = @customers
     
     # create files
     tmp_path = "tmp/#{Time.now.to_i}/"
     Dir.mkdir(tmp_path) unless File.exists?(tmp_path)
     
     @customers.each do |customer|
-      file_name = "#{customer.name.to_ascii.gsub(/[^0-9a-z ]/i, '')}-#{customer.id}.xls"
+      file_name = "#{customer.name.to_ascii.gsub(/[^0-9a-z ]/i, '')}-#{customer.id}.xlsx"
       create_xlsx_files(customer, glb, tmp_path, file_name)
     end
     
@@ -203,7 +229,7 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
     temp = Tempfile.new 'cong_no.zip'
     Zip::File.open(temp.path, Zip::File::CREATE) do |zipfile|
       @customers.each do |customer|
-        file_name = "#{customer.name.to_ascii.gsub(/[^0-9a-z ]/i, '')}-#{customer.id}.xls"
+        file_name = "#{customer.name.to_ascii.gsub(/[^0-9a-z ]/i, '')}-#{customer.id}.xlsx"
         zipfile.add file_name, tmp_path + file_name
       end
     end
@@ -308,6 +334,14 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
           c += 1
           sheet.merge_cells("#{('A'.codepoints.first + c).chr}#{num_row+1}:#{('A'.codepoints.first + c).chr}#{num_row+2}")
           column_widths << 30
+          
+          header_1[:columns] << 'Chứng từ liên quan'
+          header_1[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
+          subheader_1[:columns] << nil
+          subheader_1[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
+          c += 1
+          sheet.merge_cells("#{('A'.codepoints.first + c).chr}#{num_row+1}:#{('A'.codepoints.first + c).chr}#{num_row+2}")
+          column_widths << 12
           
           if params[:doctor_col].present?
             header_1[:columns] << 'Bác sĩ'
@@ -465,6 +499,9 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
             row_1[:columns] << order.get_report_name
             row_1[:styles] << (s.add_style border.deep_merge(bold).deep_merge(bg_subrow))
             
+            row_1[:columns] << nil
+            row_1[:styles] << (s.add_style border.deep_merge(bg_subrow))
+            
             if params[:doctor_col].present?
               row_1[:columns] << order.doctor_name
               row_1[:styles] << (s.add_style border.deep_merge(bg_subrow))
@@ -493,29 +530,29 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
             row_1[:columns] << nil # ĐVT
             row_1[:styles] << (s.add_style border.deep_merge(bg_subrow))
             
-            row_1[:columns] << order.items_count # SO LUONG
+            row_1[:columns] << nil # order.items_count # SO LUONG
             row_1[:styles] << (s.add_style border.deep_merge(number).deep_merge(bold).deep_merge(bg_subrow).deep_merge(text_center))
             
             row_1[:columns] << nil # DON GIA
             row_1[:styles] << (s.add_style border.deep_merge(number).deep_merge(bold).deep_merge(bg_subrow))
             
             if params[:sales_discount_col].present?
-              row_1[:columns] << order.discount_amount
+              row_1[:columns] << nil # order.discount_amount
               row_1[:styles] << (s.add_style border.deep_merge(number).deep_merge(bold).deep_merge(bg_subrow))
             end
             
             if params[:sales_total_without_tax_col].present?
-              row_1[:columns] << order.total_without_tax
+              row_1[:columns] << nil # order.total_without_tax
               row_1[:styles] << (s.add_style border.deep_merge(number).deep_merge(bold).deep_merge(bg_subrow))
             end
             
             if params[:sales_tax_col].present?
-              row_1[:columns] << order.tax_amount
+              row_1[:columns] << nil # order.tax_amount
               row_1[:styles] << (s.add_style border.deep_merge(number).deep_merge(bold).deep_merge(bg_subrow))
             end
             
             if params[:sales_total_col].present?
-              row_1[:columns] << order.cache_total
+              row_1[:columns] << nil # order.cache_total
               row_1[:styles] << (s.add_style border.deep_merge(number).deep_merge(bold).deep_merge(bg_subrow))
             end
             
@@ -540,6 +577,9 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
               row_1[:styles] << (s.add_style text_left.deep_merge(border))
               
               row_1[:columns] << order_detail.product_name
+              row_1[:styles] << (s.add_style text_left.deep_merge(border))
+              
+              row_1[:columns] << order.code
               row_1[:styles] << (s.add_style text_left.deep_merge(border))
               
               if params[:doctor_col].present?
@@ -614,6 +654,11 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
           footer_1[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(wrap_text).deep_merge(border))
           col_ft_1 = 0
           col_ft_merge = 0
+          
+          footer_1[:columns] << nil
+          footer_1[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(border))
+          col_ft_1 += 1
+          col_ft_merge += 1
           
           footer_1[:columns] << nil
           footer_1[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(border))
@@ -745,6 +790,13 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
           sheet.merge_cells("#{('A'.codepoints.first + c).chr}#{num_row+1}:#{('A'.codepoints.first + c).chr}#{num_row+2}")
           
           header_2[:columns] << 'Diễn giải'
+          header_2[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
+          subheader_2[:columns] << nil
+          subheader_2[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
+          c += 1
+          sheet.merge_cells("#{('A'.codepoints.first + c).chr}#{num_row+1}:#{('A'.codepoints.first + c).chr}#{num_row+2}")
+          
+          header_2[:columns] << 'Chứng từ liên quan'
           header_2[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
           subheader_2[:columns] << nil
           subheader_2[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
@@ -894,6 +946,9 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
             row_2[:columns] << delivery.get_report_name
             row_2[:styles] << (s.add_style border.deep_merge(bold).deep_merge(bg_subrow))
             
+            row_2[:columns] << nil
+            row_2[:styles] << (s.add_style border.deep_merge(bg_subrow))
+            
             if params[:doctor_col].present?
               row_2[:columns] << (delivery.get_related_order.present? ? delivery.get_related_order.doctor_name : nil)
               row_2[:styles] << (s.add_style border.deep_merge(bg_subrow))
@@ -901,7 +956,7 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
             
             if params[:patient_col].present?
               row_2[:columns] << (delivery.get_related_order.present? ? delivery.get_related_order.patient_name : nil)
-              row_2[:styles] << (s.add_style border.deep_merge(text_center).deep_merge(bg_subrow))
+              row_2[:styles] << (s.add_style border.deep_merge(bg_subrow))
             end
             
             if params[:patient_state_col].present?
@@ -922,29 +977,29 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
             row_2[:columns] << nil # ĐVT
             row_2[:styles] << (s.add_style border.deep_merge(bg_subrow))
             
-            row_2[:columns] << delivery.total_delivery_quantity # SO LUONG
+            row_2[:columns] << nil # delivery.total_delivery_quantity # SO LUONG
             row_2[:styles] << (s.add_style border.deep_merge(number).deep_merge(bold).deep_merge(bg_subrow.deep_merge(text_center)))
             
             row_2[:columns] << nil # DON GIA
             row_2[:styles] << (s.add_style border.deep_merge(bg_subrow))
             
             if params[:return_discount_col].present?
-              row_2[:columns] << delivery.discount
+              row_2[:columns] << nil # delivery.discount
               row_2[:styles] << (s.add_style border.deep_merge(number).deep_merge(bold).deep_merge(bg_subrow))
             end
             
             if params[:return_amount_col].present?
-              row_2[:columns] << delivery.total_without_tax
+              row_2[:columns] << nil # delivery.total_without_tax
               row_2[:styles] << (s.add_style border.deep_merge(number).deep_merge(bold).deep_merge(bg_subrow))
             end
             
             if params[:return_tax_col].present?
-              row_2[:columns] << delivery.tax_amount
+              row_2[:columns] << nil # delivery.tax_amount
               row_2[:styles] << (s.add_style border.deep_merge(number).deep_merge(bold).deep_merge(bg_subrow))
             end
             
             if params[:return_total_col].present?
-              row_2[:columns] << delivery.total
+              row_2[:columns] << nil # delivery.total
               row_2[:styles] << (s.add_style border.deep_merge(number).deep_merge(bold).deep_merge(bg_subrow))
             end
             
@@ -972,6 +1027,9 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
               row_2[:columns] << "#{delivery_detail.product_name}" #{'(' + delivery_detail.get_report_name + ')' if !delivery_detail.get_report_name.empty?}"
               row_2[:styles] << (s.add_style text_left.deep_merge(border))
               
+              row_2[:columns] << delivery_detail.get_order_code
+              row_2[:styles] << (s.add_style text_left.deep_merge(border))
+              
               if params[:doctor_col].present?
                 row_2[:columns] << delivery_detail.get_doctor_name
                 row_2[:styles] << (s.add_style text_left.deep_merge(border))
@@ -984,7 +1042,7 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
               
               if params[:patient_state_col].present?
                 row_2[:columns] << delivery_detail.get_patient_state_name
-                row_2[:styles] << (s.add_style text_center.deep_merge(border))
+                row_2[:styles] << (s.add_style text_left.deep_merge(border))
               end
               
               if params[:product_state_col].present?
@@ -1046,6 +1104,11 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
           footer_2[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(wrap_text).deep_merge(border))
           col_ft_2 = 0
           col_ft_merge = 0
+          
+          footer_2[:columns] << nil
+          footer_2[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(border))
+          col_ft_2 += 1
+          col_ft_merge += 1
           
           footer_2[:columns] << nil
           footer_2[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(border))
@@ -1174,6 +1237,9 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
         header_3[:columns] << nil
         header_3[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
         
+        header_3[:columns] << nil
+        header_3[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
+        
         if params[:doctor_col].present?
           header_3[:columns] << nil
           header_3[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
@@ -1210,7 +1276,7 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
         
         sheet.add_row header_3[:columns], style: header_3[:styles]
         num_row += 1
-        sheet.merge_cells("#{('A'.codepoints.first + 1).chr}#{num_row}:#{('A'.codepoints.first + 3 + add_patient_num).chr}#{num_row}")
+        sheet.merge_cells("#{('A'.codepoints.first + 1).chr}#{num_row}:#{('A'.codepoints.first + 5 + add_patient_num).chr}#{num_row}")
         
         # Add rows
         rw1 = {columns: [], styles: []}
@@ -1254,7 +1320,7 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
         rw6[:styles] << (s.add_style bg_footer.deep_merge(text_left).deep_merge(bold).deep_merge(border_dotted_bottom))
         num_col += 1
         
-        (num_col..(num_col+2+add_patient_num)).each do |c|
+        (num_col..(num_col+3+add_patient_num)).each do |c|
           num_col += 1
           rw1[:columns] << nil
           rw1[:styles] << (s.add_style border_dotted_bottom)
@@ -1297,22 +1363,22 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
         
         sheet.add_row rw1[:columns], style: rw1[:styles]
         num_row += 1
-        sheet.merge_cells("#{('A'.codepoints.first + 1).chr}#{num_row}:#{('A'.codepoints.first + 4 + add_patient_num).chr}#{num_row}")
+        sheet.merge_cells("#{('A'.codepoints.first + 1).chr}#{num_row}:#{('A'.codepoints.first + 5 + add_patient_num).chr}#{num_row}")
         sheet.add_row rw2[:columns], style: rw2[:styles]
         num_row += 1
-        sheet.merge_cells("#{('A'.codepoints.first + 1).chr}#{num_row}:#{('A'.codepoints.first + 4 + add_patient_num).chr}#{num_row}")
+        sheet.merge_cells("#{('A'.codepoints.first + 1).chr}#{num_row}:#{('A'.codepoints.first + 5 + add_patient_num).chr}#{num_row}")
         sheet.add_row rw3[:columns], style: rw3[:styles]
         num_row += 1
-        sheet.merge_cells("#{('A'.codepoints.first + 1).chr}#{num_row}:#{('A'.codepoints.first + 4 + add_patient_num).chr}#{num_row}")
+        sheet.merge_cells("#{('A'.codepoints.first + 1).chr}#{num_row}:#{('A'.codepoints.first + 5 + add_patient_num).chr}#{num_row}")
         sheet.add_row rw4[:columns], style: rw4[:styles]
         num_row += 1
-        sheet.merge_cells("#{('A'.codepoints.first + 1).chr}#{num_row}:#{('A'.codepoints.first + 4 + add_patient_num).chr}#{num_row}")
+        sheet.merge_cells("#{('A'.codepoints.first + 1).chr}#{num_row}:#{('A'.codepoints.first + 5 + add_patient_num).chr}#{num_row}")
         sheet.add_row rw5[:columns], style: rw5[:styles]
         num_row += 1
-        sheet.merge_cells("#{('A'.codepoints.first + 1).chr}#{num_row}:#{('A'.codepoints.first + 4 + add_patient_num).chr}#{num_row}")
+        sheet.merge_cells("#{('A'.codepoints.first + 1).chr}#{num_row}:#{('A'.codepoints.first + 5 + add_patient_num).chr}#{num_row}")
         sheet.add_row rw6[:columns], style: rw6[:styles]
         num_row += 1
-        sheet.merge_cells("#{('A'.codepoints.first + 1).chr}#{num_row}:#{('A'.codepoints.first + 4 + add_patient_num).chr}#{num_row}")
+        sheet.merge_cells("#{('A'.codepoints.first + 1).chr}#{num_row}:#{('A'.codepoints.first + 5 + add_patient_num).chr}#{num_row}")
         
         # ############################ Footer Signature ############################
         # add empty row
