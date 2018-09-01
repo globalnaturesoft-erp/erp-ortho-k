@@ -26,18 +26,18 @@
     <table class="table table-bordered order-column">
         <tr>
             <th width="5%" rowspan="2" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">STT</th>
-            <th rowspan="2" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Khách hàng</th>
+            <th width="25%" rowspan="2" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Khách hàng</th>
             <th colspan="<%= @patient_states.count+1 %>" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap uppercase">Len</th>
             <% @categories.each do |category| %>
-                <th rowspan="2" width="10%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap"><%= category.name %></th>
+                <th rowspan="2" width="10%" class="text-center bg-yellow-mint bg-font-yellow-mint"><%= category.name %></th>
             <% end %>
             <!--<th rowspan="2" width="20%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Ghi chú</th>-->
         </tr>
         <tr>
             <% @patient_states.each do |state| %>
-                <th width="10%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap"><%= state[:name] %></th>
+                <th width="10%" class="text-center bg-yellow-mint bg-font-yellow-mint"><%= state[:name] %></th>
             <% end %>
-            <th width="10%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Tổng</th>
+            <th width="10%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Tất cả</th>
         </tr>
         <tr>
             <td class="bg-green-jungle bg-font-green-jungle text-center uppercase bold" colspan="2"><%= 'Tổng cộng' %></td>
