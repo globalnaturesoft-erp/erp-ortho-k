@@ -16,6 +16,8 @@
         <% else %>
             <span class="arrow"></span>
         <% end %>
+        
+        <span class="notification-badge-container notification-warehouse_check"></span>
     </a>
     <ul class="sub-menu" <% if
         ["erp/products/backend/state_checks"].include?(params[:controller]) ||
@@ -33,6 +35,8 @@
                     <% if ["erp/products/backend/state_checks"].include?(params[:controller]) %>
                     <span class="selected"></span>
                     <% end %>
+                  
+                  <span class="notification-badge-container notification-warehouse_check_state_checks"></span>
                 </a>
             </li>
             <li class="nav-item <%= "active open" if ["erp/products/backend/stock_checks"].include?(params[:controller]) %>">
@@ -43,6 +47,8 @@
                     <% if ["erp/products/backend/stock_checks"].include?(params[:controller]) %>
                     <span class="selected"></span>
                     <% end %>
+                  
+                  <span class="notification-badge-container notification-warehouse_check_stock_checks"></span>
                 </a>
             </li>
         <% end %>
@@ -55,6 +61,8 @@
                     <% if ["erp/products/backend/damage_records"].include?(params[:controller]) %>
                     <span class="selected"></span>
                     <% end %>
+                    
+                    <span class="notification-badge-container notification-warehouse_check_damage_records"></span>
                 </a>
             </li>
         <% end %>
