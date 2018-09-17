@@ -3,30 +3,25 @@
         <table class="table table-bordered table-striped flip-content">
             <thead class="flip-content">
                 <tr>
-                    <th class="bg-yellow bg-font-yellow text-nowrap text-left"><%= t('.product_code') %></th>
-                    <th class="bg-yellow bg-font-yellow text-nowrap text-left"><%= t('.diameter') %></th>
-                    <th class="bg-yellow bg-font-yellow text-nowrap text-left"><%= t('.category') %></th>
-                    <th class="bg-yellow bg-font-yellow text-nowrap text-right"><%= t('.quantity') %></th>
-                    <th class="bg-yellow bg-font-yellow text-nowrap text-right"><%= t('.unit') %></th>
-                    <th class="bg-yellow bg-font-yellow text-nowrap text-right"><%= t('.state') %></th>
-                    <th class="bg-yellow bg-font-yellow text-nowrap text-right"><%= t('.warehouse') %></th>
+                    <th class="bg-yellow bg-font-yellow text-nowrap text-center"><%= t('.product_name') %></th>
+                    <th width="15%" class="bg-yellow bg-font-yellow text-nowrap text-center"><%= t('.unit') %></th>
+                    <th width="15%" class="bg-yellow bg-font-yellow text-nowrap text-center"><%= t('.state') %></th>
+                    <th width="15%" class="bg-yellow bg-font-yellow text-nowrap text-center"><%= t('.warehouse') %></th>
+                    <th width="15%" class="bg-yellow bg-font-yellow text-nowrap text-center"><%= t('.quantity') %></th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td class="bg-green" colspan="3"><strong> TỔNG CỘNG </strong></td>
-                    <td class="bg-green text-right"><strong><%= @given.cache_products_count %></strong></td>
-                    <td class="bg-green" colspan="3"></td>
+                    <td class="bg-green" colspan="4"><strong> TỔNG CỘNG </strong></td>
+                    <td class="bg-green text-center"><strong><%= @given.cache_products_count %></strong></td>
                 </tr>
                 <% @given.given_details.each do |given_detail| %>
                 <tr>
-                    <td class="text-left"><%= given_detail.product_code %></td>
-                    <td class="text-left"><%= given_detail.product.get_diameter %></td>
-                    <td class="text-left"><%= given_detail.product.category_name %></td>
-                    <td class="numeric text-right"><%= format_number(given_detail.quantity) %></td>
-                    <td class="numeric text-right"><%= given_detail.product.unit_name %></td>
-                    <td class="numeric text-right"><%= given_detail.state_name %></td>
-                    <td class="numeric text-right"><%= given_detail.warehouse_name %></td>
+                    <td class="text-left"><%= backend_product_link(given_detail.product) %></td>
+                    <td class="numeric text-center"><%= given_detail.product.unit_name %></td>
+                    <td class="numeric text-center"><%= given_detail.state_name %></td>
+                    <td class="numeric text-center"><%= given_detail.warehouse_name %></td>
+                    <td class="numeric text-center"><%= format_number(given_detail.quantity) %></td>
                 </tr>
                 <% end %>
             </tbody>
