@@ -62,6 +62,7 @@ Erp::UserGroup.class_eval do
               options: [
                 {value: 'yes', text: 'Có'},
                 {value: 'no', text: 'Không'},
+                {value: 'in_day', text: 'Trong ngày'},
               ],
             },
             delete: {
@@ -96,6 +97,7 @@ Erp::UserGroup.class_eval do
               options: [
                 {value: 'yes', text: 'Có'},
                 {value: 'no', text: 'Không'},
+                {value: 'in_day', text: 'Trong ngày'},
               ],
             },
             delete: {
@@ -126,6 +128,7 @@ Erp::UserGroup.class_eval do
               options: [
                 {value: 'yes', text: 'Có'},
                 {value: 'no', text: 'Không'},
+                {value: 'in_day', text: 'Trong ngày'},
               ],
             },
             delete: {
@@ -195,6 +198,31 @@ Erp::UserGroup.class_eval do
             },
           },
         },
+        products: {
+          purchase_estimation: {
+            stock_importing: {
+              value: 'yes',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
+            purchasing_export: {
+              value: 'yes',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
+            product_area_config: {
+              value: 'yes',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
+          },
+        },
         prices: {
           supplier_prices: {
             update: {
@@ -205,33 +233,6 @@ Erp::UserGroup.class_eval do
               ],
             },
             update_general: {
-              value: 'yes',
-              options: [
-                {value: 'yes', text: 'Có'},
-                {value: 'no', text: 'Không'},
-              ],
-            },
-          }
-        },
-        products: {
-          stock_import: {
-            view: {
-              value: 'yes',
-              options: [
-                {value: 'yes', text: 'Có'},
-                {value: 'no', text: 'Không'},
-              ],
-            },
-          },
-          areas: {
-            side: {
-              value: 'yes',
-              options: [
-                {value: 'yes', text: 'Có'},
-                {value: 'no', text: 'Không'},
-              ],
-            },
-            central: {
               value: 'yes',
               options: [
                 {value: 'yes', text: 'Có'},
@@ -463,7 +464,7 @@ Erp::UserGroup.class_eval do
               ],
             },
           },
-          products: {
+          warehouses: {
             index: {
               value: 'yes',
               options: [
@@ -486,7 +487,7 @@ Erp::UserGroup.class_eval do
               ],
             },
           },
-          warehouses: {
+          manufacturers: {
             index: {
               value: 'yes',
               options: [
@@ -532,29 +533,6 @@ Erp::UserGroup.class_eval do
               ],
             },
           },
-          categories: {
-            index: {
-              value: 'yes',
-              options: [
-                {value: 'yes', text: 'Có'},
-                {value: 'no', text: 'Không'},
-              ],
-            },
-            create: {
-              value: 'yes',
-              options: [
-                {value: 'yes', text: 'Có'},
-                {value: 'no', text: 'Không'},
-              ],
-            },
-            update: {
-              value: 'yes',
-              options: [
-                {value: 'yes', text: 'Có'},
-                {value: 'no', text: 'Không'},
-              ],
-            },
-          },
           properties: {
             index: {
               value: 'yes',
@@ -578,7 +556,7 @@ Erp::UserGroup.class_eval do
               ],
             },
           },
-          manufacturers: {
+          categories: {
             index: {
               value: 'yes',
               options: [
@@ -594,6 +572,78 @@ Erp::UserGroup.class_eval do
               ],
             },
             update: {
+              value: 'yes',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
+          },
+          products: {
+            index: {
+              value: 'yes',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
+            create: {
+              value: 'yes',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
+            update: {
+              value: 'yes',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
+            archive: {
+              value: 'yes',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
+            excel_import: {
+              value: 'yes',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
+            list_split: {
+              value: 'yes',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
+            combine: {
+              value: 'yes',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
+            split: {
+              value: 'yes',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
+            view_stock: {
+              value: 'yes',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
+            import_export_history: {
               value: 'yes',
               options: [
                 {value: 'yes', text: 'Có'},

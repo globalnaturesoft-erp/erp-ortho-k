@@ -3,6 +3,8 @@ module Erp
     module Backend
       class SettingController < Erp::Backend::BackendController
         def index
+          authorize! :purchase_products_purchase_estimation_product_area_config, nil
+          
           setting_file = 'setting_ortho_k.conf'
           if params.to_unsafe_hash[:options].present?
             File.open(setting_file, 'w') {|f| f.write(YAML.dump(params.to_unsafe_hash[:options])) }

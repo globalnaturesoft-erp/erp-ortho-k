@@ -64,6 +64,13 @@ vi:
           index: 'Xem danh sách'
           create: 'Tạo thêm'
           update: 'Cập nhật'
+          archive: 'Ngưng sử dụng'
+          view_stock: 'Xem tồn kho của sản phẩm'
+          import_export_history: 'Xem lịch sử xuất nhập kho (SP)'
+          excel_import: 'Nhập từ excel (file import)'
+          list_split: 'Tra sản phẩm thay thế'
+          combine: 'Ghép sản phẩm'
+          split: 'Tách sản phẩm'
         warehouses:
           index: 'Xem danh sách'
           create: 'Tạo thêm'
@@ -132,10 +139,12 @@ vi:
           update: 'Bảng giá theo NCC'
           update_general: 'Bảng giá chung'
       products:
-        controller_stock_import: 'Dự toán nhập hàng'
+        controller_purchase_estimation: 'Cấu hình dự toán / điều kiện mua hàng'
         controller_areas: 'Phân vùng/Vùng TT'
-        stock_import:
-          view: 'Xem bảng dự toán'
+        purchase_estimation:
+          stock_importing: 'Dự toán mua hàng'
+          purchasing_export: 'Xuất tồn kho'
+          product_area_config: 'Cấu hình phân vùng'
         areas:
           side: 'Phân vùng'
           central: 'Vùng trung tâm'
