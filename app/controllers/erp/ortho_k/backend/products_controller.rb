@@ -373,9 +373,12 @@ module Erp
 
         # Stock importing
         def stock_importing
+          authorize! :purchase_products_purchase_estimation_stock_importing, nil
         end
 
         def stock_importing_table
+          authorize! :purchase_products_purchase_estimation_stock_importing, nil
+          
           global_filters = params.to_unsafe_hash[:global_filter]
 
           @warehouses = Erp::Warehouses::Warehouse.where(id: global_filters[:warehouses])
@@ -758,11 +761,13 @@ module Erp
 
         # Export purchasing list
         def purchasing_export
-
+          authorize! :purchase_products_purchase_estimation_purchasing_export, nil
         end
 
         # Export purchasing list
         def purchasing_export_list
+          authorize! :purchase_products_purchase_estimation_purchasing_export, nil
+          
           @rows = []
           @heads = []
           @totals = {}

@@ -7,10 +7,12 @@
 <% end %>
 
 <% content_for :page_toolbar do %>
-    <%= erp_component('button/create', {
-        text: 'Cấu hình phân vùng',
-        href: erp_ortho_k.backend_setting_path
-    }) %>
+    <% if can? :purchase_products_purchase_estimation_product_area_config, nil %>
+        <%= erp_component('button/create', {
+            text: 'Cấu hình phân vùng',
+            href: erp_ortho_k.backend_setting_path
+        }) %>
+    <% end %>
 <% end %>
 
 <% content_for :global_filter do %>
@@ -97,10 +99,12 @@
             }) %>
         </div>
         <div class="col-md-6 text-right">
-            <a class="btn btn-primary mt-25 global-filter-button">Kiểm kho</a> |
-            <a class="btn btn-primary mt-25 custom-submit-button" data-form=".stock-importing-form" href="<%= erp_orders.new_type_backend_orders_path(type: Erp::Orders::Order::TYPE_PURCHASE_ORDER) %>">
-                <i class="fa fa-share-square"></i> <%= t('.create_purchase_order') %>
-            </a>
+            <a class="btn btn-primary mt-25 global-filter-button">Kiểm kho</a>
+            <% if can? :purchase_purchase_orders_create, nil %>
+                <a class="btn btn-primary mt-25 custom-submit-button" data-form=".stock-importing-form" href="<%= erp_orders.new_type_backend_orders_path(type: Erp::Orders::Order::TYPE_PURCHASE_ORDER) %>">
+                    <i class="fa fa-share-square"></i> <%= t('.create_purchase_order') %>
+                </a>
+            <% end %>
         </div>
     </div>
 <% end %>
