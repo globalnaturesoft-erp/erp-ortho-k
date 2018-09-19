@@ -46,5 +46,17 @@ Erp::Ability.class_eval do
     can :inventory_products_warehouse_checks_with_damage_index, :all if user.get_permission(:inventory, :products, :warehouse_checks_with_damage, :index) == 'yes'
     can :inventory_products_warehouse_checks_with_damage_create, :all if user.get_permission(:inventory, :products, :warehouse_checks_with_damage, :create) == 'yes'
     
+    can :inventory_products_states_index, :all if user.get_permission(:inventory, :products, :states, :index) == 'yes'
+    can :inventory_products_states_create, :all if user.get_permission(:inventory, :products, :states, :create) == 'yes'
+    
+    can :inventory_products_brands_index, :all if user.get_permission(:inventory, :products, :brands, :index) == 'yes'
+    can :inventory_products_brands_create, :all if user.get_permission(:inventory, :products, :brands, :create) == 'yes'
+    
+    can :inventory_products_properties_index, :all
+    can :inventory_products_properties_create, :all if false
+    
+    can :inventory_products_categories_index, :all if user.get_permission(:inventory, :products, :categories, :index) == 'yes'
+    can :inventory_products_categories_create, :all if user.get_permission(:inventory, :products, :categories, :create) == 'yes'
+    
   end
 end

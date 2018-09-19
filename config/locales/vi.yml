@@ -40,7 +40,7 @@ vi:
         controller_warehouses: 'Danh sách kho hàng (SG, HN, ...)'
         controller_categories: 'Danh sách loại hàng/danh mục hàng'
         controller_properties: 'Thuộc tính của hàng hóa'
-        controller_manufacturers: 'Thương hiệu của hàng hóa'
+        controller_brands: 'Thương hiệu của hàng hóa'
         controller_states: 'Trạng thái của hàng hóa'
         warehouse_checks_with_state:
           index: 'Xem danh sách phiếu'
@@ -64,7 +64,7 @@ vi:
           index: 'Xem danh sách'
           create: 'Tạo thêm'
           update: 'Cập nhật'
-          archive: 'Ngưng sử dụng'
+          archive: 'Lưu trữ (cất giấu/ngưng sử dụng)'
           view_stock: 'Xem tồn kho của sản phẩm'
           import_export_history: 'Xem lịch sử xuất nhập kho (SP)'
           excel_import: 'Nhập từ excel (file import)'
@@ -75,22 +75,33 @@ vi:
           index: 'Xem danh sách'
           create: 'Tạo thêm'
           update: 'Cập nhật'
+          archive: 'Lưu trữ (ngưng sử dụng)'
+          unarchive: 'Hủy lưu trữ (cho sử dụng)'
         categories:
           index: 'Xem danh sách'
           create: 'Tạo thêm'
           update: 'Cập nhật'
-        manufacturers:
+          archive: 'Lưu trữ (ngưng sử dụng)'
+          unarchive: 'Hủy lưu trữ (cho sử dụng)'
+        brands:
           index: 'Xem danh sách'
           create: 'Tạo thêm'
           update: 'Cập nhật'
+          archive: 'Lưu trữ (ngưng sử dụng)'
+          unarchive: 'Hủy lưu trữ (cho sử dụng)'
         properties:
           index: 'Xem danh sách'
           create: 'Tạo thêm'
           update: 'Cập nhật'
+          archive: 'Lưu trữ (ngưng sử dụng)'
+          unarchive: 'Hủy lưu trữ (cho sử dụng)'
         states:
           index: 'Xem danh sách'
           create: 'Tạo thêm'
           update: 'Cập nhật'
+          delete: 'Hủy trạng thái'
+          archive: 'Lưu trữ (ngưng sử dụng)'
+          unarchive: 'Hủy lưu trữ (cho sử dụng)'
     sales:
       engine_sales: 'Bán hàng'
       sales:

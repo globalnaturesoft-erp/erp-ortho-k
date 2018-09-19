@@ -27,8 +27,8 @@ Erp::UserGroup.class_eval do
               value: 'yes',
               options: [
                 {value: 'yes', text: 'Có'},
-                {value: 'no', text: 'Không'},
-                {value: 'in_day', text: 'Trong ngày'},
+                {value: 'no', text: 'Không', title: 'Cấm trên tất cả các phiếu'},
+                {value: 'in_day', text: 'Trong ngày', title: 'Chỉ áp dụng cho những đơn đã xác nhận. Những đơn chưa xác nhận vẫn được phép cập nhật bình thường.'},
               ],
             },
             delete: {
@@ -185,8 +185,8 @@ Erp::UserGroup.class_eval do
               value: 'yes',
               options: [
                 {value: 'yes', text: 'Có'},
-                {value: 'no', text: 'Không'},
-                {value: 'in_day', text: 'Trong ngày'},
+                {value: 'no', text: 'Không', title: 'Cấm trên tất cả các phiếu'},
+                {value: 'in_day', text: 'Trong ngày', title: 'Chỉ áp dụng cho những đơn đã xác nhận. Những đơn chưa xác nhận vẫn được phép cập nhật bình thường.'},
               ],
             },
             delete: {
@@ -376,8 +376,8 @@ Erp::UserGroup.class_eval do
               value: 'yes',
               options: [
                 {value: 'yes', text: 'Có'},
-                {value: 'no', text: 'Không'},
-                {value: 'in_day', text: 'Trong ngày'},
+                {value: 'no', text: 'Không', title: 'Cấm trên tất cả các phiếu'},
+                {value: 'in_day', text: 'Trong ngày', title: 'Chỉ áp dụng cho những phiếu đã xác nhận. Những phiếu chưa xác nhận vẫn được phép cập nhật bình thường.'},
               ],
             },
             delete: {
@@ -414,8 +414,8 @@ Erp::UserGroup.class_eval do
               value: 'yes',
               options: [
                 {value: 'yes', text: 'Có'},
-                {value: 'no', text: 'Không'},
-                {value: 'in_day', text: 'Trong ngày'},
+                {value: 'no', text: 'Không', title: 'Cấm trên tất cả các phiếu'},
+                {value: 'in_day', text: 'Trong ngày', title: 'Chỉ áp dụng cho những phiếu đã xác nhận. Những phiếu chưa xác nhận vẫn được phép cập nhật bình thường.'},
               ],
             },
             delete: {
@@ -452,8 +452,8 @@ Erp::UserGroup.class_eval do
               value: 'yes',
               options: [
                 {value: 'yes', text: 'Có'},
-                {value: 'no', text: 'Không'},
-                {value: 'in_day', text: 'Trong ngày'},
+                {value: 'no', text: 'Không', title: 'Cấm trên tất cả các phiếu'},
+                {value: 'in_day', text: 'Trong ngày', title: 'Chỉ áp dụng cho những phiếu đã xác nhận. Những phiếu chưa xác nhận vẫn được phép cập nhật bình thường.'},
               ],
             },
             delete: {
@@ -486,69 +486,14 @@ Erp::UserGroup.class_eval do
                 {value: 'no', text: 'Không'},
               ],
             },
-          },
-          manufacturers: {
-            index: {
+            archive: {
               value: 'yes',
               options: [
                 {value: 'yes', text: 'Có'},
                 {value: 'no', text: 'Không'},
               ],
             },
-            create: {
-              value: 'yes',
-              options: [
-                {value: 'yes', text: 'Có'},
-                {value: 'no', text: 'Không'},
-              ],
-            },
-            update: {
-              value: 'yes',
-              options: [
-                {value: 'yes', text: 'Có'},
-                {value: 'no', text: 'Không'},
-              ],
-            },
-          },
-          states: {
-            index: {
-              value: 'yes',
-              options: [
-                {value: 'yes', text: 'Có'},
-                {value: 'no', text: 'Không'},
-              ],
-            },
-            create: {
-              value: 'yes',
-              options: [
-                {value: 'yes', text: 'Có'},
-                {value: 'no', text: 'Không'},
-              ],
-            },
-            update: {
-              value: 'yes',
-              options: [
-                {value: 'yes', text: 'Có'},
-                {value: 'no', text: 'Không'},
-              ],
-            },
-          },
-          properties: {
-            index: {
-              value: 'yes',
-              options: [
-                {value: 'yes', text: 'Có'},
-                {value: 'no', text: 'Không'},
-              ],
-            },
-            create: {
-              value: 'yes',
-              options: [
-                {value: 'yes', text: 'Có'},
-                {value: 'no', text: 'Không'},
-              ],
-            },
-            update: {
+            unarchive: {
               value: 'yes',
               options: [
                 {value: 'yes', text: 'Có'},
@@ -572,6 +517,20 @@ Erp::UserGroup.class_eval do
               ],
             },
             update: {
+              value: 'yes',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
+            archive: {
+              value: 'yes',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
+            unarchive: {
               value: 'yes',
               options: [
                 {value: 'yes', text: 'Có'},
@@ -644,6 +603,59 @@ Erp::UserGroup.class_eval do
               ],
             },
             import_export_history: {
+              value: 'yes',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
+          },
+          brands: {
+            index: {
+              value: 'yes',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
+            create: {
+              value: 'yes',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
+            update: {
+              value: 'yes',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
+          },
+          states: {
+            index: {
+              value: 'yes',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
+            create: {
+              value: 'yes',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
+            update: {
+              value: 'yes',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
+            delete: {
               value: 'yes',
               options: [
                 {value: 'yes', text: 'Có'},
