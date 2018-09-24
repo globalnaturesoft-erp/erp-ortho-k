@@ -575,6 +575,8 @@ module Erp
 
         # Import from excel
         def import
+          authorize! :inventory_products_products_import_from_excel, nil
+          
           if request.post?
             # preview or get from tmp
             if params[:import_file].present?

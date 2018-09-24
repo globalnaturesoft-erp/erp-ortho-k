@@ -14,7 +14,7 @@ vi:
         controller_schecks: 'Kiểm tra đơn hàng (kiểm tra trong kho)'
         schecks:
           check: 'Kiểm tra kho'
-          approve_order: 'Duyệt (xác nhận) đơn hàng kiểm'
+          approve_order: 'Xác nhận (hoàn tất) kiểm tra'
       qdeliveries:
         controller_deliveries: 'Quản lý xuất nhập'
         deliveries:
@@ -64,10 +64,12 @@ vi:
           index: 'Xem danh sách'
           create: 'Tạo thêm'
           update: 'Cập nhật'
-          archive: 'Lưu trữ (cất giấu/ngưng sử dụng)'
+          archive: 'Lưu trữ (ngưng sử dụng)'
+          unarchive: 'Hủy lưu trữ (cho sử dụng)'
           view_stock: 'Xem tồn kho của sản phẩm'
           import_export_history: 'Xem lịch sử xuất nhập kho (SP)'
-          excel_import: 'Nhập từ excel (file import)'
+          export_to_excel: 'Xuất danh sách ra excel (Export)'
+          import_from_excel: 'Nhập danh sách từ excel (Import)'
           list_split: 'Tra sản phẩm thay thế'
           combine: 'Ghép sản phẩm'
           split: 'Tách sản phẩm'

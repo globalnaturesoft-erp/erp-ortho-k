@@ -1,11 +1,15 @@
 Erp::Products::Backend::ProductsController.class_eval do
   def split
+    authorize! :inventory_products_products_split, nil
+    
     @product = params[:id].present? ? Erp::Products::Product.find(params[:id]) : nil
     @warehouse = Erp::Warehouses::Warehouse.first
     @state = Erp::Products::State.get_new_state
   end
 
   def do_split
+    authorize! :inventory_products_products_split, nil
+    
     @product = Erp::Products::Product.find(params[:product_id])
     @warehouse = Erp::Warehouses::Warehouse.find(params[:warehouse_id])
     @state = Erp::Products::State.find(params[:state_id])
@@ -32,12 +36,16 @@ Erp::Products::Backend::ProductsController.class_eval do
   end
 
   def combine
+    authorize! :inventory_products_products_combine, nil
+    
     @product = params[:id].present? ? Erp::Products::Product.find(params[:id]) : nil
     @warehouse = Erp::Warehouses::Warehouse.first
     @state = Erp::Products::State.get_new_state
   end
 
   def do_combine
+    authorize! :inventory_products_products_combine, nil
+    
     @product = Erp::Products::Product.find(params[:product_id])
     @warehouse = Erp::Warehouses::Warehouse.find(params[:warehouse_id])
     @state = Erp::Products::State.find(params[:state_id])
@@ -112,10 +120,12 @@ Erp::Products::Backend::ProductsController.class_eval do
   end
 
   def list_split
-
+    authorize! :inventory_products_products_list_split, nil
   end
 
   def list_split_list
+    authorize! :inventory_products_products_list_split, nil
+    
     @products = Erp::Products::Product.search(params).paginate(:page => params[:page], :per_page => 20)
 
     render layout: nil

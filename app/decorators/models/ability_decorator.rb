@@ -37,6 +37,9 @@ Erp::Ability.class_eval do
     
     
     # inventory
+    can :inventory_order_stock_checks_schecks_check, :all if user.get_permission(:inventory, :order_stock_checks, :schecks, :check) == 'yes'
+    can :inventory_order_stock_checks_schecks_approve_order, :all if user.get_permission(:inventory, :order_stock_checks, :schecks, :approve_order) == 'yes'
+    
     can :inventory_products_warehouse_checks_with_state_index, :all if user.get_permission(:inventory, :products, :warehouse_checks_with_state, :index) == 'yes'
     can :inventory_products_warehouse_checks_with_state_create, :all if user.get_permission(:inventory, :products, :warehouse_checks_with_state, :create) == 'yes'
     
@@ -57,6 +60,16 @@ Erp::Ability.class_eval do
     
     can :inventory_products_categories_index, :all if user.get_permission(:inventory, :products, :categories, :index) == 'yes'
     can :inventory_products_categories_create, :all if user.get_permission(:inventory, :products, :categories, :create) == 'yes'
+    
+    can :inventory_products_products_index, :all if user.get_permission(:inventory, :products, :products, :index) == 'yes'
+    can :inventory_products_products_create, :all if user.get_permission(:inventory, :products, :products, :create) == 'yes'
+    can :inventory_products_products_list_split, :all if user.get_permission(:inventory, :products, :products, :list_split) == 'yes'
+    can :inventory_products_products_combine, :all if user.get_permission(:inventory, :products, :products, :combine) == 'yes'
+    can :inventory_products_products_split, :all if user.get_permission(:inventory, :products, :products, :split) == 'yes'
+    can :inventory_products_products_export_to_excel, :all if user.get_permission(:inventory, :products, :products, :export_to_excel) == 'yes'
+    can :inventory_products_products_import_from_excel, :all if user.get_permission(:inventory, :products, :products, :import_from_excel) == 'yes'
+    can :inventory_products_products_view_stock, :all if user.get_permission(:inventory, :products, :products, :view_stock) == 'yes'
+    can :inventory_products_products_import_export_history, :all if user.get_permission(:inventory, :products, :products, :import_export_history) == 'yes'
     
   end
 end

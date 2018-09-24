@@ -257,8 +257,8 @@ Erp::UserGroup.class_eval do
             approve_order: {
               value: 'yes',
               options: [
-                {value: 'yes', text: 'Có'},
-                {value: 'no', text: 'Không'},
+                {value: 'yes', text: 'Có', title: 'Cho phép xác nhận kiểm tra (hoàn thành) cho đơn kiểm tra chưa hoàn tất hoặc đang lưu tạm'},
+                {value: 'no', text: 'Không', title: 'Không cho phép xác nhận kiểm tra (hoàn thành) cho đơn kiểm tra chưa hoàn tất hoặc đang lưu tạm'},
               ],
             },
           }
@@ -567,7 +567,21 @@ Erp::UserGroup.class_eval do
                 {value: 'no', text: 'Không'},
               ],
             },
-            excel_import: {
+            unarchive: {
+              value: 'yes',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
+            export_to_excel: {
+              value: 'yes',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
+            import_from_excel: {
               value: 'yes',
               options: [
                 {value: 'yes', text: 'Có'},
