@@ -151,9 +151,12 @@ module Erp
 
         # Matrix report
         def matrix_report
+          authorize! :report_inventory_matrix, nil
         end
 
         def matrix_report_table
+          authorize! :report_inventory_matrix, nil
+          
           @matrixes = []
           
           # show virtual
@@ -223,6 +226,8 @@ module Erp
 
         # Delivery report
         def delivery_report
+          authorize! :report_inventory_delivery, nil
+          
           # default from to date
           @from_date = Time.now.beginning_of_month
           @to_date = Time.now.end_of_day
@@ -236,6 +241,8 @@ module Erp
         end
 
         def delivery_report_table
+          authorize! :report_inventory_delivery, nil
+          
           # group bys
           @global_filters = params.to_unsafe_hash[:global_filter]
           
@@ -501,9 +508,12 @@ module Erp
 
         # Import - export report
         def import_export_report
+          authorize! :report_inventory_import_export, nil
         end
 
         def import_export_report_table
+          authorize! :report_inventory_import_export, nil
+          
           @global_filters = params.to_unsafe_hash[:global_filter]
 
           # if has period
@@ -545,6 +555,8 @@ module Erp
         end
 
         def import_export_report_xlsx
+          authorize! :report_inventory_import_export, nil
+          
           data = YAML.load_file("tmp/import_export_report_table_#{current_user.id}.yml")
           
           @global_filters = data[:global_filters]
@@ -912,6 +924,8 @@ module Erp
         end
 
         def purchasing_export_xlsx
+          authorize! :purchase_products_purchase_estimation_purchasing_export, nil
+          
           data = YAML.load_file("tmp/purchasing_export.yml")
 
           @rows = data[:rows]

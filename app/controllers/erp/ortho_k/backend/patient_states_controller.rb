@@ -6,10 +6,12 @@ module Erp
     
         # GET /patient_states
         def index
-          #@patient_states = PatientState.all
+          authorize! :contacts_patient_states_index, nil
         end
         
         def list
+          authorize! :contacts_patient_states_index, nil
+          
           @patient_states = PatientState.search(params).paginate(:page => params[:page], :per_page => 10)
 
           render layout: nil
@@ -22,15 +24,20 @@ module Erp
         # GET /patient_states/new
         def new
           @patient_state = PatientState.new
+          
+          authorize! :create, @patient_state
         end
     
         # GET /patient_states/1/edit
         def edit
+          authorize! :update, @patient_state
         end
     
         # POST /patient_states
         def create
           @patient_state = PatientState.new(patient_state_params)
+          
+          authorize! :create, @patient_state
     
           if @patient_state.save
             @patient_state.set_active
@@ -50,6 +57,8 @@ module Erp
     
         # PATCH/PUT /patient_states/1
         def update
+          authorize! :update, @patient_state
+          
           if @patient_state.update(patient_state_params)
             if request.xhr?
               render json: {
@@ -66,19 +75,19 @@ module Erp
         end
     
         # DELETE /patient_states/1
-        def destroy
-          @patient_state.destroy
-          
-          respond_to do |format|
-            format.html { redirect_to erp_ortho_k.backend_patient_states_path, notice: t('.success') }
-            format.json {
-              render json: {
-                'message': t('.success'),
-                'type': 'success'
-              }
-            }
-          end
-        end
+        #def destroy
+        #  @patient_state.destroy
+        #  
+        #  respond_to do |format|
+        #    format.html { redirect_to erp_ortho_k.backend_patient_states_path, notice: t('.success') }
+        #    format.json {
+        #      render json: {
+        #        'message': t('.success'),
+        #        'type': 'success'
+        #      }
+        #    }
+        #  end
+        #end
         
         def dataselect
           respond_to do |format|
@@ -90,6 +99,8 @@ module Erp
         
         # Active /patient_state/status?id=1
         def set_active
+          authorize! :set_active, @patient_state
+          
           @patient_state.set_active
 
           respond_to do |format|
@@ -104,6 +115,8 @@ module Erp
     
         # Delete /patient_state/status?id=1
         def set_deleted
+          authorize! :set_deleted, @patient_state
+          
           @patient_state.set_deleted
 
           respond_to do |format|

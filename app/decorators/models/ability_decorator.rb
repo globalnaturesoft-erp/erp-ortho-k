@@ -71,5 +71,78 @@ Erp::Ability.class_eval do
     can :inventory_products_products_view_stock, :all if user.get_permission(:inventory, :products, :products, :view_stock) == 'yes'
     can :inventory_products_products_import_export_history, :all if user.get_permission(:inventory, :products, :products, :import_export_history) == 'yes'
     
+    # accounting / ke toan
+    
+    # contact / quan ly danh ba, so dia chi lien he
+    can :contacts_contacts_index, :all if user.get_permission(:contacts, :contacts, :contacts, :index) == 'yes'
+    can :contacts_contacts_create, :all if user.get_permission(:contacts, :contacts, :contacts, :create) == 'yes'
+    
+    can :contacts_patient_states_index, :all if user.get_permission(:contacts, :patient_states, :patient_states, :index) == 'yes'
+    can :contacts_patient_states_create, :all if user.get_permission(:contacts, :patient_states, :patient_states, :create) == 'yes'
+    can :create, Erp::OrthoK::PatientState do |patient_state|
+      user.get_permission(:contacts, :patient_states, :patient_states, :create) == 'yes'
+    end
+    can :update, Erp::OrthoK::PatientState do |patient_state|
+      user.get_permission(:contacts, :patient_states, :patient_states, :update) == 'yes'
+    end
+    can :set_active, Erp::OrthoK::PatientState do |patient_state|
+      false
+    end
+    can :set_deleted, Erp::OrthoK::PatientState do |patient_state|
+      user.get_permission(:contacts, :patient_states, :patient_states, :delete) == 'yes'
+    end
+    
+    # thong ke / bao cao
+    can :report_inventory_matrix, :all if user.get_permission(:report, :report, :inventory, :matrix) == 'yes'
+    can :report_inventory_delivery, :all if user.get_permission(:report, :report, :inventory, :delivery) == 'yes'
+    can :report_inventory_import_export, :all if user.get_permission(:report, :report, :inventory, :import_export) == 'yes'
+    can :report_inventory_category_diameter, :all if user.get_permission(:report, :report, :inventory, :category_diameter) == 'yes'
+    can :report_inventory_code_diameter, :all if user.get_permission(:report, :report, :inventory, :code_diameter) == 'yes'
+    can :report_inventory_product, :all if user.get_permission(:report, :report, :inventory, :product) == 'yes'
+    can :report_inventory_custom_product, :all if user.get_permission(:report, :report, :inventory, :custom_product) == 'yes'
+    can :report_inventory_product_warehouse, :all if user.get_permission(:report, :report, :inventory, :product_warehouse) == 'yes'
+    can :report_inventory_central_area, :all if user.get_permission(:report, :report, :inventory, :central_area) == 'yes'
+    #can :report_inventory_custom_area, :all if user.get_permission(:report, :report, :inventory, :custom_area) == 'yes'
+    can :report_inventory_custom_area_v2, :all if user.get_permission(:report, :report, :inventory, :custom_area_v2) == 'yes'
+    can :report_inventory_outside_product, :all if user.get_permission(:report, :report, :inventory, :outside_product) == 'yes'
+    can :report_inventory_warehouse, :all if user.get_permission(:report, :report, :inventory, :warehouse) == 'yes'
+    can :report_inventory_product_request, :all if user.get_permission(:report, :report, :inventory, :product_request) == 'yes'
+    can :report_inventory_product_ordered, :all if user.get_permission(:report, :report, :inventory, :product_ordered) == 'yes'
+    
+    can :report_sales_sell_and_return, :all if user.get_permission(:report, :report, :sales, :sell_and_return) == 'yes'
+    can :report_sales_sales_details, :all if user.get_permission(:report, :report, :sales, :sales_details) == 'yes'
+    can :report_sales_product_sold, :all if user.get_permission(:report, :report, :sales, :product_sold) == 'yes'
+    can :report_sales_product_return_by_state, :all if user.get_permission(:report, :report, :sales, :product_return_by_state) == 'yes'
+    can :report_sales_product_return_by_patient_state, :all if user.get_permission(:report, :report, :sales, :product_return_by_patient_state) == 'yes'
+    can :report_sales_new_patient, :all if user.get_permission(:report, :report, :sales, :new_patient) == 'yes'
+    can :report_sales_new_patient_v2, :all if user.get_permission(:report, :report, :sales, :new_patient_v2) == 'yes'
+    
+    can :report_accounting_pay_receive, :all if user.get_permission(:report, :report, :accounting, :pay_receive) == 'yes'
+    can :report_accounting_synthesis_pay_receive, :all if user.get_permission(:report, :report, :accounting, :synthesis_pay_receive) == 'yes'
+    can :report_accounting_sales_results, :all if user.get_permission(:report, :report, :accounting, :sales_results) == 'yes'
+    can :report_accounting_sales_summary, :all if user.get_permission(:report, :report, :accounting, :sales_summary) == 'yes'
+    can :report_accounting_income_statement, :all if user.get_permission(:report, :report, :accounting, :income_statement) == 'yes'
+    can :report_accounting_cash_flow, :all if user.get_permission(:report, :report, :accounting, :cash_flow) == 'yes'
+    can :report_accounting_customer_liabilities, :all if user.get_permission(:report, :report, :accounting, :customer_liabilities) == 'yes'
+    can :report_accounting_supplier_liabilities, :all if user.get_permission(:report, :report, :accounting, :supplier_liabilities) == 'yes'
+    can :report_accounting_liabilities_arising, :all if user.get_permission(:report, :report, :accounting, :liabilities_arising) == 'yes'
+    can :report_accounting_statistics_liabilities, :all if user.get_permission(:report, :report, :accounting, :statistics_liabilities) == 'yes'
+    
+    # cai dat du lieu he thong (nguoi dung, phan quyen,...)
+    can :options_users_users_index, :all if user.get_permission(:options, :users, :users, :index) == 'yes'
+    can :options_users_users_create, :all if user.get_permission(:options, :users, :users, :create) == 'yes'
+    can :options_users_users_update, :all if user.get_permission(:options, :users, :users, :update) == 'yes'
+    can :options_users_users_activate, :all if user.get_permission(:options, :users, :users, :activate) == 'yes'
+    can :options_users_users_unactivate, :all if user.get_permission(:options, :users, :users, :unactivate) == 'yes'
+    
+    can :options_users_user_groups_index, :all if user.get_permission(:options, :users, :user_groups, :index) == 'yes'
+    can :options_users_user_groups_create, :all if user.get_permission(:options, :users, :user_groups, :create) == 'yes'
+    can :options_users_user_groups_update, :all if user.get_permission(:options, :users, :user_groups, :update) == 'yes'
+    #can :options_users_activate, :all if user.get_permission(:options, :users, :users, :activate) == 'yes'
+    #can :options_users_unactivate, :all if user.get_permission(:options, :users, :users, :unactivate) == 'yes'
+    
+    can :options_periods_periods_index, :all if user.get_permission(:options, :periods, :periods, :index) == 'yes'
+    can :options_periods_periods_create, :all if user.get_permission(:options, :periods, :periods, :create) == 'yes'
+    can :options_periods_periods_update, :all if user.get_permission(:options, :periods, :periods, :update) == 'yes'
   end
 end

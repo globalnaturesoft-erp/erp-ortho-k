@@ -703,6 +703,7 @@ Erp::UserGroup.class_eval do
               options: [
                 {value: 'yes', text: 'Có'},
                 {value: 'no', text: 'Không'},
+                {value: 'in_day', text: 'Trong ngày', title: 'Áp dụng cho các phiếu đã xác nhận. Các phiếu chưa xác nhận vẫn chỉnh sửa bình thường mà không bị giới hạn thời gian.'},
               ],
             },
             delete: {
@@ -879,6 +880,90 @@ Erp::UserGroup.class_eval do
                 {value: 'no', text: 'Không'},
               ],
             },
+            archive: {
+              value: 'yes',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
+            unarchive: {
+              value: 'yes',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
+            assign_salesperson: {
+              value: 'yes',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
+            assign_salesperson: {
+              value: 'yes',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
+            update_init_debt: {
+              value: 'yes',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
+            update_sales_price: {
+              value: 'yes',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
+            update_purchase_price: {
+              value: 'yes',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
+            conts_cates_commission_rates: {
+              value: 'yes',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
+            history_sales_export_list: {
+              value: 'yes',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
+            history_sales_import_list: {
+              value: 'yes',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
+            history_payment_records_list: {
+              value: 'yes',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
+            contacts_list_xlsx: {
+              value: 'yes',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
           },
         },
         patient_states: {
@@ -898,6 +983,13 @@ Erp::UserGroup.class_eval do
               ],
             },
             update: {
+              value: 'yes',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
+            delete: {
               value: 'yes',
               options: [
                 {value: 'yes', text: 'Có'},
@@ -926,7 +1018,7 @@ Erp::UserGroup.class_eval do
                 {value: 'no', text: 'Không'},
               ],
             },
-            import_export_detail: {
+            import_export: {
               value: 'yes',
               options: [
                 {value: 'yes', text: 'Có'},
@@ -975,7 +1067,7 @@ Erp::UserGroup.class_eval do
                 {value: 'no', text: 'Không'},
               ],
             },
-            custom_area: {
+            custom_area_v2: {
               value: 'yes',
               options: [
                 {value: 'yes', text: 'Có'},
@@ -1012,7 +1104,7 @@ Erp::UserGroup.class_eval do
             },
           },
           sales: {
-            sales_and_returns: {
+            sell_and_return: {
               value: 'yes',
               options: [
                 {value: 'yes', text: 'Có'},
@@ -1162,56 +1254,22 @@ Erp::UserGroup.class_eval do
                 {value: 'no', text: 'Không'},
               ],
             },
+            activate: {
+              value: 'no',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
+            unactivate: {
+              value: 'no',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
           },
           user_groups: {
-            index: {
-              value: 'no',
-              options: [
-                {value: 'yes', text: 'Có'},
-                {value: 'no', text: 'Không'},
-              ],
-            },
-            create: {
-              value: 'no',
-              options: [
-                {value: 'yes', text: 'Có'},
-                {value: 'no', text: 'Không'},
-              ],
-            },
-            update: {
-              value: 'no',
-              options: [
-                {value: 'yes', text: 'Có'},
-                {value: 'no', text: 'Không'},
-              ],
-            },
-          },
-        },
-        targets: {
-          targets: {
-            index: {
-              value: 'no',
-              options: [
-                {value: 'yes', text: 'Có'},
-                {value: 'no', text: 'Không'},
-              ],
-            },
-            create: {
-              value: 'yes',
-              options: [
-                {value: 'yes', text: 'Có'},
-                {value: 'no', text: 'Không'},
-              ],
-            },
-            update: {
-              value: 'no',
-              options: [
-                {value: 'yes', text: 'Có'},
-                {value: 'no', text: 'Không'},
-              ],
-            },
-          },
-          company_targets: {
             index: {
               value: 'no',
               options: [

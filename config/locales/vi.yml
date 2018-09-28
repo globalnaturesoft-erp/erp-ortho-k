@@ -205,11 +205,22 @@ vi:
           index: 'Xem danh sách liên hệ'
           create: 'Tạo mới liên hệ'
           update: 'Cập nhật liên hệ'
+          archive: 'Lưu trữ (ngưng sử dụng)'
+          unarchive: 'Hủy lưu trữ (cho sử dụng)'
+          assign_salesperson: 'Chỉ định/phân chia NVKD'
+          update_sales_price: 'Cập nhật giá bán (cho KH)(*)'
+          update_purchase_price: 'Cập nhật giá mua (cho NCC)(*)'
+          update_init_debt: 'Cập nhật công nợ ban đầu'
+          conts_cates_commission_rates: 'Cập nhật chiết khấu hàng hóa(*)'
+          history_sales_export_list: 'Xem lịch sử mua hàng'
+          history_sales_import_list: 'Xem lịch sử trả hàng'
+          history_payment_records_list: 'Xem lịch sử thanh toán'
+          contacts_list_xlsx: 'Xuất danh sách liên hệ (excel)'
       patient_states:
         controller_patient_states: 'Danh sách tình trạng BN'
         patient_states:
           index: 'Xem danh sách tình trạng'
-          create: 'Tạo mới'
+          create: 'Tạo mới (thêm trạng thái)'
           update: 'Cập nhật tình trạng'
           delete: 'Hủy tình trạng'
     report:
@@ -220,20 +231,20 @@ vi:
         inventory:
           matrix: 'Báo cáo tồn kho (ma trận)'
           delivery: 'Báo cáo xuất-nhập-tồn'
-          import_export_detail: 'Sổ chi tiết xuất/nhập'
+          import_export: 'Sổ chi tiết xuất/nhập'
           category_diameter: 'Tồn theo Loại/Đường kính'
           code_diameter: 'Tồn theo Mã/Đường kính'
           product: 'Tồn theo sản phẩm'
           custom_product: 'Tồn theo SP Custom'
           product_warehouse: 'Sản phẩm/Kho'
           central_area: 'Tồn vùng trung tâm'
-          custom_area: 'Thống kê theo vùng'
+          custom_area_v2: 'Thống kê theo vùng'
           outside_product: 'Len ngoài bảng'
           warehouse: 'Thống kê theo kho'
           product_request: 'Nhu cầu mua (ma trận)'
           product_ordered: 'Lượng bán hàng (ma trận)'
         sales:
-          sales_and_returns: 'Báo cáo bán/trả hàng'
+          sell_and_return: 'Báo cáo bán/trả hàng'
           sales_details: 'Sổ chi tiết bán hàng'
           product_sold: 'Thống kê số lượng hàng bán'
           product_return_by_state: 'Thống kê SL hàng trả (TTSP)'
@@ -269,6 +280,8 @@ vi:
           index: 'Xem danh sách'
           create: 'Tạo mới'
           update: 'Cập nhật'
+          activate: "Kích hoạt tài khoản"
+          deactivate: "Vô hiệu hóa tài khoản"
         user_groups:
           index: 'Xem danh sách'
           create: 'Tạo mới'

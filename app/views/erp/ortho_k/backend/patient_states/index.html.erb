@@ -11,7 +11,7 @@
         text: t('.create'),
         href: erp_ortho_k.new_backend_patient_state_path,
         class: 'btn-noborder'
-    }) %>
+    }) if can? :contacts_patient_states_create, nil %>
 <% end %>
 
 <%= erp_datalist(
