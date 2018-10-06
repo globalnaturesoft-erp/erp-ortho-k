@@ -38,8 +38,8 @@
         <div class="col-md-3">
             <%= erp_form_control("dataselect", {
                 name: 'customer',
-                value: (dfilters["customer"].present? ? Erp::Contacts::Contact.find(dfilters["customer"]).id : nil),
-                text: (dfilters["customer"].present? ? Erp::Contacts::Contact.find(dfilters["customer"]).name : nil),
+                value: nil,#(dfilters["customer"].present? ? Erp::Contacts::Contact.find(dfilters["customer"]).id : nil),
+                text: nil,#(dfilters["customer"].present? ? Erp::Contacts::Contact.find(dfilters["customer"]).name : nil),
                 label: t('.filter_customer'),
                 placeholder: t('.choose_customer'),
                 url: erp_contacts.dataselect_backend_contacts_path(format: 'json',
