@@ -46,30 +46,28 @@
                     <td><%= patient_state.created_at.strftime("%d/%m/%Y") %></td>
                 <% end %>
                 <td>
-                    <%= erp_datalist_row_actions(
-                        [
-                            {
-                                text: '<i class="fa fa-edit"></i> '+t('.edit'),
-                                href: erp_ortho_k.edit_backend_patient_state_path(patient_state)
-                            },
-                            {
-                                text: '<i class="fa fa-check"></i> '+t('.active'),
-                                url: erp_ortho_k.set_active_backend_patient_states_path(id: patient_state.id),
-                                data_method: 'PUT',
-                                data_confirm: t('.check_confirm'),
-                                class: 'ajax-link',
-                                hide: patient_state.is_active?
-                            },
-                            {
-                                text: '<i class="fa fa-trash"></i> '+t('.delete'),
-                                url: erp_ortho_k.set_deleted_backend_patient_states_path(id: patient_state.id),
-                                data_method: 'PUT',
-                                data_confirm: t('.delete_confirm'),
-                                class: 'ajax-link',
-                                hide: patient_state.is_deleted?
-                            }
-                        ]
-                    ) %>
+                    <%
+                        actions = []
+                        actions << {
+                            text: '<i class="fa fa-edit"></i> '+t('.edit'),
+                            href: erp_ortho_k.edit_backend_patient_state_path(patient_state)
+                        } if can? :update, patient_state
+                        actions << {
+                            text: '<i class="fa fa-check"></i> '+t('.active'),
+                            url: erp_ortho_k.set_active_backend_patient_states_path(id: patient_state.id),
+                            data_method: 'PUT',
+                            data_confirm: t('.check_confirm'),
+                            class: 'ajax-link',
+                        } if can? :set_active, patient_state
+                        actions << {
+                            text: '<i class="fa fa-trash"></i> '+t('.delete'),
+                            url: erp_ortho_k.set_deleted_backend_patient_states_path(id: patient_state.id),
+                            data_method: 'PUT',
+                            data_confirm: t('.delete_confirm'),
+                            class: 'ajax-link'
+                        } if can? :set_deleted, patient_state
+                    %>
+                    <%= erp_datalist_row_actions(actions) %>
                 </td>
             </tr>
         <% end %>

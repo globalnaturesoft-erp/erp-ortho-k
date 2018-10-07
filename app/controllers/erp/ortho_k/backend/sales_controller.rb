@@ -3,7 +3,13 @@ module Erp
     module Backend
       class SalesController < Erp::Backend::BackendController
         # Bao cao ban va tra hang
+        def report_sell_and_return
+          authorize! :report_sales_sell_and_return, nil
+        end
+        
         def report_sell_and_return_table
+          authorize! :report_sales_sell_and_return, nil
+          
           glb = params.to_unsafe_hash[:global_filter]
           @global_filters = params.to_unsafe_hash[:global_filter]
           if @global_filters[:period].present?
@@ -60,6 +66,8 @@ module Erp
         end
 
         def report_sell_and_return_xlsx
+          authorize! :report_sales_sell_and_return, nil
+          
           data = YAML.load_file("tmp/report_sell_and_return_xlsx_#{current_user.id}.yml")
           
           @global_filters = data[:global_filters]
@@ -87,7 +95,13 @@ module Erp
         end
 
         # So chi tiet ban hang
+        def report_sales_details
+          authorize! :report_sales_sales_details, nil
+        end
+        
         def report_sales_details_table
+          authorize! :report_sales_sales_details, nil
+          
           @global_filters = params.to_unsafe_hash[:global_filter]
 
           # if has period
@@ -130,6 +144,8 @@ module Erp
         
         # Xuat file excel //So chi tiet ban hang
         def report_sales_details_xlsx
+          authorize! :report_sales_sales_details, nil
+          
           data = YAML.load_file("tmp/report_sales_details_xlsx_#{current_user.id}.yml")
           
           @global_filters = data[:global_filters]
@@ -149,7 +165,13 @@ module Erp
         end
         
         # Bao cao so luong ban hang
+        def report_product_sold
+          authorize! :report_sales_product_sold, nil
+        end
+        
         def report_product_sold_table
+          authorize! :report_sales_product_sold, nil
+          
           glb = params.to_unsafe_hash[:global_filter]
           if glb[:period].present?
             @period_name = Erp::Periods::Period.find(glb[:period]).name
@@ -165,6 +187,8 @@ module Erp
         end
         
         def report_product_sold_xlsx
+          authorize! :report_sales_product_sold, nil
+          
           glb = params.to_unsafe_hash[:global_filter]
           if glb[:period].present?
             @period_name = Erp::Periods::Period.find(glb[:period]).name
@@ -186,7 +210,13 @@ module Erp
         end
 
         # Bao cao hang ban bi tra lai
+        def report_product_return
+          authorize! :report_sales_product_return, nil
+        end
+        
         def report_product_return_table
+          authorize! :report_sales_product_return, nil
+          
           glb = params.to_unsafe_hash[:global_filter]
           if glb[:period].present?
             @period_name = Erp::Periods::Period.find(glb[:period]).name
@@ -215,6 +245,8 @@ module Erp
         end
         
         def report_product_return_xlsx
+          authorize! :report_sales_product_return, nil
+          
           glb = params.to_unsafe_hash[:global_filter]
           if glb[:period].present?
             @period_name = Erp::Periods::Period.find(glb[:period]).name
@@ -251,7 +283,13 @@ module Erp
         end
 
         # Bao cao danh sach benh nhan moi
+        def report_new_patient
+          authorize! :report_sales_new_patient, nil
+        end
+        
         def report_new_patient_table
+          authorize! :report_sales_new_patient, nil
+          
           glb = params.to_unsafe_hash[:global_filter]
           if glb[:period].present?
             @period_name = Erp::Periods::Period.find(glb[:period]).name
@@ -284,6 +322,8 @@ module Erp
         end
         
         def report_new_patient_xlsx
+          authorize! :report_sales_new_patient, nil
+          
           glb = params.to_unsafe_hash[:global_filter]
           if glb[:period].present?
             @period_name = Erp::Periods::Period.find(glb[:period]).name
@@ -322,7 +362,13 @@ module Erp
         end
         
         # Bao cao danh sach benh nhan moi
+        def report_new_patient_v2
+          authorize! :report_sales_new_patient_v2, nil
+        end
+        
         def report_new_patient_v2_table
+          authorize! :report_sales_new_patient_v2, nil
+          
           glb = params.to_unsafe_hash[:global_filter]
           if glb[:period].present?
             @period_name = Erp::Periods::Period.find(glb[:period]).name
@@ -341,6 +387,8 @@ module Erp
         end
         
         def report_new_patient_v2_xlsx
+          authorize! :report_sales_new_patient_v2, nil
+          
           glb = params.to_unsafe_hash[:global_filter]
           if glb[:period].present?
             @period_name = Erp::Periods::Period.find(glb[:period]).name
@@ -366,11 +414,13 @@ module Erp
         
         # Bao cao hang ban bi tra lai
         def report_product_return_by_pstate
-          
+          authorize! :report_sales_product_return_by_patient_state, nil
         end
         
         # Bao cao hang ban bi tra lai
         def report_product_return_by_pstate_table
+          authorize! :report_sales_product_return_by_patient_state, nil
+          
           glb = params.to_unsafe_hash[:global_filter]
           if glb[:period].present?
             @period = Erp::Periods::Period.find(glb[:period])
@@ -459,6 +509,8 @@ module Erp
         end
         
         def report_product_return_by_pstate_xlsx
+          authorize! :report_sales_product_return_by_patient_state, nil
+          
           data = YAML.load_file("tmp/report_product_return_by_pstate.yml")
           
           @rows = data[:rows]

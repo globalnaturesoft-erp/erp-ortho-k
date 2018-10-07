@@ -3,6 +3,8 @@ module Erp
     module Backend
       class InventoryController < Erp::Backend::BackendController
         def report_category_diameter
+          authorize! :report_inventory_category_diameter, nil
+          
           # default from to date
           @from_date = Time.now.beginning_of_month
           @to_date = Time.now.end_of_day
@@ -11,6 +13,8 @@ module Erp
         end
 
         def report_category_diameter_table
+          authorize! :report_inventory_category_diameter, nil
+          
           @global_filters = params.to_unsafe_hash[:global_filter]
 
           # if has period
@@ -72,6 +76,8 @@ module Erp
         end
 
         def report_category_diameter_xlsx
+          authorize! :report_inventory_category_diameter, nil
+          
           data = YAML.load_file("tmp/report_category_diameter_#{current_user.id}.yml")
           
           @global_filters = data[:global_filters]
@@ -136,6 +142,8 @@ module Erp
 
 
         def report_product
+          authorize! :report_inventory_product, nil
+          
           # default from to date
           @from_date = Time.now.beginning_of_month
           @to_date = Time.now.end_of_day
@@ -144,6 +152,8 @@ module Erp
         end
 
         def report_product_table
+          authorize! :report_inventory_product, nil
+          
           @global_filters = params.to_unsafe_hash[:global_filter]
 
           @is_set_type_selected = @global_filters[:categories] == Erp::Products::Category.get_set.id.to_s
@@ -260,6 +270,8 @@ module Erp
         end
 
         def report_product_xlsx
+          authorize! :report_inventory_product, nil
+          
           data = YAML.load_file("tmp/report_product_#{current_user.id}.yml")
           params = data[:params]
           @global_filters = data[:global_filters]
@@ -377,6 +389,8 @@ module Erp
         end
 
         def report_central_area
+          authorize! :report_inventory_central_area, nil
+          
           # default from to date
           @from_date = Time.now.beginning_of_month
           @to_date = Time.now.end_of_day
@@ -385,6 +399,8 @@ module Erp
         end
 
         def report_central_area_table
+          authorize! :report_inventory_central_area, nil
+          
           @global_filters = params.to_unsafe_hash[:global_filter]
 
           # if has period
@@ -446,6 +462,8 @@ module Erp
         end
 
         def report_central_area_xlsx
+          authorize! :report_inventory_central_area, nil
+          
           data = YAML.load_file("tmp/report_central_area_#{current_user.id}.yml")
 
           @global_filters = data[:global_filters]
@@ -511,6 +529,8 @@ module Erp
 
 
         def report_warehouse
+          authorize! :report_inventory_warehouse, nil
+          
           # default from to date
           @from_date = Time.now.beginning_of_month
           @to_date = Time.now.end_of_day
@@ -519,6 +539,8 @@ module Erp
         end
 
         def report_warehouse_table
+          authorize! :report_inventory_warehouse, nil
+          
           @global_filters = params.to_unsafe_hash[:global_filter]
           @to_date = @global_filters[:to_date].to_date          
           if !@to_date.present?
@@ -545,6 +567,8 @@ module Erp
         end
 
         def report_warehouse_xlsx
+          authorize! :report_inventory_warehouse, nil
+          
           data = YAML.load_file("tmp/report_warehouse_#{current_user.id}.yml")
 
           @global_filters = data[:global_filters]
@@ -578,6 +602,8 @@ module Erp
 
 
         def report_custom_area
+          authorize! :report_inventory_custom_area, nil
+          
           # default from to date
           @from_date = Time.now.beginning_of_month
           @to_date = Time.now.end_of_day
@@ -586,6 +612,8 @@ module Erp
         end
 
         def report_custom_area_table
+          authorize! :report_inventory_custom_area, nil
+          
           @global_filters = params.to_unsafe_hash[:global_filter]
 
           # if has period
@@ -654,6 +682,8 @@ module Erp
         end
 
         def report_custom_area_xlsx
+          authorize! :report_inventory_custom_area, nil
+          
           data = YAML.load_file("tmp/report_custom_area_#{current_user.id}.yml")
 
           @global_filters = data[:global_filters]
@@ -726,6 +756,8 @@ module Erp
 
 
         def report_outside_product
+          authorize! :report_inventory_outside_product, nil
+          
           # default from to date
           @from_date = Time.now.beginning_of_month
           @to_date = Time.now.end_of_day
@@ -734,6 +766,8 @@ module Erp
         end
 
         def report_outside_product_table
+          authorize! :report_inventory_outside_product, nil
+          
           @global_filters = params.to_unsafe_hash[:global_filter]
 
           # if has period
@@ -889,6 +923,8 @@ module Erp
         end
 
         def report_outside_product_xlsx
+          authorize! :report_inventory_outside_product, nil
+          
           data = YAML.load_file("tmp/report_outside_product_#{current_user.id}.yml")
           
           @period = data[:period]
@@ -907,6 +943,8 @@ module Erp
 
 
         def report_product_warehouse
+          authorize! :report_inventory_product_warehouse, nil
+          
           # default from to date
           @from_date = Time.now.beginning_of_month
           @to_date = Time.now.end_of_day
@@ -915,6 +953,8 @@ module Erp
         end
 
         def report_product_warehouse_table
+          authorize! :report_inventory_product_warehouse, nil
+          
           @global_filters = params.to_unsafe_hash[:global_filter]
           @to_date = @global_filters[:to_date].to_date
           
@@ -1010,6 +1050,8 @@ module Erp
         end
 
         def report_product_warehouse_xlsx
+          authorize! :report_inventory_product_warehouse, nil
+          
           data = YAML.load_file("tmp/report_product_warehouse_#{current_user.id}.yml")
           params = data[:params]
           @global_filters = data[:global_filters]
@@ -1108,6 +1150,8 @@ module Erp
 
 
         def report_custom_area_v2
+          authorize! :report_inventory_custom_area_v2, nil
+          
           # default from to date
           @from_date = Time.now.beginning_of_month
           @to_date = Time.now.end_of_day
@@ -1116,6 +1160,8 @@ module Erp
         end
 
         def report_custom_area_v2_table
+          authorize! :report_inventory_custom_area_v2, nil
+          
           @global_filters = params.to_unsafe_hash[:global_filter]
 
           # if has period
@@ -1193,7 +1239,9 @@ module Erp
           end
         end
 
-        def report_custom_area_v2_xlsx          
+        def report_custom_area_v2_xlsx
+          authorize! :report_inventory_custom_area_v2, nil
+          
           data = YAML.load_file("tmp/report_custom_area_v2_#{current_user.id}.yml")
           
           @global_filters = data[:global_filters]
@@ -1343,9 +1391,12 @@ module Erp
         end
 
         def report_product_request
+          authorize! :report_inventory_product_request, nil
         end
 
         def report_product_request_table
+          authorize! :report_inventory_product_request, nil
+          
           filters = params.to_unsafe_hash[:global_filter]
 
           @matrixes = []
@@ -1362,6 +1413,8 @@ module Erp
         end
 
         def report_product_request_xlsx
+          authorize! :report_inventory_product_request, nil
+          
           @matrixes = YAML.load_file("tmp/report_product_request_#{current_user.id}.yml")
 
           respond_to do |format|
@@ -1500,9 +1553,12 @@ module Erp
         end
 
         def report_product_ordered
+          authorize! :report_inventory_product_ordered, nil
         end
 
         def report_product_ordered_table
+          authorize! :report_inventory_product_ordered, nil
+          
           filters = params.to_unsafe_hash[:global_filter]
 
           @matrixes = []
@@ -1519,6 +1575,8 @@ module Erp
         end
 
         def report_product_ordered_xlsx
+          authorize! :report_inventory_product_ordered, nil
+          
           @matrixes = YAML.load_file("tmp/report_product_ordered_#{current_user.id}.yml")
 
           respond_to do |format|
@@ -1530,6 +1588,8 @@ module Erp
         
         # Report custom products
         def report_custom_product
+          authorize! :report_inventory_custom_product, nil
+          
           # default from to date
           @from_date = Time.now.beginning_of_month
           @to_date = Time.now.end_of_day
@@ -1538,6 +1598,8 @@ module Erp
         end
 
         def report_custom_product_table
+          authorize! :report_inventory_custom_product, nil
+          
           @global_filters = params.to_unsafe_hash[:global_filter]
 
           @is_set_type_selected = @global_filters[:categories] == Erp::Products::Category.get_set.id.to_s
@@ -1681,6 +1743,8 @@ module Erp
         end
 
         def report_custom_product_xlsx
+          authorize! :report_inventory_custom_product, nil
+          
           data = YAML.load_file("tmp/report_custom_product_#{current_user.id}.yml")
           params = data[:params]
           @global_filters = data[:global_filters]
@@ -1824,6 +1888,8 @@ module Erp
         end
         
         def report_code_diameter
+          authorize! :report_inventory_code_diameter, nil
+          
           # default from to date
           @from_date = Time.now.beginning_of_month
           @to_date = Time.now.end_of_day
@@ -1832,6 +1898,8 @@ module Erp
         end
 
         def report_code_diameter_table
+          authorize! :report_inventory_code_diameter, nil
+          
           @global_filters = params.to_unsafe_hash[:global_filter]
 
           # if has period
@@ -1907,6 +1975,8 @@ module Erp
         end
 
         def report_code_diameter_xlsx
+          authorize! :report_inventory_code_diameter, nil
+          
           data = YAML.load_file("tmp/report_code_diameter_#{current_user.id}.yml")
           
           @global_filters = data[:global_filters]

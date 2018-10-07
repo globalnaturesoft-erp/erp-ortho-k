@@ -13,7 +13,7 @@
         text: t('.create'),
         href: erp_ortho_k.new_backend_patient_state_path,
         class: 'btn-sm'
-    }) %>
+    }) if can? :create, @patient_state %>
 <% end %>
 
 <div class="row">

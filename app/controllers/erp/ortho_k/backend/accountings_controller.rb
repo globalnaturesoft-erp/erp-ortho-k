@@ -3,7 +3,13 @@ module Erp
     module Backend
       class AccountingsController < Erp::Backend::BackendController
         # Bao cao chi tiet thu/chi
+        def report_pay_receive
+          authorize! :report_accounting_pay_receive, nil
+        end
+        
         def report_pay_receive_table
+          authorize! :report_accounting_pay_receive, nil
+          
           @global_filters = params.to_unsafe_hash[:global_filter]
           if @global_filters[:period].present?
             @period_name = Erp::Periods::Period.find(@global_filters[:period]).name
@@ -35,7 +41,9 @@ module Erp
           end
         end
 
-        def report_pay_receive_xlsx          
+        def report_pay_receive_xlsx
+          authorize! :report_accounting_pay_receive, nil
+          
           data = YAML.load_file("tmp/report_pay_receive_xlsx.yml")
           
           @global_filters = data[:global_filters]
@@ -54,7 +62,13 @@ module Erp
         end
 
         # Bao cao tong hop thu/chi
+        def report_synthesis_pay_receive
+          authorize! :report_accounting_synthesis_pay_receive, nil
+        end
+        
         def report_synthesis_pay_receive_table
+          authorize! :report_accounting_synthesis_pay_receive, nil
+          
           @global_filters = params.to_unsafe_hash[:global_filter]
           if @global_filters[:period].present?
             @period_name = Erp::Periods::Period.find(@global_filters[:period]).name
@@ -83,7 +97,9 @@ module Erp
           end
         end
 
-        def report_synthesis_pay_receive_xlsx          
+        def report_synthesis_pay_receive_xlsx
+          authorize! :report_accounting_synthesis_pay_receive, nil
+          
           data = YAML.load_file("tmp/report_synthesis_pay_receive_xlsx.yml")
           
           @global_filters = data[:global_filters]
@@ -106,7 +122,13 @@ module Erp
         end
 
         # Bao cao ket qua ban hang
+        def report_sales_results
+          authorize! :report_accounting_sales_results, nil
+        end
+        
         def report_sales_results_table
+          authorize! :report_accounting_sales_results, nil
+          
           @global_filters = params.to_unsafe_hash[:global_filter]
           if @global_filters[:period].present?
             @period_name = Erp::Periods::Period.find(@global_filters[:period]).name
@@ -133,6 +155,8 @@ module Erp
         end
 
         def report_sales_results_xlsx
+          authorize! :report_accounting_sales_results, nil
+          
           data = YAML.load_file("tmp/report_sales_results_xlsx.yml")
           
           @global_filters = data[:global_filters]
@@ -152,7 +176,13 @@ module Erp
         end
 
         # Bao cao ket qua kinh doanh
+        def report_income_statement
+          authorize! :report_accounting_income_statement, nil
+        end
+        
         def report_income_statement_table
+          authorize! :report_accounting_income_statement, nil
+          
           @global_filters = params.to_unsafe_hash[:global_filter]
           if @global_filters[:period].present?
             @period_name = Erp::Periods::Period.find(@global_filters[:period]).name
@@ -180,6 +210,8 @@ module Erp
         end
 
         def report_income_statement_xlsx
+          authorize! :report_accounting_income_statement, nil
+          
           data = YAML.load_file("tmp/report_income_statement_xlsx.yml")
           
           @global_filters = data[:global_filters]
@@ -200,7 +232,13 @@ module Erp
         end
 
         # Báo cáo dòng tiền còn lại cuối kỳ
+        def report_cash_flow
+          authorize! :report_accounting_cash_flow, nil
+        end
+        
         def report_cash_flow_table
+          authorize! :report_accounting_cash_flow, nil
+          
           @global_filters = params.to_unsafe_hash[:global_filter]
           if @global_filters[:period].present?
             @period_name = Erp::Periods::Period.find(@global_filters[:period]).name
@@ -226,6 +264,8 @@ module Erp
         end
 
         def report_cash_flow_xlsx
+          authorize! :report_accounting_cash_flow, nil
+          
           data = YAML.load_file("tmp/report_cash_flow_xlsx.yml")
           
           @global_filters = data[:global_filters]
@@ -244,7 +284,13 @@ module Erp
         end
 
         # Bao cao cong no khach hang
+        def report_customer_liabilities
+          authorize! :report_accounting_customer_liabilities, nil
+        end
+        
         def report_customer_liabilities_table
+          authorize! :report_accounting_customer_liabilities, nil
+          
           @global_filters = params.to_unsafe_hash[:global_filter]
           if @global_filters[:period].present?
             @period_name = Erp::Periods::Period.find(@global_filters[:period]).name
@@ -280,6 +326,8 @@ module Erp
         end
 
         def report_customer_liabilities_xlsx
+          authorize! :report_accounting_customer_liabilities, nil
+          
           data = YAML.load_file("tmp/report_customer_liabilities_xlsx.yml")
           
           @global_filters = data[:global_filters]
@@ -298,7 +346,13 @@ module Erp
         end
 
         # Bao cao cong no nha cung cap
+        def report_supplier_liabilities
+          authorize! :report_accounting_supplier_liabilities, nil
+        end
+        
         def report_supplier_liabilities_table
+          authorize! :report_accounting_supplier_liabilities, nil
+          
           global_filters = params.to_unsafe_hash[:global_filter]
           if global_filters[:period].present?
             @period_name = Erp::Periods::Period.find(global_filters[:period]).name
@@ -331,6 +385,8 @@ module Erp
         end
 
         def report_supplier_liabilities_xlsx
+          authorize! :report_accounting_supplier_liabilities, nil
+          
           data = YAML.load_file("tmp/report_supplier_liabilities_xlsx.yml")
           
           @global_filters = data[:global_filters]
@@ -349,7 +405,13 @@ module Erp
         end
         
         # Thong ke tong cong no khach hang
+        def report_statistics_liabilities
+          authorize! :report_accounting_statistics_liabilities, nil
+        end
+        
         def report_statistics_liabilities_table
+          authorize! :report_accounting_statistics_liabilities, nil
+          
           @periods = Erp::Periods::Period.get_time_array(params)
           @customers = Erp::Contacts::Contact.where.not(id: Erp::Contacts::Contact.get_main_contact.id)
           
@@ -361,7 +423,9 @@ module Erp
           end
         end
 
-        def report_statistics_liabilities_xlsx          
+        def report_statistics_liabilities_xlsx
+          authorize! :report_accounting_statistics_liabilities, nil
+          
           data = YAML.load_file("tmp/report_statistics_liabilities_xlsx.yml")
           
           @periods = data[:periods]
@@ -377,7 +441,13 @@ module Erp
         end
         
         # Bao cao cong no co phat sinh
+        def report_liabilities_arising
+          authorize! :report_accounting_liabilities_arising, nil
+        end
+        
         def report_liabilities_arising_table
+          authorize! :report_accounting_liabilities_arising, nil
+          
           @global_filters = params.to_unsafe_hash[:global_filter]
           if @global_filters[:period].present?
             @period_name = Erp::Periods::Period.find(@global_filters[:period]).name
@@ -427,6 +497,8 @@ module Erp
         end
 
         def report_liabilities_arising_xlsx
+          authorize! :report_accounting_liabilities_arising, nil
+          
           data = YAML.load_file("tmp/report_liabilities_arising_xlsx.yml")
           
           @global_filters = data[:global_filters]
@@ -446,9 +518,13 @@ module Erp
         
         # Sales summary
         def report_sales_summary
+          authorize! :report_accounting_sales_summary, nil
         end
+        
         # Sales summary table
         def report_sales_summary_table
+          authorize! :report_accounting_sales_summary, nil
+          
           glb = params.to_unsafe_hash[:global_filter]
           if (glb[:from_date].present? && glb[:to_date].present?) || glb[:period].present?
             if glb[:period].present?
@@ -600,8 +676,11 @@ module Erp
             end
           end
         end
+        
         # Sales summary excel
         def report_sales_summary_xlsx
+          authorize! :report_accounting_sales_summary, nil
+          
           dt = YAML.load_file("tmp/report_sales_summary.yml")
           
           @data = dt[:data]

@@ -8,39 +8,53 @@
 
 <% content_for :page_toolbar do %>
     <% if Erp::Core.available?("ortho_k") %>
+        
         <%= erp_component('button/primary', {
             text: 'Về trang danh sách',
             href: erp_products.backend_products_path,
             class: 'btn-noborder'
-        }) %>
-    <% end %>
-    <%= erp_component('button/create', {
-        text: 'Thêm sản phẩm',
-        href: erp_products.new_backend_product_path,
-        class: 'btn-noborder'
-    }) %>
-    <% if Erp::Core.available?("ortho_k") %>
+        }) if can? :inventory_products_products_index, nil %>
+        
+        <%= erp_component('button/create', {
+            text: 'Thêm sản phẩm',
+            href: erp_products.new_backend_product_path,
+            class: 'btn-noborder'
+        }) if can? :inventory_products_products_create, nil %>
+        
         <%=
             actions = []
+            
             actions << {
                 text: '<i class="fa fa-compress"></i> Ghép sản phẩm',
                 url: erp_products.combine_backend_products_path
-            }
+            } if can? :inventory_products_products_combine, nil
+                
             actions << {
                 text: '<i class="fa fa-expand"></i> Tách sản phẩm',
                 url: erp_products.split_backend_products_path
-            }
+            } if can? :inventory_products_products_split, nil
+                
             erp_component('button/actions', {
             actions: actions,
             text: 'Ghép / Tách',
             class: 'btn-noborder',
             icon: 'fa fa-clone'
-        }) %>
+        }) if !actions.empty? %>
+        
         <%= erp_component('button/primary', {
             text: '<i class="glyphicon glyphicon-import"></i> Nhập từ excel'.html_safe,
             href: erp_ortho_k.import_backend_products_path,
             class: 'btn-noborder'
+        }) if can? :inventory_products_products_import_from_excel, nil %>
+    
+    <% else %>
+        
+        <%= erp_component('button/create', {
+            text: 'Thêm sản phẩm',
+            href: erp_products.new_backend_product_path,
+            class: 'btn-noborder'
         }) %>
+        
     <% end %>
 <% end %>
 
