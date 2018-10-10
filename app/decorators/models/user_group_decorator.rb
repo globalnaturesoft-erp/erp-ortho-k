@@ -264,14 +264,7 @@ Erp::UserGroup.class_eval do
           }
         },
         qdeliveries: {
-          deliveries: {
-            index: {
-              value: 'yes',
-              options: [
-                {value: 'yes', text: 'Có'},
-                {value: 'no', text: 'Không'},
-              ],
-            },
+          orders: {
             sales_orders: {
               value: 'yes',
               options: [
@@ -286,6 +279,17 @@ Erp::UserGroup.class_eval do
                 {value: 'no', text: 'Không'},
               ],
             },
+          },
+          deliveries: {
+            index: {
+              value: 'yes',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
+          },
+          sales_export: {
             create: {
               value: 'yes',
               options: [
@@ -308,7 +312,169 @@ Erp::UserGroup.class_eval do
                 {value: 'no', text: 'Không'},
               ],
             },
-          }
+            print: {
+              value: 'yes',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
+          },
+          sales_import: {
+            create: {
+              value: 'yes',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
+            update: {
+              value: 'yes',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+                {value: 'in_day', text: 'Trong ngày'},
+              ],
+            },
+            delete: {
+              value: 'yes',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
+            print: {
+              value: 'yes',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
+          },
+          purchase_export: {
+            create: {
+              value: 'yes',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
+            update: {
+              value: 'yes',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+                {value: 'in_day', text: 'Trong ngày'},
+              ],
+            },
+            delete: {
+              value: 'yes',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
+            print: {
+              value: 'yes',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
+          },
+          purchase_import: {
+            create: {
+              value: 'yes',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
+            update: {
+              value: 'yes',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+                {value: 'in_day', text: 'Trong ngày'},
+              ],
+            },
+            delete: {
+              value: 'yes',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
+            print: {
+              value: 'yes',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
+          },
+          custom_export: {
+            create: {
+              value: 'yes',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
+            update: {
+              value: 'yes',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+                {value: 'in_day', text: 'Trong ngày'},
+              ],
+            },
+            delete: {
+              value: 'yes',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
+            print: {
+              value: 'yes',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
+          },
+          custom_import: {
+            create: {
+              value: 'yes',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
+            update: {
+              value: 'yes',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+                {value: 'in_day', text: 'Trong ngày'},
+              ],
+            },
+            delete: {
+              value: 'yes',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
+            print: {
+              value: 'yes',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
+          },
         },
         stock_transfers: {
           transfers: {
@@ -683,7 +849,7 @@ Erp::UserGroup.class_eval do
       # PHONG KE TOAN
       accounting: {
         payments: {
-          payment_records: {
+          payment_types: {
             index: {
               value: 'yes',
               options: [
@@ -703,7 +869,6 @@ Erp::UserGroup.class_eval do
               options: [
                 {value: 'yes', text: 'Có'},
                 {value: 'no', text: 'Không'},
-                {value: 'in_day', text: 'Trong ngày', title: 'Áp dụng cho các phiếu đã xác nhận. Các phiếu chưa xác nhận vẫn chỉnh sửa bình thường mà không bị giới hạn thời gian.'},
               ],
             },
             delete: {
@@ -743,8 +908,15 @@ Erp::UserGroup.class_eval do
                 {value: 'no', text: 'Không'},
               ],
             },
+            payment_records_by_account: {
+              value: 'yes',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
           },
-          payment_types: {
+          payment_records: {
             index: {
               value: 'yes',
               options: [
@@ -764,9 +936,24 @@ Erp::UserGroup.class_eval do
               options: [
                 {value: 'yes', text: 'Có'},
                 {value: 'no', text: 'Không'},
+                {value: 'in_day', text: 'Trong ngày', title: 'Áp dụng cho các phiếu đã xác nhận. Các phiếu chưa xác nhận vẫn chỉnh sửa bình thường mà không bị giới hạn thời gian.'},
               ],
             },
             delete: {
+              value: 'yes',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
+            change_payment_type: {
+              value: 'yes',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
+            export_to_excel: {
               value: 'yes',
               options: [
                 {value: 'yes', text: 'Có'},
@@ -829,14 +1016,14 @@ Erp::UserGroup.class_eval do
               ],
             },
           },
-          commision: {
-            customer_commission: {
-              value: 'yes',
-              options: [
-                {value: 'yes', text: 'Có'},
-                {value: 'no', text: 'Không'},
-              ],
-            },
+          commission: {
+            #customer_commission: {
+            #  value: 'yes',
+            #  options: [
+            #    {value: 'yes', text: 'Có'},
+            #    {value: 'no', text: 'Không'},
+            #  ],
+            #},
             commission: {
               value: 'yes',
               options: [
@@ -844,13 +1031,13 @@ Erp::UserGroup.class_eval do
                 {value: 'no', text: 'Không'},
               ],
             },
-            target_commission: {
-              value: 'yes',
-              options: [
-                {value: 'yes', text: 'Có'},
-                {value: 'no', text: 'Không'},
-              ],
-            },
+            #target_commission: {
+            #  value: 'yes',
+            #  options: [
+            #    {value: 'yes', text: 'Có'},
+            #    {value: 'no', text: 'Không'},
+            #  ],
+            #},
           },
         },
       },
@@ -1261,7 +1448,7 @@ Erp::UserGroup.class_eval do
                 {value: 'no', text: 'Không'},
               ],
             },
-            unactivate: {
+            deactivate: {
               value: 'no',
               options: [
                 {value: 'yes', text: 'Có'},

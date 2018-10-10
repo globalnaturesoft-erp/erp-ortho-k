@@ -37,6 +37,15 @@ Erp::Ability.class_eval do
     
     
     # inventory
+    can :inventory_qdeliveries_deliveries_index, :all if user.get_permission(:inventory, :qdeliveries, :deliveries, :index) == 'yes'
+    
+    can :inventory_qdeliveries_sales_export_create, :all if user.get_permission(:inventory, :qdeliveries, :sales_export, :create) == 'yes'
+    can :inventory_qdeliveries_sales_import_create, :all if user.get_permission(:inventory, :qdeliveries, :sales_import, :create) == 'yes'
+    can :inventory_qdeliveries_purchase_import_create, :all if user.get_permission(:inventory, :qdeliveries, :purchase_import, :create) == 'yes'
+    can :inventory_qdeliveries_purchase_export_create, :all if user.get_permission(:inventory, :qdeliveries, :purchase_export, :create) == 'yes'
+    can :inventory_qdeliveries_custom_import_create, :all if user.get_permission(:inventory, :qdeliveries, :custom_import, :create) == 'yes'
+    can :inventory_qdeliveries_custom_export_create, :all if user.get_permission(:inventory, :qdeliveries, :custom_export, :create) == 'yes'
+    
     can :inventory_order_stock_checks_schecks_check, :all if user.get_permission(:inventory, :order_stock_checks, :schecks, :check) == 'yes'
     can :inventory_order_stock_checks_schecks_approve_order, :all if user.get_permission(:inventory, :order_stock_checks, :schecks, :approve_order) == 'yes'
     
@@ -72,6 +81,27 @@ Erp::Ability.class_eval do
     can :inventory_products_products_import_export_history, :all if user.get_permission(:inventory, :products, :products, :import_export_history) == 'yes'
     
     # accounting / ke toan
+    can :accounting_payments_payment_records_index, :all if user.get_permission(:accounting, :payments, :payment_records, :index) == 'yes'
+    can :accounting_payments_payment_records_create, :all if user.get_permission(:accounting, :payments, :payment_records, :create) == 'yes'
+    can :accounting_payments_payment_records_export_to_excel, :all if user.get_permission(:accounting, :payments, :payment_records, :export_to_excel) == 'yes'
+    
+    can :accounting_payments_accounts_index, :all if user.get_permission(:accounting, :payments, :accounts, :index) == 'yes'
+    can :accounting_payments_accounts_create, :all if user.get_permission(:accounting, :payments, :accounts, :create) == 'yes'
+    can :accounting_payments_accounts_payment_records_by_account, :all if user.get_permission(:accounting, :payments, :accounts, :payment_records_by_account) == 'yes'
+    
+    can :accounting_payments_payment_types_index, :all if user.get_permission(:accounting, :payments, :payment_types, :index) == 'yes'
+    can :accounting_payments_payment_types_create, :all if user.get_permission(:accounting, :payments, :payment_types, :create) == 'yes'
+    
+    can :accounting_chase_chase_sales, :all if user.get_permission(:accounting, :chase, :chase, :sales) == 'yes'
+    can :accounting_chase_chase_sales_return, :all if user.get_permission(:accounting, :chase, :chase, :sales_return) == 'yes'
+    can :accounting_chase_chase_purchase, :all if user.get_permission(:accounting, :chase, :chase, :purchase) == 'yes'
+    can :accounting_chase_chase_purchase_return, :all if user.get_permission(:accounting, :chase, :chase, :purchase_return) == 'yes'
+    
+    can :accounting_chase_liabilities_tracking_retail, :all if user.get_permission(:accounting, :chase, :liabilities_tracking, :retail) == 'yes'
+    can :accounting_chase_liabilities_tracking_customer, :all if user.get_permission(:accounting, :chase, :liabilities_tracking, :customer) == 'yes'
+    can :accounting_chase_liabilities_tracking_supplier, :all if user.get_permission(:accounting, :chase, :liabilities_tracking, :supplier) == 'yes'
+    
+    can :accounting_chase_commission_commission, :all if user.get_permission(:accounting, :chase, :commission, :commission) == 'yes'
     
     # contact / quan ly danh ba, so dia chi lien he
     can :contacts_contacts_index, :all if user.get_permission(:contacts, :contacts, :contacts, :index) == 'yes'
@@ -133,7 +163,7 @@ Erp::Ability.class_eval do
     can :options_users_users_create, :all if user.get_permission(:options, :users, :users, :create) == 'yes'
     can :options_users_users_update, :all if user.get_permission(:options, :users, :users, :update) == 'yes'
     can :options_users_users_activate, :all if user.get_permission(:options, :users, :users, :activate) == 'yes'
-    can :options_users_users_unactivate, :all if user.get_permission(:options, :users, :users, :unactivate) == 'yes'
+    can :options_users_users_deactivate, :all if user.get_permission(:options, :users, :users, :deactivate) == 'yes'
     
     can :options_users_user_groups_index, :all if user.get_permission(:options, :users, :user_groups, :index) == 'yes'
     can :options_users_user_groups_create, :all if user.get_permission(:options, :users, :user_groups, :create) == 'yes'
