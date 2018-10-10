@@ -16,7 +16,14 @@ vi:
           check: 'Kiểm tra kho'
           approve_order: 'Xác nhận (hoàn tất) kiểm tra'
       qdeliveries:
-        controller_deliveries: 'Quản lý xuất nhập'
+        controller_deliveries: 'Quản lý xuất nhập (phiếu xuất nhập)'
+        controller_orders: 'Theo dõi xuất/nhập (theo đơn hàng)'
+        controller_sales_export: 'Phiếu xuất bán hàng (XB)'
+        controller_sales_import: 'Phiếu nhập hàng bán bị trả lại (HK)'
+        controller_purchase_export: 'Phiếu xuất trả lại hàng cho NCC (XK)'
+        controller_purchase_import: 'Phiếu nhập hàng từ NCC (NK)'
+        controller_custom_export: 'Xuất kho tùy chỉnh (XK)'
+        controller_custom_import: 'Nhập kho tùy chỉnh (NK)'
         deliveries:
           index: 'Xem danh sách phiếu X/N'
           sales_orders: 'Xuất/nhập bán hàng (danh sách đơn hàng bán)'
@@ -24,6 +31,39 @@ vi:
           create: 'Tạo phiếu'
           update: 'Cập nhật phiếu'
           delete: 'Hủy phiếu'
+        orders:
+          sales_orders: 'Xuất nhập bán hàng'
+          purchase_orders: 'Xuất nhập mua hàng'
+        sales_export:
+          create: 'Tạo phiếu xuất bán'
+          update: 'Cập nhật phiếu xuất bán'
+          delete: 'Hủy phiếu xuất bán'
+          print: 'Xem và in PDF'
+        sales_import:
+          create: 'Tạo phiếu hoàn kho'
+          update: 'Cập nhật phiếu hoàn kho'
+          delete: 'Hủy phiếu hoàn kho'
+          print: 'Xem và in PDF'
+        purchase_export:
+          create: 'Tạo phiếu xuất trả NCC'
+          update: 'Cập nhật phiếu xuất trả NCC'
+          delete: 'Hủy phiếu xuất trả NCC'
+          print: 'Xem và in PDF'
+        purchase_import:
+          create: 'Tạo phiếu nhập hàng'
+          update: 'Cập nhật phiếu nhập hàng'
+          delete: 'Hủy phiếu nhập hàng'
+          print: 'Xem và in PDF'
+        custom_export:
+          create: 'Tạo phiếu xuất tùy chỉnh'
+          update: 'Cập nhật phiếu xuất tùy chỉnh'
+          delete: 'Hủy phiếu xuất tùy chỉnh'
+          print: 'Xem và in PDF'
+        custom_import:
+          create: 'Tạo phiếu nhập tùy chỉnh'
+          update: 'Cập nhật phiếu nhập tùy chỉnh'
+          delete: 'Hủy phiếu nhập tùy chỉnh'
+          print: 'Xem và in PDF'
       stock_transfers:
         controller_transfers: 'Quản lý chuyển kho'
         transfers:
@@ -168,23 +208,26 @@ vi:
         controller_payment_types: 'Quản lý loại thanh toán'
         payment_records:
           index: 'Xem danh sách phiếu'
-          create: 'Tạo phiếu'
-          update: 'Cập nhật phiếu'
-          delete: 'Hủy phiếu'
+          create: 'Tạo phiếu thu/chi'
+          update: 'Cập nhật phiếu thu/chi'
+          delete: 'Hủy phiếu thu/chi'
+          change_payment_type: 'Chuyển đổi loại thanh toán'
+          export_to_excel: 'Xuất file excel'
         accounts:
-          index: 'Xem danh sách'
-          create: 'Tạo mới'
-          update: 'Cập nhật'
-          delete: 'Hủy phiếu'
+          index: 'Xem danh sách tài khoản'
+          create: 'Tạo thêm tài khoản mới'
+          update: 'Cập nhật thông tin TK'
+          delete: 'Hủy bỏ tài khoản'
+          payment_records_by_account: 'Xem lịch sử thu/chi'
         payment_types:
-          index: 'Xem danh sách'
-          create: 'Tạo mới'
-          update: 'Cập nhật'
-          delete: 'Hủy phiếu'
+          index: 'Xem danh sách loại thanh toán'
+          create: 'Thêm loại thanh toán (tạo mới)'
+          update: 'Cập nhật loại thanh toán'
+          delete: 'Hủy loại thanh toán'
       chase:
         controller_chase: 'Theo dõi đơn hàng (thanh toán)'
         controller_liabilities_tracking: 'Theo dõi công nợ'
-        controller_commision: 'Hoa hồng & Chiết khấu'
+        controller_commission: 'Hoa hồng & Chiết khấu'
         chase:
           sales: 'Đơn bán hàng'
           purchase: 'Đơn mua hàng'
@@ -194,9 +237,9 @@ vi:
           retail: 'Bán lẻ/Phòng khám'
           customer: 'Khách hàng'
           supplier: 'Nhà cung cấp'
-        commision:
+        commission:
           customer_commission: 'Chiết khấu khách hàng'
-          commission: 'Thưởng doanh thu nhân viên'
+          commission: 'Hoa hồng thu công nợ (cho NV)'
           target_commission: 'Thưởng target công ty (1%)'
     contacts:
       contacts:

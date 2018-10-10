@@ -36,7 +36,7 @@
                 <% end %>
             </a>
         </li>
-        <% if Erp::Core.available?("targets") %>
+        <% if Erp::Core.available?("targets") and false %>
             <%= render "layouts/erp/backend/menu/targets/targets" %>
         <% end %>
         <li class="nav-item <%= "active open" if ["erp/periods/backend/periods"].include?(params[:controller]) %>">
@@ -47,13 +47,15 @@
                 <% end %>
             </a>
         </li>
-        <li class="nav-item <%= "active open" if ["erp/areas/backend/countries"].include?(params[:controller]) %>">
-            <a href="<%= erp_areas.backend_countries_path %>" class="nav-link ">
-                <span class="title">Quốc gia/Vùng/Lãnh thổ</span>
-                <% if ["erp/areas/backend/areas"].include?(params[:controller]) %>
-                <span class="selected"></span>
-                <% end %>
-            </a>
-        </li>
+        <% if Erp::Core.available?("areas") and false %>
+            <li class="nav-item <%= "active open" if ["erp/areas/backend/countries"].include?(params[:controller]) %>">
+                <a href="<%= erp_areas.backend_countries_path %>" class="nav-link ">
+                    <span class="title">Quốc gia/Vùng/Lãnh thổ</span>
+                    <% if ["erp/areas/backend/areas"].include?(params[:controller]) %>
+                    <span class="selected"></span>
+                    <% end %>
+                </a>
+            </li>
+        <% end %>
     </ul>
 </li>
