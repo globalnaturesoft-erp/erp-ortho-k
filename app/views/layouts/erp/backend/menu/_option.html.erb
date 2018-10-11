@@ -1,18 +1,10 @@
-<li class="nav-item  <%= "active open" if (params[:controller] == "erp/backend/users") ||
-                                         (params[:controller] == "erp/backend/user_groups") ||
-                                         (params[:controller] == "erp/targets/backend/targets") ||
-                                         (params[:controller] == "erp/targets/backend/company_targets") ||
-                                         (params[:controller] == "erp/periods/backend/periods") ||
-                                         (params[:controller] == "erp/areas/backend/countries") %>">
+<li class="nav-item <%= "active open" if (params[:controller] == "erp/backend/users") ||
+                                         (params[:controller] == "erp/backend/user_groups") %>">
     <a href="javascript:;" class="nav-link nav-toggle">
-        <i class="icon-settings"></i>
-        <span class="title">Cài đặt dữ liệu</span>
+        <i class="fa fa-key"></i>
+        <span class="title">Bảo mật & đăng nhập</span>
         <% if (params[:controller] == "erp/backend/users") ||
-              (params[:controller] == "erp/backend/user_groups") ||
-              (params[:controller] == "erp/targets/backend/targets") ||
-              (params[:controller] == "erp/targets/backend/company_targets") ||
-              (params[:controller] == "erp/periods/backend/periods") ||
-              (params[:controller] == "erp/areas/backend/countries") %>
+              (params[:controller] == "erp/backend/user_groups") %>
             <span class="selected"></span>
             <span class="arrow open"></span>
         <% else %>
@@ -36,26 +28,5 @@
                 <% end %>
             </a>
         </li>
-        <% if Erp::Core.available?("targets") and false %>
-            <%= render "layouts/erp/backend/menu/targets/targets" %>
-        <% end %>
-        <li class="nav-item <%= "active open" if ["erp/periods/backend/periods"].include?(params[:controller]) %>">
-            <a href="<%= erp_periods.backend_periods_path %>" class="nav-link ">
-                <span class="title">Cấu hình mốc thời gian</span>
-                <% if ["erp/periods/backend/periods"].include?(params[:controller]) %>
-                <span class="selected"></span>
-                <% end %>
-            </a>
-        </li>
-        <% if Erp::Core.available?("areas") and false %>
-            <li class="nav-item <%= "active open" if ["erp/areas/backend/countries"].include?(params[:controller]) %>">
-                <a href="<%= erp_areas.backend_countries_path %>" class="nav-link ">
-                    <span class="title">Quốc gia/Vùng/Lãnh thổ</span>
-                    <% if ["erp/areas/backend/areas"].include?(params[:controller]) %>
-                    <span class="selected"></span>
-                    <% end %>
-                </a>
-            </li>
-        <% end %>
     </ul>
 </li>

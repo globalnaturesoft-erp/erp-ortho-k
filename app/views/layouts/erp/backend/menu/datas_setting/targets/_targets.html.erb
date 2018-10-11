@@ -9,9 +9,7 @@
             <span class="arrow"></span>
         <% end %>
     </a>
-    <ul class="sub-menu" <% if ["erp/targets/backend/targets", "erp/targets/backend/company_targets"].include?(params[:controller]) %>
-                            style="display: block;"
-                        <% else %>style="display: none;"<% end %>>
+    <ul class="sub-menu" <% "active open" if ["erp/targets/backend/targets", "erp/targets/backend/company_targets"].include?(params[:controller]) %>>
         <li class="nav-item <%= "active" if ["erp/targets/backend/targets"].include?(params[:controller]) %>">
             <%= link_to t('.user_targets'), erp_targets.backend_targets_path, class: "nav-link ", title: t('.user_targets') %>
         </li>
