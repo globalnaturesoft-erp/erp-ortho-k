@@ -1,8 +1,22 @@
-<li class="nav-item <%= "active open" if [].include?(params[:controller]) %>">
+<li class="nav-item <%= "active open" if ["erp/targets/backend/targets",
+                                          "erp/targets/backend/company_targets",
+                                          "erp/periods/backend/periods",
+                                          "erp/areas/backend/countries",
+                                          "erp/areas/backend/states",
+                                          "erp/areas/backend/districts",
+                                          "erp/taxes/backend/taxes"
+                                        ].include?(params[:controller]) %>">
     <a href="javascript:;" class="nav-link nav-toggle">
         <i class="fa fa-cogs"></i>
         <span class="title"><%= t('.system') %></span>
-        <% if [].include?(params[:controller]) %>
+        <% if ["erp/targets/backend/targets",
+               "erp/targets/backend/company_targets",
+               "erp/periods/backend/periods",
+               "erp/areas/backend/countries",
+               "erp/areas/backend/states",
+               "erp/areas/backend/districts",
+               "erp/taxes/backend/taxes"
+            ].include?(params[:controller]) %>
             <span class="selected"></span>
             <span class="arrow open"></span>
         <% else %>
@@ -10,13 +24,10 @@
         <% end %>
     </a>
     <ul class="sub-menu">
+        <%= render "layouts/erp/backend/menu/datas_setting/datas_setting" %>
         <li class="nav-item ">
-            <a href="" class="nav-link ">
-                <span class="title"><%= t('.system_configuration') %></span>
-            </a>
-        </li>
-        <li class="nav-item ">
-            <a href="" class="nav-link ">
+            <a href="javascript:;" class="nav-link " title="Cảnh báo! Chức năng này đòi hỏi can thiệp sâu vào hệ thống. Do đó, chức năng đã bị vô hiệu hóa khỏi tất cả người dùng.">
+                <i class="icon-refresh"></i>
                 <span class="title"><%= t('.storage_and_recovery') %></span>
             </a>
         </li>

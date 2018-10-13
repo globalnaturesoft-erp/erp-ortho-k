@@ -211,11 +211,11 @@ module Erp
 
         # Bao cao hang ban bi tra lai
         def report_product_return
-          authorize! :report_sales_product_return, nil
+          authorize! :report_sales_product_return_by_state, nil
         end
         
         def report_product_return_table
-          authorize! :report_sales_product_return, nil
+          authorize! :report_sales_product_return_by_state, nil
           
           glb = params.to_unsafe_hash[:global_filter]
           if glb[:period].present?
@@ -245,7 +245,7 @@ module Erp
         end
         
         def report_product_return_xlsx
-          authorize! :report_sales_product_return, nil
+          authorize! :report_sales_product_return_by_state, nil
           
           glb = params.to_unsafe_hash[:global_filter]
           if glb[:period].present?

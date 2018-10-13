@@ -1,0 +1,54 @@
+<li class="nav-item <%= "active open" if ["erp/targets/backend/targets",
+                                          "erp/targets/backend/company_targets",
+                                          "erp/periods/backend/periods",
+                                          "erp/areas/backend/countries",
+                                          "erp/areas/backend/states",
+                                          "erp/areas/backend/districts",
+                                          "erp/taxes/backend/taxes"
+                                        ].include?(params[:controller]) %>">
+    <a href="javascript:;" class="nav-link nav-toggle">
+        <i class="icon-settings"></i>
+        <span class="title"><%= t('.datas_setting') %></span>
+        <% if ["erp/targets/backend/targets",
+               "erp/targets/backend/company_targets",
+               "erp/periods/backend/periods",
+               "erp/areas/backend/countries",
+               "erp/areas/backend/states",
+               "erp/areas/backend/districts",
+               "erp/taxes/backend/taxes"
+            ].include?(params[:controller]) %>
+            <span class="selected"></span>
+            <span class="arrow open"></span>
+        <% else %>
+            <span class="arrow"></span>
+        <% end %>
+    </a>
+    <ul class="sub-menu">
+        <% if Erp::Core.available?("targets") %>
+            <%= render "layouts/erp/backend/menu/datas_setting/targets/targets" %>
+        <% end %>
+        <% if Erp::Core.available?("periods") %>
+            <li class="nav-item <%= "active open" if ["erp/periods/backend/periods"].include?(params[:controller]) %>">
+                <a href="<%= erp_periods.backend_periods_path %>" class="nav-link ">
+                    <span class="title">Chu kỳ/mốc thời gian</span>
+                    <% if ["erp/periods/backend/periods"].include?(params[:controller]) %>
+                    <span class="selected"></span>
+                    <% end %>
+                </a>
+            </li>
+        <% end %>
+        <% if Erp::Core.available?("taxes") %>
+            <li class="nav-item <%= "active open" if ["erp/taxes/backend/taxes"].include?(params[:controller]) %>">
+                <a href="<%= erp_taxes.backend_taxes_path %>" class="nav-link ">
+                    <span class="title">Các loại thuế GTGT</span>
+                    <% if ["erp/areas/backend/areas"].include?(params[:controller]) %>
+                    <span class="selected"></span>
+                    <% end %>
+                </a>
+            </li>
+        <% end %>
+        <% if Erp::Core.available?("areas") %>
+            <%= render "layouts/erp/backend/menu/datas_setting/areas/areas" %>
+        <% end %>
+    </ul>
+</li>

@@ -1,0 +1,28 @@
+<li class="nav-item <%= "active open" if ["erp/areas/backend/countries",
+                                          "erp/areas/backend/states",
+                                          "erp/areas/backend/districts"].include?(params[:controller]) %>">
+    <a href="javascript:;" class="nav-link nav-toggle">
+        <span class="title"><%= t('.areas') %></span>
+        <% if ["erp/areas/backend/countries",
+               "erp/areas/backend/states",
+               "erp/areas/backend/districts"].include?(params[:controller]) %>
+            <span class="selected"></span>
+            <span class="arrow open"></span>
+        <% else %>
+            <span class="arrow"></span>
+        <% end %>
+    </a>
+    <ul class="sub-menu" <% "active open" if ["erp/areas/backend/countries",
+                                "erp/areas/backend/states",
+                                "erp/areas/backend/districts"].include?(params[:controller]) %>>
+        <li class="nav-item <%= "active" if ["erp/areas/backend/countries"].include?(params[:controller]) %>">
+            <%= link_to t('.countries'), erp_areas.backend_countries_path, class: "nav-link ", title: t('.countries') %>
+        </li>
+        <li class="nav-item <%= "active" if ["erp/areas/backend/states"].include?(params[:controller]) %>">
+            <%= link_to t('.states'), erp_areas.backend_states_path, class: "nav-link ", title: t('.states') %>
+        </li>
+        <li class="nav-item <%= "active" if ["erp/areas/backend/districts"].include?(params[:controller]) %>">
+            <%= link_to t('.districts'), 'javascript:;', class: "nav-link ", title: t('.districts') %>
+        </li>
+    </ul>
+</li>

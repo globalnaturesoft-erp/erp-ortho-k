@@ -1499,11 +1499,6 @@ vi:
               brands: "Thương hiệu sản phẩm"
               states: "Trạng thái sản phẩm"
               central_areas: "Phân vùng - Vùng T.tâm"            
-          targets:
-            targets:
-              targets: "Cấu hình target"
-              user_targets: "Target cho nhân viên"
-              company_targets: "Target cho doanh nghiệp"
           reports:
             inventory:
               report: "Báo cáo kho"
@@ -1519,6 +1514,20 @@ vi:
             system_configuration: "Cấu hình hệ thống"
             storage_and_recovery: "Lưu trữ & Phục hồi"
             user_activity_statistics: "Thống kê hoạt động thành viên"
+          datas_setting:
+            areas:
+              areas:
+                areas: "Vị trí địa lý"
+                countries: "Quốc gia/KV/Lãnh thổ"
+                states: "Tỉnh/TP (Tiểu bang)"
+                districts: "Quận/Huyện/Thị xã"
+            targets:
+              targets:
+                targets: "Mục tiêu kinh doanh"
+                user_targets: "Target nhân viên"
+                company_targets: "Target công ty"
+            datas_setting:
+              datas_setting: "Cấu hình chung"
           support:
             support: "Liên hệ & Hỗ trợ"
             documents: "Tài liệu hướng dẫn"
