@@ -1,13 +1,5 @@
 Erp::Ability.class_eval do
   def ortho_k_ability(user)
-    # app menus ability
-    can :menu_sales, :all if user.get_permission(:sales, :sales, :orders, :index) == 'yes'
-    can :menu_inventory, :all if user.get_permission(:inventory, :products, :products, :index) == 'yes'
-    can :menu_accounting, :all if user.get_permission(:accounting, :payments, :payment_records, :index) == 'yes'
-    can :menu_option, :all if user.get_permission(:options, :users, :users, :index) == 'yes'
-    can :menu_system, :all if user.get_permission(:system, :system, :system, :settings) == 'yes'
-    can :menu_contact, :all if user.get_permission(:contacts, :contacts, :contacts, :index) == 'yes'
-    
     # sales
     can :sales_sales_orders_index, :all if user.get_permission(:sales, :sales, :orders, :index) == 'yes'
     can :sales_sales_orders_create, :all if user.get_permission(:sales, :sales, :orders, :create) == 'yes'
@@ -159,20 +151,97 @@ Erp::Ability.class_eval do
     can :report_accounting_statistics_liabilities, :all if user.get_permission(:report, :report, :accounting, :statistics_liabilities) == 'yes'
     
     # cai dat du lieu he thong (nguoi dung, phan quyen,...)
-    can :options_users_users_index, :all if user.get_permission(:options, :users, :users, :index) == 'yes'
-    can :options_users_users_create, :all if user.get_permission(:options, :users, :users, :create) == 'yes'
-    can :options_users_users_update, :all if user.get_permission(:options, :users, :users, :update) == 'yes'
-    can :options_users_users_activate, :all if user.get_permission(:options, :users, :users, :activate) == 'yes'
-    can :options_users_users_deactivate, :all if user.get_permission(:options, :users, :users, :deactivate) == 'yes'
+    if user == Erp::User.get_super_admin or user.get_permission(:options, :users, :users, :index) == 'yes'
+      can :options_users_users_index, :all
+    end
     
-    can :options_users_user_groups_index, :all if user.get_permission(:options, :users, :user_groups, :index) == 'yes'
-    can :options_users_user_groups_create, :all if user.get_permission(:options, :users, :user_groups, :create) == 'yes'
-    can :options_users_user_groups_update, :all if user.get_permission(:options, :users, :user_groups, :update) == 'yes'
-    #can :options_users_activate, :all if user.get_permission(:options, :users, :users, :activate) == 'yes'
-    #can :options_users_unactivate, :all if user.get_permission(:options, :users, :users, :unactivate) == 'yes'
+    if user == Erp::User.get_super_admin or user.get_permission(:options, :users, :user_groups, :index) == 'yes'
+      can :options_users_user_groups_index, :all
+    end
     
-    can :options_periods_periods_index, :all if user.get_permission(:options, :periods, :periods, :index) == 'yes'
-    can :options_periods_periods_create, :all if user.get_permission(:options, :periods, :periods, :create) == 'yes'
-    can :options_periods_periods_update, :all if user.get_permission(:options, :periods, :periods, :update) == 'yes'
+    # system (he thong / cau hinh / sao luu)
+    can :system_periods_periods_index, :all if user.get_permission(:system, :periods, :periods, :index) == 'yes'
+    can :system_periods_periods_create, :all if user.get_permission(:system, :periods, :periods, :create) == 'yes'
+    can :system_periods_periods_update, :all if user.get_permission(:system, :periods, :periods, :update) == 'yes'
+    can :system_periods_periods_delete, :all if user.get_permission(:system, :periods, :periods, :delete) == 'yes'
+    
+    can :system_taxes_taxes_index, :all if user.get_permission(:system, :periods, :periods, :index) == 'yes'
+    can :system_taxes_taxes_create, :all if user.get_permission(:system, :periods, :periods, :create) == 'yes'
+    can :system_taxes_taxes_update, :all if user.get_permission(:system, :periods, :periods, :update) == 'yes'
+    can :system_taxes_taxes_delete, :all if user.get_permission(:system, :periods, :periods, :delete) == 'yes'
+    
+    can :system_areas_countries_index, :all if user.get_permission(:system, :areas, :countries, :index) == 'yes'
+    can :system_areas_countries_create, :all if user.get_permission(:system, :areas, :countries, :create) == 'yes'
+    can :system_areas_countries_update, :all if user.get_permission(:system, :areas, :countries, :update) == 'yes'
+    can :system_areas_countries_delete, :all if user.get_permission(:system, :areas, :countries, :delete) == 'yes'
+    can :system_areas_states_index, :all if user.get_permission(:system, :areas, :states, :index) == 'yes'
+    can :system_areas_states_create, :all if user.get_permission(:system, :areas, :states, :create) == 'yes'
+    can :system_areas_states_update, :all if user.get_permission(:system, :areas, :states, :update) == 'yes'
+    can :system_areas_states_delete, :all if user.get_permission(:system, :areas, :states, :delete) == 'yes'
+    
+    # cancan user (devise)
+    # NOTE: u - la tai khoan trong danh sach; user - la tai khoan dang dang nhap/current_user 
+    can :create, Erp::User do |u|
+      user == Erp::User.get_super_admin or
+      user.get_permission(:options, :users, :users, :create) == 'yes'
+    end
+    
+    can :listview, Erp::User do |u|
+      
+    end
+    
+    can :update, Erp::User do |u|
+      user == Erp::User.get_super_admin or
+      (
+        u != Erp::User.get_super_admin and
+        user.get_permission(:options, :users, :users, :update) == 'yes'
+      )
+    end
+    
+    can :activate, Erp::User do |u|
+      !u.active? and # active is false
+      (
+        user == Erp::User.get_super_admin or
+        (
+          u != Erp::User.get_super_admin and
+          user.get_permission(:options, :users, :users, :activate) == 'yes'
+        )
+      )
+    end
+    
+    can :deactivate, Erp::User do |u|
+      u.active? and # active is true
+      (
+        user == Erp::User.get_super_admin or
+        (
+          u != Erp::User.get_super_admin and
+          user.get_permission(:options, :users, :users, :deactivate) == 'yes'
+        )
+      )
+    end
+    
+    # cancan user group
+    can :create, Erp::UserGroup do |user_group|
+      user == Erp::User.get_super_admin or
+      user.get_permission(:options, :users, :user_groups, :create) == 'yes'
+    end
+    
+    can :update, Erp::UserGroup do |user_group|
+      user == Erp::User.get_super_admin or
+      (
+        user == Erp::User.get_super_admin or
+        user.get_permission(:options, :users, :user_groups, :update) == 'yes'
+      )
+    end
+    
+    ## SIDEBAR MENU - START ##
+    # app menus ability
+    can :menu_sales, :all if user.get_permission(:sales, :sales, :orders, :index) == 'yes'
+    can :menu_inventory, :all if user.get_permission(:inventory, :products, :products, :index) == 'yes'
+    can :menu_accounting, :all if user.get_permission(:accounting, :payments, :payment_records, :index) == 'yes'
+    can :menu_contact, :all if user.get_permission(:contacts, :contacts, :contacts, :index) == 'yes'
+    can :menu_option, :all if user.get_permission(:options, :users, :users, :index) == 'yes'
+    can :menu_system, :all if user.get_permission(:system, :periods, :periods, :index) == 'yes'
+    ## SIDEBAR MENU - END ##
   end
 end

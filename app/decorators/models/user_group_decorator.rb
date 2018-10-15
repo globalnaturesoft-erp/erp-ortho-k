@@ -1480,6 +1480,72 @@ Erp::UserGroup.class_eval do
             },
           },
         },
+      },
+      
+      # CAU HINH HE THONG / BACKUP / RESTORE
+      system: {
+        #targets: {
+        #  staff_target: {
+        #    index: {
+        #      value: 'no',
+        #      options: [
+        #        {value: 'yes', text: 'Có'},
+        #        {value: 'no', text: 'Không'},
+        #      ],
+        #    },
+        #    create: {
+        #      value: 'no',
+        #      options: [
+        #        {value: 'yes', text: 'Có'},
+        #        {value: 'no', text: 'Không'},
+        #      ],
+        #    },
+        #    update: {
+        #      value: 'no',
+        #      options: [
+        #        {value: 'yes', text: 'Có'},
+        #        {value: 'no', text: 'Không'},
+        #      ],
+        #    },
+        #    delete: {
+        #      value: 'no',
+        #      options: [
+        #        {value: 'yes', text: 'Có'},
+        #        {value: 'no', text: 'Không'},
+        #      ],
+        #    },
+        #  },
+        #  company_target: {
+        #    index: {
+        #      value: 'no',
+        #      options: [
+        #        {value: 'yes', text: 'Có'},
+        #        {value: 'no', text: 'Không'},
+        #      ],
+        #    },
+        #    create: {
+        #      value: 'no',
+        #      options: [
+        #        {value: 'yes', text: 'Có'},
+        #        {value: 'no', text: 'Không'},
+        #      ],
+        #    },
+        #    update: {
+        #      value: 'no',
+        #      options: [
+        #        {value: 'yes', text: 'Có'},
+        #        {value: 'no', text: 'Không'},
+        #      ],
+        #    },
+        #    delete: {
+        #      value: 'no',
+        #      options: [
+        #        {value: 'yes', text: 'Có'},
+        #        {value: 'no', text: 'Không'},
+        #      ],
+        #    },
+        #  },
+        #},
         periods: {
           periods: {
             index: {
@@ -1503,29 +1569,7 @@ Erp::UserGroup.class_eval do
                 {value: 'no', text: 'Không'},
               ],
             },
-          },
-        },
-      },
-      
-      # CAU HINH HE THONG / BACKUP / RESTORE
-      system: {
-        system: {
-          system: {
-            settings: {
-              value: 'no',
-              options: [
-                {value: 'yes', text: 'Có'},
-                {value: 'no', text: 'Không'},
-              ],
-            },
-            backup: {
-              value: 'no',
-              options: [
-                {value: 'yes', text: 'Có'},
-                {value: 'no', text: 'Không'},
-              ],
-            },
-            restore: {
+            delete: {
               value: 'no',
               options: [
                 {value: 'yes', text: 'Có'},
@@ -1534,6 +1578,155 @@ Erp::UserGroup.class_eval do
             },
           },
         },
+        taxes: {
+          taxes: {
+            index: {
+              value: 'no',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
+            create: {
+              value: 'no',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
+            update: {
+              value: 'no',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
+            delete: {
+              value: 'no',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
+          },
+        },
+        areas: {
+          countries: {
+            index: {
+              value: 'no',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
+            create: {
+              value: 'no',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
+            update: {
+              value: 'no',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
+            delete: {
+              value: 'no',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
+          },
+          states: {
+            index: {
+              value: 'no',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
+            create: {
+              value: 'no',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
+            update: {
+              value: 'no',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
+            delete: {
+              value: 'no',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
+          },
+          #districts: {
+          #  index: {
+          #    value: 'no',
+          #    options: [
+          #      {value: 'yes', text: 'Có'},
+          #      {value: 'no', text: 'Không'},
+          #    ],
+          #  },
+          #  create: {
+          #    value: 'no',
+          #    options: [
+          #      {value: 'yes', text: 'Có'},
+          #      {value: 'no', text: 'Không'},
+          #    ],
+          #  },
+          #  update: {
+          #    value: 'no',
+          #    options: [
+          #      {value: 'yes', text: 'Có'},
+          #      {value: 'no', text: 'Không'},
+          #    ],
+          #  },
+          #  delete: {
+          #    value: 'no',
+          #    options: [
+          #      {value: 'yes', text: 'Có'},
+          #      {value: 'no', text: 'Không'},
+          #    ],
+          #  },
+          #},
+        },
+        #system: {
+        #  system: {
+        #    settings: {
+        #      value: 'no',
+        #      options: [
+        #        {value: 'yes', text: 'Có'},
+        #        {value: 'no', text: 'Không'},
+        #      ],
+        #    },
+        #    backup: {
+        #      value: 'no',
+        #      options: [
+        #        {value: 'yes', text: 'Có'},
+        #        {value: 'no', text: 'Không'},
+        #      ],
+        #    },
+        #    restore: {
+        #      value: 'no',
+        #      options: [
+        #        {value: 'yes', text: 'Có'},
+        #        {value: 'no', text: 'Không'},
+        #      ],
+        #    },
+        #  },
+        #},
       },
     }
 
