@@ -27,44 +27,48 @@
                             style="display: block;"
                         <% else %>style="display: none;"<% end %>>
         <% if Erp::Core.available?("products") %>
-            <li class="nav-item <%= "active open" if ["erp/products/backend/state_checks"].include?(params[:controller]) %>">
-                <a href="<%= erp_products.backend_state_checks_path %>" class="nav-link ">
-                    <span class="title">
-                        Trạng thái
-                    </span>
-                    <% if ["erp/products/backend/state_checks"].include?(params[:controller]) %>
-                    <span class="selected"></span>
-                    <% end %>
-                  
-                  <span class="notification-badge-container notification-warehouse_check_state_checks"></span>
-                </a>
-            </li>
-            <li class="nav-item <%= "active open" if ["erp/products/backend/stock_checks"].include?(params[:controller]) %>">
-                <a href="<%= erp_products.backend_stock_checks_path %>" class="nav-link ">
-                    <span class="title">
-                        Số lượng
-                    </span>
-                    <% if ["erp/products/backend/stock_checks"].include?(params[:controller]) %>
-                    <span class="selected"></span>
-                    <% end %>
-                  
-                  <span class="notification-badge-container notification-warehouse_check_stock_checks"></span>
-                </a>
-            </li>
-        <% end %>
-        <% if Erp::Core.available?("products") %>
-            <li class="nav-item <%= "active open" if ["erp/products/backend/damage_records"].include?(params[:controller]) %>">
-                <a href="<%= erp_products.backend_damage_records_path %>" class="nav-link ">
-                    <span class="title">
-                        Hủy hàng
-                    </span>
-                    <% if ["erp/products/backend/damage_records"].include?(params[:controller]) %>
-                    <span class="selected"></span>
-                    <% end %>
-                    
-                    <span class="notification-badge-container notification-warehouse_check_damage_records"></span>
-                </a>
-            </li>
+            <% if can? :menu_inventory_warehouse_checks_with_state, nil %>
+                <li class="nav-item <%= "active open" if ["erp/products/backend/state_checks"].include?(params[:controller]) %>">
+                    <a href="<%= erp_products.backend_state_checks_path %>" class="nav-link ">
+                        <span class="title">
+                            Trạng thái
+                        </span>
+                        <% if ["erp/products/backend/state_checks"].include?(params[:controller]) %>
+                        <span class="selected"></span>
+                        <% end %>
+                      
+                      <span class="notification-badge-container notification-warehouse_check_state_checks"></span>
+                    </a>
+                </li>
+            <% end %>
+            <% if can? :menu_inventory_warehouse_checks_with_stock, nil %>
+                <li class="nav-item <%= "active open" if ["erp/products/backend/stock_checks"].include?(params[:controller]) %>">
+                    <a href="<%= erp_products.backend_stock_checks_path %>" class="nav-link ">
+                        <span class="title">
+                            Số lượng
+                        </span>
+                        <% if ["erp/products/backend/stock_checks"].include?(params[:controller]) %>
+                        <span class="selected"></span>
+                        <% end %>
+                      
+                      <span class="notification-badge-container notification-warehouse_check_stock_checks"></span>
+                    </a>
+                </li>
+            <% end %>
+            <% if can? :menu_inventory_warehouse_checks_with_damage, nil %>
+                <li class="nav-item <%= "active open" if ["erp/products/backend/damage_records"].include?(params[:controller]) %>">
+                    <a href="<%= erp_products.backend_damage_records_path %>" class="nav-link ">
+                        <span class="title">
+                            Hủy hàng
+                        </span>
+                        <% if ["erp/products/backend/damage_records"].include?(params[:controller]) %>
+                        <span class="selected"></span>
+                        <% end %>
+                        
+                        <span class="notification-badge-container notification-warehouse_check_damage_records"></span>
+                    </a>
+                </li>
+            <% end %>
         <% end %>
     </ul>
 </li>

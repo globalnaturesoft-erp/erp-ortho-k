@@ -11,13 +11,15 @@
         <% end %>
     </a>
     <ul class="sub-menu">
-        <!--
+        <% if false and can? :purchase_supplier_prices_update, nil %>
             <li class="nav-item <%= "active" if (params[:controller] == "erp/prices/backend/supplier_prices" && (params[:action] == "index" || params[:action] == "update_contact")) %>">
                 <%= link_to t('.supplier_prices'), erp_prices.backend_supplier_prices_path, class: "nav-link ", title: t('.supplier_prices') %>
             </li>
-        -->
-        <li class="nav-item <%= "active" if (params[:controller] == "erp/prices/backend/supplier_prices" && (params[:action] == "general" || params[:action] == "general_update")) %>">
-            <%= link_to t('.general_prices'), erp_prices.general_backend_supplier_prices_path, class: "nav-link ", title: t('.general_prices') %>
-        </li>
+        <% end %>
+        <% if can? :purchase_supplier_prices_update_general, nil %>
+            <li class="nav-item <%= "active" if (params[:controller] == "erp/prices/backend/supplier_prices" && (params[:action] == "general" || params[:action] == "general_update")) %>">
+                <%= link_to t('.general_prices'), erp_prices.general_backend_supplier_prices_path, class: "nav-link ", title: t('.general_prices') %>
+            </li>
+        <% end %>
     </ul>
 </li>

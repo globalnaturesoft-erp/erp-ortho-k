@@ -11,21 +11,25 @@
         <% end %>
     </a>
     <ul class="sub-menu">
-        <li class="nav-item <%= "active open" if ["erp/contacts/backend/contacts"].include?(params[:controller]) %>">
-            <a href="<%= erp_contacts.backend_contacts_path %>" class="nav-link ">
-                <span class="title"><%= t('.contacts') %></span>
-                <% if ["erp/contacts/backend/contacts"].include?(params[:controller]) %>
-                <span class="selected"></span>
-                <% end %>
-            </a>
-        </li>
-        <li class="nav-item <%= "active open" if ["erp/ortho_k/backend/patient_states"].include?(params[:controller]) %>">
-            <a href="<%= erp_ortho_k.backend_patient_states_path %>" class="nav-link ">
-                <span class="title"><%= t('.patient_states') %></span>
-                <% if ["erp/ortho_k/backend/patient_states"].include?(params[:controller]) %>
-                <span class="selected"></span>
-                <% end %>
-            </a>
-        </li>
+        <% if can? :menu_contacts_contacts, nil %>
+            <li class="nav-item <%= "active open" if ["erp/contacts/backend/contacts"].include?(params[:controller]) %>">
+                <a href="<%= erp_contacts.backend_contacts_path %>" class="nav-link ">
+                    <span class="title"><%= t('.contacts') %></span>
+                    <% if ["erp/contacts/backend/contacts"].include?(params[:controller]) %>
+                    <span class="selected"></span>
+                    <% end %>
+                </a>
+            </li>
+        <% end %>
+        <% if can? :menu_contacts_patient_states, nil %>
+            <li class="nav-item <%= "active open" if ["erp/ortho_k/backend/patient_states"].include?(params[:controller]) %>">
+                <a href="<%= erp_ortho_k.backend_patient_states_path %>" class="nav-link ">
+                    <span class="title"><%= t('.patient_states') %></span>
+                    <% if ["erp/ortho_k/backend/patient_states"].include?(params[:controller]) %>
+                    <span class="selected"></span>
+                    <% end %>
+                </a>
+            </li>
+        <% end %>
     </ul>
 </li>

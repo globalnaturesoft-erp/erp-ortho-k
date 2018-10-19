@@ -12,11 +12,15 @@
     <ul class="sub-menu" <% if ["erp/stock_transfers/backend/transfers"].include?(params[:controller]) || (params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "stock_transfering") %>
                             style="display: block;"
                         <% else %>style="display: none;"<% end %>>
-        <li class="nav-item <%= "active" if ["erp/stock_transfers/backend/transfers"].include?(params[:controller]) %>">
-            <%= link_to t('.stock_transfers'), erp_stock_transfers.backend_transfers_path, class: "nav-link ", title: t('.stock_transfers') %>
-        </li>
-        <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "stock_transfering" %>">
-            <%= link_to t('.stock_transfering'), erp_ortho_k.stock_transfering_backend_products_path, class: "nav-link ", title: t('.stock_transfering') %>
-        </li>
+        <% if can? :menu_inventory_stock_transfers_transfers, nil %>
+            <li class="nav-item <%= "active" if ["erp/stock_transfers/backend/transfers"].include?(params[:controller]) %>">
+                <%= link_to t('.stock_transfers'), erp_stock_transfers.backend_transfers_path, class: "nav-link ", title: t('.stock_transfers') %>
+            </li>
+        <% end %>
+        <% if can? :menu_inventory_stock_transfers_check_transfer, nil %>
+            <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "stock_transfering" %>">
+                <%= link_to t('.stock_transfering'), erp_ortho_k.stock_transfering_backend_products_path, class: "nav-link ", title: t('.stock_transfering') %>
+            </li>
+        <% end %>
     </ul>
 </li>

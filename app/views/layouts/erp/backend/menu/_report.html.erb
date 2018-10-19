@@ -44,8 +44,14 @@
         <% end %>
     </a>
     <ul class="sub-menu">
-        <%= render "layouts/erp/backend/menu/reports/inventory" %>
-        <%= render "layouts/erp/backend/menu/reports/sales" %>
-        <%= render "layouts/erp/backend/menu/reports/accounting" %>
+        <% if can? :menu_report_enventory, nil %>
+            <%= render "layouts/erp/backend/menu/reports/inventory" %>
+        <% end %>
+        <% if can? :menu_report_sales, nil %>
+            <%= render "layouts/erp/backend/menu/reports/sales" %>
+        <% end %>
+        <% if can? :menu_report_accounting, nil %>
+            <%= render "layouts/erp/backend/menu/reports/accounting" %>
+        <% end %>
     </ul>
 </li>

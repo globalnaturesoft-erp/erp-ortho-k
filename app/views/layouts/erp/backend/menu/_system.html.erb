@@ -24,12 +24,16 @@
         <% end %>
     </a>
     <ul class="sub-menu">
-        <%= render "layouts/erp/backend/menu/datas_setting/datas_setting" %>
-        <li class="nav-item ">
-            <a href="javascript:;" class="nav-link " title="Cảnh báo! Chức năng này đòi hỏi can thiệp sâu vào hệ thống. Do đó, chức năng đã bị vô hiệu hóa khỏi tất cả người dùng.">
-                <i class="icon-refresh"></i>
-                <span class="title"><%= t('.storage_and_recovery') %></span>
-            </a>
-        </li>
+        <% if can? :menu_system_datas_setting, nil %>
+            <%= render "layouts/erp/backend/menu/datas_setting/datas_setting" %>
+        <% end %>
+        <% if can? :menu_system_other, nil %>
+            <li class="nav-item ">
+                <a href="javascript:;" class="nav-link " title="Cảnh báo! Chức năng này đòi hỏi can thiệp sâu vào hệ thống. Do đó, chức năng đã bị vô hiệu hóa khỏi tất cả người dùng.">
+                    <i class="icon-refresh"></i>
+                    <span class="title"><%= t('.storage_and_recovery') %></span>
+                </a>
+            </li>
+        <% end %>
     </ul>
 </li>

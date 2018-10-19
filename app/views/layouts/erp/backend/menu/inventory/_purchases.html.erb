@@ -17,26 +17,38 @@
         <% end %>
     </a>
     <ul class="sub-menu">
-        <li class="nav-item <%= "active" if ["erp/purchase/backend/purchases"].include?(params[:controller]) %>">
-            <a href="<%= erp_purchase.backend_purchase_orders_path %>" class="nav-link ">
-                <span class="title">Đơn mua hàng</span>
-            </a>
-        </li>
-        <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "stock_importing" %>">
-            <a href="<%= erp_ortho_k.stock_importing_backend_products_path %>" class="nav-link ">
-                <span class="title">Dự toán mua hàng</span>
-            </a>
-        </li>
-        <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "purchasing_export" %>">
-            <a href="<%= erp_ortho_k.purchasing_export_backend_products_path %>" class="nav-link ">
-                <span class="title">Xuất tồn kho</span>
-            </a>
-        </li>
-        <li class="nav-item <%= "active" if ["erp/ortho_k/backend/setting"].include?(params[:controller]) %>">
-            <%= link_to 'Cấu hình phân vùng', erp_ortho_k.backend_setting_path, class: "nav-link ", title: 'Quản lý phân vùng/vùng trung tâm' %>
-        </li>
-        <% if Erp::Core.available?("prices") %>
-            <%= render "layouts/erp/backend/menu/prices/supplier_prices" %>
+        <% if can? :menu_purchase_purchase_orders, nil %>
+            <li class="nav-item <%= "active" if ["erp/purchase/backend/purchases"].include?(params[:controller]) %>">
+                <a href="<%= erp_purchase.backend_purchase_orders_path %>" class="nav-link ">
+                    <span class="title">Đơn mua hàng</span>
+                </a>
+            </li>
+        <% end %>
+        <% if can? :menu_purchase_purchase_purchase_estimation_stock_importing, nil %>
+            <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "stock_importing" %>">
+                <a href="<%= erp_ortho_k.stock_importing_backend_products_path %>" class="nav-link ">
+                    <span class="title">Dự toán mua hàng</span>
+                </a>
+            </li>
+        <% end %>
+        <% if can? :menu_purchase_purchase_purchase_estimation_purchasing_export, nil %>
+            <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "purchasing_export" %>">
+                <a href="<%= erp_ortho_k.purchasing_export_backend_products_path %>" class="nav-link ">
+                    <span class="title">Xuất tồn kho</span>
+                </a>
+            </li>
+        <% end %>
+        <% if can? :menu_purchase_purchase_purchase_estimation_product_area_config, nil %>
+            <li class="nav-item <%= "active" if ["erp/ortho_k/backend/setting"].include?(params[:controller]) %>">
+                <%= link_to 'Cấu hình phân vùng', erp_ortho_k.backend_setting_path, class: "nav-link ", title: 'Quản lý phân vùng/vùng trung tâm' %>
+            </li>
+        <% end %>
+        <% if can? :menu_purchase_supplier_prices, nil %>
+            <% if can? :purchase_supplier_prices_update_general, nil %><!--@todo: bỏ dòng này nếu mở menu giá riêng-->
+                <% if Erp::Core.available?("prices") %>
+                    <%= render "layouts/erp/backend/menu/prices/supplier_prices" %>
+                <% end %>
+            <% end %>
         <% end %>
     </ul>
 </li>

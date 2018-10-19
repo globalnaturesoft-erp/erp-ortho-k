@@ -18,35 +18,55 @@
         <% end %>
     </a>
     <ul class="sub-menu">
-        <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_pay_receive" %>">
-            <%= link_to "Báo cáo thu tiền hàng", erp_ortho_k.report_pay_receive_backend_accountings_path, class: "nav-link ", title: 'Báo cáo thu/chi theo thời gian' %>
-        </li>
-        <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_synthesis_pay_receive" %>">
-            <%= link_to "Tổng hợp thu/chi", erp_ortho_k.report_synthesis_pay_receive_backend_accountings_path, class: "nav-link ", title: 'Thông kê tổng hợp thu/chi theo loại thu chi' %>
-        </li>
-        <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_sales_results" %>">
-            <%= link_to "Kết quả bán hàng", erp_ortho_k.report_sales_results_backend_accountings_path, class: "nav-link ", title: 'Kết quả bán hàng, trả lại hàng thực tế theo thời gian' %>
-        </li>
-        <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_sales_summary" %>">
-            <%= link_to "Thống kê bán hàng", erp_ortho_k.report_sales_summary_backend_accountings_path, class: "nav-link ", title: 'Kết quả bán hàng, trả lại hàng thực tế theo thời gian' %>
-        </li>
-        <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_income_statement" %>">
-            <%= link_to "Kết quả kinh doanh", erp_ortho_k.report_income_statement_backend_accountings_path, class: "nav-link ", title: 'Báo cáo kết quả kinh doanh, biểu đồ doanh số' %>
-        </li>
-        <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_cash_flow" %>">
-            <%= link_to "Dòng tiền còn lại", erp_ortho_k.report_cash_flow_backend_accountings_path, class: "nav-link ", title: 'Báo cáo dòng tiền còn lại (theo tài khoản tiền mặt/ngân hàng)' %>
-        </li>
-        <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_customer_liabilities" %>">
-            <%= link_to "Báo cáo công nợ (KH)", erp_ortho_k.report_customer_liabilities_backend_accountings_path, class: "nav-link ", title: 'Báo cáo công nợ của khách hàng' %>
-        </li>
-        <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_supplier_liabilities" %>">
-            <%= link_to "Báo cáo công nợ (NCC)", erp_ortho_k.report_supplier_liabilities_backend_accountings_path, class: "nav-link ", title: 'Báo cáo công nợ từ NCC' %>
-        </li>
-        <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_liabilities_arising" %>">
-            <%= link_to "Báo cáo KH phát sinh", erp_ortho_k.report_liabilities_arising_backend_accountings_path, class: "nav-link ", title: 'Báo cáo danh sách khách hàng có phát sinh giao dịch' %>
-        </li>
-        <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_statistics_liabilities" %>">
-            <%= link_to "Thống kê công nợ (KH)", erp_ortho_k.report_statistics_liabilities_backend_accountings_path, class: "nav-link ", title: 'Báo cáo khách hàng còn nợ + NV kinh doanh' %>
-        </li>
+        <% if can? :menu_report_accounting_pay_receive, nil %>
+            <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_pay_receive" %>">
+                <%= link_to "Báo cáo thu tiền hàng", erp_ortho_k.report_pay_receive_backend_accountings_path, class: "nav-link ", title: 'Báo cáo thu/chi theo thời gian' %>
+            </li>
+        <% end %>
+        <% if can? :menu_report_accounting_synthesis_pay_receive, nil %>
+            <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_synthesis_pay_receive" %>">
+                <%= link_to "Tổng hợp thu/chi", erp_ortho_k.report_synthesis_pay_receive_backend_accountings_path, class: "nav-link ", title: 'Thông kê tổng hợp thu/chi theo loại thu chi' %>
+            </li>
+        <% end %>
+        <% if can? :menu_report_accounting_sales_results, nil %>
+            <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_sales_results" %>">
+                <%= link_to "Kết quả bán hàng", erp_ortho_k.report_sales_results_backend_accountings_path, class: "nav-link ", title: 'Kết quả bán hàng, trả lại hàng thực tế theo thời gian' %>
+            </li>
+        <% end %>
+        <% if can? :menu_report_accounting_sales_summary, nil %>
+            <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_sales_summary" %>">
+                <%= link_to "Thống kê bán hàng", erp_ortho_k.report_sales_summary_backend_accountings_path, class: "nav-link ", title: 'Kết quả bán hàng, trả lại hàng thực tế theo thời gian' %>
+            </li>
+        <% end %>
+        <% if can? :menu_report_accounting_income_statement, nil %>
+            <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_income_statement" %>">
+                <%= link_to "Kết quả kinh doanh", erp_ortho_k.report_income_statement_backend_accountings_path, class: "nav-link ", title: 'Báo cáo kết quả kinh doanh, biểu đồ doanh số' %>
+            </li>
+        <% end %>
+        <% if can? :menu_report_accounting_cash_flow, nil %>
+            <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_cash_flow" %>">
+                <%= link_to "Dòng tiền còn lại", erp_ortho_k.report_cash_flow_backend_accountings_path, class: "nav-link ", title: 'Báo cáo dòng tiền còn lại (theo tài khoản tiền mặt/ngân hàng)' %>
+            </li>
+        <% end %>
+        <% if can? :menu_report_accounting_customer_liabilities, nil %>
+            <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_customer_liabilities" %>">
+                <%= link_to "Báo cáo công nợ (KH)", erp_ortho_k.report_customer_liabilities_backend_accountings_path, class: "nav-link ", title: 'Báo cáo công nợ của khách hàng' %>
+            </li>
+        <% end %>
+        <% if can? :menu_report_accounting_supplier_liabilities, nil %>
+            <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_supplier_liabilities" %>">
+                <%= link_to "Báo cáo công nợ (NCC)", erp_ortho_k.report_supplier_liabilities_backend_accountings_path, class: "nav-link ", title: 'Báo cáo công nợ từ NCC' %>
+            </li>
+        <% end %>
+        <% if can? :menu_report_accounting_liabilities_arising, nil %>
+            <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_liabilities_arising" %>">
+                <%= link_to "Báo cáo KH phát sinh", erp_ortho_k.report_liabilities_arising_backend_accountings_path, class: "nav-link ", title: 'Báo cáo danh sách khách hàng có phát sinh giao dịch' %>
+            </li>
+        <% end %>
+        <% if can? :menu_report_accounting_statistics_liabilities, nil %>
+            <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_statistics_liabilities" %>">
+                <%= link_to "Thống kê công nợ (KH)", erp_ortho_k.report_statistics_liabilities_backend_accountings_path, class: "nav-link ", title: 'Báo cáo khách hàng còn nợ + NV kinh doanh' %>
+            </li>
+        <% end %>
     </ul>
 </li>

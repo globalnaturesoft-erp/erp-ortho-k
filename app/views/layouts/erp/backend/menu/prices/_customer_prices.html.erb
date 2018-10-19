@@ -11,11 +11,15 @@
         <% end %>
     </a>
     <ul class="sub-menu">
-        <li class="nav-item <%= "active" if (params[:controller] == "erp/prices/backend/customer_prices" && (params[:action] == "index" || params[:action] == "update_contact")) %>">
-            <%= link_to t('.customer_prices'), erp_prices.backend_customer_prices_path, class: "nav-link ", title: t('.customer_prices') %>
-        </li>
-        <li class="nav-item <%= "active" if (params[:controller] == "erp/prices/backend/customer_prices" && (params[:action] == "general" || params[:action] == "general_update")) %>">
-            <%= link_to t('.general_prices'), erp_prices.general_backend_customer_prices_path, class: "nav-link ", title: t('.general_prices') %>
-        </li>
+        <% if can? :menu_sales_customer_prices_update, nil? %>
+            <li class="nav-item <%= "active" if (params[:controller] == "erp/prices/backend/customer_prices" && (params[:action] == "index" || params[:action] == "update_contact")) %>">
+                <%= link_to t('.customer_prices'), erp_prices.backend_customer_prices_path, class: "nav-link ", title: t('.customer_prices') %>
+            </li>
+        <% end %>
+        <% if can? :menu_sales_customer_prices_update_general, nil? %>
+            <li class="nav-item <%= "active" if (params[:controller] == "erp/prices/backend/customer_prices" && (params[:action] == "general" || params[:action] == "general_update")) %>">
+                <%= link_to t('.general_prices'), erp_prices.general_backend_customer_prices_path, class: "nav-link ", title: t('.general_prices') %>
+            </li>
+        <% end %>
     </ul>
 </li>

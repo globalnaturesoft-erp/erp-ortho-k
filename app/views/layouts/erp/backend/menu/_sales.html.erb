@@ -18,13 +18,15 @@
         <span class="notification-badge-container notification-sales"></span>
     </a>
     <ul class="sub-menu">
-        <li class="nav-item <%= "active" if ["erp/sales/backend/sales"].include?(params[:controller]) %>">
-            <a href="<%= erp_sales.backend_sales_orders_path %>" class="nav-link ">
-                <span class="title"><%= t('.sales_orders') %></span>
-                <span class="notification-badge-container notification-sales_get_waiting_sales_orders"></span>
-            </a>
-        </li>
-        <% if Erp::Core.available?("gift_givens") %>
+        <% if can? :menu_sales_sales_orders, nil %>
+            <li class="nav-item <%= "active" if ["erp/sales/backend/sales"].include?(params[:controller]) %>">
+                <a href="<%= erp_sales.backend_sales_orders_path %>" class="nav-link ">
+                    <span class="title"><%= t('.sales_orders') %></span>
+                    <span class="notification-badge-container notification-sales_get_waiting_sales_orders"></span>
+                </a>
+            </li>
+        <% end %>
+        <% if Erp::Core.available?("gift_givens") and (can? :menu_sales_gift_givens, nil) %>
             <li class="nav-item <%= "active open" if ["erp/gift_givens/backend/givens"].include?(params[:controller]) %>">
                 <a href="<%= erp_gift_givens.backend_givens_path %>" class="nav-link ">
                     <span class="title">
@@ -36,7 +38,7 @@
                 </a>
             </li>
         <% end %>
-        <% if Erp::Core.available?("consignments") %>
+        <% if Erp::Core.available?("consignments") and (can? :menu_sales_consignments, nil) %>
             <li class="nav-item <%= "active open" if ["erp/consignments/backend/consignments"].include?(params[:controller]) %>">
                 <a href="<%= erp_consignments.backend_consignments_path %>" class="nav-link ">
                     <span class="title">
@@ -49,7 +51,7 @@
                 </a>
             </li>
         <% end %>
-        <% if Erp::Core.available?("prices") %>
+        <% if Erp::Core.available?("prices") and (can? :menu_sales_customer_prices, nil) %>
             <%= render "layouts/erp/backend/menu/prices/customer_prices" %>
         <% end %>
     </ul>
