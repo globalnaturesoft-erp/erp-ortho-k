@@ -35,7 +35,9 @@
                 <% if can? :menu_contact, nil %>
                     <%= render "layouts/erp/backend/menu/contact" %>
                 <% end %>
-                <%= render "layouts/erp/backend/menu/report" %>
+                <% if can? :menu_report, nil %>
+                    <%= render "layouts/erp/backend/menu/report" %>
+                <% end %>
                 <% if can? :menu_option, nil %>
                     <%= render "layouts/erp/backend/menu/option" %>
                 <% end %>

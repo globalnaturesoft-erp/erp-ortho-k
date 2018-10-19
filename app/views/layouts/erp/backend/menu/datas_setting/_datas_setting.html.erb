@@ -24,10 +24,10 @@
         <% end %>
     </a>
     <ul class="sub-menu">
-        <% if Erp::Core.available?("targets") %>
+        <% if Erp::Core.available?("targets") and false %><!--@todo: ẩn tạm thời #can? :menu_system_targets, nil-->
             <%= render "layouts/erp/backend/menu/datas_setting/targets/targets" %>
         <% end %>
-        <% if Erp::Core.available?("periods") %>
+        <% if Erp::Core.available?("periods") and can? :menu_system_periods, nil %>
             <li class="nav-item <%= "active open" if ["erp/periods/backend/periods"].include?(params[:controller]) %>">
                 <a href="<%= erp_periods.backend_periods_path %>" class="nav-link ">
                     <span class="title">Chu kỳ/mốc thời gian</span>
@@ -37,7 +37,7 @@
                 </a>
             </li>
         <% end %>
-        <% if Erp::Core.available?("taxes") %>
+        <% if Erp::Core.available?("taxes") and can? :menu_system_taxes, nil %>
             <li class="nav-item <%= "active open" if ["erp/taxes/backend/taxes"].include?(params[:controller]) %>">
                 <a href="<%= erp_taxes.backend_taxes_path %>" class="nav-link ">
                     <span class="title">Các loại thuế GTGT</span>
@@ -47,7 +47,7 @@
                 </a>
             </li>
         <% end %>
-        <% if Erp::Core.available?("areas") %>
+        <% if Erp::Core.available?("areas") and can? :menu_system_areas, nil %>
             <%= render "layouts/erp/backend/menu/datas_setting/areas/areas" %>
         <% end %>
     </ul>

@@ -26,52 +26,73 @@
                                (params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "import_export_report") %>
                             style="display: block;"
                         <% else %>style="display: none;"<% end %>>
-        <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "matrix_report" %>">
-            <%= link_to 'Tồn kho (ma trận)', erp_ortho_k.matrix_report_backend_products_path, class: "nav-link ", title: 'Tồn kho (ma trận)' %>
-        </li>
-        <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "delivery_report" %>">
-            <%= link_to 'Báo cáo xuất/nhập/tồn', erp_ortho_k.delivery_report_backend_products_path, class: "nav-link ", title: t('.delivery_report') %>
-        </li>
-        <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "import_export_report" %>">
-            <%= link_to 'Chi tiết xuất/nhập', erp_ortho_k.import_export_report_backend_products_path, class: "nav-link ", title: t('.import_export_report') %>
-        </li>
-
-        <li class="divider"><a><hr></a></li>
-
-        <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/inventory" && params[:action] == "report_category_diameter" %>">
-            <%= link_to "Tồn theo Loại/Đ.Kính", erp_ortho_k.report_category_diameter_backend_inventory_index_path, class: "nav-link ", title: 'Thống kê tồn kho theo Loại Len-Đường kính' %>
-        </li>
-        <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/inventory" && params[:action] == "report_code_diameter" %>">
-            <%= link_to "Tồn theo Mã/Đ.Kính", erp_ortho_k.report_code_diameter_backend_inventory_index_path, class: "nav-link ", title: 'Thống kê tồn kho theo Mã-Đường kính' %>
-        </li>
-        <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/inventory" && params[:action] == "report_product" %>">
-            <%= link_to "Tồn theo sản phẩm",
-                erp_ortho_k.report_product_backend_inventory_index_path,
-                class: "nav-link ",
-                title: 'Thống kê tồn kho theo sản phẩm'
-            %>
-        </li>
-        <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/inventory" && params[:action] == "report_custom_product" %>">
-            <%= link_to "Tồn theo SP Custom",
-                erp_ortho_k.report_custom_product_backend_inventory_index_path,
-                class: "nav-link ",
-                title: 'Thống kê tồn kho theo sản phẩm custom'
-            %>
-        </li>
-        <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/inventory" && params[:action] == "report_product_warehouse" %>">
-            <%= link_to "Sản phẩm/Kho",
-                erp_ortho_k.report_product_warehouse_backend_inventory_index_path,
-                class: "nav-link ",
-                title: 'Thống kê tồn kho theo sản phẩm'
-            %>
-        </li>
-        <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/inventory" && params[:action] == "report_central_area" %>">
-            <%= link_to "Tồn vùng T.Tâm",
-                erp_ortho_k.report_central_area_backend_inventory_index_path,
-                class: "nav-link ",
-                title: 'Thống kê tồn kho theo vùng trung tâm'
-            %>
-        </li>
+        <% if can? :menu_report_inventory_matrix, nil %>
+            <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "matrix_report" %>">
+                <%= link_to 'Tồn kho (ma trận)', erp_ortho_k.matrix_report_backend_products_path, class: "nav-link ", title: 'Tồn kho (ma trận)' %>
+            </li>
+        <% end %>
+        <% if can? :menu_report_inventory_delivery, nil %>
+            <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "delivery_report" %>">
+                <%= link_to 'Báo cáo xuất/nhập/tồn', erp_ortho_k.delivery_report_backend_products_path, class: "nav-link ", title: t('.delivery_report') %>
+            </li>
+        <% end %>
+        <% if can? :menu_report_inventory_import_export, nil %>
+            <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/products" && params[:action] == "import_export_report" %>">
+                <%= link_to 'Chi tiết xuất/nhập', erp_ortho_k.import_export_report_backend_products_path, class: "nav-link ", title: t('.import_export_report') %>
+            </li>
+        <% end %>
+        
+        <% if can? :ssssssssssssssss, nil %>
+            <li class="divider"><a><hr></a></li>
+        <% end %>
+        
+        <% if can? :menu_report_inventory_category_diameter, nil %>
+            <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/inventory" && params[:action] == "report_category_diameter" %>">
+                <%= link_to "Tồn theo Loại/Đ.Kính", erp_ortho_k.report_category_diameter_backend_inventory_index_path, class: "nav-link ", title: 'Thống kê tồn kho theo Loại Len-Đường kính' %>
+            </li>
+        <% end %>
+        <% if can? :menu_report_inventory_code_diameter, nil %>
+            <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/inventory" && params[:action] == "report_code_diameter" %>">
+                <%= link_to "Tồn theo Mã/Đ.Kính", erp_ortho_k.report_code_diameter_backend_inventory_index_path, class: "nav-link ", title: 'Thống kê tồn kho theo Mã-Đường kính' %>
+            </li>
+        <% end %>
+        <% if can? :menu_report_inventory_product, nil %>
+            <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/inventory" && params[:action] == "report_product" %>">
+                <%= link_to "Tồn theo sản phẩm",
+                    erp_ortho_k.report_product_backend_inventory_index_path,
+                    class: "nav-link ",
+                    title: 'Thống kê tồn kho theo sản phẩm'
+                %>
+            </li>
+        <% end %>
+        <% if can? :menu_report_inventory_custom_product, nil %>
+            <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/inventory" && params[:action] == "report_custom_product" %>">
+                <%= link_to "Tồn theo SP Custom",
+                    erp_ortho_k.report_custom_product_backend_inventory_index_path,
+                    class: "nav-link ",
+                    title: 'Thống kê tồn kho theo sản phẩm custom'
+                %>
+            </li>
+        <% end %>
+        <% if can? :menu_report_inventory_product_warehouse, nil %>
+            <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/inventory" && params[:action] == "report_product_warehouse" %>">
+                <%= link_to "Sản phẩm/Kho",
+                    erp_ortho_k.report_product_warehouse_backend_inventory_index_path,
+                    class: "nav-link ",
+                    title: 'Thống kê tồn kho theo sản phẩm'
+                %>
+            </li>
+        <% end %>
+        <% if can? :menu_report_inventory_central_area, nil %>
+            <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/inventory" && params[:action] == "report_central_area" %>">
+                <%= link_to "Tồn vùng T.Tâm",
+                    erp_ortho_k.report_central_area_backend_inventory_index_path,
+                    class: "nav-link ",
+                    title: 'Thống kê tồn kho theo vùng trung tâm'
+                %>
+            </li>
+        <% end %>
+        
         <!--<li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/inventory" && params[:action] == "report_custom_area" %>">
             <%= link_to "Thống kê theo vùng",
                 erp_ortho_k.report_custom_area_backend_inventory_index_path,
@@ -79,36 +100,47 @@
                 title: 'Thống kê tồn tùy chọn theo vùng'
             %>
         </li>-->
-        <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/inventory" && params[:action] == "report_custom_area_v2" %>">
-            <%= link_to "Thống kê theo vùng",
-                erp_ortho_k.report_custom_area_v2_backend_inventory_index_path,
-                class: "nav-link ",
-                title: 'Thống kê tồn tùy chọn theo vùng'
-            %>
-        </li>
-        <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/inventory" && params[:action] == "report_outside_product" %>">
-            <%= link_to "Len ngoài bảng", erp_ortho_k.report_outside_product_backend_inventory_index_path, class: "nav-link ", title: 'Thống kê len bảng' %>
-        </li>
-        <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/inventory" && params[:action] == "report_warehouse" %>">
-            <%= link_to "Thống kê theo kho",
-                erp_ortho_k.report_warehouse_backend_inventory_index_path,
-                class: "nav-link ",
-                title: 'Thống kê tồn theo kho / loại sản phẩm'
-            %>
-        </li>
-        <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/inventory" && params[:action] == "report_product_request" %>">
-            <%= link_to "Nhu cầu mua (ma trận)",
-                erp_ortho_k.report_product_request_backend_inventory_index_path,
-                class: "nav-link ",
-                title: 'Nhu cầu mua (ma trận)'
-            %>
-        </li>
-        <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/inventory" && params[:action] == "report_product_ordered" %>">
-            <%= link_to "Bán hàng (ma trận)",
-                erp_ortho_k.report_product_ordered_backend_inventory_index_path,
-                class: "nav-link ",
-                title: 'Bán hàng (ma trận)'
-            %>
-        </li>
+            
+        <% if can? :menu_report_inventory_custom_area_v2, nil %>
+            <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/inventory" && params[:action] == "report_custom_area_v2" %>">
+                <%= link_to "Thống kê theo vùng",
+                    erp_ortho_k.report_custom_area_v2_backend_inventory_index_path,
+                    class: "nav-link ",
+                    title: 'Thống kê tồn tùy chọn theo vùng'
+                %>
+            </li>
+        <% end %>
+        <% if can? :menu_report_inventory_outside_product, nil %>
+            <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/inventory" && params[:action] == "report_outside_product" %>">
+                <%= link_to "Len ngoài bảng", erp_ortho_k.report_outside_product_backend_inventory_index_path, class: "nav-link ", title: 'Thống kê len bảng' %>
+            </li>
+        <% end %>
+        <% if can? :menu_report_inventory_warehouse, nil %>
+            <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/inventory" && params[:action] == "report_warehouse" %>">
+                <%= link_to "Thống kê theo kho",
+                    erp_ortho_k.report_warehouse_backend_inventory_index_path,
+                    class: "nav-link ",
+                    title: 'Thống kê tồn theo kho / loại sản phẩm'
+                %>
+            </li>
+        <% end %>
+        <% if can? :menu_report_inventory_product_request, nil %>
+            <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/inventory" && params[:action] == "report_product_request" %>">
+                <%= link_to "Nhu cầu mua (ma trận)",
+                    erp_ortho_k.report_product_request_backend_inventory_index_path,
+                    class: "nav-link ",
+                    title: 'Nhu cầu mua (ma trận)'
+                %>
+            </li>
+        <% end %>
+        <% if can? :menu_report_inventory_product_ordered, nil %>
+            <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/inventory" && params[:action] == "report_product_ordered" %>">
+                <%= link_to "Bán hàng (ma trận)",
+                    erp_ortho_k.report_product_ordered_backend_inventory_index_path,
+                    class: "nav-link ",
+                    title: 'Bán hàng (ma trận)'
+                %>
+            </li>
+        <% end %>
     </ul>
 </li>

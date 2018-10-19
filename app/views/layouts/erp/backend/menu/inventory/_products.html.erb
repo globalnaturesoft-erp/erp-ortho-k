@@ -29,34 +29,44 @@
                                 "erp/products/backend/brands"].include?(params[:controller]) %>
                             style="display: block;"
                         <% else %>style="display: none;"<% end %>>
-        <li class="nav-item <%= "active" if ["erp/products/backend/products"].include?(params[:controller]) %>">
-            <%= link_to t('.products'), erp_products.backend_products_path, class: "nav-link ", title: t('.products') %>
-        </li>
-        <li class="nav-item <%= "active" if ["erp/products/backend/states"].include?(params[:controller]) %>">
-            <%= link_to t('.states'), erp_products.backend_states_path, class: "nav-link ", title: t('.states') %>
-        </li>
+        <% if can? :menu_inventory_products_products, nil %>
+            <li class="nav-item <%= "active" if ["erp/products/backend/products"].include?(params[:controller]) %>">
+                <%= link_to t('.products'), erp_products.backend_products_path, class: "nav-link ", title: t('.products') %>
+            </li>
+        <% end %>
+        <% if can? :menu_inventory_products_states, nil %>
+            <li class="nav-item <%= "active" if ["erp/products/backend/states"].include?(params[:controller]) %>">
+                <%= link_to t('.states'), erp_products.backend_states_path, class: "nav-link ", title: t('.states') %>
+            </li>
+        <% end %>
         <% if !Erp::Core.available?("ortho_k") %>
             <li class="nav-item <%= "active" if ["erp/products/backend/properties"].include?(params[:controller]) %>">
                 <%= link_to t('.properties'), erp_products.backend_properties_path, class: "nav-link ", title: t('.properties') %>
             </li>
         <% end %>
-        <li class="nav-item <%= "active" if ["erp/products/backend/categories"].include?(params[:controller]) %>">
-            <%= link_to t('.categories'), erp_products.backend_categories_path, class: "nav-link ", title: t('.categories') %>
-        </li>
-        <li class="nav-item <%= "active" if ["erp/products/backend/brands"].include?(params[:controller]) %>">
-            <%= link_to t('.brands'), erp_products.backend_brands_path, class: "nav-link ", title: t('.brands') %>
-        </li>
-        <% if Erp::Core.available?("warehouses") %>
-            <li class="nav-item <%= "active open" if ["erp/warehouses/backend/warehouses"].include?(params[:controller]) %>">
-                <a href="<%= erp_warehouses.backend_warehouses_path %>" class="nav-link ">
-                    <span class="title">
-                        Kho chứa hàng
-                    </span>
-                    <% if ["erp/warehouses/backend/warehouses"].include?(params[:controller]) %>
-                        <span class="selected"></span>
-                    <% end %>
-                </a>
+        <% if can? :menu_inventory_products_categories, nil %>
+            <li class="nav-item <%= "active" if ["erp/products/backend/categories"].include?(params[:controller]) %>">
+                <%= link_to t('.categories'), erp_products.backend_categories_path, class: "nav-link ", title: t('.categories') %>
             </li>
+        <% end %>
+        <% if can? :menu_inventory_products_brands, nil %>
+            <li class="nav-item <%= "active" if ["erp/products/backend/brands"].include?(params[:controller]) %>">
+                <%= link_to t('.brands'), erp_products.backend_brands_path, class: "nav-link ", title: t('.brands') %>
+            </li>
+        <% end %>
+        <% if can? :menu_inventory_products_warehouses, nil %>
+            <% if Erp::Core.available?("warehouses") %>
+                <li class="nav-item <%= "active open" if ["erp/warehouses/backend/warehouses"].include?(params[:controller]) %>">
+                    <a href="<%= erp_warehouses.backend_warehouses_path %>" class="nav-link ">
+                        <span class="title">
+                            Kho chứa hàng
+                        </span>
+                        <% if ["erp/warehouses/backend/warehouses"].include?(params[:controller]) %>
+                            <span class="selected"></span>
+                        <% end %>
+                    </a>
+                </li>
+            <% end %>
         <% end %>
     </ul>
 </li>

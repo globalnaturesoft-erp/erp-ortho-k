@@ -413,9 +413,12 @@ module Erp
 
         # Stock importing
         def stock_transfering
+          authorize! :inventory_stock_transfers_transfers_check_transfer, nil
         end
 
         def stock_transfering_table
+          authorize! :inventory_stock_transfers_transfers_check_transfer, nil
+          
           global_filters = params.to_unsafe_hash[:global_filter]
 
           @from_warehouse = global_filters[:from_warehouse].present? ? Erp::Warehouses::Warehouse.find(global_filters[:from_warehouse]) : nil

@@ -81,7 +81,7 @@
     </a>
     <ul class="sub-menu">
 
-        <% if Erp::Core.available?("order_stock_checks") %>
+        <% if Erp::Core.available?("order_stock_checks") and can? :menu_inventory_order_stock_checks, nil %>
             <li class="nav-item <%= "active open" if ["erp/order_stock_checks/backend/schecks"].include?(params[:controller]) %>">
                 <a href="<%= erp_order_stock_checks.backend_schecks_path %>" class="nav-link ">
                     <span class="title">
@@ -97,22 +97,24 @@
             </li>
         <% end %>
 
-        <% if Erp::Core.available?("qdeliveries") %>
+        <% if Erp::Core.available?("qdeliveries") and can? :menu_inventory_qdeliveries, nil %>
             <%= render "layouts/erp/backend/menu/inventory/qdeliveries" %>
         <% end %>
 
-        <% if Erp::Core.available?("stock_transfers") %>
+        <% if Erp::Core.available?("stock_transfers") and can? :menu_inventory_stock_transfers, nil %>
             <%= render "layouts/erp/backend/menu/inventory/transfers" %>
         <% end %>
 
-        <% if Erp::Core.available?("stock_transfers") %>
+        <% if Erp::Core.available?("products") and can? :menu_inventory_warehouse_checks, nil %>
             <%= render "layouts/erp/backend/menu/inventory/warehouse_check" %>
         <% end %>
 
-        <% if Erp::Core.available?("products") %>
+        <% if Erp::Core.available?("products") and can? :menu_inventory_products, nil %>
             <%= render "layouts/erp/backend/menu/inventory/products" %>
         <% end %>
-
-        <%= render "layouts/erp/backend/menu/inventory/purchases" %>
+        
+        <% if can? :menu_purchase_purchase, nil %>
+            <%= render "layouts/erp/backend/menu/inventory/purchases" %>
+        <% end %>
     </ul>
 </li>

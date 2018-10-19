@@ -20,22 +20,28 @@
                             "erp/qdeliveries/backend/purchases"].include?(params[:controller]) %>
                             style="display: block;"
                         <% else %>style="display: none;"<% end %>>
-        <li class="nav-item <%= "active" if ["erp/qdeliveries/backend/deliveries"].include?(params[:controller]) %>">
-            <%= link_to t('.deliveries'), erp_qdeliveries.backend_deliveries_path, class: "nav-link ", title: t('.deliveries') %>
-        </li>
-        <li class="nav-item <%= "active" if ["erp/qdeliveries/backend/sales"].include?(params[:controller]) %>">
-            <a class="nav-link" href="<%= erp_qdeliveries.backend_sales_orders_path %>">
-                Xuất/Nhập bán hàng
-
-                <span class="notification-badge-container notification-inventory_get_wait_for_delivery_sales_orders"></span>
-            </a>
-        </li>
-        <li class="nav-item <%= "active" if ["erp/qdeliveries/backend/purchases"].include?(params[:controller]) %>">
-            <a class="nav-link" href="<%= erp_qdeliveries.backend_purchases_orders_path %>">
-                Xuất/Nhập mua hàng
-
-                <span class="notification-badge-container notification-inventory_get_wait_for_delivery_purchase_orders"></span>
-            </a>
-        </li>
+        <% if can? :menu_inventory_qdeliveries_deliveries, nil %>
+            <li class="nav-item <%= "active" if ["erp/qdeliveries/backend/deliveries"].include?(params[:controller]) %>">
+                <%= link_to t('.deliveries'), erp_qdeliveries.backend_deliveries_path, class: "nav-link ", title: t('.deliveries') %>
+            </li>
+        <% end %>
+        <% if can? :menu_inventory_qdeliveries_orders_sales_orders, nil %>
+            <li class="nav-item <%= "active" if ["erp/qdeliveries/backend/sales"].include?(params[:controller]) %>">
+                <a class="nav-link" href="<%= erp_qdeliveries.backend_sales_orders_path %>">
+                    Xuất/Nhập bán hàng
+    
+                    <span class="notification-badge-container notification-inventory_get_wait_for_delivery_sales_orders"></span>
+                </a>
+            </li>
+        <% end %>
+        <% if can? :menu_inventory_qdeliveries_orders_purchase_orders, nil %>
+            <li class="nav-item <%= "active" if ["erp/qdeliveries/backend/purchases"].include?(params[:controller]) %>">
+                <a class="nav-link" href="<%= erp_qdeliveries.backend_purchases_orders_path %>">
+                    Xuất/Nhập mua hàng
+    
+                    <span class="notification-badge-container notification-inventory_get_wait_for_delivery_purchase_orders"></span>
+                </a>
+            </li>
+        <% end %>
     </ul>
 </li>

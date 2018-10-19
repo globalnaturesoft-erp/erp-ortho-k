@@ -33,26 +33,35 @@
         <span class="notification-badge-container notification-accounting"></span>
     </a>
     <ul class="sub-menu">
-        <li class="nav-item <%= "active open" if
-            ["erp/payments/backend/payment_records"].include?(params[:controller]) &&
-            !["sales_orders_tracking","liabilities_tracking","supplier_liabilities_tracking",
-              "customer_commission","commission","target_commission"].include?(params[:action])
-        %>">
-            <a href="<%= erp_payments.backend_payment_records_path %>" class="nav-link ">
-                <span class="title"><%= t('.cash_book') %></span>
-                <% if ["erp/payments/backend/payment_records"].include?(params[:controller]) %>
-                <span class="selected"></span>
-                <% end %>
-            </a>
-        </li>
-
-        <%= render "layouts/erp/backend/menu/accounting/payment_chase" %>
-
-        <%= render "layouts/erp/backend/menu/accounting/liabilities" %>
-
-        <%= render "layouts/erp/backend/menu/accounting/commission" %>
-
-        <%= render "layouts/erp/backend/menu/accounting/option" %>
-
+        <% if can? :menu_accounting_payments_payment_records, nil %>
+            <li class="nav-item <%= "active open" if
+                ["erp/payments/backend/payment_records"].include?(params[:controller]) &&
+                !["sales_orders_tracking","liabilities_tracking","supplier_liabilities_tracking",
+                  "customer_commission","commission","target_commission"].include?(params[:action])
+            %>">
+                <a href="<%= erp_payments.backend_payment_records_path %>" class="nav-link ">
+                    <span class="title"><%= t('.cash_book') %></span>
+                    <% if ["erp/payments/backend/payment_records"].include?(params[:controller]) %>
+                    <span class="selected"></span>
+                    <% end %>
+                </a>
+            </li>
+        <% end %>
+        
+        <% if can? :menu_accounting_chase_chase, nil %>
+            <%= render "layouts/erp/backend/menu/accounting/payment_chase" %>
+        <% end %>
+        
+        <% if can? :menu_accounting_chase_liabilities, nil %>
+            <%= render "layouts/erp/backend/menu/accounting/liabilities" %>
+        <% end %>
+        
+        <% if can? :menu_dang_doi_orthok_xem_lai_phan_hoa_hong, nil %>
+            <%= render "layouts/erp/backend/menu/accounting/commission" %>
+        <% end %>
+        
+        <% if can? :menu_accounting_payments_option, nil %>
+            <%= render "layouts/erp/backend/menu/accounting/option" %>
+        <% end %>
     </ul>
 </li>

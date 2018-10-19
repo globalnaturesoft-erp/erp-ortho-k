@@ -23,20 +23,26 @@
     %>
       style="display: block;"
     <% else %>style="display: none;"<% end %>>
-         <li class="nav-item <%= "active open" if (params[:controller] == "erp/payments/backend/payment_records" && params[:action] == "sales_orders_tracking") %>">
-            <a href="<%= erp_payments.sales_orders_tracking_backend_payment_records_path %>" class="nav-link ">
-                <span class="title">Bán lẻ/Phòng khám</span>
-            </a>
-        </li>
-        <li class="nav-item <%= "active open" if (params[:controller] == "erp/payments/backend/payment_records" && params[:action] == "liabilities_tracking") %>">
-            <a href="<%= erp_payments.liabilities_tracking_backend_payment_records_path %>" class="nav-link ">
-                <span class="title">Khách hàng</span>
-            </a>
-        </li>
-        <li class="nav-item <%= "active open" if (params[:controller] == "erp/payments/backend/payment_records" && params[:action] == "supplier_liabilities_tracking") %>">
-            <a href="<%= erp_payments.supplier_liabilities_tracking_backend_payment_records_path %>" class="nav-link ">
-                <span class="title">Nhà cung cấp</span>
-            </a>
-        </li>
+        <% if can? :menu_accounting_chase_liabilities_tracking_retail, nil %>
+            <li class="nav-item <%= "active open" if (params[:controller] == "erp/payments/backend/payment_records" && params[:action] == "sales_orders_tracking") %>">
+                <a href="<%= erp_payments.sales_orders_tracking_backend_payment_records_path %>" class="nav-link ">
+                    <span class="title">Bán lẻ/Phòng khám</span>
+                </a>
+            </li>
+        <% end %>
+        <% if can? :menu_accounting_chase_liabilities_tracking_customer, nil %>
+            <li class="nav-item <%= "active open" if (params[:controller] == "erp/payments/backend/payment_records" && params[:action] == "liabilities_tracking") %>">
+                <a href="<%= erp_payments.liabilities_tracking_backend_payment_records_path %>" class="nav-link ">
+                    <span class="title">Khách hàng</span>
+                </a>
+            </li>
+        <% end %>
+        <% if can? :menu_accounting_chase_liabilities_tracking_supplier, nil %>
+            <li class="nav-item <%= "active open" if (params[:controller] == "erp/payments/backend/payment_records" && params[:action] == "supplier_liabilities_tracking") %>">
+                <a href="<%= erp_payments.supplier_liabilities_tracking_backend_payment_records_path %>" class="nav-link ">
+                    <span class="title">Nhà cung cấp</span>
+                </a>
+            </li>
+        <% end %>
     </ul>
 </li>

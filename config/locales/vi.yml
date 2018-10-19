@@ -5,8 +5,8 @@ vi:
     group_purchase: 'Mua hàng'
     group_accounting: 'Kế toán'
     group_contacts: 'Danh bạ'
-    group_options: 'Cài đặt dữ liệu'
-    group_system: 'Hệ thống'
+    group_options: 'Bảo mật & Đăng nhập'
+    group_system: 'Cấu hình & Cài đặt hệ thống'
     group_report: 'Thống kê & Báo cáo'
     inventory:
       engine_order_stock_checks: 'Kiểm tra đơn hàng'      
@@ -348,11 +348,57 @@ vi:
           update: 'Cập nhật'
     system:
       system:
-        controller_system: 'Cấu hình hệ thống'
+        controller_system: 'Sao lưu & Phục hồi sự cố'
         system:
           settings: 'Cấu hình'
           backup: 'Sao lưu'
           restore: 'Phục hồi'
+      periods:
+        controller_periods: 'Chu kỳ/mốc thời gian (tháng, quý, ...)'
+        periods:
+          index: 'Xem danh sách'
+          create: 'Tạo/thêm mới'
+          update: 'Cập nhật'
+          delete: 'Xóa chu kỳ'
+      taxes:
+        controller_taxes: 'Các loại thuế GTGT'
+        taxes:
+          index: 'Xem danh sách'
+          create: 'Tạo/thêm mới'
+          update: 'Cập nhật'
+          delete: 'Xóa thuế'
+      areas:
+        controller_countries: 'Nước (Quốc gia/KV/Lãnh thổ)'
+        controller_states: 'Tỉnh/Thành phố (hoặc tiểu bang)'
+        controller_districts: 'Quận/Huyện/Thị xã'
+        countries:
+          index: 'Xem danh sách'
+          create: 'Tạo/thêm mới'
+          update: 'Cập nhật'
+          delete: 'Xóa nước'
+        states:
+          index: 'Xem danh sách'
+          create: 'Tạo/thêm mới'
+          update: 'Cập nhật'
+          delete: 'Xóa tỉnh/TP'
+        districts:
+          index: 'Xem danh sách'
+          create: 'Tạo/thêm mới'
+          update: 'Cập nhật'
+          delete: 'Xóa quận/huyện/t.xã'
+      targets:
+        controller_staff_target: 'Mục tiêu kinh doanh (target nhân viên)'
+        controller_company_target: 'Mục tiêu kinh doanh (target công ty)'
+        staff_target:
+          index: 'Xem danh sách'
+          create: 'Tạo/thêm mới'
+          update: 'Cập nhật'
+          delete: 'Xóa target n.viên'
+        company_target:
+          index: 'Xem danh sách'
+          create: 'Tạo/thêm mới'
+          update: 'Cập nhật'
+          delete: 'Xóa target c.ty'
   or: "và"
   left_eye: "MT"
   right_eye: "MP"
