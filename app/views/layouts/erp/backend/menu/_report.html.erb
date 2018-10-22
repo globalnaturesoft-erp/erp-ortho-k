@@ -15,7 +15,8 @@
                                          (params[:controller] == "erp/ortho_k/backend/inventory") ||
                                          (params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_statistics_liabilities") ||
                                          (params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_liabilities_arising") ||
-                                         (params[:controller] == "erp/ortho_k/backend/sales") %>">
+                                         (params[:controller] == "erp/ortho_k/backend/sales") ||
+                                         (params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_customer_remaining_liabilities_by_monthly") %>">
     <a href="javascript:;" class="nav-link nav-toggle">
         <i class="glyphicon glyphicon-calendar"></i>
         <span class="title">Thống kê/Báo cáo</span>
@@ -36,7 +37,8 @@
               (params[:controller] == "erp/ortho_k/backend/inventory") ||
               (params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_statistics_liabilities") ||
               (params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_liabilities_arising") ||
-              (params[:controller] == "erp/ortho_k/backend/sales") %>
+              (params[:controller] == "erp/ortho_k/backend/sales") ||
+              (params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_customer_remaining_liabilities_by_monthly") %>
             <span class="selected"></span>
             <span class="arrow open"></span>
         <% else %>

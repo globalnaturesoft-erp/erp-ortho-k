@@ -692,6 +692,15 @@ module Erp
             }
           end
         end
+        
+        def report_customer_remaining_liabilities_by_monthly
+        end
+        
+        def report_customer_remaining_liabilities_by_monthly_table
+        end
+        
+        def report_customer_remaining_liabilities_by_monthly_xlsx
+        end
       end
     end
   end

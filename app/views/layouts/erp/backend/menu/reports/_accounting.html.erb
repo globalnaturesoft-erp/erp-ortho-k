@@ -7,7 +7,8 @@
                                          (params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_customer_liabilities") ||
                                          (params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_supplier_liabilities") ||
                                          (params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_statistics_liabilities") ||
-                                         (params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_liabilities_arising") %>">
+                                         (params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_liabilities_arising") ||
+                                         (params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_customer_remaining_liabilities_by_monthly") %>">
     <a href="javascript:;" class="nav-link nav-toggle">
         <span class="title">Kế toán</span>
         <% if false %>
@@ -68,5 +69,8 @@
                 <%= link_to "Thống kê công nợ (KH)", erp_ortho_k.report_statistics_liabilities_backend_accountings_path, class: "nav-link ", title: 'Báo cáo khách hàng còn nợ + NV kinh doanh' %>
             </li>
         <% end %>
+        <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_customer_remaining_liabilities_by_monthly" %>">
+            <%= link_to "B.cáo CN KH theo tháng", erp_ortho_k.report_customer_remaining_liabilities_by_monthly_backend_accountings_path, class: "nav-link ", title: 'Báo cáo công nợ khách hàng theo tháng' %>
+        </li>
     </ul>
 </li>
