@@ -535,4 +535,61 @@ Erp::Contacts::Contact.class_eval do
       }
     ]
   end
+  
+  # data for dataselect ajax
+  def self.dataselect(keyword='', params='')
+
+    query = self.all_active
+
+    if params[:contact_type].present?
+      query = query.where(contact_type: params[:contact_type])
+    end
+
+    if params[:is_customer].present?
+      query = query.where(is_customer: params[:is_customer])
+    end
+
+    if params[:is_supplier].present?
+      query = query.where(is_supplier: params[:is_supplier])
+    end
+
+    if params[:contact_group_id].present?
+      query = query.where(contact_group_id: params[:contact_group_id])
+    end
+
+    if params[:parent_id].present?
+      query = query.where(parent_id: params[:parent_id])
+    end
+    
+    if keyword.present?
+      keyword = keyword.strip.downcase
+      keyword.split(' ').each do |q|
+        q = q.strip
+        query = query.where('LOWER(erp_contacts_contacts.cache_search) LIKE ?', '%'+q+'%')
+      end
+    end
+
+    if params[:contact_id].present?
+      query = query.where.not(id: params[:contact_id])
+    end
+    
+    if params[:contact_group_id] == Erp::Contacts::ContactGroup::GROUP_DOCTOR.to_s
+      if params[:customer].present?
+        query = query.where(parent_id: params[:customer])
+      end
+    end
+    
+    if params[:contact_group_id] == Erp::Contacts::ContactGroup::GROUP_PATIENT.to_s      
+      if params[:customer].present?
+        if params[:doctor].present?
+          query = query.where(parent_id: params[:doctor])
+        else
+          doctors_query = Erp::Contacts::Contact.where(parent_id: params[:customer])
+          query = query.where(parent_id: doctors_query)
+        end
+      end
+    end
+
+    query = query.limit(25).map{|contact| {value: contact.id, text: contact.contact_name} }
+  end
 end
