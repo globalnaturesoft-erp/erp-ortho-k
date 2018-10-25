@@ -5,13 +5,10 @@
         <h4 class="font-blue-madison bold uppercase mb-15">
             Báo cáo công nợ khách hàng còn lại theo tháng <br>
             <span class="font-sm">
-                (Từ tháng 1/2018 đến tháng 10/2018)
-                <% if false %>
-                    <% if @period_name.nil? %>
-                        (<%= 'Từ ' + @from.strftime('%d/%m/%Y') if !@from.nil? %> <%= ' Đến ' + @to.strftime('%d/%m/%Y') if !@to.nil? %>)
-                    <% else %>
-                        (<%= 'Trong ' + @period_name %>)
-                    <% end %>
+                <% if @period_name.nil? %>
+                    (<%= 'Từ tháng ' + @from_date.strftime('%m/%Y') if !@from_date.nil? %> <%= ' Đến tháng ' + @to_date.strftime('%m/%Y') if !@to_date.nil? %>)
+                <% else %>
+                    (<%= @period_name %>)
                 <% end %>
             </span>
         </h4>
@@ -28,35 +25,62 @@
     <table class="table table-bordered order-column">
         <thead class="flip-content">
             <tr>
-                <th width="5%"  class="text-center bg-green-jungle bg-font-green-jungle text-nowrap">STT</th>
-                <th width="30%"  class="text-center bg-green-jungle bg-font-green-jungle text-nowrap">Tên khách hàng</th>
-                <% (1..10).each do |month| %>
-                    <th width="10%" class="text-center bg-green-jungle bg-font-green-jungle text-nowrap">T<%= month %>/2018</th>
+                <% @report[:header].each do |title| %>
+                    <th class="text-center bg-green-jungle bg-font-green-jungle text-nowrap"><%= title %></th>
                 <% end %>
-                <th width="20%" class="text-center bg-green-jungle bg-font-green-jungle text-nowrap">NV bán hàng</th>
             </tr>
         </thead>
         <tbody>
-            <% (1..20).each_with_index do |customer, index| %>
+            <% @report[:rows].each do |row| %>
                 <tr>
-                    <td class="text-center"><%= index+1 %></td>
-                    <td class="text-left"><%= 'BV MẮT THÀNH PHỐ' %></td>
-                    <% (1..10).each do |month| %>
-                        <td class="text-right">
-                            <%= format_number(rand(0..200000000)) %>
+                    <% row.each_with_index do |data,index| %>
+                        <%
+                            text_align = ''
+                            if index == 0 # CỘT SỐ THỨ TỰ #0
+                                text_align = 'text-center'
+                            elsif index == 1 # CỘT TÊN KHÁCH HÀNG #1
+                                text_align = 'text-left'
+                            elsif index == (row.count - 1) # CỘT NV PHỤ TRÁCH #last
+                                text_align = 'text-left'
+                            else
+                                text_align = 'text-right' # CÁC CỘT THÁNG
+                            end
+                        %>
+                        <td class="<%= text_align %>">
+                            <%=
+                                if is_number?(data)
+                                    format_number(data)
+                                else
+                                    data
+                                end
+                            %>
                         </td>
                     <% end %>
-                    <td class="text-center">
-                        <%= 'Nguyễn Văn A' %>
-                    </td>
                 </tr>
             <% end %>
             <tr>
-                <td class="bg-green-jungle bg-font-green-jungle border-green-jungle text-center bold" colspan="2">TỔNG CỘNG</td>
-                <% (1..10).each do |month| %>
-                    <td class="bg-green-jungle bg-font-green-jungle border-green-jungle text-right bold"><%= format_number(rand(0..200000000)) %></td>
+                <% @report[:footer].each_with_index do |total,index| %>
+                    <%
+                        colspan = nil
+                        text_align = nil
+                        if index == 0
+                            colspan = 2
+                            text_align = 'text-center'
+                        else
+                            text_align = 'text-right'
+                        end
+                    %>
+                    <td class="bg-green-jungle bg-font-green-jungle border-green-jungle <%= text_align %> bold"
+                    colspan="<%= colspan %>">
+                        <%=
+                            if is_number?(total)
+                                format_number(total)
+                            else
+                                total
+                            end
+                        %>
+                    </td>
                 <% end %>
-                <td class="bg-green-jungle bg-font-green-jungle border-green-jungle text-center bold"></td>
             </tr>
         </tbody>
     </table>

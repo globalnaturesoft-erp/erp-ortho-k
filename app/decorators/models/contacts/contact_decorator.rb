@@ -515,6 +515,11 @@ Erp::Contacts::Contact.class_eval do
     self.get_purchase_payment_chasing_contacts(options).or(self.get_purchase_debt_amount_residual_contacts)
   end
   
+  # cache_sales_debt_amount
+  def self.cache_sales_debt_amount
+    self.sum("erp_contacts_contacts.cache_sales_debt_amount")
+  end
+  
   CONTACT_GROUPS_ALL = 'contact_all'
   CONTACT_GROUPS_FARGO_HN = 'contact_is_fargo_hn'
   CONTACT_GROUPS_NOT_FARGO_HN = 'contact_is_not_fargo_hn'

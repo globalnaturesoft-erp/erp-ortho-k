@@ -37,12 +37,31 @@
         </div>
         <div class="col-md-3">
             <%= erp_form_control("dataselect", {
+                name: 'salesperson_id',
+                label: 'Nhân viên kinh doanh',
+                placeholder: 'Tìm theo n.viên k.doanh/phụ trách',
+                url: erp.dataselect_backend_users_path(format: 'json'),
+                multiple: true
+            }) %>
+        </div>
+        <div class="col-md-3">
+            <%= erp_form_control("dataselect", {
+                name: 'contact_group_id',
+                label: 'Nhóm liên hệ',
+                placeholder: 'Tìm theo nhóm',
+                url: erp_contacts.dataselect_backend_contact_groups_path(format: 'json'),
+                multiple: true
+            }) %>
+        </div>
+        <div class="col-md-3">
+            <%= erp_form_control("dataselect", {
                 name: 'customer',
                 value: (dfilters["customer"].present? ? Erp::Contacts::Contact.find(dfilters["customer"]).id : nil),
                 text: (dfilters["customer"].present? ? Erp::Contacts::Contact.find(dfilters["customer"]).name : nil),
                 label: t('.filter_customer'),
                 placeholder: t('.choose_customer'),
-                url: erp_contacts.dataselect_backend_contacts_path(format: 'json', is_customer: true, contact_id: Erp::Contacts::Contact.get_main_contact)
+                url: erp_contacts.dataselect_backend_contacts_path(format: 'json', is_customer: true, contact_id: Erp::Contacts::Contact.get_main_contact),
+                multiple: true
             }) %>
         </div>
     </div>
