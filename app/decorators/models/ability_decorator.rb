@@ -159,6 +159,7 @@ Erp::Ability.class_eval do
     can :report_accounting_supplier_liabilities, :all if user.get_permission(:report, :report, :accounting, :supplier_liabilities) == 'yes'
     can :report_accounting_liabilities_arising, :all if user.get_permission(:report, :report, :accounting, :liabilities_arising) == 'yes'
     can :report_accounting_statistics_liabilities, :all if user.get_permission(:report, :report, :accounting, :statistics_liabilities) == 'yes'
+    can :report_accounting_customer_remaining_liabilities_by_monthly, :all if user.get_permission(:report, :report, :accounting, :customer_remaining_liabilities_by_monthly) == 'yes'
     
     # cai dat du lieu he thong (nguoi dung, phan quyen,...)
     if user == Erp::User.get_super_admin or user.get_permission(:options, :users, :users, :index) == 'yes'

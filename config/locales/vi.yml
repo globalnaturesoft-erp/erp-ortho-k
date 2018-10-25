@@ -305,6 +305,7 @@ vi:
           supplier_liabilities: 'Báo cáo công nợ (NCC)'
           liabilities_arising: 'Báo cáo khách hàng phát sinh'
           statistics_liabilities: 'Thống kê công nợ (KH)'
+          customer_remaining_liabilities_by_monthly: 'B.cáo CN KH còn lại theo tháng'
           
           #pay_receive_details: 'Báo cáo thu/chi tiền hàng'
           #payment_types: 'Tổng hợp thu/chi'

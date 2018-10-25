@@ -1,0 +1,128 @@
+wb = xlsx_package.workbook
+xlsx_package.use_autowidth = true
+wb.styles do |s|
+  wb.styles.fonts.first.name = 'Calibri'
+  wb.add_worksheet(name: 'BC CN KH còn lại theo tháng') do |sheet|
+    # style
+    bg_info = {:bg_color => "00b050", :fg_color => "FF"}
+    bg_footer = {:bg_color => "00b050", :fg_color => "FF"}
+    bg_row = {:bg_color => "daeef3", :fg_color => "00"}
+    text_center = {alignment: { horizontal: :center }}
+    text_left = {alignment: { horizontal: :left }}
+    text_right = {alignment: { horizontal: :right }}
+    vertical_center = {alignment: { vertical: :center }}
+    text_middle = {alignment: { horizontal: :center, vertical: :center }}
+    number = {format_code: '#,##0'}
+    border = {border: { style: :thin, color: "525252", :edges => [:left, :right, :bottom] }}
+    bold = {b: true}
+    italic = {i: true}
+    
+    # Top head
+    sheet.add_row ["CÔNG TY TNHH ORTHO-K VIỆT NAM"], b: true
+    sheet.add_row ["535 An Dương Vương, Phường 8, Quận 5, TP. Hồ Chí Minh, Việt Nam"], b: true
+    
+    # add empty row
+    sheet.add_row [nil]
+    
+    date = "#{'TỪ THÁNG ' + @from_date.to_date.strftime('%m/%Y') if !@from_date.nil?}#{' ĐẾN THÁNG ' + @to_date.to_date.strftime('%m/%Y') if !@to_date.nil?}"
+    
+    sheet.add_row ['BÁO CÁO CÔNG NỢ KHÁCH HÀNG CÒN LẠI THEO THÁNG'], sz: 16, b: true, style: (s.add_style text_center)
+    sheet.add_row ["(#{date})"], sz: 12, style: (s.add_style text_center)
+    
+    # add empty row
+    sheet.add_row [nil]
+    
+    num_row = 6
+    
+    # header
+    header = {columns: [], styles: []}
+    footer = {columns: [], styles: []}
+    column_widths = []
+    
+    num_col = -1
+    @report[:header].each_with_index do |title,index|
+      header[:columns] << title
+      header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
+      
+      num_col += 1
+      
+      column_width = nil
+      if index == 0 # CỘT SỐ THỨ TỰ #0
+        column_width = 5
+      elsif index == 1 # CỘT TÊN KHÁCH HÀNG #1
+        column_width = 35
+      elsif index == (@report[:header].count - 1) # CỘT NV PHỤ TRÁCH #last
+        column_width = 25
+      else
+        column_width = 15 # CÁC CỘT THÁNG
+      end
+      column_widths << column_width
+    end
+    
+    @report[:footer].each_with_index do |total,index|
+      text_align = {}
+      if index == 0 # CỘT SỐ THỨ TỰ #0
+        text_align = text_center
+      else
+        text_align = text_right # CÁC CỘT THÁNG
+      end
+      
+      format_number = {}
+      if is_number?(total)
+        format_number = number
+      end
+      
+      footer[:columns] << total
+      footer[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(border).deep_merge(text_middle).deep_merge(format_number).deep_merge(text_align))
+      
+      if index == 0
+        footer[:columns] << nil
+        footer[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(border).deep_merge(text_left))
+      end
+    end
+    
+    sheet.add_row header[:columns], style: header[:styles], height: 25
+    num_row += 1
+    
+    # rows
+    @report[:rows].each do |row_data|
+      row = {columns: [], styles: []}
+      
+      row_data.each_with_index do |data,index|
+        
+        text_align = text_left
+        if index == 0 # CỘT SỐ THỨ TỰ #0
+          text_align = text_center
+        elsif index == 1 # CỘT TÊN KHÁCH HÀNG #1
+          text_align = text_left
+        elsif index == (row_data.count - 1) # CỘT NV PHỤ TRÁCH #last
+          text_align = text_left
+        else
+          text_align = text_right # CÁC CỘT THÁNG
+        end
+        
+        format_number = {}
+        if is_number?(data)
+          format_number = number
+        end
+        
+        row[:columns] << data
+        row[:styles] << (s.add_style text_align.deep_merge(border).deep_merge(bg_row).deep_merge(format_number))
+      end
+    
+      sheet.add_row row[:columns], style: row[:styles]
+      num_row += 1
+    end
+    
+    # footer
+    sheet.add_row footer[:columns], style: footer[:styles], height: 25
+    num_row += 1
+    sheet.merge_cells("A#{num_row}:B#{num_row}")
+    
+    # Setup
+    sheet.merge_cells("#{('A'.codepoints.first).chr}4:#{('A'.codepoints.first + num_col).chr}4")
+    sheet.merge_cells("#{('A'.codepoints.first).chr}5:#{('A'.codepoints.first + num_col).chr}5")
+    
+    sheet.column_widths *column_widths
+  end
+end

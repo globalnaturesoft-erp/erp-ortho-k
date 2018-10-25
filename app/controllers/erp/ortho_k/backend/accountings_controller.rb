@@ -694,12 +694,114 @@ module Erp
         end
         
         def report_customer_remaining_liabilities_by_monthly
+          authorize! :report_accounting_customer_remaining_liabilities_by_monthly, nil
         end
         
         def report_customer_remaining_liabilities_by_monthly_table
+          authorize! :report_accounting_customer_remaining_liabilities_by_monthly, nil
+          
+          global_filters = params.to_unsafe_hash[:global_filter]
+          
+          if global_filters[:period].present?
+            period = Erp::Periods::Period.find(global_filters[:period])
+            global_filters[:from_date] = period.from_date
+            global_filters[:to_date] = period.to_date
+            @period_name = period.name
+          end
+          
+          if global_filters[:from_date].present? and global_filters[:to_date].present?
+            @from_date = global_filters[:from_date].to_date
+            @to_date = global_filters[:to_date].to_date
+            
+            @times = []
+            @time = @from_date
+            
+            while @time <= @to_date.end_of_month
+              @times << @time.end_of_month
+              @time += 1.month
+            end
+            
+            @report = {
+              header: [],
+              rows: [],
+              footer: []
+            }
+            
+            # add header
+            @report[:header] << 'STT'
+            @report[:header] << 'Tên khách hàng'
+            @times.each do |time|
+              @report[:header] << "T#{time.month}/#{time.year}"
+            end
+            @report[:header] << 'Hiện đang nợ'
+            @report[:header] << 'N.viên ph.trách'
+            
+            if global_filters[:customer].present?
+              @contacts = Erp::Contacts::Contact.where(id: global_filters[:customer])
+            else
+              @contacts = Erp::Contacts::Contact.where.not(id: Erp::Contacts::Contact.get_main_contact.id)
+            end
+            
+            if global_filters[:contact_group_id].present?
+              @contacts = @contacts.where(contact_group_id: global_filters[:contact_group_id])
+            end
+            
+            if global_filters[:salesperson_id].present?
+              @contacts = @contacts.where(salesperson_id: global_filters[:salesperson_id])
+            end
+            
+            @contacts = @contacts.get_sales_debt_amount_residual_contacts # đang còn công nợ đến nay
+            #@contacts = @contacts.get_sales_payment_chasing_contacts(from_date: @from, to_date: @to) # có phát sinh trong kỳ
+            #@contacts = @contacts.get_sales_liabilities_contacts(from_date: @from_date, to_date: @to_date) # đang còn công nợ đến nay và có phát sinh trong kỳ
+            
+            # add row
+            @contacts.each_with_index do |contact,index|
+              row = []
+              
+              row << (index + 1)
+              row << contact.name
+              @times.each do |time|
+                row << contact.sales_debt_by_period_amount(to_date: time)
+              end
+              row << contact.cache_sales_debt_amount
+              row << contact.salesperson_name
+              
+              @report[:rows] << row
+            end
+            
+            # add footer
+            @report[:footer] << 'Tổng cộng'
+            @times.each do |time|
+              @report[:footer] << @contacts.sales_debt_by_period_amount(to_date: time)
+            end
+            @report[:footer] << @contacts.cache_sales_debt_amount
+            @report[:footer] << nil
+            
+            File.open("tmp/report_customer_remaining_liabilities_by_monthly_xlsx.yml", "w+") do |f|
+              f.write({
+                from_date: @from_date,
+                to_date: @to_date,
+                report: @report
+              }.to_yaml)
+            end
+          end
         end
         
         def report_customer_remaining_liabilities_by_monthly_xlsx
+          authorize! :report_accounting_customer_remaining_liabilities_by_monthly, nil
+          
+          data = YAML.load_file("tmp/report_customer_remaining_liabilities_by_monthly_xlsx.yml")
+          
+          @from_date = data[:from_date]
+          @to_date = data[:to_date]
+          
+          @report = data[:report]
+
+          respond_to do |format|
+            format.xlsx {
+              response.headers['Content-Disposition'] = 'attachment; filename="Bao cao khach hang con no theo thang.xlsx"'
+            }
+          end
         end
       end
     end
