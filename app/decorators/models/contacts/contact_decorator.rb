@@ -570,7 +570,7 @@ Erp::Contacts::Contact.class_eval do
       keyword = keyword.strip.downcase
       keyword.split(' ').each do |q|
         q = q.strip
-        query = query.where('LOWER(erp_contacts_contacts.cache_search) LIKE ?', '%'+q+'%')
+        query = query.where('LOWER(erp_contacts_contacts.cache_search) LIKE ?', '%'+q.to_ascii.downcase+'%')
       end
     end
 
