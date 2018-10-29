@@ -750,7 +750,7 @@ module Erp
               @contacts = @contacts.where(salesperson_id: global_filters[:salesperson_id])
             end
             
-            @contacts = @contacts.get_sales_debt_amount_residual_contacts # đang còn công nợ đến nay
+            @contacts = @contacts.get_sales_debt_amount_residual_contacts.order('erp_contacts_contacts.name ASC') # đang còn công nợ đến nay
             #@contacts = @contacts.get_sales_payment_chasing_contacts(from_date: @from, to_date: @to) # có phát sinh trong kỳ
             #@contacts = @contacts.get_sales_liabilities_contacts(from_date: @from_date, to_date: @to_date) # đang còn công nợ đến nay và có phát sinh trong kỳ
             
