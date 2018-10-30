@@ -56,17 +56,20 @@
         <div class="col-md-3">
             <%= erp_form_control("dataselect", {
                 name: 'customer',
-                value: (dfilters["customer"].present? ? Erp::Contacts::Contact.find(dfilters["customer"]).id : nil),
-                text: (dfilters["customer"].present? ? Erp::Contacts::Contact.find(dfilters["customer"]).name : nil),
                 label: t('.filter_customer'),
                 placeholder: t('.choose_customer'),
                 url: erp_contacts.dataselect_backend_contacts_path(format: 'json', is_customer: true, contact_id: Erp::Contacts::Contact.get_main_contact),
                 multiple: true
             }) %>
         </div>
+        <div class="col-md-6 text-right mt-25">
+            <a href="#" class="btn btn-primary global-filter-button">Kiểm kho</a>
+        </div>
     </div>
 <% end %>
 
 <%= erp_datalist(
-    url: erp_ortho_k.report_customer_remaining_liabilities_by_monthly_table_backend_accountings_path
+    url: erp_ortho_k.report_customer_remaining_liabilities_by_monthly_table_backend_accountings_path,
+    autoload: false,
+    placeholder: 'Vui lòng chọn thông tin cần lọc và nhấn Kiểm tra'
 ) %>
