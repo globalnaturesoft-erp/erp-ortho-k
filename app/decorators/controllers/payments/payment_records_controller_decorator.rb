@@ -469,7 +469,7 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
           subheader_1[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
           c += 1
           sales_col_note1 = c
-          column_widths << 12
+          column_widths << 15
           
           header_1[:columns] << nil
           header_1[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
@@ -478,7 +478,7 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
           c += 1
           sales_col_note2 = c
           sheet.merge_cells("#{('A'.codepoints.first + sales_col_note1).chr}#{num_row+1}:#{('A'.codepoints.first + sales_col_note2).chr}#{num_row+2}")
-          column_widths << 12
+          column_widths << 15
           
           sheet.add_row header_1[:columns], style: header_1[:styles]
           num_row += 1
@@ -705,7 +705,7 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
             col_ft_merge += 1
           end
           
-          footer_1[:columns] << nil
+          footer_1[:columns] << nil # cot don vi tinh
           footer_1[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(border))
           col_ft_1 += 1
           col_ft_merge += 1
@@ -715,7 +715,7 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
           footer_1[:styles] << (s.add_style bg_footer.deep_merge(number).deep_merge(bold).deep_merge(text_center).deep_merge(border))
           col_ft_1 += 1
           
-          footer_1[:columns] << nil
+          footer_1[:columns] << nil # cot don gia
           footer_1[:styles] << (s.add_style bg_footer.deep_merge(number).deep_merge(bold).deep_merge(text_right).deep_merge(border))
           col_ft_1 += 1
           
@@ -863,7 +863,7 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
           sheet.merge_cells("#{('A'.codepoints.first + c).chr}#{num_row+1}:#{('A'.codepoints.first + c).chr}#{num_row+2}")
           qty = c
           
-          return_price_merge_num = (params[:return_amount_col].present? ? 1 : 0) +
+          return_price_merge_num = (params[:return_total_without_tax_col].present? ? 1 : 0) +
             (params[:return_discount_col].present? ? 1 : 0) +
             (params[:return_tax_col].present? ? 1 : 0) +
             (params[:return_total_col].present? ? 1 : 0)
@@ -885,7 +885,7 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
             giamgia = c
           end
           
-          if params[:return_amount_col].present?
+          if params[:return_total_without_tax_col].present?
             header_2[:columns] << nil
             header_2[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
             subheader_2[:columns] << 'Thành tiền'
@@ -894,7 +894,7 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
             thanhtien = c
           end
           
-          if params[:return_amount_col].present?
+          if params[:return_tax_col].present?
             header_2[:columns] << nil
             header_2[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
             subheader_2[:columns] << 'Tiền thuế'
@@ -988,7 +988,7 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
               row_2[:styles] << (s.add_style border.deep_merge(number).deep_merge(bold).deep_merge(bg_subrow))
             end
             
-            if params[:return_amount_col].present?
+            if params[:return_total_without_tax_col].present?
               row_2[:columns] << delivery.total_without_tax
               row_2[:styles] << (s.add_style border.deep_merge(number).deep_merge(bold).deep_merge(bg_subrow))
             end
@@ -1070,13 +1070,13 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
                 row_2[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
               end
               
-              if params[:return_amount_col].present?
+              if params[:return_total_without_tax_col].present?
                 #row_2[:columns] << delivery_detail.ordered_subtotal
                 row_2[:columns] << delivery_detail.total_without_tax
                 row_2[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
               end
               
-              if params[:return_total_col].present?
+              if params[:return_tax_col].present?
                 row_2[:columns] << delivery_detail.tax_amount
                 row_2[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
               end
@@ -1174,14 +1174,14 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
             col_ft_2 += 1
           end
           
-          if params[:return_amount_col].present?
+          if params[:return_total_without_tax_col].present?
             #footer_2[:columns] << @product_returns.ordered_subtotal #@product_returns.ordered_subtotal#"=SUM(#{('A'.codepoints.first + thanhtien).chr}#{delivery_num_row_first}:#{('A'.codepoints.first + thanhtien).chr}#{num_row})"
             footer_2[:columns] << @product_returns.total_without_tax
             footer_2[:styles] << (s.add_style bg_footer.deep_merge(number).deep_merge(bold).deep_merge(text_right).deep_merge(border))
             col_ft_2 += 1
           end
           
-          if params[:return_amount_col].present?
+          if params[:return_tax_col].present?
             footer_2[:columns] << @product_returns.tax_amount
             footer_2[:styles] << (s.add_style bg_footer.deep_merge(number).deep_merge(bold).deep_merge(text_right).deep_merge(border))
             col_ft_2 += 1
@@ -1265,10 +1265,10 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
           header_3[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
         end
         
-        header_3[:columns] << nil
+        header_3[:columns] << nil #dvt
         header_3[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
         
-        header_3[:columns] << nil
+        header_3[:columns] << nil #sluong
         header_3[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
         
         header_3[:columns] << 'Số tiền'
@@ -1391,132 +1391,139 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
         sign1 = {columns: [], styles: []}
         sign2 = {columns: [], styles: []}
         
+        # Column 1
         sign[:columns] << nil
         sign[:styles] << (s.add_style {})
+        sign1[:columns] << nil
+        sign1[:styles] << (s.add_style {})
+        sign2[:columns] << nil
+        sign2[:styles] << (s.add_style {})
+        
+        # Column 2
         sign[:columns] << Time.now.strftime('Ngày %d tháng %m năm %Y')
         sign[:styles] << (s.add_style text_center.merge(italic))
+        sign1[:columns] << 'KẾ TOÁN - CÔNG TY TNHH ORTHO-K VIỆT NAM'
+        sign1[:styles] << (s.add_style text_center.merge(bold))
+        sign2[:columns] << '(Ký, họ tên)'
+        sign2[:styles] << (s.add_style text_center.merge(italic))
+        
+        # Column 3,4
         sign[:columns] << nil
         sign[:styles] << (s.add_style {})
+        sign1[:columns] << nil
+        sign1[:styles] << (s.add_style {})
+        sign2[:columns] << nil
+        sign2[:styles] << (s.add_style {})
+        
+        sign[:columns] << nil
+        sign[:styles] << (s.add_style {})
+        sign1[:columns] << nil
+        sign1[:styles] << (s.add_style {})
+        sign2[:columns] << nil
+        sign2[:styles] << (s.add_style {})
+        
+        # Column 5, 6, 7, 8, 9
         if params[:doctor_col].present?
           sign[:columns] << nil
           sign[:styles] << (s.add_style {})
+          sign1[:columns] << nil
+          sign1[:styles] << (s.add_style {})
+          sign2[:columns] << nil
+          sign2[:styles] << (s.add_style {})
         end
         if params[:patient_col].present?
           sign[:columns] << nil
           sign[:styles] << (s.add_style {})
+          sign1[:columns] << nil
+          sign1[:styles] << (s.add_style {})
+          sign2[:columns] << nil
+          sign2[:styles] << (s.add_style {})
         end
         if params[:patient_state_col].present?
           sign[:columns] << nil
           sign[:styles] << (s.add_style {})
+          sign1[:columns] << nil
+          sign1[:styles] << (s.add_style {})
+          sign2[:columns] << nil
+          sign2[:styles] << (s.add_style {})
         end
         if params[:product_state_col].present?
           sign[:columns] << nil
           sign[:styles] << (s.add_style {})
+          sign1[:columns] << nil
+          sign1[:styles] << (s.add_style {})
+          sign2[:columns] << nil
+          sign2[:styles] << (s.add_style {})
         end
         if params[:warehouse_col].present?
           sign[:columns] << nil
           sign[:styles] << (s.add_style {})
+          sign1[:columns] << nil
+          sign1[:styles] << (s.add_style {})
+          sign2[:columns] << nil
+          sign2[:styles] << (s.add_style {})
         end
-        sign[:columns] << nil
-        sign[:styles] << (s.add_style {})
-        sign[:columns] << nil
-        sign[:styles] << (s.add_style {})
-        sign[:columns] << nil
-        sign[:styles] << (s.add_style {})
-        if params[:return_amount_col].present?
-          sign[:columns] << nil
-          sign[:styles] << (s.add_style {})
-        end
-        if params[:return_discount_col].present?
-          sign[:columns] << nil
-          sign[:styles] << (s.add_style {})
-        end
-        if params[:return_total_col].present?
-          sign[:columns] << nil
-          sign[:styles] << (s.add_style {})
-        end
-        sign[:columns] << nil
-        sign[:styles] << (s.add_style text_center.merge(italic))
         
+        # Column 10,11 (ĐVT, Soluong, Dongia)
+        sign[:columns] << nil
+        sign[:styles] << (s.add_style {})
         sign1[:columns] << nil
         sign1[:styles] << (s.add_style {})
-        sign1[:columns] << 'KẾ TOÁN - CÔNG TY TNHH ORTHO-K VIỆT NAM'
-        sign1[:styles] << (s.add_style text_center.merge(bold))
+        sign2[:columns] << nil
+        sign2[:styles] << (s.add_style {})
+        
+        sign[:columns] << nil
+        sign[:styles] << (s.add_style {})
         sign1[:columns] << nil
         sign1[:styles] << (s.add_style {})
-        if params[:doctor_col].present?
-          sign1[:columns] << nil
-          sign1[:styles] << (s.add_style {})
-        end
-        if params[:patient_col].present?
-          sign1[:columns] << nil
-          sign1[:styles] << (s.add_style {})
-        end
-        if params[:patient_state_col].present?
-          sign1[:columns] << nil
-          sign1[:styles] << (s.add_style {})
-        end
+        sign2[:columns] << nil
+        sign2[:styles] << (s.add_style {})
+        
+        sign[:columns] << nil
+        sign[:styles] << (s.add_style {})
         sign1[:columns] << nil
         sign1[:styles] << (s.add_style {})
-        sign1[:columns] << nil
-        sign1[:styles] << (s.add_style {})
-        sign1[:columns] << nil
-        sign1[:styles] << (s.add_style {})
-        sign1[:columns] << nil
-        sign1[:styles] << (s.add_style {})
-        if params[:return_amount_col].present?
+        sign2[:columns] << nil
+        sign2[:styles] << (s.add_style {})
+        
+        # Column 12, 13, 14, 15 (GG, TT, Thuế, T.cộng)
+        if params[:sales_discount_col].present? or params[:return_discount_col].present?
+          sign[:columns] << nil
+          sign[:styles] << (s.add_style {})
           sign1[:columns] << nil
           sign1[:styles] << (s.add_style {})
+          sign2[:columns] << nil
+          sign2[:styles] << (s.add_style {})
         end
-        if params[:return_discount_col].present?
+        if params[:sales_total_without_tax_col].present? or params[:return_total_without_tax_col].present?
+          sign[:columns] << nil
+          sign[:styles] << (s.add_style {})
           sign1[:columns] << nil
           sign1[:styles] << (s.add_style {})
+          sign2[:columns] << nil
+          sign2[:styles] << (s.add_style {})
         end
-        if params[:return_total_col].present?
+        if params[:sales_tax_col].present? or params[:return_tax_col].present?
+          sign[:columns] << nil
+          sign[:styles] << (s.add_style {})
           sign1[:columns] << nil
           sign1[:styles] << (s.add_style {})
+          sign2[:columns] << nil
+          sign2[:styles] << (s.add_style {})
         end
+        if params[:sales_total_col].present? or params[:return_total_col].present?
+          sign[:columns] << nil
+          sign[:styles] << (s.add_style {})
+          sign1[:columns] << nil
+          sign1[:styles] << (s.add_style {})
+          sign2[:columns] << nil
+          sign2[:styles] << (s.add_style {})
+        end
+        
+        sign[:columns] << nil
+        sign[:styles] << (s.add_style {})
         sign1[:columns] << "KHÁCH HÀNG - #{@customer.name}"
         sign1[:styles] << (s.add_style text_center.merge(bold))
-        
-        sign2[:columns] << nil
-        sign2[:styles] << (s.add_style {})
-        sign2[:columns] << '(Ký, họ tên)'
-        sign2[:styles] << (s.add_style text_center.merge(italic))
-        sign2[:columns] << nil
-        sign2[:styles] << (s.add_style {})
-        if params[:doctor_col].present?
-          sign2[:columns] << nil
-          sign2[:styles] << (s.add_style {})
-        end
-        if params[:patient_col].present?
-          sign2[:columns] << nil
-          sign2[:styles] << (s.add_style {})
-        end
-        if params[:patient_state_col].present?
-          sign2[:columns] << nil
-          sign2[:styles] << (s.add_style {})
-        end
-        sign2[:columns] << nil
-        sign2[:styles] << (s.add_style {})
-        sign2[:columns] << nil
-        sign2[:styles] << (s.add_style {})
-        sign2[:columns] << nil
-        sign2[:styles] << (s.add_style {})
-        sign2[:columns] << nil
-        sign2[:styles] << (s.add_style {})
-        if params[:return_amount_col].present?
-          sign2[:columns] << nil
-          sign2[:styles] << (s.add_style {})
-        end
-        if params[:return_discount_col].present?
-          sign2[:columns] << nil
-          sign2[:styles] << (s.add_style {})
-        end
-        if params[:return_total_col].present?
-          sign2[:columns] << nil
-          sign2[:styles] << (s.add_style {})
-        end
         sign2[:columns] << '(Ký, họ tên)'
         sign2[:styles] << (s.add_style text_center.merge(italic))
         
@@ -1536,7 +1543,7 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
         end
         
         price_col_widths = []
-        if params[:return_amount_col].present? or params[:sales_total_without_tax_col].present?
+        if params[:return_total_without_tax_col].present? or params[:sales_total_without_tax_col].present?
           price_col_widths << 12
         end
         if params[:return_discount_col].present? or params[:sales_discount_col].present?
@@ -1545,7 +1552,7 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
         if params[:return_total_col].present? or params[:sales_total_col].present?
           price_col_widths << 12
         end
-        if params[:sales_tax_col].present?
+        if params[:return_tax_col].present? or params[:sales_tax_col].present?
           price_col_widths << 12
         end
         
