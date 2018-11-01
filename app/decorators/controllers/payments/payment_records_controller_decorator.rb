@@ -1434,10 +1434,10 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
         if params[:patient_col].present?
           sign[:columns] << nil
           sign[:styles] << (s.add_style {})
-          sign1[:columns] << nil
-          sign1[:styles] << (s.add_style {})
-          sign2[:columns] << nil
-          sign2[:styles] << (s.add_style {})
+          sign1[:columns] << 'NHÂN VIÊN SALE PHỤ TRÁCH'
+          sign1[:styles] << (s.add_style text_center.merge(bold))
+          sign2[:columns] << '(Ký, họ tên)'
+          sign2[:styles] << (s.add_style text_center.merge(italic))
         end
         if params[:patient_state_col].present?
           sign[:columns] << nil
