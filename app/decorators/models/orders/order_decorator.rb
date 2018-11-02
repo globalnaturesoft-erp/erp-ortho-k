@@ -110,7 +110,7 @@ Erp::Orders::Order.class_eval do
     strs = []
     strs << doctor_name if doctor.present?
     strs << patient_name if patient.present?
-    strs << patient_state_name if patient_state.present?
+    strs << patient_state_name if (patient_state.present? and patient.present?)
 
     (strs.empty? ? '' : "(#{strs.join(' / ')})")
   end
