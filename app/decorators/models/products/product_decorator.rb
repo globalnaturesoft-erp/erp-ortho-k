@@ -2758,5 +2758,83 @@ Erp::Products::Product.class_eval do
     self.get_returned_products(options).where.not(category_id: Erp::Products::Category.get_lens.select(:id))
   end
   
+  # import new products
+  def self.import_products(file)
+    ActiveRecord::Base.logger = nil
+    
+    # config
+    timestamp = Time.now.to_i
+    xlsx = Roo::Spreadsheet.open(file)
+    user = Erp::User.first
+    brand = Erp::Products::Brand.where(name: "Ortho-K").first
+    unit_cai = Erp::Products::Unit.where(name: "Cái").first
+    category = Erp::Products::Category.where(name: 'Premium').first
+    
+    # Read excel file. sheet tabs loop
+    xlsx.each_with_pagename do |name, sheet|
+      sheet.each_row_streaming do |row|
+        # tach chu voi so
+        lns = row[0].value.scan(/\d+|\D+/)
+        
+        # letter
+        letter_p = Erp::Products::Property.get_letter
+        letter_ppv = Erp::Products::PropertiesValue.where(property_id: letter_p.id, value: lns[0]).first
+  
+        # number
+        nn_v = lns[1]
+        nn_v = nn_v.rjust(2, '0') if nn_v != '0' and nn_v != '00'
+        number_p = Erp::Products::Property.get_number
+        number_ppv = Erp::Products::PropertiesValue.where(property_id: number_p.id, value: nn_v).first
+        
+        (1..4).each do |num|
+          diameter_p = Erp::Products::Property.get_diameter
+          if Erp::Products::PropertiesValue.where(value: row[num].value).empty?
+            Erp::Products::PropertiesValue.create(
+              property_id: diameter_p.id,
+              value: row[num].value
+            )
+            result = "SUCCESS::diameter not exist::#{row[num].value}: created!"
+          end
+          diameter_ppv = Erp::Products::PropertiesValue.where(property_id: diameter_p.id, value: row[num].value).first
+        
+          # Tạo sản phẩm ở ô thứ "num"
+          pname = "#{letter_ppv.value}#{number_ppv.value}-#{diameter_ppv.value}-#{category.name}"
+          if Erp::Products::Product.where(name: pname).empty?
+            product = Erp::Products::Product.create(
+              code: "#{letter_ppv.value}#{number_ppv.value}",
+              name: pname,
+              category_id: category.id,
+              brand_id: brand.id,
+              creator_id: user.id,
+              unit_id: unit_cai.id,
+              price: nil,
+              is_outside: false
+            )
+            
+            Erp::Products::ProductsValue.create(
+              product_id: product.id,
+              properties_value_id: diameter_ppv.id
+            ) if diameter_ppv.present?
+            Erp::Products::ProductsValue.create(
+              product_id: product.id,
+              properties_value_id: letter_ppv.id
+            ) if letter_ppv.present?
+            Erp::Products::ProductsValue.create(
+              product_id: product.id,
+              properties_value_id: number_ppv.id
+            ) if number_ppv.present?
+            
+            Erp::Products::Product.find(product.id).update_cache_properties
+            
+            result = "SUCCESS::not exist::#{pname}: created! (ID: #{product.id})"
+          else
+            result = "ERROR::already exist::#{pname}: ignored!"
+          end
+          puts result
+          File.open("tmp/import_products-#{timestamp}.log", "a+") { |f| f << "#{result}\n"}
+        end
+      end
+    end
+  end
   
 end
