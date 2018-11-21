@@ -748,7 +748,7 @@ Erp::Orders::Order.class_eval do
       # p_name = "#{row["code"].to_s.strip}-#{row["diameter"].to_s.strip}-#{row["category"].to_s.strip}"
       p_name = row["name"]
 
-      if p_name.split('-').count == 3
+      if p_name.split('-').count == 3 and p_name[0..2].downcase != 'cus'
         lns = p_name.scan(/\d+|\D+/)
 
         # number
