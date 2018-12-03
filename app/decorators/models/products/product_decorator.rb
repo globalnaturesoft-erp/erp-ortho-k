@@ -2621,18 +2621,26 @@ Erp::Products::Product.class_eval do
   after_save :update_ordered_code
   def get_ordered_code
     tmp = code
-    if !tmp.match('[A-Z]{2}[0-9]{2}').nil?
-      tmp[0] = 'Z'
-      return tmp
+    prefix = ''
+    
+    if !tmp.match('^[A-Z]{2}[0-9]{2}').nil?
+      prefix = 'Z'
+    elsif !tmp.match('^[A-Z]{3}[0-9]{2}').nil?
+      prefix = 'ZZ'
+    elsif !tmp.match('^[A-Z]{4}[0-9]{2}').nil?
+      prefix = 'ZZZ'
+    elsif !tmp.match('^[A-Z]{5}[0-9]{2}').nil?
+      prefix = 'ZZZZ'
     end
 
-    return code
+    return prefix + code
   end
 
   def update_ordered_code
     diameter = self.get_diameter
 
     if diameter.present?
+      diameter = (diameter.to_f*10).to_i
       tmp = "#{category_name}-#{diameter}-#{self.get_ordered_code}"
     else
       tmp = nil
@@ -2825,6 +2833,7 @@ Erp::Products::Product.class_eval do
             ) if number_ppv.present?
             
             Erp::Products::Product.find(product.id).update_cache_properties
+            Erp::Products::Product.find(product.id).update_ordered_code
             
             result = "SUCCESS::not exist::#{pname}: created! (ID: #{product.id})"
           else
