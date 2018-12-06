@@ -39,6 +39,18 @@ module Erp
 
           # get categories
           category_ids = @global_filters[:categories].present? ? @global_filters[:categories] : nil
+          
+          ## neu chon len cung/ hien thi danh sach cac chuyen muc con cua len cung
+          len_cung = Erp::Products::Category.where(name: 'Len cứng').first
+          
+          if !category_ids.kind_of?(Array) and category_ids == len_cung.id.to_s # dieu kien khi chon 1 len cung
+            category_ids = len_cung.children.where(archived: false).ids.map(&:to_s)
+          elsif category_ids.kind_of?(Array) and category_ids.include?("#{len_cung.id}") # dieu kien khi chon nhieu len/gom len cung
+            category_ids += len_cung.children.where(archived: false).ids.map(&:to_s)
+            category_ids.delete(len_cung.id.to_s)
+            category_ids = category_ids.uniq
+          end
+          
           @categories = Erp::Products::Category.where(id: category_ids)
 
           # get diameters
