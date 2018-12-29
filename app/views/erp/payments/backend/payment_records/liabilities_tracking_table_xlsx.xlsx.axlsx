@@ -100,35 +100,43 @@ wb.styles do |s|
     
     # rows
     @customers.each_with_index do |customer,index|
-      row = {columns: [], styles: []}
-      row[:columns] = []
-    
-      row[:columns] << index+1
-      row[:styles] << (s.add_style text_center.deep_merge(vertical_center).deep_merge(border).deep_merge(bg_row))
-    
-      row[:columns] << customer.code
-      row[:styles] << (s.add_style text_left.deep_merge(vertical_center).deep_merge(border).deep_merge(bg_row))
-    
-      row[:columns] << customer.name
-      row[:styles] << (s.add_style text_left.deep_merge(vertical_center).deep_merge(border).deep_merge(bg_row))
-    
-      row[:columns] << customer.sales_debt_amount(to_date: (!@from.nil? ? (@from-1.day) : @from))
-      row[:styles] << (s.add_style text_right.deep_merge(vertical_center).deep_merge(number).deep_merge(border).deep_merge(bg_row))
-    
-      row[:columns] << customer.sales_total_amount(from_date: @from, to_date: @to)
-      row[:styles] << (s.add_style text_right.deep_merge(vertical_center).deep_merge(number).deep_merge(border).deep_merge(bg_row))
-    
-      row[:columns] << customer.sales_paid_amount(from_date: @from, to_date: @to)
-      row[:styles] << (s.add_style text_right.deep_merge(vertical_center).deep_merge(number).deep_merge(border).deep_merge(bg_row))
-    
-      row[:columns] << customer.sales_debt_amount(to_date: @to)
-      row[:styles] << (s.add_style text_right.deep_merge(vertical_center).deep_merge(number).deep_merge(border).deep_merge(bg_row))
-    
-      row[:columns] << (!customer.salesperson.nil? ? customer.salesperson_name : nil)
-      row[:styles] << (s.add_style text_left.deep_merge(vertical_center).deep_merge(border).deep_merge(bg_row))
-    
-      sheet.add_row row[:columns], style: row[:styles], height: 18
-      num_row += 1
+      
+      begin_of_period_amount = customer.sales_debt_amount(to_date: (!@from.nil? ? (@from-1.day) : @from))
+      period_amount = customer.sales_total_amount(from_date: @from, to_date: @to)
+      paid_amount = customer.sales_paid_amount(from_date: @from, to_date: @to)
+      end_of_period_amount = customer.sales_debt_amount(to_date: @to)
+      
+      if !(begin_of_period_amount.to_f == 0.0 and period_amount.to_f == 0.0 and paid_amount.to_f == 0.0 and end_of_period_amount.to_f == 0.0)
+        row = {columns: [], styles: []}
+        row[:columns] = []
+      
+        row[:columns] << index+1
+        row[:styles] << (s.add_style text_center.deep_merge(vertical_center).deep_merge(border).deep_merge(bg_row))
+      
+        row[:columns] << customer.code
+        row[:styles] << (s.add_style text_left.deep_merge(vertical_center).deep_merge(border).deep_merge(bg_row))
+      
+        row[:columns] << customer.name
+        row[:styles] << (s.add_style text_left.deep_merge(vertical_center).deep_merge(border).deep_merge(bg_row))
+      
+        row[:columns] << begin_of_period_amount
+        row[:styles] << (s.add_style text_right.deep_merge(vertical_center).deep_merge(number).deep_merge(border).deep_merge(bg_row))
+      
+        row[:columns] << period_amount
+        row[:styles] << (s.add_style text_right.deep_merge(vertical_center).deep_merge(number).deep_merge(border).deep_merge(bg_row))
+      
+        row[:columns] << paid_amount
+        row[:styles] << (s.add_style text_right.deep_merge(vertical_center).deep_merge(number).deep_merge(border).deep_merge(bg_row))
+      
+        row[:columns] << end_of_period_amount
+        row[:styles] << (s.add_style text_right.deep_merge(vertical_center).deep_merge(number).deep_merge(border).deep_merge(bg_row))
+      
+        row[:columns] << (!customer.salesperson.nil? ? customer.salesperson_name : nil)
+        row[:styles] << (s.add_style text_left.deep_merge(vertical_center).deep_merge(border).deep_merge(bg_row))
+      
+        sheet.add_row row[:columns], style: row[:styles], height: 18
+        num_row += 1
+      end
     end
     
     # footer
