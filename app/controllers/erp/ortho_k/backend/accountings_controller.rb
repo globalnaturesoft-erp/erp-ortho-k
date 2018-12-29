@@ -693,6 +693,90 @@ module Erp
           end
         end
         
+        # Statistical donated goods
+        def report_statistical_donated_goods
+          ##authorize! :report_statistical_donated_goods, nil
+        end
+        
+        # Statistical donated goods table
+        def report_statistical_donated_goods_table
+          #authorize! :report_statistical_donated_goods, nil
+          
+          glb = params.to_unsafe_hash[:global_filter]
+          if (glb[:from_date].present? && glb[:to_date].present?) || glb[:period].present?
+            if glb[:period].present?
+              @period = Erp::Periods::Period.find(glb[:period])
+              @from = @period.from_date.beginning_of_day
+              @to = @period.to_date.end_of_day
+            else
+              @period = nil
+              @from = (glb.present? and glb[:from_date].present?) ? glb[:from_date].to_date.beginning_of_day : nil
+              @to = (glb.present? and glb[:to_date].present?) ? glb[:to_date].to_date.end_of_day : nil
+            end
+            
+            if glb[:contact].present?
+              @contacts = Erp::Contacts::Contact.where(id: glb[:contact])
+            else
+              @contacts = Erp::Contacts::Contact.where.not(id: Erp::Contacts::Contact.get_main_contact.id)
+            end
+            
+            contact_ids = @contacts.map{|i| i.id}
+            
+            # repaired data
+            @data = {
+              gift: {
+                rows: [],
+                total: {
+                  quantity: 0
+                }
+              },
+              total: {
+                quantity: 0
+              },
+              from: @from,
+              to: @to
+            }
+            
+            # other products
+            products = Erp::Products::Product.get_gift_given_products(from_date: @from, to_date: @to)          
+            products.each do |p|
+              ggdt = p.get_gift_given_delivered_given_details(from_date: @from, to_date: @to, contact_id: contact_ids) 
+              
+              quantity = ggdt.sum(:quantity)
+              
+              if quantity > 0
+                @data[:gift][:rows] << {
+                  name: p.name,
+                  quantity: quantity
+                }
+                
+                @data[:gift][:total][:quantity] += quantity
+              end
+            end
+            
+            File.open("tmp/report_statistical_donated_goods.yml", "w+") do |f|
+              f.write({
+                data: @data
+              }.to_yaml)
+            end
+          end
+        end
+        
+        # Statistical donated goods excel
+        def report_statistical_donated_goods_xlsx
+          #authorize! :report_statistical_donated_goods, nil
+          
+          dt = YAML.load_file("tmp/report_statistical_donated_goods.yml")
+          
+          @data = dt[:data]
+          
+          respond_to do |format|
+            format.xlsx {
+              response.headers['Content-Disposition'] = 'attachment; filename="Thong ke hang tang.xlsx"'
+            }
+          end
+        end
+        
         def report_customer_remaining_liabilities_by_monthly
           authorize! :report_accounting_customer_remaining_liabilities_by_monthly, nil
         end
