@@ -919,7 +919,8 @@ module Erp
             @rows << row if row != false
           end
 
-          File.open("tmp/purchasing_export.yml", "w+") do |f|
+          @file_name = "tmp/purchasing_export_#{current_user.id}_#{Digest::MD5.hexdigest(@rows, @heads, @totals, @line_totals, @all_total)}.yml"
+          File.open(@file_name, "w+") do |f|
             f.write({rows: @rows, heads: @heads, totals: @totals, line_totals: @line_totals, all_total: @all_total}.to_yaml)
           end
 
@@ -929,7 +930,7 @@ module Erp
         def purchasing_export_xlsx
           authorize! :purchase_products_purchase_estimation_purchasing_export, nil
           
-          data = YAML.load_file("tmp/purchasing_export.yml")
+          data = YAML.load_file(params[:file_name])
 
           @rows = data[:rows]
           @heads = data[:heads]
