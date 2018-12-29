@@ -8,7 +8,8 @@
                                          (params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_supplier_liabilities") ||
                                          (params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_statistics_liabilities") ||
                                          (params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_liabilities_arising") ||
-                                         (params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_customer_remaining_liabilities_by_monthly") %>">
+                                         (params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_customer_remaining_liabilities_by_monthly") ||
+                                         (params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_statistical_donated_goods") %>">
     <a href="javascript:;" class="nav-link nav-toggle">
         <span class="title">Kế toán</span>
         <% if false %>
@@ -37,6 +38,11 @@
         <% if can? :menu_report_accounting_sales_summary, nil %>
             <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_sales_summary" %>">
                 <%= link_to "Thống kê bán hàng", erp_ortho_k.report_sales_summary_backend_accountings_path, class: "nav-link ", title: 'Kết quả bán hàng, trả lại hàng thực tế theo thời gian' %>
+            </li>
+        <% end %>
+        <% if can? :menu_report_accounting_sales_summary, nil %>
+            <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_statistical_donated_goods" %>">
+                <%= link_to "Thống kê hàng tặng", erp_ortho_k.report_statistical_donated_goods_backend_accountings_path, class: "nav-link ", title: 'Kết quả hàng xuất tặng' %>
             </li>
         <% end %>
         <% if can? :menu_report_accounting_income_statement, nil %>
