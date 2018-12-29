@@ -1,0 +1,83 @@
+wb = xlsx_package.workbook
+xlsx_package.use_autowidth = true
+wb.styles do |s|
+  wb.styles.fonts.first.name = 'Calibri'
+  wb.add_worksheet(name: 'Thống kê tặng quà') do |sheet|
+    # style
+    header_bg_info = {:bg_color => "00b050", :fg_color => "FF"}
+    footer_bg_info = {:bg_color => "00b050", :fg_color => "FF"}
+    row_bg_info = {:bg_color => "daeef3", :fg_color => "00"}
+    text_center = {alignment: { horizontal: :center }}
+    text_left = {alignment: { horizontal: :left }}
+    text_right = {alignment: { horizontal: :right }}
+    middle_align = {alignment: { vertical: :center }}
+    number = {format_code: '#,##0'}
+    border = {border: { style: :thin, color: "525252", :edges => [:left, :right, :bottom] }}
+    bold = {b: true}
+    
+    
+    # Top head
+    sheet.add_row ["CÔNG TY TNHH ORTHO-K VIỆT NAM"], b: true
+    sheet.add_row ["535 An Dương Vương, P.8, Q.5, TP. Hồ Chí Minh"], b: true
+    row_num = 2
+    
+    # add empty row
+    sheet.add_row [nil]
+    row_num += 1
+    
+    # Title
+    date = "#{'TỪ ' + @data[:from].to_date.strftime('%d/%m/%Y') if !@data[:from].nil?}#{' ĐẾN ' + @data[:to].to_date.strftime('%d/%m/%Y') if !@data[:to].nil?}"
+    sheet.add_row [("THỐNG KÊ SỐ LƯỢNG HÀNG TẶNG").upcase], sz: 16, b: true, style: (s.add_style text_center)
+    row_num += 1
+    sheet.add_row ["(#{date})"], sz: 14, b: true, bg_color: "ffc801", style: (s.add_style text_center)
+    row_num += 1
+    
+    # add empty row
+    sheet.add_row ['']
+    
+    # header
+    header = {columns: [], styles: []}
+    footer = {columns: [], styles: []}
+    
+    header[:columns] << 'STT'
+    header[:styles] << (s.add_style header_bg_info.deep_merge(text_center).deep_merge(middle_align).merge(bold))
+    footer[:columns] << nil
+    footer[:styles] << (s.add_style footer_bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
+    
+    header[:columns] << 'Tên quà tặng'
+    header[:styles] << (s.add_style header_bg_info.deep_merge(text_center).deep_merge(middle_align).merge(bold))
+    footer[:columns] << "Tổng cộng"
+    footer[:styles] << (s.add_style footer_bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
+    
+    header[:columns] << 'Số lượng'
+    header[:styles] << (s.add_style header_bg_info.deep_merge(text_center).deep_merge(middle_align).merge(bold))
+    footer[:columns] << @data[:gift][:total][:quantity]
+    footer[:styles] << (s.add_style footer_bg_info.deep_merge(text_center).deep_merge(number).deep_merge(border).merge(bold).deep_merge(middle_align))
+    
+    sheet.add_row header[:columns], style: header[:styles], height: 25
+    sheet.column_widths 5, 60, 20
+    
+    # rows 1
+    @data[:gift][:rows].each_with_index do |r, index|
+      row = {columns: [], styles: []}
+      
+      row[:columns] << (index + 1)
+      row[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(row_bg_info))
+    
+      row[:columns] << r[:name]
+      row[:styles] << (s.add_style text_left.deep_merge(border).deep_merge(row_bg_info))
+    
+      row[:columns] << r[:quantity]
+      row[:styles] << (s.add_style text_center.deep_merge(number).deep_merge(border).deep_merge(row_bg_info))
+    
+      sheet.add_row row[:columns], style: row[:styles]
+    end
+    
+    # footer
+    sheet.add_row footer[:columns], style: footer[:styles], height: 25
+    
+    # Setup
+    sheet.merge_cells("A4:C4")
+    sheet.merge_cells("A5:C5")
+  end
+end

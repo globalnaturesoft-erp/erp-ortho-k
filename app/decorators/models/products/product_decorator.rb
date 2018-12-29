@@ -2846,4 +2846,21 @@ Erp::Products::Product.class_eval do
     end
   end
   
+  # get all gift given products
+  def self.get_gift_given_products(options={})
+    query = self.get_active
+    
+    given_detail_query = Erp::GiftGivens::GivenDetail.get_gift_given_delivered_given_details(options).select(:product_id)
+    
+    query = query.where("erp_products_products.id IN (?)", given_detail_query)
+    
+    query
+  end
+  
+  # get all confirmed given details
+  def get_gift_given_delivered_given_details(options={})
+    Erp::GiftGivens::GivenDetail.get_gift_given_delivered_given_details(options)
+      .where(product_id: self.id)
+  end
+  
 end
