@@ -414,11 +414,47 @@ module Erp
           
           @periods = Erp::Periods::Period.get_time_array(params)
           @customers = Erp::Contacts::Contact.where.not(id: Erp::Contacts::Contact.get_main_contact.id)
+          @customers = @customers.get_sales_debt_amount_residual_contacts
+          
+          @report = {
+            header: [],
+            rows: []
+          }
+          
+          # add header
+          @report[:header] << 'Danh mục thống kê'
+          @report[:header] << 'Tổng nợ đầu kỳ'
+          @report[:header] << 'Phát sinh trong kỳ'
+          @report[:header] << 'Thanh toán trong kỳ'
+          @report[:header] << 'Tổng nợ cuối kỳ'
+          
+          # add rows
+          @periods.each_with_index do |period|
+            beginning_sales_debt_by_period = @customers.sales_debt_by_period_amount(to_date: (period[:from]-1.day))
+            sales_total = @customers.sales_total_amount(from_date: period[:from], to_date: period[:to])
+            sales_paid_by_period = @customers.sales_paid_by_period_amount(from_date: period[:from], to_date: period[:to])
+            ending_sales_debt_by_period = @customers.sales_debt_by_period_amount(to_date: period[:to])
+            
+            if beginning_sales_debt_by_period != 0 or sales_total != 0 or sales_paid_by_period != 0 or ending_sales_debt_by_period != 0
+              row = []
+              # period name
+              row << period[:name]
+              # no dau ky
+              row << beginning_sales_debt_by_period
+              # no phat sinh trong ky
+              row << sales_total
+              # thanh toan trong ky
+              row << sales_paid_by_period
+              # no cuoi ky
+              row << ending_sales_debt_by_period
+              @report[:rows] << row
+            end
+          end
           
           File.open("tmp/report_statistics_liabilities_xlsx.yml", "w+") do |f|
             f.write({
               periods: @periods,
-              customers: @customers
+              report: @report
             }.to_yaml)
           end
         end
@@ -428,10 +464,10 @@ module Erp
           
           data = YAML.load_file("tmp/report_statistics_liabilities_xlsx.yml")
           
-          @periods = data[:periods]
-          @customers = data[:customers]
+          @periods = data[:periods]          
+          @report = data[:report]
           
-          @customers = Erp::Contacts::Contact.where(id: (@customers.map{|i| i.id}))
+          #@customers = Erp::Contacts::Contact.where(id: (@customers.map{|i| i.id}))
 
           respond_to do |format|
             format.xlsx {

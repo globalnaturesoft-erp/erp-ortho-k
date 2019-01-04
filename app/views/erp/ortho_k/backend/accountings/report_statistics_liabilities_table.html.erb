@@ -1,5 +1,5 @@
 <div class="custom-show text-center">
-    <h4 class="font-blue-madison bold uppercase mb-15">
+    <h4 class="font-blue-madison bold uppercase mb-15" title="Công nợ đổ dồn/cấn trừ cũ, mới">
         Tổng công nợ khách hàng <%= @periods.first[:from].year %> và <%= @periods.last[:to].year %>
     </h4>
 </div>
@@ -15,34 +15,34 @@
 <table class="table table-bordered order-column">
     <thead class="flip-content">
         <tr>
-            <th width="40%"  class="text-center bg-yellow bg-font-yellow text-nowrap">Danh mục thống kê</th>
-            <th width="20%" class="text-right bg-yellow bg-font-yellow text-nowrap">Tổng nợ trong kỳ</th>
-            <th width="20%" class="text-right bg-yellow bg-font-yellow text-nowrap">Tổng thu trong kỳ</th>
-            <th width="20%" class="text-right bg-yellow bg-font-yellow text-nowrap">Chưa thu trong kỳ</th>
+            <% @report[:header].each do |title| %>
+                <th class="text-center bg-green-jungle bg-font-green-jungle text-nowrap"><%= title %></th>
+            <% end %>
         </tr>
     </thead>
-    <tbody>
-        <% @periods.each do |period| %>
-            <% total_amount = @customers.sales_total_amount(from_date: period[:from], to_date: period[:to]) %>
-            <% paid_amount = @customers.sales_paid_by_period_amount(from_date: period[:from], to_date: period[:to]) %>
-            <% debt_amount = @customers.sales_debt_by_period_amount(from_date: period[:from], to_date: period[:to]) %>
-            <% if total_amount > 0 or paid_amount > 0 or debt_amount > 0 %>
-                <tr>
-                    <td class="text-center uppercase"><%= period[:name] %></td>
-                    <td class="text-right"><%= format_number(total_amount) %></td>
-                    <td class="text-right"><%= format_number(paid_amount) %></td>
-                    <td class="text-right"><%= format_number(debt_amount) %></td>
-                </tr>
-            <% end %>
+    <tbody
+        <% @report[:rows].each do |row| %>
+            <tr>
+                <% row.each_with_index do |data,index| %>
+                    <%
+                        text_align = ''
+                        if index == 0 # CỘT SỐ THỨ TỰ #0
+                            text_align = 'text-center'
+                        else
+                            text_align = 'text-right' # CÁC CỘT KHÁC
+                        end
+                    %>
+                    <td class="<%= text_align %>">
+                        <%=
+                            if is_number?(data)
+                                format_number(data)
+                            else
+                                data
+                            end
+                        %>
+                    </td>
+                <% end %>
+            </tr>
         <% end %>
-        <% total_amount = @customers.sales_total_amount(from_date: @periods.first[:from], to_date: @periods.last[:to]) %>
-        <% paid_amount = @customers.sales_paid_by_period_amount(from_date: @periods.first[:from], to_date: @periods.last[:to]) %>
-        <% debt_amount = @customers.sales_debt_by_period_amount(from_date: @periods.first[:from], to_date: @periods.last[:to]) %>
-        <tr>
-            <td class="bg-green-jungle bg-font-green-jungle border-green-jungle text-center bold uppercase">Tổng cộng</td>
-            <td class="bg-green-jungle bg-font-green-jungle border-green-jungle text-right bold"><%= format_number(total_amount) %></td>
-            <td class="bg-green-jungle bg-font-green-jungle border-green-jungle text-right bold"><%= format_number(paid_amount) %></td>
-            <td class="bg-green-jungle bg-font-green-jungle border-green-jungle text-right bold"><%= format_number(debt_amount) %></td>
-        </tr>
     </tbody>
 </table>
