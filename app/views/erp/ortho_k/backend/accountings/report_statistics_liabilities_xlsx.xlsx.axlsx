@@ -37,79 +37,38 @@ wb.styles do |s|
     header = {columns: [], styles: []}
     footer = {columns: [], styles: []}
     column_widths = []
-    
-    header[:columns] << t('.periods')
-    header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
-    col_num = 0
-    column_widths << 30
-    
-    header[:columns] << t('.total_debt_amount')
-    header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
-    col_num += 1
-    column_widths << 20
-    
-    header[:columns] << t('.total_paid_amount')
-    header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
-    col_num += 1
-    column_widths << 20
-    
-    header[:columns] << t('.total_remain_amount')
-    header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
-    col_num += 1
-    column_widths << 20
+    col_num = -1
+    @report[:header].each_with_index do |title,index|
+      header[:columns] << title
+      header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
+      col_num += 1
+      column_widths << (index == 0 ? 30 : 20)
+    end
     
     sheet.add_row header[:columns], style: header[:styles], height: 25
     row_num += 1
     
     # rows
-    @periods.each do |period|
+    @report[:rows].each do |rw|
       row = {columns: [], styles: []}
       
-      total_amount = @customers.sales_total_amount(from_date: period[:from], to_date: period[:to])
-      paid_amount = @customers.sales_paid_by_period_amount(from_date: period[:from], to_date: period[:to])
-      debt_amount = @customers.sales_debt_by_period_amount(from_date: period[:from], to_date: period[:to])
-      
-      if total_amount > 0 or paid_amount > 0 or debt_amount > 0
-        row[:columns] << period[:name]
-        row[:styles] << (s.add_style text_middle.deep_merge(border).deep_merge(bg_row))
-      
-        row[:columns] << total_amount
-        row[:styles] << (s.add_style text_right.deep_merge(vertical_center).deep_merge(number).deep_merge(border).deep_merge(bg_row))
-      
-        row[:columns] << paid_amount
-        row[:styles] << (s.add_style text_right.deep_merge(vertical_center).deep_merge(number).deep_merge(border).deep_merge(bg_row))
-      
-        row[:columns] << debt_amount
-        row[:styles] << (s.add_style text_right.deep_merge(vertical_center).deep_merge(number).deep_merge(border).deep_merge(bg_row))
-      
-        sheet.add_row row[:columns], style: row[:styles], height: 22
-        row_num += 1
+      rw.each_with_index do |data,index|
+        if is_number?(data)
+          row[:columns] << data
+          row[:styles] << (s.add_style text_right.deep_merge(vertical_center).deep_merge(number).deep_merge(border).deep_merge(bg_row))
+        else
+          row[:columns] << data
+          row[:styles] << (s.add_style text_middle.deep_merge(border).deep_merge(bg_row))
+        end
       end
+      
+      sheet.add_row row[:columns], style: row[:styles], height: 22
+      row_num += 1
     end
     
-    # footer
-    total_amount = @customers.sales_total_amount(from_date: @periods.first[:from], to_date: @periods.last[:to])
-    paid_amount = @customers.sales_paid_by_period_amount(from_date: @periods.first[:from], to_date: @periods.last[:to])
-    debt_amount = @customers.sales_debt_by_period_amount(from_date: @periods.first[:from], to_date: @periods.last[:to])
-    
-    footer[:columns] << "Tổng cộng"
-    footer[:styles] << (s.add_style bg_footer.deep_merge(text_middle).deep_merge(border).merge(bold))
-    
-    footer[:columns] << total_amount
-    footer[:styles] << (s.add_style bg_footer.deep_merge(number).deep_merge(vertical_center).deep_merge(bold).deep_merge(border))
-    
-    footer[:columns] << paid_amount
-    footer[:styles] << (s.add_style bg_footer.deep_merge(number).deep_merge(vertical_center).deep_merge(bold).deep_merge(border))
-    
-    footer[:columns] << debt_amount
-    footer[:styles] << (s.add_style bg_footer.deep_merge(number).deep_merge(vertical_center).deep_merge(bold).deep_merge(border))
-    
-    sheet.add_row footer[:columns], style: footer[:styles], height: 25
-    row_num += 1
-    
     # Setup
-    sheet.merge_cells("#{('A'.codepoints.first).chr}4:#{('A'.codepoints.first + 3).chr}4")
-    sheet.merge_cells("#{('A'.codepoints.first).chr}5:#{('A'.codepoints.first + 3).chr}5")
+    sheet.merge_cells("#{('A'.codepoints.first).chr}4:#{('A'.codepoints.first + col_num).chr}4")
+    sheet.merge_cells("#{('A'.codepoints.first).chr}5:#{('A'.codepoints.first + col_num).chr}5")
     
     sheet.column_widths *column_widths
   end
