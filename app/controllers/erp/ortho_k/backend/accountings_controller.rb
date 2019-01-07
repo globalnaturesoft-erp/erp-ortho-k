@@ -731,12 +731,12 @@ module Erp
         
         # Statistical donated goods
         def report_statistical_donated_goods
-          ##authorize! :report_statistical_donated_goods, nil
+          authorize! :report_accounting_statistical_donated_goods, nil
         end
         
         # Statistical donated goods table
         def report_statistical_donated_goods_table
-          #authorize! :report_statistical_donated_goods, nil
+          authorize! :report_accounting_statistical_donated_goods, nil
           
           glb = params.to_unsafe_hash[:global_filter]
           if (glb[:from_date].present? && glb[:to_date].present?) || glb[:period].present?
@@ -800,7 +800,7 @@ module Erp
         
         # Statistical donated goods excel
         def report_statistical_donated_goods_xlsx
-          #authorize! :report_statistical_donated_goods, nil
+          authorize! :report_accounting_statistical_donated_goods, nil
           
           dt = YAML.load_file("tmp/report_statistical_donated_goods.yml")
           
@@ -809,6 +809,115 @@ module Erp
           respond_to do |format|
             format.xlsx {
               response.headers['Content-Disposition'] = 'attachment; filename="Thong ke hang tang.xlsx"'
+            }
+          end
+        end
+        
+        # Statistics consignment
+        def report_statistics_consignment
+          authorize! :report_accounting_statistics_consignment, nil
+        end
+        
+        # Statistics consignment table
+        def report_statistics_consignment_table
+          authorize! :report_accounting_statistics_consignment, nil
+          
+          glb = params.to_unsafe_hash[:global_filter]
+          if (glb[:from_date].present? && glb[:to_date].present?) || glb[:period].present?
+            if glb[:period].present?
+              @period = Erp::Periods::Period.find(glb[:period])
+              @from = @period.from_date.beginning_of_day
+              @to = @period.to_date.end_of_day
+            else
+              @period = nil
+              @from = (glb.present? and glb[:from_date].present?) ? glb[:from_date].to_date.beginning_of_day : nil
+              @to = (glb.present? and glb[:to_date].present?) ? glb[:to_date].to_date.end_of_day : nil
+            end
+            
+            if glb[:contact].present?
+              @contacts = Erp::Contacts::Contact.where(id: glb[:contact])
+            else
+              @contacts = Erp::Contacts::Contact.where.not(id: Erp::Contacts::Contact.get_main_contact.id)
+            end
+            
+            contact_ids = @contacts.map{|i| i.id}
+            
+            # repaired data
+            @data = {
+              consignments: {
+                rows: [],
+                total: {
+                  quantity: 0
+                }
+              },
+              cs_returns: {
+                rows: [],
+                total: {
+                  quantity: 0
+                }
+              },
+              total: {
+                quantity: 0
+              },
+              from: @from,
+              to: @to
+            }
+            
+            # consignment products
+            products = Erp::Products::Product.get_consignment_products(from_date: @from, to_date: @to)
+            products.each do |p|
+              csd = p.get_consignment_delivered_consignment_details(from_date: @from, to_date: @to, contact_id: contact_ids) 
+              
+              quantity = csd.sum(:quantity)
+              
+              if quantity > 0
+                @data[:consignments][:rows] << {
+                  name: p.name,
+                  quantity: quantity
+                }
+                
+                @data[:consignments][:total][:quantity] += quantity
+              end
+            end
+            
+            # cs returns products
+            products = Erp::Products::Product.get_cs_return_products(from_date: @from, to_date: @to)
+            products.each do |p|
+              csrd = p.get_cs_return_delivered_return_details(from_date: @from, to_date: @to, contact_id: contact_ids)
+              
+              quantity = csrd.sum(:quantity)
+              
+              if quantity > 0
+                @data[:cs_returns][:rows] << {
+                  name: p.name,
+                  quantity: quantity
+                }
+                
+                @data[:cs_returns][:total][:quantity] += quantity
+              end
+            end
+            
+            @data[:total][:quantity] = @data[:consignments][:total][:quantity] - @data[:cs_returns][:total][:quantity]
+            
+            File.open("tmp/report_statistics_consignment.yml", "w+") do |f|
+              f.write({
+                data: @data
+              }.to_yaml)
+            end
+          end
+        end
+        
+        # Statistics consignment excel
+        def report_statistics_consignment_xlsx
+          authorize! :report_accounting_statistics_consignment, nil
+          
+          dt = YAML.load_file("tmp/report_statistics_consignment.yml")
+          
+          @data = dt[:data]
+          
+          respond_to do |format|
+            format.xlsx {
+              response.headers['Content-Disposition'] = 'attachment; filename="Thong ke hang ky gui cho muon.xlsx"'
             }
           end
         end

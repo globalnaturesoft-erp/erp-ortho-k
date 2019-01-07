@@ -299,6 +299,8 @@ vi:
           synthesis_pay_receive: 'Tổng hợp thu/chi'
           sales_results: 'Kết quả bán hàng'
           sales_summary: 'Thống kê bán hàng'
+          statistical_donated_goods: "Thống kê số lượng hàng tặng"
+          statistics_consignment: "Thống kê số lượng hàng KG/CM"
           income_statement: 'Kết quả kinh doanh'
           cash_flow: 'Dòng tiền còn lại'
           customer_liabilities: 'Báo cáo công nợ (KH)'
@@ -997,6 +999,20 @@ vi:
             print: "In ấn / Print"
           report_statistical_donated_goods:
             report_statistical_donated_goods: "Báo cáo - Số lượng hàng xuất tặng"
+            from_date: "Từ ngày"
+            to_date: "Đến ngày"
+            select_from_date: "Chọn lọc theo ngày đầu kỳ"
+            select_to_date: "Chọn lọc theo ngày cuối kỳ"
+            filter_period: "Thời gian cố định"
+            choose_period: "Chọn lọc theo thời gian cố định"
+            filter_customer: "Khách hàng"
+            choose_customer: "Chọn lọc theo tên khách hàng"
+            options: "Tùy chọn"
+            export_pdf: "Xuất ra PDF"
+            export_excel: "Xuất ra Excel"
+            print: "In ấn / Print"
+          report_statistics_consignment:
+            report_statistics_consignment: "Báo cáo - Số lượng hàng ký gửi"
             from_date: "Từ ngày"
             to_date: "Đến ngày"
             select_from_date: "Chọn lọc theo ngày đầu kỳ"
