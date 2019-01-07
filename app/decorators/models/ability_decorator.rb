@@ -153,6 +153,8 @@ Erp::Ability.class_eval do
     can :report_accounting_synthesis_pay_receive, :all if user.get_permission(:report, :report, :accounting, :synthesis_pay_receive) == 'yes'
     can :report_accounting_sales_results, :all if user.get_permission(:report, :report, :accounting, :sales_results) == 'yes'
     can :report_accounting_sales_summary, :all if user.get_permission(:report, :report, :accounting, :sales_summary) == 'yes'
+    can :report_accounting_statistical_donated_goods, :all if user.get_permission(:report, :report, :accounting, :statistical_donated_goods) == 'yes'
+    can :report_accounting_statistics_consignment, :all if user.get_permission(:report, :report, :accounting, :statistics_consignment) == 'yes'
     can :report_accounting_income_statement, :all if user.get_permission(:report, :report, :accounting, :income_statement) == 'yes'
     can :report_accounting_cash_flow, :all if user.get_permission(:report, :report, :accounting, :cash_flow) == 'yes'
     can :report_accounting_customer_liabilities, :all if user.get_permission(:report, :report, :accounting, :customer_liabilities) == 'yes'
@@ -547,6 +549,7 @@ Erp::Ability.class_eval do
       #menu cap 2: Bao cao Ke toan
       if (can? :report_accounting_pay_receive, nil) or (can? :report_accounting_synthesis_pay_receive, nil) or
         (can? :report_accounting_sales_results, nil) or (can? :report_accounting_sales_summary, nil) or
+        (can? :report_accounting_statistical_donated_goods, nil) or (can? :report_accounting_statistics_consignment, nil) or
         (can? :report_accounting_income_statement, nil) or (can? :report_accounting_cash_flow, nil) or
         (can? :report_accounting_customer_liabilities, nil) or (can? :report_accounting_supplier_liabilities, nil) or
         (can? :report_accounting_liabilities_arising, nil) or (can? :report_accounting_statistics_liabilities, nil)
@@ -562,6 +565,12 @@ Erp::Ability.class_eval do
         end
         if can? :report_accounting_sales_summary, nil
           can :menu_report_accounting_sales_summary, :all
+        end
+        if can? :report_accounting_statistical_donated_goods, nil
+          can :menu_report_accounting_statistical_donated_goods, :all
+        end
+        if can? :report_accounting_statistics_consignment, nil
+          can :menu_report_accounting_statistics_consignment, :all
         end
         if can? :report_accounting_income_statement, nil
           can :menu_report_accounting_income_statement, :all

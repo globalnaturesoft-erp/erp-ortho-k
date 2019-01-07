@@ -186,6 +186,10 @@ Erp::OrthoK::Engine.routes.draw do
 					post 'report_statistical_donated_goods_table'
 					get 'report_statistical_donated_goods_xlsx'
 					
+					get 'report_statistics_consignment'
+					post 'report_statistics_consignment_table'
+					get 'report_statistics_consignment_xlsx'
+					
 					get 'report_customer_remaining_liabilities_by_monthly'
 					post 'report_customer_remaining_liabilities_by_monthly_table'
 					get 'report_customer_remaining_liabilities_by_monthly_xlsx'

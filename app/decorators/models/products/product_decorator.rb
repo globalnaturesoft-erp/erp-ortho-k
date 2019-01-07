@@ -2863,4 +2863,39 @@ Erp::Products::Product.class_eval do
       .where(product_id: self.id)
   end
   
+  # get all consignment products
+  def self.get_consignment_products(options={})
+    query = self.get_active
+    
+    consignment_detail_query = Erp::Consignments::ConsignmentDetail.get_consignment_delivered_consignment_details(options).select(:product_id)
+    
+    query = query.where("erp_products_products.id IN (?)", consignment_detail_query)
+    
+    query
+  end
+  
+  # get all delivered consignment details
+  def get_consignment_delivered_consignment_details(options={})
+    Erp::Consignments::ConsignmentDetail.get_consignment_delivered_consignment_details(options)
+      .where(product_id: self.id)
+  end
+  
+  # get all consignment products
+  def self.get_cs_return_products(options={})
+    query = self.get_active
+    
+    cs_return_detail_query = Erp::Consignments::ReturnDetail.get_cs_return_delivered_return_details(options).select(:consignment_detail_id)
+    consignment_detail_query = Erp::Consignments::ConsignmentDetail.where("erp_consignments_consignment_details.id IN (?)", cs_return_detail_query).select(:product_id)
+    
+    query = query.where("erp_products_products.id IN (?)", consignment_detail_query)
+    
+    query
+  end
+  
+  # get all delivered consignment details
+  def get_cs_return_delivered_return_details(options={})
+    Erp::Consignments::ReturnDetail.get_cs_return_delivered_return_details(options).joins(:consignment_detail)
+      .where(erp_consignments_consignment_details: {product_id: self.id})
+  end
+  
 end
