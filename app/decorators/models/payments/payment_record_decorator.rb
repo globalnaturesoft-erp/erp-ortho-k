@@ -1,4 +1,11 @@
 Erp::Payments::PaymentRecord.class_eval do
+  # get report name
+  def get_report_name
+    str = []
+    str << customer_name if customer_name.present?
+    return I18n.t(".#{pay_receive}") + " - " + str.join(" - ")
+  end
+  
   # get report note
   def get_report_note
     str = []
