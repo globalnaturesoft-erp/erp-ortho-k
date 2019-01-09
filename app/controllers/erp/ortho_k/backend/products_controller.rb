@@ -919,7 +919,7 @@ module Erp
             @rows << row if row != false
           end
 
-          @file_name = "tmp/purchasing_export_#{current_user.id}_#{Digest::MD5.hexdigest(@rows, @heads, @totals, @line_totals, @all_total)}.yml"
+          @file_name = "tmp/purchasing_export_#{current_user.id}_#{Digest::MD5.hexdigest(params.to_s)}.yml"
           File.open(@file_name, "w+") do |f|
             f.write({rows: @rows, heads: @heads, totals: @totals, line_totals: @line_totals, all_total: @all_total}.to_yaml)
           end
