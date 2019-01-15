@@ -167,9 +167,16 @@ Erp::Ability.class_eval do
     if user == Erp::User.get_super_admin or user.get_permission(:options, :users, :users, :index) == 'yes'
       can :options_users_users_index, :all
     end
+    if user == Erp::User.get_super_admin or user.get_permission(:options, :users, :users, :create) == 'yes'
+      can :options_users_users_create, :all
+    end
     
     if user == Erp::User.get_super_admin or user.get_permission(:options, :users, :user_groups, :index) == 'yes'
       can :options_users_user_groups_index, :all
+    end
+    
+    if user == Erp::User.get_super_admin or user.get_permission(:options, :users, :user_groups, :create) == 'yes'
+      can :options_users_user_groups_create, :all
     end
     
     # system (he thong / cau hinh / sao luu)
