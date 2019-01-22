@@ -9,7 +9,7 @@
 <% content_for :global_filter do %>
     <% dfilters = current_user.get_filters(request.path+"_table").present? ? current_user.get_filters(request.path+"_table") : {}  %>
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-2">
             <%= erp_form_control('date', {
                 label: t('.from_date'),
                 name: 'from_date',
@@ -17,7 +17,7 @@
                 placeholder: t('.select_from_date')
             }) %>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
             <%= erp_form_control('date', {
                 label: t('.to_date'),
                 name: 'to_date',
@@ -25,7 +25,7 @@
                 placeholder: t('.select_to_date')
             }) %>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
             <%= erp_form_control("dataselect", {
                 name: 'period',
                 label: 'Thời gian cố định',
@@ -33,6 +33,16 @@
                 text: (dfilters["period"].present? ? Erp::Periods::Period.find(dfilters["period"]).name : nil),
                 placeholder: 'Chọn lọc theo ngày chứng từ',
                 url: erp_periods.dataselect_backend_periods_path(format: 'json')
+            }) %>
+        </div>
+        <div class="col-md-3">
+            <%= erp_form_control('select', {
+                name: 'types',
+                label: 'Loại xuất/nhập',
+                values: (dfilters["types"].present? ? dfilters["types"] : nil),
+                placeholder: 'Chọn loại phiếu',
+                options: Erp::Orders::Order.get_import_export_type_options,
+                multiple: true
             }) %>
         </div>
         <div class="col-md-3">
@@ -61,17 +71,29 @@
                     : nil
                 ),
                 placeholder: t('.chooose_customer'),
-                url: erp_contacts.dataselect_backend_contacts_path(format: 'json', is_customer: true),
+                url: erp_contacts.dataselect_backend_contacts_path(format: 'json', is_customer: true,
+                    contact_group_id: [Erp::Contacts::ContactGroup::GROUP_HOSPITAL,
+                                       Erp::Contacts::ContactGroup::GROUP_COMPANY,
+                                       Erp::Contacts::ContactGroup::GROUP_CLINIC,
+                                       Erp::Contacts::ContactGroup::GROUP_PHARMACY,
+                                       Erp::Contacts::ContactGroup::GROUP_RETAIL_CUSTOMER]
+                ),
                 multiple: true
             }) %>
         </div>
         <div class="col-md-3">
-            <%= erp_form_control('select', {
-                name: 'types',
-                label: 'Loại xuất/nhập',
-                values: (dfilters["types"].present? ? dfilters["types"] : nil),
-                placeholder: 'Chọn loại phiếu',
-                options: Erp::Orders::Order.get_import_export_type_options,
+            <%= erp_form_control("dataselect", {
+                name: 'patient_id',
+                label: 'Bệnh nhân',
+                values: (
+                    dfilters["patient_id"].present? ?
+                    (Erp::Contacts::Contact.where(id: dfilters["patient_id"]).map{|i| {text: i.name, value: i.id}})
+                    : nil
+                ),
+                placeholder: 'Chọn bệnh nhân',
+                url: erp_contacts.dataselect_backend_contacts_path(format: 'json', is_customer: true,
+                    contact_group_id: Erp::Contacts::ContactGroup::GROUP_PATIENT
+                ),
                 multiple: true
             }) %>
         </div>

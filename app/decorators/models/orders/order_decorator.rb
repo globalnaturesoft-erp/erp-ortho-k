@@ -324,6 +324,10 @@ Erp::Orders::Order.class_eval do
         query = query.where(erp_orders_orders: {employee_id: params[:employee_id]})
       end
 
+      if params[:patient_id].present?
+        query = query.where(erp_orders_orders: {patient_id: params[:patient_id]})
+      end
+
       if params[:warehouse_id].present?
         query = query.where(warehouse_id: params[:warehouse_id])
       end
@@ -412,6 +416,11 @@ Erp::Orders::Order.class_eval do
         query = query.where(erp_qdeliveries_deliveries: {customer_id: params[:customer_id]})
       end
 
+      if params[:patient_id].present?
+        orders_query = Erp::Orders::Order.where(patient_id: params[:patient_id])
+        query = query.where(erp_orders_order_details: {order_id: orders_query})
+      end
+
       if params[:employee_id].present?
         query = query.where(erp_qdeliveries_deliveries: {employee_id: params[:employee_id]})
       end
@@ -484,6 +493,10 @@ Erp::Orders::Order.class_eval do
 
       if params[:customer_id].present?
         query = query.where(erp_qdeliveries_deliveries: {customer_id: params[:customer_id]})
+      end
+
+      if params[:patient_id].present?
+        query = query.where(patient_id: params[:patient_id])
       end
 
       if params[:employee_id].present?
