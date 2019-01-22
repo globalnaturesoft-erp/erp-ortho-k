@@ -579,17 +579,34 @@ Erp::Contacts::Contact.class_eval do
     end
     
     if params[:contact_group_id] == Erp::Contacts::ContactGroup::GROUP_DOCTOR.to_s
+      # style #1
       if params[:customer].present?
         query = query.where(parent_id: params[:customer])
+      end
+      
+      # style #2
+      if params[:customer_id].present?
+        query = query.where(parent_id: params[:customer_id])
       end
     end
     
     if params[:contact_group_id] == Erp::Contacts::ContactGroup::GROUP_PATIENT.to_s      
+      # style #1
       if params[:customer].present?
         if params[:doctor].present?
           query = query.where(parent_id: params[:doctor])
         else
           doctors_query = Erp::Contacts::Contact.where(parent_id: params[:customer])
+          query = query.where(parent_id: doctors_query)
+        end
+      end
+      
+      # style #2
+      if params[:customer_id].present?
+        if params[:doctor_id].present?
+          query = query.where(parent_id: params[:doctor_id])
+        else
+          doctors_query = Erp::Contacts::Contact.where(parent_id: params[:customer_id])
           query = query.where(parent_id: doctors_query)
         end
       end
