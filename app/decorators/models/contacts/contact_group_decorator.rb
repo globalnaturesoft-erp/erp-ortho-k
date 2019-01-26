@@ -7,6 +7,7 @@ Erp::Contacts::ContactGroup.class_eval do
   GROUP_CLINIC = 5
   GROUP_RETAIL_CUSTOMER = 6
   GROUP_PHARMACY = 7
+  GROUP_STAFF = 8
 
   def self.create_default_groups
     # Contact group
@@ -68,5 +69,9 @@ Erp::Contacts::ContactGroup.class_eval do
 
   def self.get_pharmacy
     return self.find(GROUP_PHARMACY)
+  end
+
+  def self.get_staff
+    return self.find(GROUP_STAFF)
   end
 end
