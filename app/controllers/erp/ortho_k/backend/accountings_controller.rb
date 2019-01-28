@@ -1032,6 +1032,125 @@ module Erp
             }
           end
         end
+        
+        def report_customer_arising_liabilities_by_monthly
+          #authorize! :report_accounting_customer_arising_liabilities_by_monthly, nil
+        end
+        
+        def report_customer_arising_liabilities_by_monthly_table
+          #authorize! :report_accounting_customer_arising_liabilities_by_monthly, nil
+          
+          global_filters = params.to_unsafe_hash[:global_filter]
+          
+          if global_filters[:period].present?
+            period = Erp::Periods::Period.find(global_filters[:period])
+            global_filters[:from_date] = period.from_date
+            global_filters[:to_date] = period.to_date
+            @period_name = period.name
+          end
+          
+          if global_filters[:from_date].present? and global_filters[:to_date].present?
+            @from_date = global_filters[:from_date].to_date
+            @to_date = global_filters[:to_date].to_date
+            
+            @times = []
+            @time = @from_date
+            
+            while @time <= @to_date.end_of_month
+              @times << @time.end_of_month
+              @time += 1.month
+            end
+            
+            @report = {
+              header: [],
+              rows: [],
+              footer: []
+            }
+            
+            # add header
+            @report[:header] << 'STT'
+            @report[:header] << 'Tên khách hàng'
+            @times.each do |time|
+              @report[:header] << "T#{time.month}/#{time.year}"
+            end
+            @report[:header] << 'N.viên ph.trách'
+            
+            if global_filters[:customer].present?
+              @contacts = Erp::Contacts::Contact.where(id: global_filters[:customer])
+            else
+              @contacts = Erp::Contacts::Contact.where.not(id: Erp::Contacts::Contact.get_main_contact.id)
+            end
+            
+            if global_filters[:contact_group_id].present?
+              @contacts = @contacts.where(contact_group_id: global_filters[:contact_group_id])
+            end
+            
+            if global_filters[:salesperson_id].present?
+              @contacts = @contacts.where(salesperson_id: global_filters[:salesperson_id])
+            end
+            
+            # khach hang co phat sinh giao dich mua/tra hang
+            order_query = Erp::Orders::Order.all_confirmed
+              .sales_orders
+              .payment_for_contact_orders(from_date: @from_date, to_date: @to_date)
+              .select('customer_id')
+        
+            product_return_query = Erp::Qdeliveries::Delivery.all_delivered
+              .sales_import_deliveries
+              .get_deliveries_with_payment_for_contact(from_date: @from_date, to_date: @to_date)
+              .select('customer_id')
+              
+            @contacts = @contacts.where("erp_contacts_contacts.id IN (?) OR erp_contacts_contacts.id IN (?)", order_query, product_return_query)
+            @contacts = @contacts.order('erp_contacts_contacts.name ASC') # có phát sinh trong kỳ (mua va tra hang)
+            
+            # add row
+            @contacts.each_with_index do |contact,index|
+              row = []
+              
+              row << (index + 1)
+              row << contact.name
+              @times.each do |time|
+                # time: la ngay cuoi ky / end of month
+                row << contact.sales_total_amount(from_date: time.beginning_of_month, to_date: time)
+              end
+              row << contact.salesperson_name
+              
+              @report[:rows] << row
+            end
+            
+            # add footer
+            @report[:footer] << 'Tổng cộng'
+            @times.each do |time|
+              @report[:footer] << @contacts.sales_total_amount(from_date: time.beginning_of_month, to_date: time)
+            end
+            @report[:footer] << nil
+            
+            File.open("tmp/report_customer_arising_liabilities_by_monthly_xlsx.yml", "w+") do |f|
+              f.write({
+                from_date: @from_date,
+                to_date: @to_date,
+                report: @report
+              }.to_yaml)
+            end
+          end
+        end
+        
+        def report_customer_arising_liabilities_by_monthly_xlsx
+          #authorize! :report_accounting_customer_arising_liabilities_by_monthly, nil
+          
+          data = YAML.load_file("tmp/report_customer_arising_liabilities_by_monthly_xlsx.yml")
+          
+          @from_date = data[:from_date]
+          @to_date = data[:to_date]
+          
+          @report = data[:report]
+
+          respond_to do |format|
+            format.xlsx {
+              response.headers['Content-Disposition'] = 'attachment; filename="Bao cao khach hang phat sinh theo thang.xlsx"'
+            }
+          end
+        end
       end
     end
   end

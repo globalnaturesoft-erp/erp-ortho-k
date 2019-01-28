@@ -193,6 +193,10 @@ Erp::OrthoK::Engine.routes.draw do
 					get 'report_customer_remaining_liabilities_by_monthly'
 					post 'report_customer_remaining_liabilities_by_monthly_table'
 					get 'report_customer_remaining_liabilities_by_monthly_xlsx'
+					
+					get 'report_customer_arising_liabilities_by_monthly'
+					post 'report_customer_arising_liabilities_by_monthly_table'
+					get 'report_customer_arising_liabilities_by_monthly_xlsx'
 				end
 			end
 
