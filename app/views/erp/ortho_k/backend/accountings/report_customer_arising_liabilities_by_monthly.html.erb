@@ -1,9 +1,9 @@
 <% content_for :title do %>
-    <%= t('.report_customer_remaining_liabilities_by_monthly') %>
+    <%= 'Báo cáo - Công nợ khách hàng phát sinh theo tháng' %>
 <% end %>
 
 <% content_for :page_title do %>
-    <i class="fa fa-archive"></i> <%= t('.report_customer_remaining_liabilities_by_monthly') %>
+    <i class="fa fa-archive"></i> <%= 'Báo cáo - Công nợ khách hàng phát sinh theo tháng' %>
 <% end %>
 
 <% content_for :global_filter do %>
@@ -69,7 +69,7 @@
 <% end %>
 
 <%= erp_datalist(
-    url: erp_ortho_k.report_customer_remaining_liabilities_by_monthly_table_backend_accountings_path,
+    url: erp_ortho_k.report_customer_arising_liabilities_by_monthly_table_backend_accountings_path,
     autoload: false,
     placeholder: 'Vui lòng chọn thông tin cần lọc và nhấn Kiểm tra'
 ) %>

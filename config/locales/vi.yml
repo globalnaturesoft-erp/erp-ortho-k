@@ -1158,6 +1158,19 @@ vi:
           report_customer_remaining_liabilities_by_monthly_table:
             please_select_filter: "Vui lòng chọn TỪ NGÀY - ĐẾN NGÀY hoặc THỜI GIAN CỐ ĐỊNH để xem nội dung báo cáo"
             no_matching_records_found: "Nội dung báo cáo không được tìm thấy. Vui lòng chọn các điều kiện khác để xem."
+          report_customer_arising_liabilities_by_monthly:
+            report_customer_arising_liabilities_by_monthly: "Báo cáo - Công nợ khách hàng phát sinh theo tháng"
+            from_date: "Từ ngày"
+            to_date: "Đến ngày"
+            select_from_date: "Chọn lọc theo ngày đầu kỳ"
+            select_to_date: "Chọn lọc theo ngày cuối kỳ"
+            filter_period: "Thời gian cố định"
+            choose_period: "Chọn lọc theo thời gian cố định"
+            filter_customer: "Khách hàng"
+            choose_customer: "Chọn lọc theo khách hàng"
+          report_customer_arising_liabilities_by_monthly_table:
+            please_select_filter: "Vui lòng chọn TỪ NGÀY - ĐẾN NGÀY hoặc THỜI GIAN CỐ ĐỊNH để xem nội dung báo cáo"
+            no_matching_records_found: "Nội dung báo cáo không được tìm thấy. Vui lòng chọn các điều kiện khác để xem."
         sales:
           report_new_patient:
             report_new_patient: "Báo cáo - Số lượng bệnh nhân (khách hàng và phòng khám)"
