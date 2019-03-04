@@ -284,7 +284,7 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
         
         # Top head
         sheet.add_row ["Chi nhánh tại Hà Nội - Công ty TNHH Ortho-K Việt Nam"], b: true
-        sheet.add_row ["87 Trần Quang Diệu, Phường Quang Trung, Quận Đống Đa, Hà Nội"], b: true
+        sheet.add_row ["Số 35 ngõ 41 Thái Hà, Phường Trung Liệt, Quận Đống Đa, Hà Nội"], b: true
         
         # add empty row
         sheet.add_row [nil]
@@ -1402,7 +1402,7 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
         # Column 2
         sign[:columns] << Time.now.strftime('Ngày %d tháng %m năm %Y')
         sign[:styles] << (s.add_style text_center.merge(italic))
-        sign1[:columns] << 'KẾ TOÁN - CÔNG TY TNHH ORTHO-K VIỆT NAM'
+        sign1[:columns] << 'KẾ TOÁN - CN TẠI HN - CÔNG TY TNHH ORTHO-K VIỆT NAM'
         sign1[:styles] << (s.add_style text_center.merge(bold))
         sign2[:columns] << '(Ký, họ tên)'
         sign2[:styles] << (s.add_style text_center.merge(italic))
