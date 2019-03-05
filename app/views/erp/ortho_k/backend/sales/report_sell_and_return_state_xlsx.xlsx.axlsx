@@ -26,7 +26,7 @@ wb.styles do |s|
     
     # Top head
     sheet.add_row ["Chi nhánh tại Hà Nội - Công ty TNHH Ortho-K Việt Nam"], b: true
-    sheet.add_row ["87 Trần Quang Diệu, Phường Quang Trung, Quận Đống Đa, Hà Nội"], b: true
+    sheet.add_row ["Số 35 ngõ 41 Thái Hà, Phường Trung Liệt, Quận Đống Đa, Hà Nội"], b: true
     
     # add empty row
     sheet.add_row [nil]
