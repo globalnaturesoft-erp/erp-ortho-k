@@ -332,6 +332,8 @@ vi:
           index: 'Xem danh sách'
           create: 'Tạo mới'
           update: 'Cập nhật'
+          activate: "Kích hoạt quyền"
+          deactivate: "Vô hiệu quyền"
       targets:
         controller_targets: 'Cấu hình target nhân viên'
         controller_company_targets: 'Cấu hình target công ty/doanh nghiệp'
