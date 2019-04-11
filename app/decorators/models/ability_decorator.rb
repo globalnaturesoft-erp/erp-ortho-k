@@ -245,6 +245,22 @@ Erp::Ability.class_eval do
       )
     end
     
+    can :activate, Erp::UserGroup do |user_group|
+      !user_group.active? and # active is false
+      (
+        user == Erp::User.get_super_admin or
+        user.get_permission(:options, :users, :user_groups, :activate) == 'yes'
+      )
+    end
+    
+    can :deactivate, Erp::UserGroup do |user_group|
+      user_group.active? and # active is true
+      (
+        user == Erp::User.get_super_admin or
+        user.get_permission(:options, :users, :user_groups, :deactivate) == 'yes'
+      )
+    end
+    
     ## SIDEBAR MENU - START ##
     # app menus ability
     # ---- Sales menu----
