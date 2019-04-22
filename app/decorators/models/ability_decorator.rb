@@ -1,7 +1,10 @@
 Erp::Ability.class_eval do
   def ortho_k_ability(user)
     # sales
-    can :sales_sales_orders_index, :all if user.get_permission(:sales, :sales, :orders, :index) == 'yes'
+    can :sales_sales_orders_index, :all if (user.get_permission(:sales, :sales, :orders, :index) == 'yes' or
+                                            user.get_permission(:sales, :sales, :orders, :index) == 'own')
+    can :sales_sales_orders_list_all, :all if user.get_permission(:sales, :sales, :orders, :index) == 'yes'
+    can :sales_sales_orders_list_own, :all if user.get_permission(:sales, :sales, :orders, :index) == 'own'
     can :sales_sales_orders_create, :all if user.get_permission(:sales, :sales, :orders, :create) == 'yes'
     
     can :sales_gift_givens_index, :all if user.get_permission(:sales, :gift_givens, :gift_givens, :index) == 'yes'
@@ -32,7 +35,10 @@ Erp::Ability.class_eval do
     can :inventory_order_stock_checks_schecks_check, :all if user.get_permission(:inventory, :order_stock_checks, :schecks, :check) == 'yes'
     can :inventory_order_stock_checks_schecks_approve_order, :all if user.get_permission(:inventory, :order_stock_checks, :schecks, :approve_order) == 'yes'
     
-    can :inventory_qdeliveries_deliveries_index, :all if user.get_permission(:inventory, :qdeliveries, :deliveries, :index) == 'yes'
+    can :inventory_qdeliveries_deliveries_index, :all if (user.get_permission(:inventory, :qdeliveries, :deliveries, :index) == 'yes' or
+                                                          user.get_permission(:inventory, :qdeliveries, :deliveries, :index) == 'own')
+    can :inventory_qdeliveries_deliveries_list_all, :all if user.get_permission(:inventory, :qdeliveries, :deliveries, :index) == 'yes'
+    can :inventory_qdeliveries_deliveries_list_own, :all if user.get_permission(:inventory, :qdeliveries, :deliveries, :index) == 'own'
     
     can :inventory_qdeliveries_sales_export_create, :all if user.get_permission(:inventory, :qdeliveries, :sales_export, :create) == 'yes'
     can :inventory_qdeliveries_sales_import_create, :all if user.get_permission(:inventory, :qdeliveries, :sales_import, :create) == 'yes'
