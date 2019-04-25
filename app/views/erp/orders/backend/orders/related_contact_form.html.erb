@@ -3,9 +3,9 @@
  <% if @contact.contact_group == Erp::Contacts::ContactGroup.get_doctor %>
     <%= erp_form_control("dataselect", {
         name: 'order[patient_id]',
-        value: @order.patient_id,
-        text: @order.patient_name,
-        label: 'Bệnh nhân',
+        value: !@contact.contacts.where(id: @order.patient_id).empty? ? @order.patient_id : nil,
+        text: !@contact.contacts.where(id: @order.patient_id).empty? ? @order.patient_name : nil,
+        label: 'Bệnh nhân của BS',
         placeholder: 'Chọn Bệnh nhân',
         url: erp_contacts.dataselect_backend_contacts_path(format: 'json', parent_id: @contact.id),
         create: {
@@ -27,30 +27,66 @@
  <% if [Erp::Contacts::ContactGroup.get_hospital,
         Erp::Contacts::ContactGroup.get_clinic,
         Erp::Contacts::ContactGroup.get_pharmacy].include?(@contact.contact_group) %>
-    <%= erp_form_control("dataselect", {
-        name: 'order[doctor_id]',
-        value: @order.doctor_id,
-        text: @order.doctor_name,
-        label: 'Bác sĩ',
-        placeholder: 'Chọn Bác sĩ',
-        url: erp_contacts.dataselect_backend_contacts_path(format: 'json', parent_id: @contact.id),
-        create: {
-            url: erp_contacts.new_backend_contact_path(
-              contact_type: Erp::Contacts::Contact::TYPE_PERSON,
-              parent_id:  @contact.id,
-              is_customer: 'true',
-              contact_group_id: Erp::Contacts::ContactGroup.get_doctor.id,
-            ),
-            title: 'Thêm liên hệ',
-            container_selector: '.new_contact',
-            input_selector: 'input[name="order[doctor_id]"]',
-            modal_size: "full"
-        },
-    }) %>
+    
+        <%= erp_form_control("dataselect", {
+            name: 'order[doctor_id]',
+            value: @order.doctor_id,
+            text: @order.doctor_name,
+            label: 'Bác sĩ',
+            placeholder: 'Chọn Bác sĩ',
+            url: erp_contacts.dataselect_backend_contacts_path(format: 'json', parent_id: @contact.id, contact_group_id: Erp::Contacts::ContactGroup.get_doctor.id),
+            create: {
+                url: erp_contacts.new_backend_contact_path(
+                  contact_type: Erp::Contacts::Contact::TYPE_PERSON,
+                  parent_id:  @contact.id,
+                  is_customer: 'true',
+                  contact_group_id: Erp::Contacts::ContactGroup.get_doctor.id,
+                ),
+                title: 'Thêm liên hệ',
+                container_selector: '.new_contact',
+                input_selector: 'input[name="order[doctor_id]"]',
+                modal_size: "full"
+            },
+        }) %>
+        
+        <div class="patient_of_clinic">
+            <%= erp_form_control("dataselect", {
+                name: 'order[patient_id]',
+                value: @order.patient_id,
+                text: @order.patient_name,
+                label: 'Bệnh nhân của PK/BV/NT',
+                placeholder: 'Chọn Bệnh nhân',
+                url: erp_contacts.dataselect_backend_contacts_path(format: 'json', parent_id: @contact.id, contact_group_id: Erp::Contacts::ContactGroup.get_patient.id),
+                create: {
+                    url: erp_contacts.new_backend_contact_path(
+                      contact_type: Erp::Contacts::Contact::TYPE_PERSON,
+                      parent_id:  @contact.id,
+                      is_customer: 'true',
+                      contact_group_id: Erp::Contacts::ContactGroup.get_patient.id,
+                    ),
+                    title: 'Thêm liên hệ',
+                    container_selector: '.new_contact',
+                    input_selector: 'input[name="order[patient_id]"]',
+                    modal_size: "full"
+                },
+            }) %>
+            <div class="padding: 10px;"></div>
+        </div>
+    
     <div class="ajax-box"
         data-url='<%= erp_orders.related_contact_form_backend_orders_path(order_id: @order.id) %>'
         data-control='input[name="order[doctor_id]"]'
         >
 
     </div>
+    <script>
+        $(document).on('change', '[name="order[doctor_id]"]', function() {
+            if ($(this).val() == '') {
+                $('.patient_of_clinic').show();
+            } else {
+                $('.patient_of_clinic').hide();
+                clearDataselectControlText($('[name="order[patient_id]"]').closest('.dataselect'));
+            }
+        });
+    </script>
  <% end %>
