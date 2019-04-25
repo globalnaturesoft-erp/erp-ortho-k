@@ -596,8 +596,13 @@ Erp::Contacts::Contact.class_eval do
         if params[:doctor].present?
           query = query.where(parent_id: params[:doctor])
         else
-          doctors_query = Erp::Contacts::Contact.where(parent_id: params[:customer])
-          query = query.where(parent_id: doctors_query)
+          pids = Erp::Contacts::Contact.where(parent_id: params[:customer]).map(&:id)
+          pids << params[:customer]
+          query = query.where(parent_id: pids)
+        end
+      else
+        if params[:doctor].present?
+          query = query.where(parent_id: params[:doctor])
         end
       end
       
@@ -606,8 +611,13 @@ Erp::Contacts::Contact.class_eval do
         if params[:doctor_id].present?
           query = query.where(parent_id: params[:doctor_id])
         else
-          doctors_query = Erp::Contacts::Contact.where(parent_id: params[:customer_id])
-          query = query.where(parent_id: doctors_query)
+          pids = Erp::Contacts::Contact.where(parent_id: params[:customer_id]).map(&:id)
+          pids << params[:customer_id]
+          query = query.where(parent_id: pids)
+        end
+      else
+        if params[:doctor_id].present?
+          query = query.where(parent_id: params[:doctor_id])
         end
       end
     end
