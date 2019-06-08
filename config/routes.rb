@@ -72,6 +72,18 @@ Erp::Orders::Engine.routes.draw do
 	end
 end
 
+Erp::Consignments::Engine.routes.draw do
+  scope "(:locale)", locale: /en|vi/ do
+		namespace :backend, module: "backend", path: "orthok/backend" do
+      resources :consignments do
+        collection do
+					post 'import_file'
+        end
+      end
+    end
+	end
+end
+
 Erp::OrthoK::Engine.routes.draw do
   scope "(:locale)", locale: /en|vi/ do
 		namespace :backend, module: "backend", path: "orthok/backend/ortho_k" do
