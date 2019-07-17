@@ -616,6 +616,7 @@ module Erp
               data = {
                 name: row["Tên hàng"].to_s.strip,
                 category: row["Loại"].to_s.strip.downcase,
+                brand: row["Thương hiệu"].to_s.strip.downcase,
                 diameter: row["Đường kính"].to_s.strip.downcase,
                 letter: row["Chữ"].to_s.strip,
                 degree: row["Độ"].to_s.strip.downcase,
@@ -634,6 +635,15 @@ module Erp
               if category.present?
               else
                 errors << "Không tìm thấy chuyên mục"
+              end
+              
+              # brand
+              brand = Erp::Products::Brand
+                .where("LOWER(name) = ?", data[:brand]).first
+              if brand.present?
+                # product.brand = brand
+              else
+                errors << "Không tìm thấy thương hiệu"
               end
 
               # diameter
@@ -705,8 +715,9 @@ module Erp
               ]
 
               if diameter_pv.present? and letter_pv.present? and number_pv.present? and category.present?
-                names << "#{letter_pv.value}#{number_pv.value}-#{diameter_pv.value}-#{category.name}"
-                data[:name] = "#{letter_pv.value}#{number_pv.value}-#{diameter_pv.value}-#{category.name}"
+                n = "#{letter_pv.value}#{number_pv.value}-#{diameter_pv.value}-#{category.name}"
+                names << n
+                data[:name] = n
               end
 
               # Name check
@@ -723,6 +734,7 @@ module Erp
                 product = Erp::Products::Product.new
                 product.name = data[:name]
                 product.category = category
+                product.brand = brand
                 product.unit = unit
                 product.creator = current_user
                 product.is_outside = data[:is_outside]
