@@ -160,14 +160,23 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
   
   # export all customer commission details
   def export_xlsx_all_details
+    @from = Time.now.beginning_of_month.beginning_of_day
+    @to = Time.now.end_of_day
+    
     glb = params.to_unsafe_hash[:global_filter]
     if glb[:period].present?
       @from = Erp::Periods::Period.find(glb[:period]).from_date.beginning_of_day
       @to = Erp::Periods::Period.find(glb[:period]).to_date.end_of_day
     else
-      @from = (glb.present? and glb[:from_date].present?) ? glb[:from_date].to_date : Time.now.beginning_of_month
-      @to = (glb.present? and glb[:to_date].present?) ? glb[:to_date].to_date : nil
+      if glb[:from_date].present?
+        @from = glb[:from_date].to_date.beginning_of_day
+      end
+      
+      if glb[:to_date].present?
+        @to = glb[:to_date].to_date.end_of_day
+      end
     end
+    
 
     @customers = Erp::Contacts::Contact.search(params)
       .where.not(id: Erp::Contacts::Contact.get_main_contact.id)
@@ -234,7 +243,7 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
     
     @customers.each do |customer|
       file_name = "#{customer.name.to_ascii.gsub(/[^0-9a-z ]/i, '')}-#{customer.id}.xlsx"
-      create_xlsx_files(customer, glb, tmp_path, file_name)
+      create_xlsx_files(customer, glb, tmp_path, file_name, @from, @to)
     end
     
     # zip files
@@ -250,14 +259,17 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
       disposition: "attachment", filename: "ChiTietCongNo.zip"
   end
   
-  def create_xlsx_files(customer, glb, tmp_path, file_name)
-    if glb[:period].present?
-      @from = Erp::Periods::Period.find(glb[:period]).from_date.beginning_of_day
-      @to = Erp::Periods::Period.find(glb[:period]).to_date.end_of_day
-    else
-      @from = (glb.present? and glb[:from_date].present?) ? glb[:from_date].to_date : Time.now.beginning_of_month
-      @to = (glb.present? and glb[:to_date].present?) ? glb[:to_date].to_date : nil
-    end
+  def create_xlsx_files(customer, glb, tmp_path, file_name, from, to)
+    #if glb[:period].present?
+    #  @from = Erp::Periods::Period.find(glb[:period]).from_date.beginning_of_day
+    #  @to = Erp::Periods::Period.find(glb[:period]).to_date.end_of_day
+    #else
+    #  @from = (glb.present? and glb[:from_date].present?) ? glb[:from_date].to_date : Time.now.beginning_of_month
+    #  @to = (glb.present? and glb[:to_date].present?) ? glb[:to_date].to_date : nil
+    #end
+    
+    @from = from
+    @to = to
 
     @customer = customer
     @orders = @customer.sales_orders.payment_for_contact_orders(glb)
