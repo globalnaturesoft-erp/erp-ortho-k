@@ -17,9 +17,14 @@
                 placeholder: t('.select_to_date')
             }) %>
         </div>
+        <div class="col-md-9 mt-25 text-right">
+            <a class="btn green-jungle global-filter-button">Lọc báo cáo</a>
+        </div>
     </div>
 <% end %>
 
 <%= erp_datalist(
-    url: erp_ortho_k.report_statistics_liabilities_table_backend_accountings_path
+    url: erp_ortho_k.report_statistics_liabilities_table_backend_accountings_path,
+    autoload: false,
+    placeholder: 'Vui lòng chọn điều kiện cần xem và nhấn "Lọc báo cáo"'
 ) %>

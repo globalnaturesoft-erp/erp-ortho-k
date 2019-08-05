@@ -30,7 +30,9 @@ module Erp
             ]
           ).order('erp_payments_payment_records.payment_date ASC')
           
-          File.open("tmp/report_pay_receive_xlsx.yml", "w+") do |f|
+          @file_name = "tmp/report_pay_receive_xlsx_#{Digest::MD5.hexdigest(@payment_records.to_s)}.yml"
+          
+          File.open(@file_name, "w+") do |f|
             f.write({
               global_filters: @global_filters,
               period_name: @period_name,
@@ -44,7 +46,9 @@ module Erp
         def report_pay_receive_xlsx
           authorize! :report_accounting_pay_receive, nil
           
-          data = YAML.load_file("tmp/report_pay_receive_xlsx.yml")
+          @file_name = params[:file_name]
+          
+          data = YAML.load_file(@file_name)
           
           @global_filters = data[:global_filters]
           @period_name = data[:period_name]
@@ -84,7 +88,16 @@ module Erp
           @payables = @payment_types.where(is_payable: true).order('erp_payments_payment_types.name ASC')
           @receivables = @payment_types.where(is_receivable: true).order('erp_payments_payment_types.name ASC')
           
-          File.open("tmp/report_synthesis_pay_receive_xlsx.yml", "w+") do |f|
+          @data_md5 = {
+            from_date: [],
+            to_date: []
+          }
+          @data_md5[:from_date] << @from
+          @data_md5[:to_date] << @to
+          
+          @file_name = "tmp/report_synthesis_pay_receive_xlsx_#{Digest::MD5.hexdigest(@data_md5.to_s)}.yml"
+          
+          File.open(@file_name, "w+") do |f|
             f.write({
               global_filters: @global_filters,
               period_name: @period_name,
@@ -100,7 +113,8 @@ module Erp
         def report_synthesis_pay_receive_xlsx
           authorize! :report_accounting_synthesis_pay_receive, nil
           
-          data = YAML.load_file("tmp/report_synthesis_pay_receive_xlsx.yml")
+          @file_name = params[:file_name]
+          data = YAML.load_file(@file_name)
           
           @global_filters = data[:global_filters]
           @period_name = data[:period_name]
@@ -143,7 +157,16 @@ module Erp
           @categories = Erp::Products::Category.all_unarchive
             .order('erp_products_categories.name ASC')
           
-          File.open("tmp/report_sales_results_xlsx.yml", "w+") do |f|
+          @data_md5 = {
+            from_date: [],
+            to_date: []
+          }
+          @data_md5[:from_date] << @from
+          @data_md5[:to_date] << @to
+          
+          @file_name = "tmp/report_sales_results_xlsx_#{Digest::MD5.hexdigest(@data_md5.to_s)}.yml"
+          
+          File.open(@file_name, "w+") do |f|
             f.write({
               global_filters: @global_filters,
               period_name: @period_name,
@@ -157,7 +180,9 @@ module Erp
         def report_sales_results_xlsx
           authorize! :report_accounting_sales_results, nil
           
-          data = YAML.load_file("tmp/report_sales_results_xlsx.yml")
+          @file_name = params[:file_name]
+          
+          data = YAML.load_file(@file_name)
           
           @global_filters = data[:global_filters]
           @period_name = data[:period_name]
@@ -197,7 +222,16 @@ module Erp
           @payables = Erp::Payments::PaymentType.get_custom_payment_types.payables.order('erp_payments_payment_types.name ASC')
           @receivables = Erp::Payments::PaymentType.get_custom_payment_types.receivables.order('erp_payments_payment_types.name ASC')
           
-          File.open("tmp/report_income_statement_xlsx.yml", "w+") do |f|
+          @data_md5 = {
+            from_date: [],
+            to_date: []
+          }
+          @data_md5[:from_date] << @from
+          @data_md5[:to_date] << @to
+          
+          @file_name = "tmp/report_income_statement_xlsx_#{Digest::MD5.hexdigest(@data_md5.to_s)}.yml"
+          
+          File.open(@file_name, "w+") do |f|
             f.write({
               global_filters: @global_filters,
               period_name: @period_name,
@@ -212,7 +246,8 @@ module Erp
         def report_income_statement_xlsx
           authorize! :report_accounting_income_statement, nil
           
-          data = YAML.load_file("tmp/report_income_statement_xlsx.yml")
+          @file_name = params[:file_name]
+          data = YAML.load_file(@file_name)
           
           @global_filters = data[:global_filters]
           @period_name = data[:period_name]
@@ -252,7 +287,18 @@ module Erp
 
           @accounts = Erp::Payments::Account.all_active.search(params).order('erp_payments_accounts.name ASC') # .where('erp_payments_accounts.code LIKE ?', "1121%")
           
-          File.open("tmp/report_cash_flow_xlsx.yml", "w+") do |f|
+          @data_md5 = {
+            from_date: [],
+            to_date: [],
+            accounts: []
+          }
+          @data_md5[:from_date] << @from
+          @data_md5[:to_date] << @to
+          @data_md5[:accounts] << @accounts
+          
+          @file_name = "tmp/report_cash_flow_xlsx#{Digest::MD5.hexdigest(@data_md5.to_s)}.yml"
+          
+          File.open(@file_name, "w+") do |f|
             f.write({
               global_filters: @global_filters,
               period_name: @period_name,
@@ -266,7 +312,9 @@ module Erp
         def report_cash_flow_xlsx
           authorize! :report_accounting_cash_flow, nil
           
-          data = YAML.load_file("tmp/report_cash_flow_xlsx.yml")
+          @file_name = params[:file_name]
+          
+          data = YAML.load_file(@file_name)
           
           @global_filters = data[:global_filters]
           @period_name = data[:period_name]
@@ -314,7 +362,18 @@ module Erp
           #@customers = @customers.get_sales_payment_chasing_contacts#(from_date: @from, to_date: @to) # có phát sinh
           @customers = @customers.get_sales_liabilities_contacts(from_date: @from, to_date: @to) # còn nợ và có phát sinh
           
-          File.open("tmp/report_customer_liabilities_xlsx.yml", "w+") do |f|
+          @data_md5 = {
+            from_date: [],
+            to_date: [],
+            customers: []
+          }
+          @data_md5[:from_date] << @from
+          @data_md5[:to_date] << @to
+          @data_md5[:customers] << @customers
+          
+          @file_name = "tmp/report_customer_liabilities_xlsx_#{Digest::MD5.hexdigest(@data_md5.to_s)}.yml"
+          
+          File.open(@file_name, "w+") do |f|
             f.write({
               global_filters: @global_filters,
               period_name: @period_name,
@@ -328,7 +387,9 @@ module Erp
         def report_customer_liabilities_xlsx
           authorize! :report_accounting_customer_liabilities, nil
           
-          data = YAML.load_file("tmp/report_customer_liabilities_xlsx.yml")
+          @file_name = params[:file_name]
+          
+          data = YAML.load_file(@file_name)
           
           @global_filters = data[:global_filters]
           @period_name = data[:period_name]
@@ -373,7 +434,18 @@ module Erp
           @suppliers = @suppliers.get_purchase_payment_chasing_contacts(from_date: @from, to_date: @to) # có phát sinh
           #@suppliers = @suppliers.get_purchase_liabilities_contacts(from_date: @from, to_date: @to) # còn nợ và có phát sinh
           
-          File.open("tmp/report_supplier_liabilities_xlsx.yml", "w+") do |f|
+          @data_md5 = {
+            from_date: [],
+            to_date: [],
+            suppliers: []
+          }
+          @data_md5[:from_date] << @from
+          @data_md5[:to_date] << @to
+          @data_md5[:suppliers] << @suppliers
+          
+          @file_name = "tmp/report_supplier_liabilities_xlsx#{Digest::MD5.hexdigest(@data_md5.to_s)}.yml"
+          
+          File.open(@file_name, "w+") do |f|
             f.write({
               global_filters: @global_filters,
               period_name: @period_name,
@@ -387,7 +459,8 @@ module Erp
         def report_supplier_liabilities_xlsx
           authorize! :report_accounting_supplier_liabilities, nil
           
-          data = YAML.load_file("tmp/report_supplier_liabilities_xlsx.yml")
+          @file_name = params[:file_name]
+          data = YAML.load_file(@file_name)
           
           @global_filters = data[:global_filters]
           @period_name = data[:period_name]
@@ -451,7 +524,11 @@ module Erp
             end
           end
           
-          File.open("tmp/report_statistics_liabilities_xlsx.yml", "w+") do |f|
+          @file_name = "tmp/report_statistics_liabilities_xlsx#{Digest::MD5.hexdigest(@report.to_s)}.yml"
+          
+          logger.info @file_name
+          
+          File.open(@file_name, "w+") do |f|
             f.write({
               periods: @periods,
               report: @report
@@ -462,7 +539,9 @@ module Erp
         def report_statistics_liabilities_xlsx
           authorize! :report_accounting_statistics_liabilities, nil
           
-          data = YAML.load_file("tmp/report_statistics_liabilities_xlsx.yml")
+          @file_name = params[:file_name]
+          
+          data = YAML.load_file(@file_name)
           
           @periods = data[:periods]          
           @report = data[:report]
@@ -520,7 +599,18 @@ module Erp
           @customers = @customers.where("id IN (?) OR id IN (?) OR id IN (?)", order_query, product_return_query, payment_query)
                         .order("erp_contacts_contacts.name ASC")
           
-          File.open("tmp/report_liabilities_arising_xlsx.yml", "w+") do |f|
+          @data_md5 = {
+            from_date: [],
+            to_date: [],
+            customers: []
+          }
+          @data_md5[:from_date] << @from
+          @data_md5[:to_date] << @to
+          @data_md5[:customers] << @customers
+          
+          @file_name = "tmp/report_liabilities_arising_xlsx_#{Digest::MD5.hexdigest(@data_md5.to_s)}.yml"
+          
+          File.open(@file_name, "w+") do |f|
             f.write({
               global_filters: @global_filters,
               period_name: @period_name,
@@ -535,7 +625,9 @@ module Erp
         def report_liabilities_arising_xlsx
           authorize! :report_accounting_liabilities_arising, nil
           
-          data = YAML.load_file("tmp/report_liabilities_arising_xlsx.yml")
+          @file_name = params[:file_name]
+          
+          data = YAML.load_file(@file_name)
           
           @global_filters = data[:global_filters]
           @period_name = data[:period_name]
@@ -704,7 +796,9 @@ module Erp
               end
             end
             
-            File.open("tmp/report_sales_summary.yml", "w+") do |f|
+            @file_name = "tmp/report_sales_summary_#{Digest::MD5.hexdigest(@data.to_s)}.yml"
+            
+            File.open(@file_name, "w+") do |f|
               f.write({
                 data: @data,
                 customer_name: @customer_name
@@ -717,7 +811,9 @@ module Erp
         def report_sales_summary_xlsx
           authorize! :report_accounting_sales_summary, nil
           
-          dt = YAML.load_file("tmp/report_sales_summary.yml")
+          @file_name = params[:file_name]
+          
+          dt = YAML.load_file(@file_name)
           
           @data = dt[:data]
           @customer_name = dt[:customer_name]
@@ -790,7 +886,9 @@ module Erp
               end
             end
             
-            File.open("tmp/report_statistical_donated_goods.yml", "w+") do |f|
+            @file_name = "tmp/report_statistical_donated_goods_#{Digest::MD5.hexdigest(@data.to_s)}.yml"
+            
+            File.open(@file_name, "w+") do |f|
               f.write({
                 data: @data
               }.to_yaml)
@@ -802,7 +900,9 @@ module Erp
         def report_statistical_donated_goods_xlsx
           authorize! :report_accounting_statistical_donated_goods, nil
           
-          dt = YAML.load_file("tmp/report_statistical_donated_goods.yml")
+          @file_name = params[:file_name]
+          
+          dt = YAML.load_file(@file_name)
           
           @data = dt[:data]
           
@@ -899,7 +999,9 @@ module Erp
             
             @data[:total][:quantity] = @data[:consignments][:total][:quantity] - @data[:cs_returns][:total][:quantity]
             
-            File.open("tmp/report_statistics_consignment.yml", "w+") do |f|
+            @file_name = "tmp/report_statistics_consignment_#{Digest::MD5.hexdigest(@data.to_s)}.yml"
+            
+            File.open(@file_name, "w+") do |f|
               f.write({
                 data: @data
               }.to_yaml)
@@ -911,7 +1013,9 @@ module Erp
         def report_statistics_consignment_xlsx
           authorize! :report_accounting_statistics_consignment, nil
           
-          dt = YAML.load_file("tmp/report_statistics_consignment.yml")
+          @file_name = params[:file_name]
+          
+          dt = YAML.load_file(@file_name)
           
           @data = dt[:data]
           
@@ -1006,7 +1110,9 @@ module Erp
             @report[:footer] << @contacts.cache_sales_debt_amount
             @report[:footer] << nil
             
-            File.open("tmp/report_customer_remaining_liabilities_by_monthly_xlsx.yml", "w+") do |f|
+            @file_name = "tmp/report_customer_remaining_liabilities_by_monthly_xlsx_#{Digest::MD5.hexdigest(@report.to_s)}.yml"
+            
+            File.open(@file_name, "w+") do |f|
               f.write({
                 from_date: @from_date,
                 to_date: @to_date,
@@ -1019,7 +1125,9 @@ module Erp
         def report_customer_remaining_liabilities_by_monthly_xlsx
           authorize! :report_accounting_customer_remaining_liabilities_by_monthly, nil
           
-          data = YAML.load_file("tmp/report_customer_remaining_liabilities_by_monthly_xlsx.yml")
+          @file_name = params[:file_name]
+          
+          data = YAML.load_file(@file_name)
           
           @from_date = data[:from_date]
           @to_date = data[:to_date]
@@ -1125,7 +1233,9 @@ module Erp
             end
             @report[:footer] << nil
             
-            File.open("tmp/report_customer_arising_liabilities_by_monthly_xlsx.yml", "w+") do |f|
+            @file_name = "tmp/report_customer_arising_liabilities_by_monthly_xlsx_#{Digest::MD5.hexdigest(@report.to_s)}.yml"
+            
+            File.open(@file_name, "w+") do |f|
               f.write({
                 from_date: @from_date,
                 to_date: @to_date,
@@ -1138,7 +1248,9 @@ module Erp
         def report_customer_arising_liabilities_by_monthly_xlsx
           #authorize! :report_accounting_customer_arising_liabilities_by_monthly, nil
           
-          data = YAML.load_file("tmp/report_customer_arising_liabilities_by_monthly_xlsx.yml")
+          @file_name = params[:file_name]
+          
+          data = YAML.load_file(@file_name)
           
           @from_date = data[:from_date]
           @to_date = data[:to_date]

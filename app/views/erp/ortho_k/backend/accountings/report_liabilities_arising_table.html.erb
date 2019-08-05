@@ -16,7 +16,7 @@
     
     <div class="text-right mb-10">
         <a target="_blank"
-            href="<%= erp_ortho_k.report_liabilities_arising_xlsx_backend_accountings_path(params.to_unsafe_hash.merge({format: 'xlsx'})) %>"
+            href="<%= erp_ortho_k.report_liabilities_arising_xlsx_backend_accountings_path(params.to_unsafe_hash.merge({format: 'xlsx', file_name: @file_name})) %>"
             target="_blank"
             class="btn btn-primary"
         >Xuất excel</a>

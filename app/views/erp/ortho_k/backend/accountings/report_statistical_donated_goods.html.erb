@@ -9,7 +9,7 @@
 <% content_for :global_filter do %>
     <% dfilters = current_user.get_filters(request.path+"_table").present? ? current_user.get_filters(request.path+"_table") : {}  %>
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-2">
             <%= erp_form_control('date', {
                 label: t('.from_date'),
                 name: 'from_date',
@@ -17,7 +17,7 @@
                 placeholder: t('.select_from_date')
             }) %>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
             <%= erp_form_control('date', {
                 label: t('.to_date'),
                 name: 'to_date',
@@ -25,7 +25,7 @@
                 placeholder: t('.select_to_date')
             }) %>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
             <%= erp_form_control("dataselect", {
                 name: 'period',
                 value: (dfilters["period"].present? ? Erp::Periods::Period.find(dfilters["period"]).id : nil),
@@ -45,9 +45,14 @@
                 url: erp_contacts.dataselect_backend_contacts_path(format: 'json', is_customer: true, contact_id: Erp::Contacts::Contact.get_main_contact)
             }) %>
         </div>
+        <div class="col-md-3 mt-25 text-right">
+            <a class="btn green-jungle global-filter-button">Lọc báo cáo</a>
+        </div>
     </div>
 <% end %>
 
 <%= erp_datalist(
-    url: erp_ortho_k.report_statistical_donated_goods_table_backend_accountings_path
+    url: erp_ortho_k.report_statistical_donated_goods_table_backend_accountings_path,
+    autoload: false,
+    placeholder: 'Vui lòng chọn điều kiện cần xem và nhấn "Lọc báo cáo"'
 ) %>

@@ -35,9 +35,14 @@
                 url: erp_periods.dataselect_backend_periods_path(format: 'json')
             }) %>
         </div>
+        <div class="col-md-3 mt-25 text-right">
+            <a class="btn green-jungle global-filter-button">Lọc báo cáo</a>
+        </div>
     </div>
 <% end %>
 
 <%= erp_datalist(
-    url: erp_ortho_k.report_income_statement_table_backend_accountings_path
+    url: erp_ortho_k.report_income_statement_table_backend_accountings_path,
+    autoload: false,
+    placeholder: 'Vui lòng chọn điều kiện cần xem và nhấn "Lọc báo cáo"'
 ) %>
