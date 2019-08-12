@@ -620,6 +620,13 @@ Erp::Contacts::Contact.class_eval do
           query = query.where(parent_id: params[:doctor_id])
         end
       end
+      
+      # Danh sách bệnh nhân trên phiếu hoàn kho bán/xuất bán/nhập kho mua hàng/xuất trả ncc (không chứng từ) <lấy theo tên khách hàng tương ứng>
+      if params[:delivery][:customer_id].present?
+        pids = Erp::Contacts::Contact.where(parent_id: params[:delivery][:customer_id]).map(&:id)
+        pids << params[:customer_id]
+        query = query.where(parent_id: pids)
+      end
     end
 
     query = query.limit(25).map{|contact| {value: contact.id, text: contact.contact_name} }
