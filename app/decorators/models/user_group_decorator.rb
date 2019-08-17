@@ -39,6 +39,13 @@ Erp::UserGroup.class_eval do
                 {value: 'no', text: 'Không'},
               ],
             },
+            reconfirm: {
+              value: 'yes',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
           },
         },
         # gift givens engine
@@ -191,6 +198,13 @@ Erp::UserGroup.class_eval do
               ],
             },
             delete: {
+              value: 'yes',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
+            reconfirm: {
               value: 'yes',
               options: [
                 {value: 'yes', text: 'Có'},
