@@ -153,6 +153,7 @@ vi:
           create: 'Tạo mới đơn hàng'
           update: 'Cập nhật đơn hàng'
           delete: 'Hủy đơn hàng'
+          reconfirm: "Phục hồi đơn hàng"
       gift_givens:
         controller_gift_givens: 'Quà tặng'
         gift_givens:
@@ -186,6 +187,7 @@ vi:
           create: 'Tạo mới đơn mua'
           update: 'Cập nhật đơn mua'
           delete: 'Hủy đơn mua'
+          reconfirm: "Phục hồi đơn mua"
       prices:
         controller_supplier_prices: 'Cập nhật bảng giá'
         supplier_prices:
