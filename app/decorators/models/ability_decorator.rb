@@ -106,7 +106,11 @@ Erp::Ability.class_eval do
     can :accounting_chase_chase_purchase_return, :all if user.get_permission(:accounting, :chase, :chase, :purchase_return) == 'yes'
     
     can :accounting_chase_liabilities_tracking_retail, :all if user.get_permission(:accounting, :chase, :liabilities_tracking, :retail) == 'yes'
-    can :accounting_chase_liabilities_tracking_customer, :all if user.get_permission(:accounting, :chase, :liabilities_tracking, :customer) == 'yes'
+    can :accounting_chase_liabilities_tracking_customer, :all if (user.get_permission(:accounting, :chase, :liabilities_tracking, :customer) == 'yes' or
+                                                                  user.get_permission(:accounting, :chase, :liabilities_tracking, :customer) == 'own')
+    can :accounting_chase_liabilities_tracking_customer_list_all, :all if user.get_permission(:accounting, :chase, :liabilities_tracking, :customer) == 'yes'
+    can :accounting_chase_liabilities_tracking_customer_list_own, :all if user.get_permission(:accounting, :chase, :liabilities_tracking, :customer) == 'own'
+    
     can :accounting_chase_liabilities_tracking_supplier, :all if user.get_permission(:accounting, :chase, :liabilities_tracking, :supplier) == 'yes'
     
     can :accounting_chase_commission_commission, :all if user.get_permission(:accounting, :chase, :commission, :commission) == 'yes'

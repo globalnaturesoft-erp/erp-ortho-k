@@ -1022,6 +1022,7 @@ Erp::UserGroup.class_eval do
               options: [
                 {value: 'yes', text: 'Có'},
                 {value: 'no', text: 'Không'},
+                {value: 'own', text: 'Chỉ của mình'},
               ],
             },
             supplier: {
