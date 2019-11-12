@@ -631,7 +631,7 @@ module Erp
               warnings = []
 
               # category
-              category = Erp::Products::Category.where("LOWER(name) = ?", data[:category]).first
+              category = Erp::Products::Category.where("TRIM(LOWER(name)) = ?", data[:category]).first
               if category.present?
               else
                 errors << "Không tìm thấy chuyên mục"
@@ -639,7 +639,7 @@ module Erp
               
               # brand
               brand = Erp::Products::Brand
-                .where("LOWER(name) = ?", data[:brand]).first
+                .where("TRIM(LOWER(name)) = ?", data[:brand]).first
               if brand.present?
                 # product.brand = brand
               else
@@ -650,7 +650,7 @@ module Erp
               diameter_p = Erp::Products::Property.get_diameter
               diameter_pv = Erp::Products::PropertiesValue
                 .where(property_id: diameter_p.id)
-                .where("LOWER(value) = ?", data[:diameter]).first
+                .where("TRIM(LOWER(value)) = ?", data[:diameter]).first
               if diameter_pv.present?
                 # product.category = category
               else
@@ -672,7 +672,7 @@ module Erp
               number_p = Erp::Products::Property.get_number
               number_pv = Erp::Products::PropertiesValue
                 .where(property_id: number_p.id)
-                .where("LOWER(value) = ?", data[:number]).first
+                .where("TRIM(LOWER(value)) = ?", data[:number]).first
               if number_pv.present?
                 # product.category = category
               else
@@ -683,7 +683,7 @@ module Erp
               degree_p = Erp::Products::Property.get_degree
               degree_pv = Erp::Products::PropertiesValue
                 .where(property_id: degree_p.id)
-                .where("LOWER(value) = ?", data[:degree]).first
+                .where("TRIM(LOWER(value)) = ?", data[:degree]).first
               if degree_pv.present?
                 # product.category = category
               else
@@ -694,7 +694,7 @@ module Erp
               degree_k_p = Erp::Products::Property.get_degree_k
               degree_k_pv = Erp::Products::PropertiesValue
                 .where(property_id: degree_k_p.id)
-                .where("LOWER(value) = ?", data[:degree_k]).first
+                .where("TRIM(LOWER(value)) = ?", data[:degree_k]).first
               if degree_k_pv.present?
                 # product.category = category
               else
@@ -703,7 +703,7 @@ module Erp
 
               # unit
               unit = Erp::Products::Unit
-                .where("LOWER(name) = ?", data[:unit]).first
+                .where("TRIM(LOWER(name)) = ?", data[:unit]).first
               if unit.present?
                 # product.category = category
               else
