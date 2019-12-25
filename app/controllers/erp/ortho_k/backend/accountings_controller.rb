@@ -405,6 +405,88 @@ module Erp
             }
           end
         end
+        
+        # Bao cao cong no khach hang (mẫu 2) - ĐẦU KỲ, BÁN HÀNG, HOÀN KHO, THANH TOÁN, CUỐI KỲ
+        def report_customer_liabilities_2
+          authorize! :report_accounting_customer_liabilities, nil
+        end
+        
+        def report_customer_liabilities_2_table
+          authorize! :report_accounting_customer_liabilities, nil
+          
+          @global_filters = params.to_unsafe_hash[:global_filter]
+          if @global_filters[:period].present?
+            @period_name = Erp::Periods::Period.find(@global_filters[:period]).name
+            @from = Erp::Periods::Period.find(@global_filters[:period]).from_date.beginning_of_day
+            @to = Erp::Periods::Period.find(@global_filters[:period]).to_date.end_of_day
+          else
+            @period_name = nil
+            @from = (@global_filters.present? and @global_filters[:from_date].present?) ? @global_filters[:from_date].to_date.beginning_of_day : nil #Time.now.beginning_of_month
+            @to = (@global_filters.present? and @global_filters[:to_date].present?) ? @global_filters[:to_date].to_date.end_of_day : nil
+          end
+          
+          @from_date = @global_filters[:from_date].to_date
+          @to_date = @global_filters[:to_date].to_date
+
+          if @global_filters[:customer].present?
+            @customers = Erp::Contacts::Contact.where(id: @global_filters[:customer])
+          else
+            @customers = Erp::Contacts::Contact.where.not(id: Erp::Contacts::Contact.get_main_contact.id)
+          end
+          
+          if @global_filters[:contact_group_id].present?
+            @customers = @customers.where(contact_group_id: @global_filters[:contact_group_id])
+          end
+          
+          if @global_filters[:salesperson_id].present?
+            @customers = @customers.where(salesperson_id: @global_filters[:salesperson_id])
+          end
+          
+          @customers = @customers.get_sales_liabilities_contacts(from_date: @from, to_date: @to) # còn nợ và có phát sinh
+          
+          @data_md5 = {
+            from_date: [],
+            to_date: [],
+            customers: []
+          }
+          @data_md5[:from_date] << @from
+          @data_md5[:to_date] << @to
+          @data_md5[:customers] << @customers
+          
+          @file_name = "tmp/report_customer_liabilities_2_xlsx_#{Digest::MD5.hexdigest(@data_md5.to_s)}.yml"
+          
+          File.open(@file_name, "w+") do |f|
+            f.write({
+              global_filters: @global_filters,
+              period_name: @period_name,
+              from_date: @from,
+              to_date: @to,
+              customers: @customers
+            }.to_yaml)
+          end
+        end
+
+        def report_customer_liabilities_2_xlsx
+          authorize! :report_accounting_customer_liabilities, nil
+          
+          @file_name = params[:file_name]
+          
+          data = YAML.load_file(@file_name)
+          
+          @global_filters = data[:global_filters]
+          @period_name = data[:period_name]
+          @from = data[:from_date].to_date.beginning_of_day
+          @to = data[:to_date].to_date.end_of_day
+          @customers = data[:customers]
+          
+          @customers = Erp::Contacts::Contact.where(id: (@customers.map{|i| i.id}))
+
+          respond_to do |format|
+            format.xlsx {
+              response.headers['Content-Disposition'] = 'attachment; filename="Bao-cao-cong-no-khach-hang (mau-2).xlsx"'
+            }
+          end
+        end
 
         # Bao cao cong no nha cung cap
         def report_supplier_liabilities

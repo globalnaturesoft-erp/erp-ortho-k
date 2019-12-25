@@ -178,6 +178,10 @@ Erp::OrthoK::Engine.routes.draw do
 					post 'report_customer_liabilities_table'
 					get 'report_customer_liabilities_xlsx'
 
+					get 'report_customer_liabilities_2'
+					post 'report_customer_liabilities_2_table'
+					get 'report_customer_liabilities_2_xlsx'
+
 					get 'report_supplier_liabilities'
 					post 'report_supplier_liabilities_table'
 					get 'report_supplier_liabilities_xlsx'

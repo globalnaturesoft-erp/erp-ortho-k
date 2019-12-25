@@ -1,0 +1,76 @@
+<% if (params.to_unsafe_hash[:global_filter][:from_date].present? && params.to_unsafe_hash[:global_filter][:to_date].present?) ||
+      params.to_unsafe_hash[:global_filter][:period].present? %>
+    
+    <div class="custom-show text-center">
+        <h4 class="font-blue-madison bold uppercase mb-15">
+            Báo cáo công nợ khách hàng (mẫu 2) <br>
+            <span class="font-sm">
+                <% if @period_name.nil? %>
+                    (<%= 'Từ ' + @from.strftime('%d/%m/%Y') if !@from.nil? %> <%= ' Đến ' + @to.strftime('%d/%m/%Y') if !@to.nil? %>)
+                <% else %>
+                    (<%= 'Trong ' + @period_name %>)
+                <% end %>
+            </span>
+        </h4>
+    </div>
+    
+    <div class="text-right mb-10">
+        <a target="_blank"
+            href="<%= erp_ortho_k.report_customer_liabilities_2_xlsx_backend_accountings_path(params.to_unsafe_hash.merge({format: 'xlsx', file_name: @file_name})) %>"
+            target="_blank"
+            class="btn btn-primary"
+        >Xuất excel</a>
+    </div>
+    
+    <table class="table table-bordered order-column">
+        <thead class="flip-content">
+            <tr>
+                <th width="5%"  class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">STT</th>
+                <th width="25%"  class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Tên khách hàng</th>
+                <th width="10%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Nợ đầu kỳ</th>
+                <th width="10%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Tổng bán hàng (BH)</th>
+                <th width="10%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Tổng trả hàng (HK)</th>
+                <th width="10%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Tổng thanh toán</th>
+                <th width="10%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Nợ cuối kỳ</th>
+                <th width="20%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">NV bán hàng</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% @customers.each_with_index do |customer, index| %>
+                <tr>
+                    <td class="text-center"><%= index+1 %></td>
+                    <td class="text-left"><%= customer.name %></td>
+                    <td class="text-right">
+                        <%= format_number(customer.sales_debt_amount(to_date: (!@from.nil? ? (@from-1.day) : @from))) %>
+                    </td>
+                    <td class="text-right">
+                        <%= format_number(customer.sales_order_total_amount(from_date: @from, to_date: @to)) %>
+                    </td>
+                    <td class="text-right">
+                        <%= format_number(customer.sales_return_total_amount(from_date: @from, to_date: @to)) %>
+                    </td>
+                    <td class="text-right">
+                        <%= format_number(customer.sales_paid_amount(from_date: @from, to_date: @to)) %>
+                    </td>
+                    <td class="text-right">
+                        <%= format_number(customer.sales_debt_amount(to_date: @to)) %>
+                    </td>
+                    <td class="text-center">
+                        <%= !customer.salesperson.nil? ? customer.salesperson_name : '--' %>
+                    </td>
+                </tr>
+            <% end %>
+            <tr>
+                <td class="bg-green-jungle bg-font-green-jungle border-green-jungle text-center bold" colspan="2">TỔNG CỘNG</td>
+                <td class="bg-green-jungle bg-font-green-jungle border-green-jungle text-right bold"><%= format_number(@customers.sales_debt_amount(to_date: (!@from.nil? ? (@from-1.day) : @from))) %></td>
+                <td class="bg-green-jungle bg-font-green-jungle border-green-jungle text-right bold"><%= format_number(@customers.sales_order_total_amount(from_date: @from, to_date: @to)) %></td>
+                <td class="bg-green-jungle bg-font-green-jungle border-green-jungle text-right bold"><%= format_number(@customers.sales_return_total_amount(from_date: @from, to_date: @to)) %></td>
+                <td class="bg-green-jungle bg-font-green-jungle border-green-jungle text-right bold"><%= format_number(@customers.sales_paid_amount(from_date: @from, to_date: @to)) %></td>
+                <td class="bg-green-jungle bg-font-green-jungle border-green-jungle text-right bold"><%= format_number(@customers.sales_debt_amount(to_date: @to)) %></td>
+                <td class="bg-green-jungle bg-font-green-jungle border-green-jungle text-center bold"></td>
+            </tr>
+        </tbody>
+    </table>
+<% else %>
+    <div class="alert alert-warning"><%= t('.please_select_filter') %></div>
+<% end %>

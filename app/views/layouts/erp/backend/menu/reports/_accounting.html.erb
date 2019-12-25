@@ -5,6 +5,7 @@
                                          (params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_income_statement") ||
                                          (params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_cash_flow") ||
                                          (params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_customer_liabilities") ||
+                                         (params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_customer_liabilities_2") ||
                                          (params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_supplier_liabilities") ||
                                          (params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_statistics_liabilities") ||
                                          (params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_liabilities_arising") ||
@@ -65,6 +66,11 @@
         <% if can? :menu_report_accounting_customer_liabilities, nil %>
             <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_customer_liabilities" %>">
                 <%= link_to "Báo cáo công nợ (KH)", erp_ortho_k.report_customer_liabilities_backend_accountings_path, class: "nav-link ", title: 'Báo cáo công nợ của khách hàng' %>
+            </li>
+        <% end %>
+        <% if can? :menu_report_accounting_customer_liabilities, nil %>
+            <li class="nav-item <%= "active" if params[:controller] == "erp/ortho_k/backend/accountings" && params[:action] == "report_customer_liabilities_2" %>">
+                <%= link_to "BC công nợ KH (Mẫu 2) ", erp_ortho_k.report_customer_liabilities_2_backend_accountings_path, class: "nav-link ", title: 'Báo cáo công nợ của khách hàng (thực tế, không cấn trừ)' %>
             </li>
         <% end %>
         <% if can? :menu_report_accounting_supplier_liabilities, nil %>
