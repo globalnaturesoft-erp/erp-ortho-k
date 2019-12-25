@@ -1,0 +1,67 @@
+<% content_for :title do %>
+    <%= t('.report_customer_liabilities') %>
+<% end %>
+
+<% content_for :page_title do %>
+    <i class="fa fa-archive"></i> <%= t('.report_customer_liabilities') %>
+<% end %>
+
+<% content_for :global_filter do %>
+    <% dfilters = current_user.get_filters(request.path+"_table").present? ? current_user.get_filters(request.path+"_table") : {}  %>
+    <div class="row">
+        <div class="col-md-3">
+            <%= erp_form_control('date', {
+                label: t('.from_date'),
+                name: 'from_date',
+                value: (dfilters["from_date"].present? ? dfilters["from_date"].to_date : nil),
+                placeholder: t('.select_from_date')
+            }) %>
+        </div>
+        <div class="col-md-3">
+            <%= erp_form_control('date', {
+                label: t('.to_date'),
+                name: 'to_date',
+                value: (dfilters["to_date"].present? ? dfilters["to_date"].to_date : nil),
+                placeholder: t('.select_to_date')
+            }) %>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <%= erp_form_control("dataselect", {
+                label: 'Nhân viên kinh doanh',
+                name: 'salesperson_id',
+                placeholder: 'Tìm theo n.viên k.doanh/phụ trách',
+                url: erp.dataselect_backend_users_path(format: 'json'),
+                multiple: true
+            }) %>
+        </div>
+        <div class="col-md-3">
+            <%= erp_form_control("dataselect", {
+                label: 'Nhóm liên hệ',
+                name: 'contact_group_id',
+                placeholder: 'Tìm theo nhóm',
+                url: erp_contacts.dataselect_backend_contact_groups_path(format: 'json'),
+                multiple: true
+            }) %>
+        </div>
+        <div class="col-md-3">
+            <%= erp_form_control("dataselect", {
+                label: t('.filter_customer'),
+                name: 'customer',
+                placeholder: t('.choose_customer'),
+                url: erp_contacts.dataselect_backend_contacts_path(format: 'json', is_customer: true, contact_id: Erp::Contacts::Contact.get_main_contact),
+                multiple: true
+            }) %>
+        </div>
+        <div class="col-md-3 mt-25 text-right">
+            <a class="btn green-jungle global-filter-button">Lọc báo cáo</a>
+        </div>
+    </div>
+<% end %>
+
+<%= erp_datalist(
+    url: erp_ortho_k.report_customer_liabilities_2_table_backend_accountings_path,
+    autoload: false,
+    placeholder: 'Vui lòng chọn điều kiện cần xem và nhấn "Lọc báo cáo"'
+) %>
