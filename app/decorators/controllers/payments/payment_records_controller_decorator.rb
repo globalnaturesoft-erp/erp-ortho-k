@@ -774,7 +774,7 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
           end
           
           if params[:sales_total_col].present?
-            footer_1[:columns] << @orders.cache_total#"=SUM(#{('A'.codepoints.first + tongcong).chr}#{order_num_row_first}:#{('A'.codepoints.first + tongcong).chr}#{num_row})"
+            footer_1[:columns] << @orders.sum(&:total)#"=SUM(#{('A'.codepoints.first + tongcong).chr}#{order_num_row_first}:#{('A'.codepoints.first + tongcong).chr}#{num_row})"
             footer_1[:styles] << (s.add_style bg_footer.deep_merge(number).deep_merge(bold).deep_merge(text_right).deep_merge(border))
             col_ft_1 += 1
           end
@@ -806,7 +806,7 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
         num_row += 1
         
         if @product_returns.count > 0
-          # header_1
+          # header_2
           header_2 = {columns: [], styles: []}
           subheader_2 = {columns: [], styles: []}
           footer_2 = {columns: [], styles: []}
@@ -1248,7 +1248,7 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
         
         
         # ############################ Chi tiết thanh toán ############################
-    
+        
         # add empty row
         sheet.add_row [nil]
         num_row += 1
@@ -1256,7 +1256,7 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
         num_row += 1
         
         if @payment_records.count > 0
-          # header_1
+          # header_3
           header_3 = {columns: [], styles: []}
           footer_3 = {columns: [], styles: []}
           
@@ -1563,15 +1563,16 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
         rw1[:columns] << begin_sales_debt_amount
         rw1[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border_dotted_bottom).deep_merge(bold))
         
-        sales_order_total_amount = @orders.sum(:cache_total)
+        sales_order_total_amount = @orders.sum(&:total)
         rw2[:columns] << sales_order_total_amount
         rw2[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border_dotted_bottom))
         
-        sales_return_total_amount = @product_returns.sum(:cache_total)
+        sales_return_total_amount = @product_returns.total
         rw3[:columns] << sales_return_total_amount
         rw3[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border_dotted_bottom))
         
-        period_amount = @customer.sales_total_amount(from_date: @from, to_date: @to)
+        #period_amount = @customer.sales_total_amount(from_date: @from, to_date: @to)
+        period_amount = sales_order_total_amount - sales_return_total_amount
         rw4[:columns] << period_amount
         rw4[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border_dotted_bottom).deep_merge(bold))
         
@@ -1579,7 +1580,8 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
         rw5[:columns] << sales_paid_amount
         rw5[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border_dotted_bottom))
         
-        end_sales_debt_amount = @customer.sales_debt_amount(to_date: @to)
+        #end_sales_debt_amount = @customer.sales_debt_amount(to_date: @to)
+        end_sales_debt_amount = begin_sales_debt_amount + period_amount - sales_paid_amount
         rw6[:columns] << end_sales_debt_amount
         rw6[:styles] << (s.add_style bg_footer.deep_merge(text_right).deep_merge(number).deep_merge(border_dotted_bottom).deep_merge(bold))
         
@@ -1655,7 +1657,7 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
         end
         if params[:patient_col].present?
           sign[:columns] << nil
-          sign[:styles] << (s.add_style {})
+          sign[:styles] << (s.add_style {})      
           sign1[:columns] << 'NHÂN VIÊN SALE PHỤ TRÁCH'
           sign1[:styles] << (s.add_style text_center.merge(bold))
           sign2[:columns] << '(Ký, họ tên)'
