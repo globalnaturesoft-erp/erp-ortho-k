@@ -217,15 +217,15 @@ wb.styles do |s|
             row[:styles] << (s.add_style text_center.deep_merge(middle_align).deep_merge(border).deep_merge(wrap).deep_merge(bold))
   
   
-            values = Erp::Products::PropertiesValue.where(id: lg[:letter_ids]).map(&:value)
+            values = Erp::Products::PropertiesValue.where(id: lg[:letter_ids]).map(&:value).sort
             row[:columns] << ("#{values.first} đến #{values.last}" if index3 == 0)
             row[:styles] << (s.add_style text_center.deep_merge(middle_align).deep_merge(border).deep_merge(wrap).deep_merge(bold))
   
-            values = Erp::Products::PropertiesValue.where(id: nd[:number_ids]).map(&:value)
+            values = Erp::Products::PropertiesValue.where(id: nd[:number_ids]).map(&:value).sort
             row[:columns] << "#{values.first} đến #{values.last}"
             row[:styles] << (s.add_style text_center.deep_merge(middle_align).deep_merge(border).deep_merge(wrap))
   
-            values = Erp::Products::PropertiesValue.where(id: nd[:diameter_ids]).map(&:value)
+            values = Erp::Products::PropertiesValue.where(id: nd[:diameter_ids]).map(&:value).sort
             row[:columns] << "#{values.first} đến #{values.last}"
             row[:styles] << (s.add_style text_center.deep_merge(middle_align).deep_merge(border).deep_merge(wrap))
   
