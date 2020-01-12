@@ -352,6 +352,13 @@ Erp::UserGroup.class_eval do
                 {value: 'in_day', text: 'Trong ngày'},
               ],
             },
+            approve: {
+              value: 'yes',
+              options: [
+                {value: 'yes', text: 'Có'},
+                {value: 'no', text: 'Không'},
+              ],
+            },
             delete: {
               value: 'yes',
               options: [

@@ -42,6 +42,7 @@ vi:
         sales_import:
           create: 'Tạo phiếu hoàn kho'
           update: 'Cập nhật phiếu hoàn kho'
+          approve: 'Duyệt/xác nhận phiếu hoàn kho'
           delete: 'Hủy phiếu hoàn kho'
           print: 'Xem và in PDF'
         purchase_export:
