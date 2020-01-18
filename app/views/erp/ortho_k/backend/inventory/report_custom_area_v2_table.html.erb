@@ -89,8 +89,8 @@
                       </td>
                       <td class="text-bold">
                           <% if index3 == 0 %>
-                              <% values = Erp::Products::PropertiesValue.where(id: lg[:letter_ids]).map(&:value).sort %>
-                              <%= values.first %> -> <%= values.last %>
+                              <% values = Erp::Products::PropertiesValue.where(id: lg[:letter_ids]).map(&:value) %>
+                              <%= values.join(', ') %>
                           <% end %>
                       </td>
                       <td>
