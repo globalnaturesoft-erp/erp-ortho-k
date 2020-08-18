@@ -176,7 +176,6 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
         @to = glb[:to_date].to_date.end_of_day
       end
     end
-    
 
     @customers = Erp::Contacts::Contact.search(params)
       .where.not(id: Erp::Contacts::Contact.get_main_contact.id)
@@ -272,8 +271,8 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
     @to = to
 
     @customer = customer
-    @orders = @customer.sales_orders.payment_for_contact_orders(glb)
-    @product_returns = @customer.sales_product_returns.get_deliveries_with_payment_for_contact(glb)
+    @orders = @customer.sales_orders.payment_for_contact_orders(from_date: @from, to_date: @to)
+    @product_returns = @customer.sales_product_returns.get_deliveries_with_payment_for_contact(from_date: @from, to_date: @to)
     @payment_records = Erp::Payments::PaymentRecord.all_done
       .where(customer_id: @customer.id)
       .where(payment_type_id: Erp::Payments::PaymentType.find_by_code(Erp::Payments::PaymentType::CODE_CUSTOMER).id)
