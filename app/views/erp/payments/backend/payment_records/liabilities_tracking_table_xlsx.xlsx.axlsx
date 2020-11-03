@@ -106,7 +106,7 @@ wb.styles do |s|
       paid_amount = customer.sales_paid_amount(from_date: @from, to_date: @to)
       end_of_period_amount = customer.sales_debt_amount(to_date: @to)
       
-      if !(begin_of_period_amount.to_f == 0.0 and period_amount.to_f == 0.0 and paid_amount.to_f == 0.0 and end_of_period_amount.to_f == 0.0)
+      # if !(begin_of_period_amount.to_f == 0.0 and period_amount.to_f == 0.0 and paid_amount.to_f == 0.0 and end_of_period_amount.to_f == 0.0)
         row = {columns: [], styles: []}
         row[:columns] = []
       
@@ -136,7 +136,7 @@ wb.styles do |s|
       
         sheet.add_row row[:columns], style: row[:styles], height: 18
         num_row += 1
-      end
+      # end // 03/11/2020 - Huế KT Hanoi yêu cầu show tất cả công nợ bằng 0 ra luôn (nếu có xuất hàng mà không có giá thì vẫn in ra file)
     end
     
     # footer
