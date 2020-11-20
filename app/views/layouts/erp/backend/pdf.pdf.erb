@@ -19,9 +19,11 @@
         </div>
         <div class="right">
             <div class="default">
-                <div class="line-1">
-                    Thời điểm in: <%= Time.now.strftime('%d/%m/%Y, %I:%M %p') %>
-                </div>
+                <% if !get_columns(params).include?("hide_printed_at") %>
+                    <div class="line-1">
+                        Thời điểm in: <%= Time.now.strftime('%d/%m/%Y, %I:%M %p') %>
+                    </div>
+                <% end %>
                 <div class="line-1">
                     Mẫu số: <%= yield(:form_num) %>
                 </div>
