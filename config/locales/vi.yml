@@ -1265,6 +1265,7 @@ vi:
             quantity: "Số lượng"
             price: "Đơn giá"
             discount: "Giảm giá"
+            tax: "Thuế"
             amount: "Thành tiền"
             note: "Ghi chú"
           report_sell_and_return_state_xlsx:
@@ -1277,6 +1278,7 @@ vi:
             quantity: "Số lượng"
             price: "Đơn giá"
             discount: "Giảm giá"
+            tax: "Thuế"
             amount: "Thành tiền"
             note: "Ghi chú"
           report_product_sold:

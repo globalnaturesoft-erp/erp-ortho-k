@@ -3,11 +3,11 @@
       params.to_unsafe_hash[:global_filter][:period].present? %>
     
     <%
-        sales_total_colspan = 8 +
+        sales_total_colspan = 9 +
             (get_columns(params).include?("patient") ? 1 : 0) +
             (get_columns(params).include?("patient_state") ? 1 : 0) +
             (get_columns(params).include?("product_state") ? 1 : 0)
-        return_total_colspan = 7 +
+        return_total_colspan = 9 +
             (get_columns(params).include?("patient") ? 1 : 0) +
             (get_columns(params).include?("patient_state") ? 1 : 0) +
             (get_columns(params).include?("product_state") ? 1 : 0)
@@ -54,6 +54,7 @@
                 <th class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Số lượng</th>
                 <th class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Đơn giá</th>
                 <th class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Giảm giá</th>
+                <th class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Thuế</th>
                 <th class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Thành tiền</th>
                 <th class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Ghi chú</th>
             </tr>
@@ -81,7 +82,8 @@
                         <td class="text-center"><%= order_detail.quantity %></td>
                         <td class="text-right"><%= format_number(order_detail.price) %></td>
                         <td class="text-right"><%= format_number(order_detail.discount) %></td>
-                        <td class="text-right"><%= format_number(order_detail.subtotal) %></td>
+                        <td class="text-right"><%= format_number(order_detail.tax_amount) %></td>
+                        <td class="text-right"><%= format_number(order_detail.total) %></td>
                         <td class="text-justify"><%= raw order_detail.description %></td>
                     </tr>
                 <% end %>
@@ -134,6 +136,8 @@
                 <th class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Sản phẩm</th>
                 <th class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Số lượng</th>
                 <th class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Đơn giá</th>
+                <th class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Giảm giá</th>
+                <th class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Thuế</th>
                 <th class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Thành tiền</th>
                 <th class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Ghi chú</th>
             </tr>
@@ -166,7 +170,9 @@
                         <td class="text-justify"><%= delivery_detail.product_name %></td>
                         <td class="text-center"><%= delivery_detail.quantity %></td>
                         <td class="text-right"><%= format_number(delivery_detail.price) %></td>
-                        <td class="text-right"><%= format_number(delivery_detail.cache_total) %></td>
+                        <td class="text-right"><%= format_number(delivery_detail.discount) %></td>
+                        <td class="text-right"><%= format_number(delivery_detail.tax_amount) %></td>
+                        <td class="text-right"><%= format_number(delivery_detail.total) %></td>
                         <td class="text-justify"><%= raw delivery_detail.note %></td>
                     </tr>
                 <% end %>

@@ -136,6 +136,13 @@ wb.styles do |s|
     col_num += 1
     discount_col_num = col_num
     
+    header[:columns] << t('.tax')
+    header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
+    footer[:columns] << nil
+    footer[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(number).deep_merge(border).deep_merge(vertical_center))
+    col_num += 1
+    tax_col_num = col_num
+    
     header[:columns] << t('.amount')
     header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
     footer[:columns] << @orders.cache_total
@@ -202,6 +209,9 @@ wb.styles do |s|
         row[:columns] << order_detail.discount_amount
         row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border).deep_merge(bg_row))
         
+        row[:columns] << order_detail.tax_amount
+        row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border).deep_merge(bg_row))
+        
         row[:columns] << order_detail.total
         row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border).deep_merge(bg_row))
         
@@ -251,7 +261,10 @@ wb.styles do |s|
       subrow[:columns] << nil
       subrow[:styles] << (s.add_style text_right.deep_merge(border).deep_merge(bg_subrow))
       
-      subrow[:columns] << order_details.map { |h| h.subtotal }.sum
+      subrow[:columns] << nil
+      subrow[:styles] << (s.add_style text_right.deep_merge(border).deep_merge(bg_subrow))
+      
+      subrow[:columns] << order_details.map { |h| h.total }.sum
       subrow[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border).deep_merge(bg_subrow).deep_merge(bold))
       
       subrow[:columns] << nil
@@ -266,7 +279,7 @@ wb.styles do |s|
     row_num += 1
     
     # Merge footer cols // sales
-    sheet.merge_cells("#{('A'.codepoints.first).chr}#{row_num}:#{('A'.codepoints.first + discount_col_num).chr}#{row_num}")
+    sheet.merge_cells("#{('A'.codepoints.first).chr}#{row_num}:#{('A'.codepoints.first + tax_col_num).chr}#{row_num}")
     
     
     # ============================= PRODUCT RETURN REPORT ================================
@@ -362,6 +375,13 @@ wb.styles do |s|
     col_num += 1
     discount_col_num = col_num
     
+    header[:columns] << t('.tax')
+    header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
+    footer[:columns] << nil
+    footer[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(number).deep_merge(border).deep_merge(vertical_center))
+    col_num += 1
+    tax_col_num = col_num
+    
     header[:columns] << t('.amount')
     header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
     footer[:columns] << @deliveries.total_amount
@@ -422,10 +442,13 @@ wb.styles do |s|
         row[:columns] << delivery_detail.quantity
         row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border).deep_merge(bg_row))
         
-        row[:columns] << delivery_detail.ordered_price
+        row[:columns] << delivery_detail.price
         row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border).deep_merge(bg_row))
         
         row[:columns] << delivery_detail.discount
+        row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border).deep_merge(bg_row))
+        
+        row[:columns] << delivery_detail.tax_amount
         row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border).deep_merge(bg_row))
         
         row[:columns] << delivery_detail.cache_total
@@ -477,6 +500,9 @@ wb.styles do |s|
       subrow[:columns] << nil
       subrow[:styles] << (s.add_style text_right.deep_merge(border).deep_merge(bg_subrow))
       
+      subrow[:columns] << nil
+      subrow[:styles] << (s.add_style text_right.deep_merge(border).deep_merge(bg_subrow))
+      
       subrow[:columns] << delivery_details.map { |h| h.cache_total }.sum
       subrow[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border).deep_merge(bg_subrow).deep_merge(bold))
       
@@ -492,7 +518,7 @@ wb.styles do |s|
     row_num += 1
     
     # Merge footer cols // returns
-    sheet.merge_cells("#{('A'.codepoints.first).chr}#{row_num}:#{('A'.codepoints.first + discount_col_num).chr}#{row_num}")
+    sheet.merge_cells("#{('A'.codepoints.first).chr}#{row_num}:#{('A'.codepoints.first + tax_col_num).chr}#{row_num}")
     
     # Setup
     # Merge title row
@@ -500,6 +526,6 @@ wb.styles do |s|
     # Merge date row
     sheet.merge_cells("#{('A'.codepoints.first).chr}5:#{('A'.codepoints.first + col_num).chr}5")
     
-    sheet.column_widths 5, 15, nil, *patient_col_widths, 20, nil, 12, 12, 12, 12, 20
+    sheet.column_widths 5, 15, nil, *patient_col_widths, 20, nil, 12, 12, 12, 12, 12, 20
   end
 end
