@@ -9,6 +9,7 @@ wb.styles do |s|
     bg_footer = {:bg_color => "ffff00", :fg_color => "c52f24"}
     blue_fade = {:bg_color => "bdd7ee", :fg_color => "203764"}
     yellow_fade = {:bg_color => "ffe699", :fg_color => "c00000"}
+    bg_row = {:bg_color => "daeef3", :fg_color => "00"}
     text_center = {alignment: { horizontal: :center }}
     text_left = {alignment: { horizontal: :left }}
     text_right = {alignment: { horizontal: :right }}
@@ -74,7 +75,7 @@ wb.styles do |s|
       header[:columns] << 'Đối tượng'
       header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border).deep_merge(bold))
       col_num += 1
-      column_widths << 25
+      column_widths << 30
       
       footer[:columns] << nil
       footer[:styles] << (s.add_style bg_footer.deep_merge(text_middle).deep_merge(border).deep_merge(bold))
@@ -117,6 +118,16 @@ wb.styles do |s|
       ft_merge_col += 1
       ft_merge_col_ahead = ft_merge_col
     end
+    
+    # -----
+    header[:columns] << 'Tên sản phẩm'
+    header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border).deep_merge(bold))
+    col_num += 1
+    column_widths << 25
+    
+    footer[:columns] << ''
+    footer[:styles] << (s.add_style bg_footer.deep_merge(text_middle).deep_merge(border).deep_merge(bold))
+    ft_merge_col += 1
     
     # -----
     if get_columns(params).include?("quantity")
@@ -242,77 +253,162 @@ wb.styles do |s|
       
       if get_columns(params).include?("code")
         row[:columns] << consignment.code
-        row[:styles] << (s.add_style text_center.deep_merge(number).deep_merge(border))
+        row[:styles] << (s.add_style text_center.deep_merge(number).deep_merge(border).deep_merge(bg_row).deep_merge(bold))
       end
       
       if get_columns(params).include?("contact")
         row[:columns] << consignment.contact_name
-        row[:styles] << (s.add_style text_left.deep_merge(border))
+        row[:styles] << (s.add_style text_left.deep_merge(border).deep_merge(bg_row).deep_merge(bold))
       end
       
       if get_columns(params).include?("type")
         row[:columns] << t(".#{consignment.consignment_type}")
-        row[:styles] << (s.add_style text_left.deep_merge(border))
+        row[:styles] << (s.add_style text_left.deep_merge(border).deep_merge(bg_row).deep_merge(bold))
       end
       
       if get_columns(params).include?("sent_date")
         row[:columns] << consignment.sent_date.strftime('%d/%m/%Y')
-        row[:styles] << (s.add_style text_center.deep_merge(border))
+        row[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_row).deep_merge(bold))
       end
       
       if get_columns(params).include?("return_date")
         row[:columns] << consignment.return_date.strftime('%d/%m/%Y')
-        row[:styles] << (s.add_style text_center.deep_merge(border))
+        row[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_row).deep_merge(bold))
       end
+
+      row[:columns] << ''
+      row[:styles] << (s.add_style text_left.deep_merge(border).deep_merge(bg_row))
       
       if get_columns(params).include?("quantity")
         row[:columns] << consignment.total_quantity
-        row[:styles] << (s.add_style text_center.deep_merge(border))
+        row[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_row).deep_merge(bold))
       end
       
       if get_columns(params).include?("returned_qty")
         row[:columns] << consignment.total_returned_quantity
-        row[:styles] << (s.add_style text_center.deep_merge(border))
+        row[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_row).deep_merge(bold))
       end
       
       row[:columns] << consignment.total_remain_quantity
-      row[:styles] << (s.add_style text_center.deep_merge(border))
+      row[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_row).deep_merge(bold))
       
       if get_columns(params).include?("warehouse")
         row[:columns] << consignment.warehouse_name
-        row[:styles] << (s.add_style text_center.deep_merge(border))
+        row[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_row).deep_merge(bold))
       end
       
       if get_columns(params).include?("status")
         row[:columns] << t(".#{consignment.status}")
-        row[:styles] << (s.add_style text_left.deep_merge(border))
+        row[:styles] << (s.add_style text_left.deep_merge(border).deep_merge(bg_row))
         
         row[:columns] << t(".#{consignment.cache_return_status}")
-        row[:styles] << (s.add_style text_left.deep_merge(border))
+        row[:styles] << (s.add_style text_left.deep_merge(border).deep_merge(bg_row))
       end
       
       if get_columns(params).include?("note")
         row[:columns] << consignment.note
-        row[:styles] << (s.add_style text_left.deep_merge(border))
+        row[:styles] << (s.add_style text_left.deep_merge(border).deep_merge(bg_row))
       end
       
       if get_columns(params).include?("employee")
         row[:columns] << consignment.employee_name
-        row[:styles] << (s.add_style text_left.deep_merge(border))
+        row[:styles] << (s.add_style text_left.deep_merge(border).deep_merge(bg_row))
       end
       
       if get_columns(params).include?("creator")
         row[:columns] << consignment.creator_name
-        row[:styles] << (s.add_style text_left.deep_merge(border))
+        row[:styles] << (s.add_style text_left.deep_merge(border).deep_merge(bg_row))
       end
       
       if get_columns(params).include?("created_at")
         row[:columns] << consignment.created_at.strftime('%d/%m/%Y')
-        row[:styles] << (s.add_style text_center.deep_merge(border))
+        row[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_row))
       end
       
       sheet.add_row row[:columns], style: row[:styles]
       row_num += 1
+
+      # consignment details
+      consignment.consignment_details.each do |cs_detail|
+        subrow = {columns: [], styles: []}
+        
+        if get_columns(params).include?("code")
+          subrow[:columns] << ''
+          subrow[:styles] << (s.add_style text_center.deep_merge(border))
+        end
+        
+        if get_columns(params).include?("contact")
+          subrow[:columns] << ''
+          subrow[:styles] << (s.add_style text_left.deep_merge(border))
+        end
+        
+        if get_columns(params).include?("type")
+          subrow[:columns] << ''
+          subrow[:styles] << (s.add_style text_left.deep_merge(border))
+        end
+        
+        if get_columns(params).include?("sent_date")
+          subrow[:columns] << ''
+          subrow[:styles] << (s.add_style text_center.deep_merge(border))
+        end
+        
+        if get_columns(params).include?("return_date")
+          subrow[:columns] << ''
+          subrow[:styles] << (s.add_style text_center.deep_merge(border))
+        end
+        
+        subrow[:columns] << cs_detail.get_product_name
+        subrow[:styles] << (s.add_style text_left.deep_merge(border))
+        
+        if get_columns(params).include?("quantity")
+          subrow[:columns] << cs_detail.quantity
+          subrow[:styles] << (s.add_style text_center.deep_merge(border))
+        end
+        
+        if get_columns(params).include?("returned_qty")
+          subrow[:columns] << cs_detail.returned_quantity
+          subrow[:styles] << (s.add_style text_center.deep_merge(border))
+        end
+        
+        subrow[:columns] << cs_detail.remain_quantity
+        subrow[:styles] << (s.add_style text_center.deep_merge(border))
+        
+        if get_columns(params).include?("warehouse")
+          subrow[:columns] << consignment.warehouse_name
+          subrow[:styles] << (s.add_style text_center.deep_merge(border))
+        end
+        
+        if get_columns(params).include?("status")
+          subrow[:columns] << t(".#{consignment.status}")
+          subrow[:styles] << (s.add_style text_left.deep_merge(border))
+          
+          subrow[:columns] << cs_detail.return_status
+          subrow[:styles] << (s.add_style text_left.deep_merge(border))
+        end
+        
+        if get_columns(params).include?("note")
+          subrow[:columns] << ''
+          subrow[:styles] << (s.add_style text_left.deep_merge(border))
+        end
+        
+        if get_columns(params).include?("employee")
+          subrow[:columns] << ''
+          subrow[:styles] << (s.add_style text_left.deep_merge(border))
+        end
+        
+        if get_columns(params).include?("creator")
+          subrow[:columns] << ''
+          subrow[:styles] << (s.add_style text_left.deep_merge(border))
+        end
+        
+        if get_columns(params).include?("created_at")
+          subrow[:columns] << ''
+          subrow[:styles] << (s.add_style text_center.deep_merge(border))
+        end
+        
+        sheet.add_row subrow[:columns], style: subrow[:styles]
+        row_num += 1
+      end
     end
     
     # footer
