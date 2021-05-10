@@ -141,6 +141,9 @@ wb.styles do |s|
     footer[:columns] << ''
     footer[:styles] << (s.add_style border.deep_merge(bg_footer))
     
+    footer[:columns] << ''
+    footer[:styles] << (s.add_style border.deep_merge(bg_footer))
+    
     sheet.add_row footer[:columns], style: footer[:styles], height: 25
     row_num += 1
     footer_row_num = row_num
@@ -402,10 +405,20 @@ wb.styles do |s|
     
     header[:columns] << 'Ghi chú'
     header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
-    subheader[:columns] << ''
+    subheader[:columns] << 'Sản phẩm'
     subheader[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
     col_num += 1
-    sheet.merge_cells("#{axlsx_get_letter_by_index(col_num)}#{header_row_num}:#{axlsx_get_letter_by_index(col_num)}#{subheader_row_num}")
+    note_first = col_num
+    #sheet.merge_cells("#{axlsx_get_letter_by_index(col_num)}#{header_row_num}:#{axlsx_get_letter_by_index(col_num)}#{subheader_row_num}")
+    column_widths << 25
+    
+    header[:columns] << ''
+    header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
+    subheader[:columns] << 'Chứng từ'
+    subheader[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
+    col_num += 1
+    note_last = col_num
+    sheet.merge_cells("#{axlsx_get_letter_by_index(note_first)}#{header_row_num}:#{axlsx_get_letter_by_index(note_last)}#{header_row_num}")
     column_widths << 25
 
     last_col_num = col_num

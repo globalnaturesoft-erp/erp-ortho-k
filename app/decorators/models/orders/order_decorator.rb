@@ -380,7 +380,8 @@ Erp::Orders::Order.class_eval do
           salesperson_commission_amount: salesperson_commission_amount,
           customer_commission_percent: customer_percent,
           customer_commission_amount: customer_commission_amount,
-          note: order_detail.description
+          note_detail: order_detail.description,
+          note: order_detail.order.note
         }
         total[:quantity] += qty
         total[:sales_tax_amount] += sales_tax_amount.to_f

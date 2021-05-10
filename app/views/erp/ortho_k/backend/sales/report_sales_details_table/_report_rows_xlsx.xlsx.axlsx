@@ -105,6 +105,9 @@ rows.each_with_index do |rw,index|
   row[:columns] << rw[:customer_commission_amount]
   row[:styles] << (s.add_style text_right.deep_merge(middle_align).deep_merge(border).deep_merge(wrap).deep_merge(bg_row).deep_merge(number))
 
+  row[:columns] << rw[:note_detail]
+  row[:styles] << (s.add_style text_left.deep_merge(middle_align).deep_merge(border).deep_merge(wrap).deep_merge(bg_row))
+  
   row[:columns] << rw[:note]
   row[:styles] << (s.add_style text_left.deep_merge(middle_align).deep_merge(border).deep_merge(wrap).deep_merge(bg_row))
 

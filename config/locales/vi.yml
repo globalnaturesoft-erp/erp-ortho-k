@@ -1385,7 +1385,8 @@ vi:
             customer_commission_percent: "Phần trăm chiết khấu"
             customer_commission_amount: "Thành tiền chiết khấu"
             customer_commission: "Chiết khấu cho đối tượng"
-            note: "Ghi chú"
+            note: "Ghi chú chứng từ"
+            note_detail: "Ghi chú sản phẩm"
           report_sales_details_table:
             customer: "Khách hàng"
             patient: "Bệnh nhân"
@@ -1433,6 +1434,8 @@ vi:
             goods_discount_amount: "Thành tiền"
             customer_commission: "Chiết khấu cho đối tượng"
             note: "Ghi chú"
+            product_note: "Sản phẩm"
+            order_note: "Chứng từ"
             report_rows:
               sales_export: "Xuất bán hàng"
               sales_import: "Hàng bán bị trả lại"
