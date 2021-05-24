@@ -760,7 +760,7 @@ Erp::Orders::Order.class_eval do
 
       # Find product
       # p_name = "#{row["code"].to_s.strip}-#{row["diameter"].to_s.strip}-#{row["category"].to_s.strip}"
-      p_name = row["name"]
+      p_name = row["product name"]
 
       if p_name.split('-').count == 3 and p_name[0..2].downcase != 'cus' and (p_name =~ /\A\d.+/).nil?
         lns = p_name.scan(/\d+|\D+/)
@@ -783,9 +783,12 @@ Erp::Orders::Order.class_eval do
           sales_price = product.get_default_sales_price(quantity: row[1], contact_id: order_params[:customer_id])
           price = sales_price.present? ? sales_price.price : 0.0
         end
+
+        # default price from imported file
+        price = row["price"] if row["price"].present?
         
         # warehouse
-        warehouse = row["warehouse"].present? ? Erp::Warehouses::Warehouse.where(name: row["warehouse"].strip).first : nil
+        warehouse = row["warehouse"].present? ? Erp::Warehouses::Warehouse.where(name: row["warehouse"].strip).all_active.first : nil
         warehouse_id = warehouse.present? ? warehouse.id : order_params[:warehouse_id]        
         
         if row["quantity"].to_i > 0
@@ -796,6 +799,7 @@ Erp::Orders::Order.class_eval do
             serials: row["serials"],
             price: price,
             warehouse_id: warehouse_id,
+            discount: row["discount"],
           )
         end
       end
