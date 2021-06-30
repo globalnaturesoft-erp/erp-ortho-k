@@ -344,7 +344,7 @@ wb.styles do |s|
     num_row += 1
 
     # rows
-    @delivery.delivery_details.each_with_index do |delivery_detail,index|
+    @delivery.delivery_details.includes(:product).order('erp_products_products.ordered_code').each_with_index do |delivery_detail,index|
       row = {columns: [], styles: []}
       row[:columns] = []
       if get_columns(params).include?("ordinal_number") or get_columns(params).empty?
