@@ -42,11 +42,14 @@ wb.styles do |s|
       (get_columns(params).include?("quantity") ? 1 : 0) +
       (get_columns(params).include?("record") ? 1 : 0) +
       (get_columns(params).include?("note") ? 1 : 0)
-      
-    if @delivery.delivery_type == Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT
+    
+    if [Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT, Erp::Qdeliveries::Delivery::TYPE_PURCHASE_EXPORT].include?(@delivery.delivery_type)
       colspan = colspan +
       (get_columns(params).include?("price") ? 1 : 0) +
-      (get_columns(params).include?("total_amount") ? 1 : 0)
+      (get_columns(params).include?("subtotal") ? 1 : 0) +
+      (get_columns(params).include?("discount") ? 1 : 0) +
+      (get_columns(params).include?("tax_amount") ? 1 : 0) +
+      (get_columns(params).include?("total") ? 1 : 0)
     end
     
     sheet.add_row [@title], sz: 16, b: true, style: (s.add_style text_center)
@@ -167,20 +170,8 @@ wb.styles do |s|
       patient_col_widths << 25
     end
     
-    if get_columns(params).include?("units") or get_columns(params).empty?
-      header[:columns] << t('.units')
-      header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border))
-
-      footer[:columns] << nil
-      footer[:styles] << (s.add_style bg_footer.deep_merge(text_center).deep_merge(border))
-      
-      num_col += 1
-      footer_merge_cell_num = num_col
-      patient_col_widths << 10
-    end
-    
-    if get_columns(params).include?("patient_state")
-      header[:columns] << t('.patient_state')
+    if get_columns(params).include?("patient_name")
+      header[:columns] << t('.patient_name')
       header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border))
 
       footer[:columns] << nil
@@ -191,8 +182,8 @@ wb.styles do |s|
       patient_col_widths << 15
     end
     
-    if get_columns(params).include?("patient_name")
-      header[:columns] << t('.patient_name')
+    if get_columns(params).include?("patient_state")
+      header[:columns] << t('.patient_state')
       header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border))
 
       footer[:columns] << nil
@@ -251,6 +242,18 @@ wb.styles do |s|
       patient_col_widths << 12
     end
     
+    if get_columns(params).include?("units") or get_columns(params).empty?
+      header[:columns] << t('.units')
+      header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border))
+
+      footer[:columns] << nil
+      footer[:styles] << (s.add_style bg_footer.deep_merge(text_center).deep_merge(border))
+      
+      num_col += 1
+      footer_merge_cell_num = num_col
+      patient_col_widths << 10
+    end
+    
     if get_columns(params).include?("quantity") or get_columns(params).empty?
       header[:columns] << t('.quantity')
       header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border))
@@ -262,7 +265,7 @@ wb.styles do |s|
       patient_col_widths << 15
     end
     
-    if @delivery.delivery_type == Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT
+    if [Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT, Erp::Qdeliveries::Delivery::TYPE_PURCHASE_EXPORT].include?(@delivery.delivery_type)
       if get_columns(params).include?("price") or get_columns(params).empty?
         header[:columns] << t('.price')
         header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border))
@@ -274,8 +277,38 @@ wb.styles do |s|
         patient_col_widths << 15
       end
       col_total = 0
-      if get_columns(params).include?("total_amount")
-        header[:columns] << t('.total_amount')
+      if get_columns(params).include?("subtotal") or get_columns(params).empty?
+        header[:columns] << t('.subtotal')
+        header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border))
+  
+        footer[:columns] << @delivery.subtotal
+        footer[:styles] << (s.add_style bg_footer.deep_merge(text_right).deep_merge(bold).deep_merge(number).deep_merge(border))
+        
+        num_col += 1
+        patient_col_widths << 15
+      end
+      if get_columns(params).include?("discount") or get_columns(params).empty?
+        header[:columns] << t('.discount')
+        header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border))
+  
+        footer[:columns] << @delivery.discount
+        footer[:styles] << (s.add_style bg_footer.deep_merge(text_right).deep_merge(bold).deep_merge(number).deep_merge(border))
+        
+        num_col += 1
+        patient_col_widths << 15
+      end
+      if get_columns(params).include?("tax_amount") or get_columns(params).empty?
+        header[:columns] << t('.tax_amount')
+        header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border))
+  
+        footer[:columns] << @delivery.tax_amount
+        footer[:styles] << (s.add_style bg_footer.deep_merge(text_right).deep_merge(bold).deep_merge(number).deep_merge(border))
+        
+        num_col += 1
+        patient_col_widths << 15
+      end
+      if get_columns(params).include?("total") or get_columns(params).empty?
+        header[:columns] << t('.total')
         header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border))
   
         footer[:columns] << @delivery.total_amount
@@ -322,10 +355,6 @@ wb.styles do |s|
         row[:columns] << delivery_detail.get_product.name
         row[:styles] << (s.add_style border)
       end
-      if get_columns(params).include?("units") or get_columns(params).empty?
-        row[:columns] << delivery_detail.get_product.unit_name
-        row[:styles] << (s.add_style text_center.deep_merge(border))
-      end
       if get_columns(params).include?("patient_state")
         row[:columns] << delivery_detail.get_patient_name
         row[:styles] << (s.add_style border)
@@ -350,17 +379,34 @@ wb.styles do |s|
         row[:columns] << delivery_detail.get_eye_position
         row[:styles] << (s.add_style text_center.deep_merge(border))
       end
+      if get_columns(params).include?("units") or get_columns(params).empty?
+        row[:columns] << delivery_detail.get_product.unit_name
+        row[:styles] << (s.add_style text_center.deep_merge(border))
+      end
       if get_columns(params).include?("quantity") or get_columns(params).empty?
         row[:columns] << delivery_detail.quantity
         row[:styles] << (s.add_style text_center.deep_merge(border))
       end
-      if @delivery.delivery_type == Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT
+
+      if [Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT, Erp::Qdeliveries::Delivery::TYPE_PURCHASE_EXPORT].include?(@delivery.delivery_type)
         if get_columns(params).include?("price") or get_columns(params).empty?
           row[:columns] << delivery_detail.price
           row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
         end
-        if get_columns(params).include?("total_amount") or get_columns(params).empty?
-          row[:columns] << delivery_detail.cache_total
+        if get_columns(params).include?("subtotal") or get_columns(params).empty?
+          row[:columns] << delivery_detail.subtotal
+          row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
+        end
+        if get_columns(params).include?("discount") or get_columns(params).empty?
+          row[:columns] << delivery_detail.discount
+          row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
+        end
+        if get_columns(params).include?("tax_amount") or get_columns(params).empty?
+          row[:columns] << delivery_detail.tax_amount
+          row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
+        end
+        if get_columns(params).include?("total") or get_columns(params).empty?
+          row[:columns] << delivery_detail.total
           row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border))
         end
       end
