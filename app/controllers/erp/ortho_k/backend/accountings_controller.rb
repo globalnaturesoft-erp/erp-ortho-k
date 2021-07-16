@@ -767,19 +767,28 @@ module Erp
                 rows: [],
                 total: {
                   quantity: 0,
-                  amount: 0.0
+                  amount: 0.0,
+                  total_without_tax: 0.0,
+                  tax_amount: 0.0,
+                  total_amount: 0.0,
                 }
               },
               returns: {
                 rows: [],
                 total: {
                   quantity: 0,
-                  amount: 0.0
+                  amount: 0.0,
+                  total_without_tax: 0.0,
+                  tax_amount: 0.0,
+                  total_amount: 0.0,
                 }
               },
               total: {
                 quantity: 0,
-                amount: 0.0
+                amount: 0.0,
+                total_without_tax: 0.0,
+                tax_amount: 0.0,
+                total_amount: 0.0,
               },
               from: @from,
               to: @to
@@ -799,16 +808,25 @@ module Erp
               
               quantity = odsq.sum(:quantity)
               amount = odsq.sum(&:total_without_tax)
+              total_without_tax = odsq.sum(&:total_without_tax)
+              tax_amount = odsq.sum(&:tax_amount)
+              total_amount = odsq.sum(&:total)
               
               if quantity + amount > 0
                 @data[:sales][:rows] << {
                   name: "Len (#{pst[:name]})",
                   quantity: quantity,
-                  amount: amount
+                  amount: amount,
+                  total_without_tax: total_without_tax,
+                  tax_amount: tax_amount,
+                  total_amount: total_amount
                 }
                 
                 @data[:sales][:total][:quantity] += quantity
                 @data[:sales][:total][:amount] += amount
+                @data[:sales][:total][:total_without_tax] += total_without_tax
+                @data[:sales][:total][:tax_amount] += tax_amount
+                @data[:sales][:total][:total_amount] += total_amount
               end
             end
             
@@ -819,16 +837,25 @@ module Erp
               
               quantity = odsq.sum(:quantity)
               amount = odsq.sum(&:total_without_tax)
+              total_without_tax = odsq.sum(&:total_without_tax)
+              tax_amount = odsq.sum(&:tax_amount)
+              total_amount = odsq.sum(&:total)
               
               if quantity + amount > 0
                 @data[:sales][:rows] << {
                   name: p.name,
                   quantity: quantity,
-                  amount: amount
+                  amount: amount,
+                  total_without_tax: total_without_tax,
+                  tax_amount: tax_amount,
+                  total_amount: total_amount
                 }
                 
                 @data[:sales][:total][:quantity] += quantity
                 @data[:sales][:total][:amount] += amount
+                @data[:sales][:total][:total_without_tax] += total_without_tax
+                @data[:sales][:total][:tax_amount] += tax_amount
+                @data[:sales][:total][:total_amount] += total_amount
               end
             end
             
@@ -845,16 +872,25 @@ module Erp
               
               quantity = ddsq.sum(:quantity)
               amount = ddsq.sum(&:total_amount)
+              total_without_tax = ddsq.sum(&:total_without_tax)
+              tax_amount = ddsq.sum(&:tax_amount)
+              total_amount = ddsq.sum(&:total_amount)
               
               if quantity + amount > 0
                 @data[:returns][:rows] << {
                   name: "Len (#{pst[:name]})",
                   quantity: quantity,
-                  amount: amount
+                  amount: amount,
+                  total_without_tax: total_without_tax,
+                  tax_amount: tax_amount,
+                  total_amount: total_amount
                 }
                 
                 @data[:returns][:total][:quantity] += quantity
                 @data[:returns][:total][:amount] += amount
+                @data[:returns][:total][:total_without_tax] += total_without_tax
+                @data[:returns][:total][:tax_amount] += tax_amount
+                @data[:returns][:total][:total_amount] += total_amount
               end
             end
             
@@ -865,16 +901,25 @@ module Erp
               
               quantity = ddsq.sum(:quantity)
               amount = ddsq.sum(&:total_amount)
+              total_without_tax = ddsq.sum(&:total_without_tax)
+              tax_amount = ddsq.sum(&:tax_amount)
+              total_amount = ddsq.sum(&:total_amount)
               
               if quantity + amount > 0
                 @data[:returns][:rows] << {
                   name: p.name,
                   quantity: quantity,
-                  amount: amount
+                  amount: amount,
+                  total_without_tax: total_without_tax,
+                  tax_amount: tax_amount,
+                  total_amount: total_amount
                 }
                 
                 @data[:returns][:total][:quantity] += quantity
                 @data[:returns][:total][:amount] += amount
+                @data[:returns][:total][:total_without_tax] += total_without_tax
+                @data[:returns][:total][:tax_amount] += tax_amount
+                @data[:returns][:total][:total_amount] += total_amount
               end
             end
             

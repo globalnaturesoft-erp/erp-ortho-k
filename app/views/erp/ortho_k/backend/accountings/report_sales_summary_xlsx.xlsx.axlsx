@@ -54,13 +54,23 @@ wb.styles do |s|
     footer[:columns] << @data[:sales][:total][:quantity] - @data[:returns][:total][:quantity]
     footer[:styles] << (s.add_style footer_bg_info.deep_merge(number).deep_merge(border).merge(bold).deep_merge(middle_align))
     
-    header[:columns] << 'Thành tiền'
+    header[:columns] << 'Thành tiền (chưa VAT)'
     header[:styles] << (s.add_style header_bg_info.deep_merge(text_right).deep_merge(middle_align).merge(bold))
-    footer[:columns] << @data[:sales][:total][:amount] - @data[:returns][:total][:amount]
+    footer[:columns] << @data[:sales][:total][:total_without_tax] - @data[:returns][:total][:total_without_tax]
+    footer[:styles] << (s.add_style footer_bg_info.deep_merge(number).deep_merge(border).merge(bold).deep_merge(middle_align))
+    
+    header[:columns] << 'Tiền thuế (VAT)'
+    header[:styles] << (s.add_style header_bg_info.deep_merge(text_right).deep_merge(middle_align).merge(bold))
+    footer[:columns] << @data[:sales][:total][:tax_amount] - @data[:returns][:total][:tax_amount]
+    footer[:styles] << (s.add_style footer_bg_info.deep_merge(number).deep_merge(border).merge(bold).deep_merge(middle_align))
+    
+    header[:columns] << 'Tổng cộng (đã VAT)'
+    header[:styles] << (s.add_style header_bg_info.deep_merge(text_right).deep_merge(middle_align).merge(bold))
+    footer[:columns] << @data[:sales][:total][:total_amount] - @data[:returns][:total][:total_amount]
     footer[:styles] << (s.add_style footer_bg_info.deep_merge(number).deep_merge(border).merge(bold).deep_merge(middle_align))
     
     sheet.add_row header[:columns], style: header[:styles], height: 25
-    sheet.column_widths 35, 40, 15, 15
+    sheet.column_widths 35, 40, 15, 15, 15, 15
     
     # rows 1
     @data[:sales][:rows].each_with_index do |r, index|
@@ -75,7 +85,13 @@ wb.styles do |s|
       row[:columns] << r[:quantity]
       row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border).deep_merge(row_bg_info))
     
-      row[:columns] << r[:amount]
+      row[:columns] << r[:total_without_tax]
+      row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border).deep_merge(row_bg_info))
+    
+      row[:columns] << r[:tax_amount]
+      row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border).deep_merge(row_bg_info))
+    
+      row[:columns] << r[:total_amount]
       row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border).deep_merge(row_bg_info))
     
       sheet.add_row row[:columns], style: row[:styles]
@@ -87,7 +103,11 @@ wb.styles do |s|
     row[:styles] << (s.add_style bold.deep_merge(border).deep_merge(row_bg_info))
     row[:columns] << @data[:sales][:total][:quantity]
     row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border).merge(bold).deep_merge(row_bg_info))
-    row[:columns] << @data[:sales][:total][:amount]
+    row[:columns] << @data[:sales][:total][:total_without_tax]
+    row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border).merge(bold).deep_merge(row_bg_info))
+    row[:columns] << @data[:sales][:total][:tax_amount]
+    row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border).merge(bold).deep_merge(row_bg_info))
+    row[:columns] << @data[:sales][:total][:total_amount]
     row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border).merge(bold).deep_merge(row_bg_info))
     sheet.add_row row[:columns], style: row[:styles]
     
@@ -104,7 +124,13 @@ wb.styles do |s|
       row[:columns] << r[:quantity]
       row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border).deep_merge(row_bg_info))
     
-      row[:columns] << r[:amount]
+      row[:columns] << r[:total_without_tax]
+      row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border).deep_merge(row_bg_info))
+    
+      row[:columns] << r[:tax_amount]
+      row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border).deep_merge(row_bg_info))
+    
+      row[:columns] << r[:total_amount]
       row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border).deep_merge(row_bg_info))
     
       sheet.add_row row[:columns], style: row[:styles]
@@ -116,7 +142,11 @@ wb.styles do |s|
     row[:styles] << (s.add_style bold.deep_merge(border).deep_merge(row_bg_info))
     row[:columns] << @data[:returns][:total][:quantity]
     row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border).merge(bold).deep_merge(row_bg_info))
-    row[:columns] << @data[:returns][:total][:amount]
+    row[:columns] << @data[:returns][:total][:total_without_tax]
+    row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border).merge(bold).deep_merge(row_bg_info))
+    row[:columns] << @data[:returns][:total][:tax_amount]
+    row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border).merge(bold).deep_merge(row_bg_info))
+    row[:columns] << @data[:returns][:total][:total_amount]
     row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border).merge(bold).deep_merge(row_bg_info))
     sheet.add_row row[:columns], style: row[:styles]
     
@@ -124,8 +154,8 @@ wb.styles do |s|
     sheet.add_row footer[:columns], style: footer[:styles], height: 25
     
     # Setup
-    sheet.merge_cells("A4:D4")
-    sheet.merge_cells("A5:D5")
+    sheet.merge_cells("A4:F4")
+    sheet.merge_cells("A5:F5")
     cells_0 = 7
     cells_1 = cells_0 + @data[:sales][:rows].count + 1
     cells_2 = cells_1 + @data[:returns][:rows].count + 1
