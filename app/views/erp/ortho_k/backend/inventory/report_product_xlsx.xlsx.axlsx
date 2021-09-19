@@ -51,9 +51,11 @@ wb.styles do |s|
     toprow[:columns] << ''
     toprow[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_toprow).deep_merge(bold))
 
+    # So du dau ky
     toprow[:columns] << Erp::Products::Product.get_stock_real(begin_params)
     toprow[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_toprow).deep_merge(bold))
 
+    # Nhap hang NCC
     count = Erp::Products::Product.get_qdelivery_import(filters.clone.merge({
         delivery_type: [
           Erp::Qdeliveries::Delivery::TYPE_CUSTOM_IMPORT,
@@ -63,11 +65,18 @@ wb.styles do |s|
     toprow[:columns] << count
     toprow[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_toprow).deep_merge(bold))
     
+    # Nhap KK, KTT, Tùy chỉnh
     count = Erp::Products::Product.get_stock_check_import(filters)
     count += Erp::Products::Product.get_state_check_import(filters) if filters[:state_ids].present?
     toprow[:columns] << count
     toprow[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_toprow).deep_merge(bold))
 
+    # Nhap chuyen kho
+    count = Erp::Products::Product.get_transfer_import(filters)
+    toprow[:columns] << count
+    toprow[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_toprow).deep_merge(bold))
+
+    # Hoan kho (theo trang thai)
     @states.each do |state|
         count = Erp::Products::Product.get_qdelivery_import(filters.clone.merge({
             delivery_type: [
@@ -83,6 +92,7 @@ wb.styles do |s|
       toprow[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_toprow).deep_merge(bold))
     end
 
+    # Xuat ban, Cho muon/KG, Tang qua
     count = Erp::Products::Product.get_qdelivery_export(filters.clone.merge({
         delivery_type: [
             Erp::Qdeliveries::Delivery::TYPE_CUSTOM_EXPORT,
@@ -94,6 +104,7 @@ wb.styles do |s|
     toprow[:columns] << count
     toprow[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_toprow).deep_merge(bold))
     
+    # Xuat tra NCC
     count = Erp::Products::Product.get_qdelivery_export(filters.clone.merge({
         delivery_type: [
             Erp::Qdeliveries::Delivery::TYPE_PURCHASE_EXPORT
@@ -102,15 +113,23 @@ wb.styles do |s|
     toprow[:columns] << count
     toprow[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_toprow).deep_merge(bold))
 
+    # Xuat KK (Kiem tra so luong, Huy kho)
     count = Erp::Products::Product.get_damage_record_export(filters)
     count += Erp::Products::Product.get_stock_check_export(filters)
     toprow[:columns] << count
     toprow[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_toprow).deep_merge(bold))
 
+    # Xuat kiem tra trang thai
     count = (filters[:state_ids].present? ? Erp::Products::Product.get_state_check_export(filters) : '--')
     toprow[:columns] << count
     toprow[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_toprow).deep_merge(bold))
 
+    # Xuat chuyen kho
+    count = Erp::Products::Product.get_transfer_export(filters)
+    toprow[:columns] << count
+    toprow[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_toprow).deep_merge(bold))
+    
+    # So du cuoi ky
     end_params = filters.clone
     end_params[:from_date] = nil
     toprow[:columns] << Erp::Products::Product.get_stock_real(end_params)
@@ -176,6 +195,13 @@ wb.styles do |s|
     subheader[:styles] << (s.add_style bg_info.deep_merge(text_right).deep_merge(border).merge(bold))
     kt += 1
     sheet.merge_cells("#{('A'.codepoints.first + kt).chr}5:#{('A'.codepoints.first + kt).chr}6")
+    
+    header[:columns] << 'Nhập CK'
+    header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
+    subheader[:columns] << ''
+    subheader[:styles] << (s.add_style bg_info.deep_merge(text_right).deep_merge(border).merge(bold))
+    kt += 1
+    sheet.merge_cells("#{('A'.codepoints.first + kt).chr}5:#{('A'.codepoints.first + kt).chr}6")
 
     @states.each_with_index do |state,index|
       header[:columns] << (index==0 ? 'Hoàn kho' : '')
@@ -214,6 +240,13 @@ wb.styles do |s|
     kt += 1
     sheet.merge_cells("#{('A'.codepoints.first + kt).chr}5:#{('A'.codepoints.first + kt).chr}6")
 
+    header[:columns] << 'Xuất CK'
+    header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
+    subheader[:columns] << ''
+    subheader[:styles] << (s.add_style bg_info.deep_merge(text_right).deep_merge(border).merge(bold))
+    kt += 1
+    sheet.merge_cells("#{('A'.codepoints.first + kt).chr}5:#{('A'.codepoints.first + kt).chr}6")
+
     header[:columns] << 'Dư cuối'
     header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
     subheader[:columns] << ''
@@ -241,24 +274,30 @@ wb.styles do |s|
         filters = @global_filters.clone.merge(product_id: product.id)
         filters[:state_ids] = Erp::Products::State.get_new_state.id
 
+        # Ten san pham
         row[:columns] << product.name
         row[:styles] << (s.add_style text_left.deep_merge(border))
 
+        # Duong kinh
         row[:columns] << product.get_diameter
         row[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(middle_align))
 
+        # Loai hang
         row[:columns] << product.category_name
         row[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(middle_align))
 
+        # Don vi tinh
         row[:columns] << product.unit_name
         row[:styles] << (s.add_style text_center.deep_merge(border))
 
+        # So du dau ky
         begin_params = filters.clone
         begin_params[:to_date] = (filters[:from_date].to_date - 1.day).to_s
         begin_params[:from_date] = nil
         row[:columns] << Erp::Products::Product.get_stock_real(begin_params)
         row[:styles] << (s.add_style text_center.deep_merge(border))
 
+        # Nhap hang NCC
         count = Erp::Products::Product.get_qdelivery_import(filters.clone.merge({
             delivery_type: [
               Erp::Qdeliveries::Delivery::TYPE_CUSTOM_IMPORT,
@@ -268,11 +307,18 @@ wb.styles do |s|
         row[:columns] << count
         row[:styles] << (s.add_style text_center.deep_merge(border))
         
+        # Nhap kiem kho: So luong, Trang thai, Nhap tuy chinh
         count = Erp::Products::Product.get_stock_check_import(filters)
         count += Erp::Products::Product.get_state_check_import(filters) if filters[:state_ids].present?
         row[:columns] << count
         row[:styles] << (s.add_style text_center.deep_merge(border))
 
+        # Nhap chuyen kho
+        count = Erp::Products::Product.get_transfer_import(filters)
+        row[:columns] << count
+        row[:styles] << (s.add_style text_center.deep_merge(border))
+
+        # Hoan kho (theo trang thai)
         @states.each do |state|
           count = Erp::Products::Product.get_qdelivery_import(filters.clone.merge({
               delivery_type: [
@@ -287,6 +333,7 @@ wb.styles do |s|
           row[:styles] << (s.add_style text_center.deep_merge(number).deep_merge(border))
         end
 
+        # Xuat kho: Ban, Cho muon/KG, Tang qua
         count = Erp::Products::Product.get_qdelivery_export(filters.clone.merge({
             delivery_type: [
               Erp::Qdeliveries::Delivery::TYPE_CUSTOM_EXPORT,
@@ -298,6 +345,7 @@ wb.styles do |s|
         row[:columns] << count
         row[:styles] << (s.add_style text_center.deep_merge(border))
         
+        # Xuat tra NCC
         count = count = Erp::Products::Product.get_qdelivery_export(filters.clone.merge({
             delivery_type: [
                 Erp::Qdeliveries::Delivery::TYPE_PURCHASE_EXPORT
@@ -306,15 +354,23 @@ wb.styles do |s|
         row[:columns] << count
         row[:styles] << (s.add_style text_center.deep_merge(border))
 
+        # Xuat KK: Xuat huy, Kiem so luong
         count = Erp::Products::Product.get_damage_record_export(filters)
         count += Erp::Products::Product.get_stock_check_export(filters)
         row[:columns] << count
         row[:styles] << (s.add_style text_center.deep_merge(border))
 
+        # Xuat kiem trang thai
         count = (filters[:state_ids].present? ? Erp::Products::Product.get_state_check_export(filters) : '--')
         row[:columns] << count
         row[:styles] << (s.add_style text_center.deep_merge(border))
 
+        # Xuat chuyen kho
+        count = Erp::Products::Product.get_transfer_export(filters)
+        row[:columns] << count
+        row[:styles] << (s.add_style text_center.deep_merge(border))
+
+        # So du cuoi ky
         end_params = filters.clone
         end_params[:from_date] = nil
         row[:columns] << Erp::Products::Product.get_stock_real(end_params)
@@ -333,8 +389,8 @@ wb.styles do |s|
     end
 
     # Setup
-    sheet.column_widths 35, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15
-    sheet.merge_cells("A2:M2")
+    sheet.column_widths 35, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15
+    sheet.merge_cells("A2:O2")
     sheet.merge_cells("A4:D4")
   end
 end
