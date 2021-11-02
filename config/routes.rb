@@ -40,8 +40,13 @@ Erp::Payments::Engine.routes.draw do
 					get 'company_target_xlsx'
 					get 'commission_xlsx'
 					
+					# cong no khach hang
 					get 'export_xlsx_all_details'
 					post 'export_xlsx_all_details'
+					
+					# cong no nha cung cap
+					get 'export_xlsx_all_supplier_details'
+					post 'export_xlsx_all_supplier_details'
         end
       end
     end

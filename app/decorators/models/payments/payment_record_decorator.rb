@@ -3,6 +3,7 @@ Erp::Payments::PaymentRecord.class_eval do
   def get_report_name
     str = []
     str << customer_name if customer_name.present?
+    str << supplier_name if supplier_name.present?
     return I18n.t(".#{pay_receive}") + " - " + str.join(" - ")
   end
   
