@@ -139,6 +139,10 @@ group[:columns] << ''
 group[:styles] << (s.add_style bg_group.deep_merge(text_left).deep_merge(middle_align).deep_merge(border).deep_merge(wrap).deep_merge(bold))
 col_num += 1
 
+group[:columns] << ''
+group[:styles] << (s.add_style bg_group.deep_merge(text_left).deep_merge(middle_align).deep_merge(border).deep_merge(wrap).deep_merge(bold))
+col_num += 1
+
 sheet.add_row group[:columns], style: group[:styles], height: 20
 row_num += 1
 group_row_num = row_num

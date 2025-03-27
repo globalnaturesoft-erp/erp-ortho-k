@@ -23,6 +23,8 @@
             (get_columns(params).include?("salesperson_name") ? 1 : 0) +
             (get_columns(params).include?("salesperson_percent") ? 1 : 0)
         total_colspan_5 = (get_columns(params).include?("customer_commission_percent") ? 1 : 0)
+        total_colspan_6 = (get_columns(params).include?("note_detail") ? 1 : 0) +
+            (get_columns(params).include?("note") ? 1 : 0)
 
         customer_colspan = (get_columns(params).include?("customer_code") ? 1 : 0) +
             (get_columns(params).include?("customer_name") ? 1 : 0)
@@ -44,6 +46,8 @@
             (get_columns(params).include?("salesperson_commission_amount") ? 1 : 0)
         customer_commission_colspan = (get_columns(params).include?("customer_commission_percent") ? 1 : 0) +
             (get_columns(params).include?("customer_commission_amount") ? 1 : 0)
+        note_colspan = (get_columns(params).include?("note_detail") ? 1 : 0) +
+            (get_columns(params).include?("note") ? 1 : 0)
     %>
 
     <div class="row">
@@ -115,9 +119,7 @@
                 <% if get_columns(params).include?("customer_commission_amount") %>
                 <td class="text-right stock-num text-bold font-yellow-gold"><%= format_number(@totals[:customer_commission_amount]) %></td>
                 <% end %>
-                <% if get_columns(params).include?("note") %>
-                <td></td>
-                <% end %>
+                <%= "<td colspan='#{total_colspan_6}'></td>".html_safe if total_colspan_6 > 0 %>
             </tr>
             <tr>
                 <% if get_columns(params).include?("record_date") %>
@@ -179,8 +181,8 @@
                 <% if get_columns(params).include?("customer_commission_percent") or get_columns(params).include?("customer_commission_amount") %>
                     <th class="bg-blue-oleo bg-font-blue-oleo text-nowrap text-center" colspan="<%= customer_commission_colspan %>"><%= t('.goods') %></th>
                 <% end %>
-                <% if get_columns(params).include?("note") %>
-                    <th class="bg-blue-oleo bg-font-blue-oleo text-nowrap text-center" rowspan="2" width="7%"><%= t('.note') %></th>
+                <% if get_columns(params).include?("note_detail") or get_columns(params).include?("note") %>
+                    <th class="bg-blue-oleo bg-font-blue-oleo text-nowrap text-center" colspan="<%= note_colspan %>" width="7%"><%= t('.note') %></th>
                 <% end %>
             </tr>
             <tr>
@@ -243,6 +245,12 @@
                 <% end %>
                 <% if get_columns(params).include?("customer_commission_amount") %>
                 <th class="bg-blue-oleo bg-font-blue-oleo text-nowrap text-center" width="7%"><%= t('.goods_discount_amount') %></th>
+                <% end %>
+                <% if get_columns(params).include?("note_detail") %>
+                <th class="bg-blue-oleo bg-font-blue-oleo text-nowrap text-center" width="7%"><%= t('.product_note') %></th>
+                <% end %>
+                <% if get_columns(params).include?("note") %>
+                <th class="bg-blue-oleo bg-font-blue-oleo text-nowrap text-center" width="7%"><%= t('.order_note') %></th>
                 <% end %>
             </tr>
             <% if @group_by.present? and !@group_by.include?(Erp::Products::Product::GROUPED_BY_DEFAULT) %>

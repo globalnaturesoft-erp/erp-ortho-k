@@ -14,7 +14,7 @@ Erp::Orders::OrderDetail.class_eval do
     end
   end
 
-  #
+  # [Actual] Quantity of goods delivered (Excludes: Hoàn Kho. Nghĩa là chỉ tính xuất và không tính nhập)
   def delivered_quantity
     if order.present? and order.sales?
       import_quantity = 0

@@ -380,7 +380,8 @@ Erp::Orders::Order.class_eval do
           salesperson_commission_amount: salesperson_commission_amount,
           customer_commission_percent: customer_percent,
           customer_commission_amount: customer_commission_amount,
-          note: order_detail.description
+          note_detail: order_detail.description,
+          note: order_detail.order.note
         }
         total[:quantity] += qty
         total[:sales_tax_amount] += sales_tax_amount.to_f
@@ -696,10 +697,11 @@ Erp::Orders::Order.class_eval do
   # get report name
   def get_report_name
     str = []
-    str << customer_name if customer_name.present?
+    str << customer_name if customer_name.present? and self.sales?
+    str << supplier_name if supplier_name.present? and self.purchase?
     #str << doctor_name if doctor_name.present?
     #str << ('BN ' + patient_state_name + ': ' + patient_name) if patient_name.present?
-    return 'Xuất bán - ' + str.join(" - ")
+    return  (self.sales? ? 'Xuất bán - ' : 'Nhập mua - ') + str.join(" - ")
   end
 
   # get all checking orders
@@ -759,7 +761,7 @@ Erp::Orders::Order.class_eval do
 
       # Find product
       # p_name = "#{row["code"].to_s.strip}-#{row["diameter"].to_s.strip}-#{row["category"].to_s.strip}"
-      p_name = row["name"]
+      p_name = row["product name"]
 
       if p_name.split('-').count == 3 and p_name[0..2].downcase != 'cus' and (p_name =~ /\A\d.+/).nil?
         lns = p_name.scan(/\d+|\D+/)
@@ -776,15 +778,18 @@ Erp::Orders::Order.class_eval do
 
       if product.present?
         if self.purchase?
-          purchase_price = product.get_default_purchase_price(quantity: row[1])
+          purchase_price = product.get_default_purchase_price(quantity: row[1], contact_id: order_params[:supplier_id])
           price = purchase_price.present? ? purchase_price.price : 0.0
         else
-          sales_price = product.get_default_sales_price(quantity: row[1])
+          sales_price = product.get_default_sales_price(quantity: row[1], contact_id: order_params[:customer_id])
           price = sales_price.present? ? sales_price.price : 0.0
         end
+
+        # default price from imported file
+        price = row["price"] if row["price"].present?
         
         # warehouse
-        warehouse = row["warehouse"].present? ? Erp::Warehouses::Warehouse.where(name: row["warehouse"].strip).first : nil
+        warehouse = row["warehouse"].present? ? Erp::Warehouses::Warehouse.where(name: row["warehouse"].strip).all_active.first : nil
         warehouse_id = warehouse.present? ? warehouse.id : order_params[:warehouse_id]        
         
         if row["quantity"].to_i > 0
@@ -795,6 +800,7 @@ Erp::Orders::Order.class_eval do
             serials: row["serials"],
             price: price,
             warehouse_id: warehouse_id,
+            discount: row["discount"],
           )
         end
       end

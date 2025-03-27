@@ -134,6 +134,11 @@
             <%= row[:customer_commission_amount].present? ? format_number(row[:customer_commission_amount]) : '--' %>
         </td>
         <% end %>
+        <% if get_columns(params).include?("note_detail") %>
+        <td class="text-<%= row[:note].present? ? 'left' : 'center' %> text-nowrap">
+            <%= row[:note_detail] %>
+        </td>
+        <% end %>
         <% if get_columns(params).include?("note") %>
         <td class="text-<%= row[:note].present? ? 'left' : 'center' %> text-nowrap">
             <%= row[:note] %>

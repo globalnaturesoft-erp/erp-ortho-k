@@ -82,6 +82,11 @@ Erp::Products::Product.class_eval do
     self.get_value(Erp::Products::Property.getByName(Erp::Products::Property::NAME_DO_K))
   end
   
+  # get degree K2
+  def get_degree_k2
+    self.get_value(Erp::Products::Property.getByName(Erp::Products::Property::NAME_DO_K2))
+  end
+  
   # get degree
   def get_degree
     self.get_value(Erp::Products::Property.getByName(Erp::Products::Property::NAME_DO))

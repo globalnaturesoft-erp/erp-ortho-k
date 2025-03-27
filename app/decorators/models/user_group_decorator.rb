@@ -1112,13 +1112,6 @@ Erp::UserGroup.class_eval do
                 {value: 'no', text: 'Không'},
               ],
             },
-            assign_salesperson: {
-              value: 'yes',
-              options: [
-                {value: 'yes', text: 'Có'},
-                {value: 'no', text: 'Không'},
-              ],
-            },
             update_init_debt: {
               value: 'yes',
               options: [

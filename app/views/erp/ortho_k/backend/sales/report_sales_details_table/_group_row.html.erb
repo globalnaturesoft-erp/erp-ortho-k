@@ -81,6 +81,9 @@
         <%= item[:customer_commission_amount].present? ? format_number(item[:customer_commission_amount]) : '' %>
     </td>
     <% end %>
+    <% if get_columns(params).include?("note_detail") %>
+    <td class="bg-grey text-center"></td>
+    <% end %>
     <% if get_columns(params).include?("note") %>
     <td class="bg-grey text-center"></td>
     <% end %>

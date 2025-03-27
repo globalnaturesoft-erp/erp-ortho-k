@@ -26,10 +26,12 @@
     <table class="table table-bordered order-column">
         <thead class="flip-content">
             <tr>
-                <th width="20%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap uppercase"></th>
-                <th class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Hàng hóa</th>
-                <th width="20%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Số lượng</th>
-                <th width="20%" class="text-center bg-yellow-mint bg-font-yellow-mint text-nowrap">Thành tiền</th>
+                <th width="20%" class="text-center bg-green-jungle bg-font-yellow-mint text-nowrap uppercase"></th>
+                <th class="text-center bg-green-jungle bg-font-yellow-mint text-nowrap">Hàng hóa</th>
+                <th width="10%" class="text-center bg-green-jungle bg-font-yellow-mint text-nowrap">Số lượng</th>
+                <th width="10%" class="text-center bg-green-jungle bg-font-yellow-mint text-nowrap">Thành tiền (chưa VAT)</th>
+                <th width="10%" class="text-center bg-green-jungle bg-font-yellow-mint text-nowrap">Tiền thuế (VAT)</th>
+                <th width="10%" class="text-center bg-green-jungle bg-font-yellow-mint text-nowrap">Tổng cộng (đã VAT)</th>
             </tr>
         </thead>
         <tbody>
@@ -40,13 +42,17 @@
                 <tr>
                     <td class="text-left"><%= row[:name] %></td>
                     <td class="text-center font-yellow-gold"><%= format_number(row[:quantity]) %></td>
-                    <td class="text-right font-yellow-gold"><%= format_number(row[:amount]) %></td>
+                    <td class="text-right font-yellow-gold"><%= format_number(row[:total_without_tax]) %></td>
+                    <td class="text-right font-yellow-gold"><%= format_number(row[:tax_amount]) %></td>
+                    <td class="text-right font-yellow-gold bold"><%= format_number(row[:total_amount]) %></td>
                 </tr>
             <% end %>
             <tr>
                 <td class="text-left bold uppercase">Tổng bán</td>
                 <td class="text-center bold"><%= format_number(@data[:sales][:total][:quantity]) %></td>
-                <td class="text-right bold"><%= format_number(@data[:sales][:total][:amount]) %></td>
+                <td class="text-right bold"><%= format_number(@data[:sales][:total][:total_without_tax]) %></td>
+                <td class="text-right bold"><%= format_number(@data[:sales][:total][:tax_amount]) %></td>
+                <td class="text-right bold"><%= format_number(@data[:sales][:total][:total_amount]) %></td>
             </tr>
             
             <tr>
@@ -56,13 +62,17 @@
                 <tr>
                     <td class="text-left"><%= row[:name] %></td>
                     <td class="text-center font-yellow-gold"><%= format_number(row[:quantity]) %></td>
-                    <td class="text-right font-yellow-gold"><%= format_number(row[:amount]) %></td>
+                    <td class="text-right font-yellow-gold"><%= format_number(row[:total_without_tax]) %></td>
+                    <td class="text-right font-yellow-gold"><%= format_number(row[:tax_amount]) %></td>
+                    <td class="text-right font-yellow-gold bold"><%= format_number(row[:total_amount]) %></td>
                 </tr>
             <% end %>
             <tr>
                 <td class="text-left bold uppercase">Tổng trả</td>
                 <td class="text-center bold"><%= format_number(@data[:returns][:total][:quantity]) %></td>
-                <td class="text-right bold"><%= format_number(@data[:returns][:total][:amount]) %></td>
+                <td class="text-right bold"><%= format_number(@data[:returns][:total][:total_without_tax]) %></td>
+                <td class="text-right bold"><%= format_number(@data[:returns][:total][:tax_amount]) %></td>
+                <td class="text-right bold"><%= format_number(@data[:returns][:total][:total_amount]) %></td>
             </tr>
             
             <tr>
@@ -73,7 +83,13 @@
                     <%= format_number(@data[:sales][:total][:quantity] - @data[:returns][:total][:quantity]) %>
                 </h4></td>
                 <td class="bg-green-jungle bg-font-green-jungle text-right"><h4 class="bold">
-                    <%= format_number(@data[:sales][:total][:amount] - @data[:returns][:total][:amount]) %>
+                    <%= format_number(@data[:sales][:total][:total_without_tax] - @data[:returns][:total][:total_without_tax]) %>
+                </h4></td>
+                <td class="bg-green-jungle bg-font-green-jungle text-right"><h4 class="bold">
+                    <%= format_number(@data[:sales][:total][:tax_amount] - @data[:returns][:total][:tax_amount]) %>
+                </h4></td>
+                <td class="bg-green-jungle bg-font-green-jungle text-right"><h4 class="bold">
+                    <%= format_number(@data[:sales][:total][:total_amount] - @data[:returns][:total][:total_amount]) %>
                 </h4></td>
             </tr>
         </tbody>
