@@ -20,12 +20,12 @@ wb.styles do |s|
     else
       date = "#{@period_name}"
     end
-    
+
     # Top head
-    sheet.add_row ["Chi nhánh tại Hà Nội - Công ty TNHH Ortho-K Việt Nam"], b: true
-    sheet.add_row ["Số 35 ngõ 41 Thái Hà, Phường Trung Liệt, Quận Đống Đa, Hà Nội"], b: true
+    sheet.add_row ["CÔNG TY TNHH CÔNG NGHỆ KIỂM SOÁT CẬN THỊ"], b: true
+    sheet.add_row ["Số 27 ngách 1 ngõ 178 Thái Hà, P. Trung Liệt, Q. Đống Đa, Hà Nội"], b: true
     row_num = 2
-    
+
     # add empty row
     sheet.add_row [nil]
     row_num += 1
@@ -41,7 +41,7 @@ wb.styles do |s|
     row_num += 1
 
     patient_states = Erp::OrthoK::PatientState.get_active
-    
+
     # header
     header = {columns: [], styles: []}
     subheader = {columns: [], styles: []}
@@ -50,41 +50,41 @@ wb.styles do |s|
     col_num = (-1)
     header_row_num = row_num + 1
     subheader_row_num = row_num + 2
-    
+
     header[:columns] << 'STT'
     header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
     subheader[:columns] << nil
     subheader[:styles] << (s.add_style bg_info.deep_merge(text_right).deep_merge(middle_align).deep_merge(border).merge(bold))
-    
+
     footer[:columns] << 'TỔNG CỘNG'
     footer[:styles] << (s.add_style bg_footer.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
     column_widths << 5
     col_num += 1
     sheet.merge_cells("#{('A'.codepoints.first + col_num).chr}#{header_row_num}:#{('A'.codepoints.first + col_num).chr}#{subheader_row_num}")
-    
+
     header[:columns] << 'Khách hàng'
     header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
     subheader[:columns] << 'Mã số KH'
     subheader[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
-    
+
     footer[:columns] << nil
     footer[:styles] << (s.add_style bg_footer.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
     column_widths << 15
     col_num += 1
     customer_col_num_first = col_num
-    
+
     header[:columns] << nil
     header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
     subheader[:columns] << 'Tên KH'
     subheader[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
-    
+
     footer[:columns] << nil
     footer[:styles] << (s.add_style bg_footer.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
     column_widths << 30
     col_num += 1
     customer_col_num_last = col_num
     sheet.merge_cells("#{('A'.codepoints.first + customer_col_num_first).chr}#{header_row_num}:#{('A'.codepoints.first + customer_col_num_last).chr}#{header_row_num}")
-    
+
     ps_first = 0
     ps_last = 0
     patient_states.each_with_index do |ps,index|
@@ -94,14 +94,14 @@ wb.styles do |s|
         from: @from,
         to: @to
       ).map(&:patient_id).uniq
-          
+
       patients = Erp::Contacts::Contact.where(id: patient_ids)
-      
+
       header[:columns] << (index==0 ? 'Số lượng BN' : nil)
       header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
       subheader[:columns] << ps.name
       subheader[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
-      
+
       footer[:columns] << patients.count
       footer[:styles] << (s.add_style bg_footer.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).deep_merge(bold))
       column_widths << 16
@@ -110,37 +110,37 @@ wb.styles do |s|
       ps_last = col_num if (index+1) == patient_states.count
     end
     sheet.merge_cells("#{('A'.codepoints.first + ps_first).chr}#{header_row_num}:#{('A'.codepoints.first + ps_last).chr}#{header_row_num}")
-    
+
     header[:columns] << 'Danh sách BN mới'
     header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
     subheader[:columns] << nil
     subheader[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
-    
+
     footer[:columns] << nil
     footer[:styles] << (s.add_style bg_footer.deep_merge(border).deep_merge(middle_align))
     column_widths << 100
     col_num += 1
     sheet.merge_cells("#{('A'.codepoints.first + col_num).chr}#{header_row_num}:#{('A'.codepoints.first + col_num).chr}#{subheader_row_num}")
-    
+
     sheet.add_row header[:columns], style: header[:styles], height: 25
     row_num += 1
     sheet.add_row subheader[:columns], style: subheader[:styles], height: 25
     row_num += 1
-    
+
     # rows
     @customers.each_with_index do |customer,index|
       row = {columns: [], styles: []}
       row = {columns: [], styles: []}
-      
+
       row[:columns] << index+1
       row[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(middle_align).deep_merge(bold).deep_merge(bg_row))
-      
+
       row[:columns] << customer.code
       row[:styles] << (s.add_style text_left.deep_merge(border).deep_merge(middle_align).deep_merge(bold).deep_merge(bg_row))
-      
+
       row[:columns] << customer.contact_name
       row[:styles] << (s.add_style text_left.deep_merge(border).deep_merge(middle_align).deep_merge(bold).deep_merge(bg_row))
-      
+
       patient_states.each_with_index do |ps,index|
         patient_ids = Erp::Contacts::Contact.get_patients_by_state(
           patient_state_id: ps.id,
@@ -148,32 +148,32 @@ wb.styles do |s|
           from: @from,
           to: @to
         ).map(&:patient_id).uniq
-        
+
         patients = Erp::Contacts::Contact.where(id: patient_ids)
-        
+
         row[:columns] << patients.count
         row[:styles] << (s.add_style text_center.deep_merge(number).deep_merge(border).deep_merge(middle_align).deep_merge(bg_row))
       end
-      
+
       patient_ids = Erp::Contacts::Contact.get_patients_by_state(
         patient_state_id: Erp::OrthoK::PatientState.get_new_patient.id,
         customer_id: customer.id,
         from: @from,
         to: @to
       ).map(&:patient_id).uniq
-      
+
       new_patients = Erp::Contacts::Contact.where(id: patient_ids)
-      
+
       row[:columns] << (new_patients.map(&:name).map {|i| i.strip}).join(', ')
       row[:styles] << (s.add_style text_left.deep_merge(border).deep_merge(wrap).deep_merge(bg_row))
-      
+
       sheet.add_row row[:columns], style: row[:styles]
       row_num += 1
     end
-    
+
     sheet.add_row footer[:columns], style: footer[:styles], height: 25
     row_num += 1
-    
+
     # Setup
     sheet.column_widths *column_widths
     sheet.merge_cells("#{('A'.codepoints.first).chr}#{row_num}:#{('A'.codepoints.first + 2).chr}#{row_num}")

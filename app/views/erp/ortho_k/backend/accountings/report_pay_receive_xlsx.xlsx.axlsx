@@ -19,50 +19,50 @@ wb.styles do |s|
     border = {border: { style: :thin, color: "525252", :edges => [:left, :right, :bottom] }}
     bold = {b: true}
     italic = {i: true}
-    
+
     # Top head
-    sheet.add_row ["Chi nhánh tại Hà Nội - Công ty TNHH Ortho-K Việt Nam"], b: true
-    sheet.add_row ["Số 35 ngõ 41 Thái Hà, Phường Trung Liệt, Quận Đống Đa, Hà Nội"], b: true
-    
+    sheet.add_row ["CÔNG TY TNHH CÔNG NGHỆ KIỂM SOÁT CẬN THỊ"], b: true
+    sheet.add_row ["Số 27 ngách 1 ngõ 178 Thái Hà, P. Trung Liệt, Q. Đống Đa, Hà Nội"], b: true
+
     # add empty row
     sheet.add_row [nil]
-    
+
     if @period_name.nil?
       date = "#{'TỪ ' + @from.to_date.strftime('%d/%m/%Y') if !@from.nil?}#{' ĐẾN ' + @to.to_date.strftime('%d/%m/%Y') if !@to.nil?}"
     else
       date = @period_name
     end
-    
+
     sheet.add_row [('BÁO CÁO ' + thu + chi + 'TIỀN HÀNG').upcase], sz: 16, b: true, style: (s.add_style text_center)
     sheet.add_row ["(#{date})"], sz: 12, style: (s.add_style text_center)
-    
+
     # add empty row
     sheet.add_row [nil]
-    
+
     num_row = 6
-    
+
     # header
     header = {columns: [], styles: []}
     footer = {columns: [], styles: []}
     column_widths = []
-    
+
     if get_columns(params).include?("ordinal_number") or get_columns(params).empty?
       header[:columns] << t('.ordinal_number')
       header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
-  
+
       footer[:columns] << "Tổng cộng"
       footer[:styles] << (s.add_style bg_footer.deep_merge(border).deep_merge(text_middle).deep_merge(bold))
-      
+
       num_col = 0
       column_widths << 5
     end
     if get_columns(params).include?("contact_name") or get_columns(params).empty?
       header[:columns] << t('.contact_name')
       header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(bold))
-  
+
       footer[:columns] << nil
       footer[:styles] << (s.add_style bg_footer.deep_merge(border))
-      
+
       num_col += 1
       column_widths << 30
     end
@@ -72,17 +72,17 @@ wb.styles do |s|
 
       footer[:columns] << nil
       footer[:styles] << (s.add_style bg_footer.deep_merge(border))
-      
+
       num_col += 1
       column_widths << 15
-    end    
+    end
     if get_columns(params).include?("pay_receive") or get_columns(params).empty?
       header[:columns] << t('.pay_receive')
       header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(bold))
 
       footer[:columns] << nil
       footer[:styles] << (s.add_style bg_footer.deep_merge(border))
-      
+
       num_col += 1
       column_widths << 18
     end
@@ -92,7 +92,7 @@ wb.styles do |s|
 
       footer[:columns] << nil
       footer[:styles] << (s.add_style bg_footer.deep_merge(border))
-      
+
       num_col += 1
       column_widths << 40
     end
@@ -102,7 +102,7 @@ wb.styles do |s|
 
       footer[:columns] << @payment_records.remain_amount(from_date: @from, to_date: @to)
       footer[:styles] << (s.add_style bg_footer.deep_merge(vertical_center).deep_merge(border).deep_merge(number).deep_merge(bold))
-      
+
       num_col += 1
       column_widths << 15
       total_merge_col = num_col - 1
@@ -113,28 +113,28 @@ wb.styles do |s|
 
       footer[:columns] << nil
       footer[:styles] << (s.add_style bg_footer.deep_merge(border))
-      
+
       num_col += 1
       column_widths << 20
     end
     if get_columns(params).include?("salesperson") or get_columns(params).empty?
       header[:columns] << t('.salesperson')
       header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(bold))
-  
+
       footer[:columns] << nil
       footer[:styles] << (s.add_style bg_footer.deep_merge(border))
-      
+
       num_col += 1
       column_widths << 22
     end
 
     sheet.add_row header[:columns], style: header[:styles], height: 25
     num_row += 1
-    
+
     # rows
     @payment_records.each_with_index do |payment_record, index|
       row = {columns: [], styles: []}
-      if get_columns(params).include?("ordinal_number") or get_columns(params).empty?  
+      if get_columns(params).include?("ordinal_number") or get_columns(params).empty?
         row[:columns] << index+1
         row[:styles] << (s.add_style text_middle.deep_merge(border).deep_merge(bg_row))
       end
@@ -175,11 +175,11 @@ wb.styles do |s|
     sheet.add_row footer[:columns], style: footer[:styles], height: 25
     num_row += 1
     sheet.merge_cells("#{('A'.codepoints.first).chr}#{num_row}:#{('A'.codepoints.first + total_merge_col).chr}#{num_row}")
-    
+
     # setup
     sheet.merge_cells("#{('A'.codepoints.first).chr}4:#{('A'.codepoints.first + num_col).chr}4")
     sheet.merge_cells("#{('A'.codepoints.first).chr}5:#{('A'.codepoints.first + num_col).chr}5")
-    
+
     sheet.column_widths *column_widths
   end
 end

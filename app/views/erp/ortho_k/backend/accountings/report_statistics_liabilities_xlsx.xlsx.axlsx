@@ -15,24 +15,24 @@ wb.styles do |s|
     number = {format_code: '#,##0'}
     border = {border: { style: :thin, color: "525252", :edges => [:left, :right, :bottom] }}
     bold = {b: true}
-    
+
     # Top head
-    sheet.add_row ["Chi nhánh tại Hà Nội - Công ty TNHH Ortho-K Việt Nam"], b: true
-    sheet.add_row ["Số 35 ngõ 41 Thái Hà, Phường Trung Liệt, Quận Đống Đa, Hà Nội"], b: true
-    
+    sheet.add_row ["CÔNG TY TNHH CÔNG NGHỆ KIỂM SOÁT CẬN THỊ"], b: true
+    sheet.add_row ["Số 27 ngách 1 ngõ 178 Thái Hà, P. Trung Liệt, Q. Đống Đa, Hà Nội"], b: true
+
     # add empty row
     sheet.add_row [nil]
-    
+
     # Title
     date = 'NĂM ' + @periods.first[:from].year.to_s + ' VÀ ' + @periods.last[:to].year.to_s
-    
+
     sheet.add_row [('THỐNG KÊ TỔNG CÔNG NỢ KHÁCH HÀNG').upcase], sz: 16, b: true, style: (s.add_style text_center)
     sheet.add_row ["(#{date})"], sz: 12, style: (s.add_style text_center)
-    
+
     # add empty row
     sheet.add_row [nil]
     row_num = 6
-    
+
     # header
     header = {columns: [], styles: []}
     footer = {columns: [], styles: []}
@@ -44,14 +44,14 @@ wb.styles do |s|
       col_num += 1
       column_widths << (index == 0 ? 30 : 20)
     end
-    
+
     sheet.add_row header[:columns], style: header[:styles], height: 25
     row_num += 1
-    
+
     # rows
     @report[:rows].each do |rw|
       row = {columns: [], styles: []}
-      
+
       rw.each_with_index do |data,index|
         if is_number?(data)
           row[:columns] << data
@@ -61,15 +61,15 @@ wb.styles do |s|
           row[:styles] << (s.add_style text_middle.deep_merge(border).deep_merge(bg_row))
         end
       end
-      
+
       sheet.add_row row[:columns], style: row[:styles], height: 22
       row_num += 1
     end
-    
+
     # Setup
     sheet.merge_cells("#{('A'.codepoints.first).chr}4:#{('A'.codepoints.first + col_num).chr}4")
     sheet.merge_cells("#{('A'.codepoints.first).chr}5:#{('A'.codepoints.first + col_num).chr}5")
-    
+
     sheet.column_widths *column_widths
   end
 end

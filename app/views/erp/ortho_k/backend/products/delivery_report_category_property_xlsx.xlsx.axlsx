@@ -30,8 +30,8 @@ wb.styles do |s|
     end
 
     # Top head
-    sheet.add_row ["Chi nhánh tại Hà Nội - Công ty TNHH Ortho-K Việt Nam"], b: true
-    sheet.add_row ["Số 35 ngõ 41 Thái Hà, Phường Trung Liệt, Quận Đống Đa, Hà Nội"], b: true
+    sheet.add_row ["CÔNG TY TNHH CÔNG NGHỆ KIỂM SOÁT CẬN THỊ"], b: true
+    sheet.add_row ["Số 27 ngách 1 ngõ 178 Thái Hà, P. Trung Liệt, Q. Đống Đa, Hà Nội"], b: true
     row_num = 2
 
     # add empty row
@@ -44,32 +44,32 @@ wb.styles do |s|
 
     sheet.add_row [date], sz: 14, bg_color: "ffc801", style: (s.add_style text_center)
     row_num += 1
-    
+
     # add empty row
     sheet.add_row ['']
     row_num += 1
-    
+
     product_ids = @products_query.select('id')
     product_ids = -1 if product_ids.count == 0
-    
+
     footer = {columns: [], styles: []}
     footer[:columns] = []
-    
+
     footer[:columns] << 'Tổng cộng'
     footer[:styles] << (s.add_style text_middle.deep_merge(border).deep_merge(bold).deep_merge(bg_footer))
     ft_num_first = 0
-    
+
     footer[:columns] << nil
     footer[:styles] << (s.add_style text_middle.deep_merge(border).deep_merge(bold).deep_merge(bg_footer))
     ft_num_last = 1
-    
+
     begin_params = @global_filters.clone
     begin_params[:to_date] = (@global_filters[:from_date].to_date - 1.day).to_s
     begin_params[:from_date] = nil
     begin_params[:product_id] = product_ids
     footer[:columns] << Erp::Products::Product.get_stock_real(begin_params) # Tong dau ky
     footer[:styles] << (s.add_style text_middle.deep_merge(border).deep_merge(bold).deep_merge(number).deep_merge(bg_footer))
-    
+
     total_import = 0
     count = Erp::Products::Product.get_qdelivery_import(@global_filters.merge({
       product_id: product_ids,
@@ -78,7 +78,7 @@ wb.styles do |s|
     total_import += count
     footer[:columns] << count # Nhap NCC
     footer[:styles] << (s.add_style text_middle.deep_merge(border).deep_merge(bold).deep_merge(number).deep_merge(bg_footer))
-    
+
     count = Erp::Products::Product.get_qdelivery_import(@global_filters.merge({
       product_id: product_ids,
       delivery_type: Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT
@@ -86,21 +86,21 @@ wb.styles do |s|
     total_import += count
     footer[:columns] << count # Hoan kho
     footer[:styles] << (s.add_style text_middle.deep_merge(border).deep_merge(bold).deep_merge(number).deep_merge(bg_footer))
-    
+
     count = Erp::Products::Product.get_transfer_import(@global_filters.merge({
       product_id: product_ids,
     }))
     total_import += count
     footer[:columns] << count # Chuyen kho
     footer[:styles] << (s.add_style text_middle.deep_merge(border).deep_merge(bold).deep_merge(number).deep_merge(bg_footer))
-    
+
     count = Erp::Products::Product.get_cs_return_import(@global_filters.merge({
       product_id: product_ids,
     }))
     total_import += count
     footer[:columns] << count # Nhap tra ky gui
     footer[:styles] << (s.add_style text_middle.deep_merge(border).deep_merge(bold).deep_merge(number).deep_merge(bg_footer))
-    
+
     count = Erp::Products::Product.get_stock_check_import(@global_filters.merge({
       product_id: product_ids,
     }))
@@ -110,7 +110,7 @@ wb.styles do |s|
     total_import += count
     footer[:columns] << count # Nhap kiem kho
     footer[:styles] << (s.add_style text_middle.deep_merge(border).deep_merge(bold).deep_merge(number).deep_merge(bg_footer))
-    
+
     count = Erp::Products::Product.get_qdelivery_import(@global_filters.merge({
       product_id: product_ids,
       delivery_type: Erp::Qdeliveries::Delivery::TYPE_CUSTOM_IMPORT
@@ -118,10 +118,10 @@ wb.styles do |s|
     total_import += count
     footer[:columns] << count # Nhap khac
     footer[:styles] << (s.add_style text_middle.deep_merge(border).deep_merge(bold).deep_merge(number).deep_merge(bg_footer))
-    
+
     footer[:columns] << total_import # Tong nhap
     footer[:styles] << (s.add_style text_middle.deep_merge(border).deep_merge(bold).deep_merge(number).deep_merge(bg_footer).deep_merge(text_gold))
-    
+
     total_export = 0
     count = Erp::Products::Product.get_qdelivery_export(@global_filters.merge({
       product_id: product_ids,
@@ -130,7 +130,7 @@ wb.styles do |s|
     total_export += count
     footer[:columns] << count # Xuat ban
     footer[:styles] << (s.add_style text_middle.deep_merge(border).deep_merge(bold).deep_merge(number).deep_merge(bg_footer))
-    
+
     count = Erp::Products::Product.get_qdelivery_export(@global_filters.merge({
       product_id: product_ids,
       delivery_type: Erp::Qdeliveries::Delivery::TYPE_PURCHASE_EXPORT
@@ -138,35 +138,35 @@ wb.styles do |s|
     total_export += count
     footer[:columns] << count # Xuat tra NCC
     footer[:styles] << (s.add_style text_middle.deep_merge(border).deep_merge(bold).deep_merge(number).deep_merge(bg_footer))
-    
+
     count = Erp::Products::Product.get_consignment_export(@global_filters.merge({
       product_id: product_ids,
     }))
     total_export += count
     footer[:columns] << count # Xuat ky gui
     footer[:styles] << (s.add_style text_middle.deep_merge(border).deep_merge(bold).deep_merge(number).deep_merge(bg_footer))
-    
+
     count = Erp::Products::Product.get_transfer_export(@global_filters.merge({
       product_id: product_ids,
     }))
     total_export += count
     footer[:columns] << count # Xuat chuyen kho
     footer[:styles] << (s.add_style text_middle.deep_merge(border).deep_merge(bold).deep_merge(number).deep_merge(bg_footer))
-    
+
     count = Erp::Products::Product.get_gift_given_export(@global_filters.merge({
       product_id: product_ids,
     }))
     total_export += count
     footer[:columns] << count # Xuat tang qua
     footer[:styles] << (s.add_style text_middle.deep_merge(border).deep_merge(bold).deep_merge(number).deep_merge(bg_footer))
-    
+
     count = Erp::Products::Product.get_damage_record_export(@global_filters.merge({
       product_id: product_ids,
     }))
     total_export += count
     footer[:columns] << count # Xuat huy kho
     footer[:styles] << (s.add_style text_middle.deep_merge(border).deep_merge(bold).deep_merge(number).deep_merge(bg_footer))
-    
+
     count = Erp::Products::Product.get_stock_check_export(@global_filters.merge({
       product_id: product_ids,
     }))
@@ -176,7 +176,7 @@ wb.styles do |s|
     total_export += count
     footer[:columns] << count # Xuat kiem kho
     footer[:styles] << (s.add_style text_middle.deep_merge(border).deep_merge(bold).deep_merge(number).deep_merge(bg_footer))
-    
+
     count = Erp::Products::Product.get_qdelivery_export(@global_filters.merge({
       product_id: product_ids,
       delivery_type: Erp::Qdeliveries::Delivery::TYPE_CUSTOM_EXPORT
@@ -184,16 +184,16 @@ wb.styles do |s|
     total_export += count
     footer[:columns] << count # Xuat khac
     footer[:styles] << (s.add_style text_middle.deep_merge(border).deep_merge(bold).deep_merge(number).deep_merge(bg_footer))
-    
+
     footer[:columns] << total_export # Tong xuat
     footer[:styles] << (s.add_style text_middle.deep_merge(border).deep_merge(bold).deep_merge(number).deep_merge(bg_footer).deep_merge(text_blue))
-    
+
     end_params = @global_filters.clone
     end_params[:from_date] = nil
     end_params[:product_id] = product_ids
     footer[:columns] << Erp::Products::Product.get_stock_real(end_params) # Tong cuoi ky
     footer[:styles] << (s.add_style text_middle.deep_merge(border).deep_merge(bold).deep_merge(number).deep_merge(bg_footer))
-    
+
     sheet.add_row footer[:columns], style: footer[:styles]
     row_num += 1
     footer_row_num = row_num
@@ -202,12 +202,12 @@ wb.styles do |s|
     # header
     header = {columns: [], styles: []}
     subheader = {columns: [], styles: []}
-    
+
     header_row_num = row_num + 1
     subheader_row_num = header_row_num + 1
     column_widths = []
     col_num = (-1)
-    
+
     header[:columns] << 'Loại'
     header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border).merge(bold))
     subheader[:columns] << ''
@@ -215,7 +215,7 @@ wb.styles do |s|
     col_num += 1
     column_widths << 10
     sheet.merge_cells("#{('A'.codepoints.first + col_num).chr}#{header_row_num}:#{('A'.codepoints.first + col_num).chr}#{subheader_row_num}")
-    
+
     if @group_by_property.present?
       property_mame = Erp::Products::Property.find(@group_by_property).name
     else
@@ -228,7 +228,7 @@ wb.styles do |s|
     col_num += 1
     column_widths << 10
     sheet.merge_cells("#{('A'.codepoints.first + col_num).chr}#{header_row_num}:#{('A'.codepoints.first + col_num).chr}#{subheader_row_num}")
-    
+
     header[:columns] << "Đầu kỳ"
     header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border).merge(bold))
     subheader[:columns] << ''
@@ -236,7 +236,7 @@ wb.styles do |s|
     col_num += 1
     column_widths << 10
     sheet.merge_cells("#{('A'.codepoints.first + col_num).chr}#{header_row_num}:#{('A'.codepoints.first + col_num).chr}#{subheader_row_num}")
-    
+
     header[:columns] << "Nhập kho"
     header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border).merge(bold))
     subheader[:columns] << 'Nhập NCC'
@@ -244,42 +244,42 @@ wb.styles do |s|
     col_num += 1
     column_widths << 10
     first_col_nhap_kho = col_num
-    
+
     header[:columns] << nil
     header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border).merge(bold))
     subheader[:columns] << 'Hoàn kho'
     subheader[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(border).merge(bold))
     col_num += 1
     column_widths << 10
-    
+
     header[:columns] << nil
     header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border).merge(bold))
     subheader[:columns] << 'Chuyển kho'
     subheader[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(border).merge(bold))
     col_num += 1
     column_widths << 10
-    
+
     header[:columns] << nil
     header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border).merge(bold))
     subheader[:columns] << 'Trả K.gửi'
     subheader[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(border).merge(bold))
     col_num += 1
     column_widths << 10
-    
+
     header[:columns] << nil
     header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border).merge(bold))
     subheader[:columns] << 'Kiểm kho'
     subheader[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(border).merge(bold))
     col_num += 1
     column_widths << 10
-    
+
     header[:columns] << nil
     header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border).merge(bold))
     subheader[:columns] << 'Khác'
     subheader[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(border).merge(bold))
     col_num += 1
     column_widths << 10
-    
+
     header[:columns] << nil
     header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border).merge(bold))
     subheader[:columns] << 'Tổng'
@@ -287,11 +287,11 @@ wb.styles do |s|
     col_num += 1
     column_widths << 10
     last_col_nhap_kho = col_num
-    
+
     sheet.merge_cells("#{('A'.codepoints.first+ first_col_nhap_kho).chr}#{header_row_num}:#{('A'.codepoints.first+ last_col_nhap_kho).chr}#{header_row_num}")
-    
+
     # ==========================
-    
+
     header[:columns] << 'Xuất kho'
     header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border).merge(bold))
     subheader[:columns] << 'Xuất bán'
@@ -299,56 +299,56 @@ wb.styles do |s|
     col_num += 1
     column_widths << 10
     first_col_xuat_kho = col_num
-    
+
     header[:columns] << nil
     header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border).merge(bold))
     subheader[:columns] << 'Trả NCC'
     subheader[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(border).merge(bold))
     col_num += 1
     column_widths << 10
-    
+
     header[:columns] << nil
     header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border).merge(bold))
     subheader[:columns] << 'Ký gửi'
     subheader[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(border).merge(bold))
     col_num += 1
     column_widths << 10
-    
+
     header[:columns] << nil
     header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border).merge(bold))
     subheader[:columns] << 'Chuyển kho'
     subheader[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(border).merge(bold))
     col_num += 1
     column_widths << 10
-    
+
     header[:columns] << nil
     header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border).merge(bold))
     subheader[:columns] << 'Tặng quà'
     subheader[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(border).merge(bold))
     col_num += 1
     column_widths << 10
-    
+
     header[:columns] << nil
     header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border).merge(bold))
     subheader[:columns] << 'Hủy kho'
     subheader[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(border).merge(bold))
     col_num += 1
     column_widths << 10
-    
+
     header[:columns] << nil
     header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border).merge(bold))
     subheader[:columns] << 'Kiểm kho'
     subheader[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(border).merge(bold))
     col_num += 1
     column_widths << 10
-    
+
     header[:columns] << nil
     header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border).merge(bold))
     subheader[:columns] << 'Khác'
     subheader[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(border).merge(bold))
     col_num += 1
     column_widths << 10
-    
+
     header[:columns] << nil
     header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border).merge(bold))
     subheader[:columns] << 'Tổng'
@@ -357,7 +357,7 @@ wb.styles do |s|
     column_widths << 10
     last_col_xuat_kho = col_num
     sheet.merge_cells("#{('A'.codepoints.first+ first_col_xuat_kho).chr}#{header_row_num}:#{('A'.codepoints.first+ last_col_xuat_kho).chr}#{header_row_num}")
-    
+
     header[:columns] << 'Cuối kỳ'
     header[:styles] << (s.add_style bg_info.deep_merge(text_middle).deep_merge(border).merge(bold))
     subheader[:columns] << nil
@@ -365,26 +365,26 @@ wb.styles do |s|
     col_num += 1
     column_widths << 10
     sheet.merge_cells("#{('A'.codepoints.first + col_num).chr}#{header_row_num}:#{('A'.codepoints.first + col_num).chr}#{subheader_row_num}")
-    
+
     sheet.add_row header[:columns], style: header[:styles]
     row_num += 1
     sheet.add_row subheader[:columns], style: subheader[:styles]
     row_num += 1
-    
+
     @categories.each do |category|
       #rowspan = @properties_values.count
       #rowspan += 1 if @group_by_category == 'all'
       cat_row_num = []
       @properties_values.each_with_index do |property_value,index|
-      
+
         row = {columns: [], styles: []}
-        
+
         product_ids = Erp::Products::Product.select('id')
           .where("erp_products_products.cache_properties LIKE '%[\"#{property_value.id}\",%'")
           .where(category_id: category.id)
-        
+
         product_ids = -1 if product_ids.count == 0
-        
+
         if index == 0
           category_name = category.name
         else
@@ -394,10 +394,10 @@ wb.styles do |s|
         row[:styles] << (s.add_style border.deep_merge(text_left))
         cat_row_num << (row_num + 1) if index == 0
         cat_row_num << (row_num + 1) if ((index+1) == @properties_values.count)
-        
+
         row[:columns] << property_value.value
         row[:styles] << (s.add_style border.deep_merge(text_left))
-        
+
         # ----- Dau ky
         begin_params = @global_filters.clone
         begin_params[:to_date] = (@global_filters[:from_date].to_date - 1.day).to_s
@@ -405,7 +405,7 @@ wb.styles do |s|
         begin_params[:product_id] = product_ids
         row[:columns] << Erp::Products::Product.get_stock_real(begin_params)
         row[:styles] << (s.add_style border.deep_merge(text_center).deep_merge(bg_yellow_fade).deep_merge(bold))
-        
+
         # ====Nhap====
         # ----- Nhap NCC
         total_import = 0
@@ -417,7 +417,7 @@ wb.styles do |s|
         total_import += count
         row[:columns] << count
         row[:styles] << (s.add_style border.deep_merge(text_center))
-        
+
         # ----- Hoan kho
         filters = @global_filters.clone
         count = Erp::Products::Product.get_qdelivery_import(filters.merge({
@@ -427,7 +427,7 @@ wb.styles do |s|
         total_import += count
         row[:columns] << count
         row[:styles] << (s.add_style border.deep_merge(text_center))
-        
+
         # ----- Chuyen kho
         count = Erp::Products::Product.get_transfer_import(@global_filters.merge({
           product_id: product_ids,
@@ -435,7 +435,7 @@ wb.styles do |s|
         total_import += count
         row[:columns] << count
         row[:styles] << (s.add_style border.deep_merge(text_center))
-        
+
         # ----- Tra ky gui
         count = Erp::Products::Product.get_cs_return_import(@global_filters.merge({
           product_id: product_ids,
@@ -443,7 +443,7 @@ wb.styles do |s|
         total_import += count
         row[:columns] << count
         row[:styles] << (s.add_style border.deep_merge(text_center))
-        
+
         # ----- Kiem kho (S.luong, Tr.thai)
         count = Erp::Products::Product.get_stock_check_import(@global_filters.merge({
           product_id: product_ids,
@@ -454,7 +454,7 @@ wb.styles do |s|
         total_import += count
         row[:columns] << count
         row[:styles] << (s.add_style border.deep_merge(text_center))
-        
+
         # ----- Nhap khac
         filters = @global_filters.clone
         count = Erp::Products::Product.get_qdelivery_import(filters.merge({
@@ -464,11 +464,11 @@ wb.styles do |s|
         total_import += count
         row[:columns] << count
         row[:styles] << (s.add_style border.deep_merge(text_center))
-        
+
         # ----- Tong nhap
         row[:columns] << total_import
         row[:styles] << (s.add_style border.deep_merge(text_center).deep_merge(bold).deep_merge(text_gold))
-        
+
         # ====Xuat====
         # ----- Xuat ban
         total_export = 0
@@ -479,7 +479,7 @@ wb.styles do |s|
         total_export += count
         row[:columns] << count
         row[:styles] << (s.add_style border.deep_merge(text_center))
-        
+
         # ----- Xuat tra NCC
         count = Erp::Products::Product.get_qdelivery_export(@global_filters.merge({
           product_id: product_ids,
@@ -488,7 +488,7 @@ wb.styles do |s|
         total_export += count
         row[:columns] << count
         row[:styles] << (s.add_style border.deep_merge(text_center))
-        
+
         # ----- Xuat ky gui
         count = Erp::Products::Product.get_consignment_export(@global_filters.merge({
           product_id: product_ids,
@@ -496,7 +496,7 @@ wb.styles do |s|
         total_export += count
         row[:columns] << count
         row[:styles] << (s.add_style border.deep_merge(text_center))
-        
+
         # ----- Xuat chuyen kho
         count = Erp::Products::Product.get_transfer_export(@global_filters.merge({
           product_id: product_ids,
@@ -504,7 +504,7 @@ wb.styles do |s|
         total_export += count
         row[:columns] << count
         row[:styles] << (s.add_style border.deep_merge(text_center))
-        
+
         # ----- Xuat tang qua
         count = Erp::Products::Product.get_gift_given_export(@global_filters.merge({
           product_id: product_ids,
@@ -512,7 +512,7 @@ wb.styles do |s|
         total_export += count
         row[:columns] << count
         row[:styles] << (s.add_style border.deep_merge(text_center))
-        
+
         # ----- Xuat huy kho
         count = Erp::Products::Product.get_damage_record_export(@global_filters.merge({
           product_id: product_ids,
@@ -520,7 +520,7 @@ wb.styles do |s|
         total_export += count
         row[:columns] << count
         row[:styles] << (s.add_style border.deep_merge(text_center))
-        
+
         # ----- Xuat kiem kho
         count = Erp::Products::Product.get_stock_check_export(@global_filters.merge({
           product_id: product_ids,
@@ -531,7 +531,7 @@ wb.styles do |s|
         total_export += count
         row[:columns] << count
         row[:styles] << (s.add_style border.deep_merge(text_center))
-        
+
         # ----- Xuat khac
         count = Erp::Products::Product.get_qdelivery_export(@global_filters.merge({
           product_id: product_ids,
@@ -540,18 +540,18 @@ wb.styles do |s|
         total_import += count
         row[:columns] << count
         row[:styles] << (s.add_style border.deep_merge(text_center))
-        
+
         # ----- Tong xuat
         row[:columns] << total_export
         row[:styles] << (s.add_style border.deep_merge(text_center).deep_merge(text_gold).deep_merge(text_blue))
-        
+
         # ----- Cuoi ky
         end_params = @global_filters.clone
         end_params[:from_date] = nil
         end_params[:product_id] = product_ids
         row[:columns] << Erp::Products::Product.get_stock_real(end_params)
         row[:styles] << (s.add_style border.deep_merge(text_center).deep_merge(bg_green_fade).deep_merge(bold))
-      
+
         sheet.add_row row[:columns], style: row[:styles]
         row_num += 1
       end
@@ -560,7 +560,7 @@ wb.styles do |s|
 
     # Setup
     sheet.column_widths *column_widths
-    
+
     sheet.merge_cells("#{('A'.codepoints.first).chr}4:#{('A'.codepoints.first + col_num).chr}4")
     sheet.merge_cells("#{('A'.codepoints.first).chr}5:#{('A'.codepoints.first + col_num).chr}5")
   end

@@ -15,103 +15,103 @@ wb.styles do |s|
     number = {format_code: '#,##0'}
     border = {border: { style: :thin, color: "525252", :edges => [:left, :right, :bottom] }}
     bold = {b: true}
-    
+
     # Top head
-    sheet.add_row ["Chi nhánh tại Hà Nội - Công ty TNHH Ortho-K Việt Nam"], b: true
-    sheet.add_row ["Số 35 ngõ 41 Thái Hà, Phường Trung Liệt, Quận Đống Đa, Hà Nội"], b: true
-    
+    sheet.add_row ["CÔNG TY TNHH CÔNG NGHỆ KIỂM SOÁT CẬN THỊ"], b: true
+    sheet.add_row ["Số 27 ngách 1 ngõ 178 Thái Hà, P. Trung Liệt, Q. Đống Đa, Hà Nội"], b: true
+
     # add empty row
     sheet.add_row [nil]
-    
+
     # Title
     if @period_name.nil?
       date = "#{'TỪ ' + @from.to_date.strftime('%d/%m/%Y') if !@from.nil?}#{' ĐẾN ' + @to.to_date.strftime('%d/%m/%Y') if !@to.nil?}"
     else
       date = @period_name
     end
-    
+
     sheet.add_row ['BÁO CÁO DÒNG TIỀN'], sz: 16, b: true, style: (s.add_style text_center)
     sheet.add_row ["(#{date})"], sz: 12, style: (s.add_style text_center)
-    
+
     # add empty row
     sheet.add_row [nil]
-    
+
     row_num = 6
-    
+
     # header
     header = {columns: [], styles: []}
     footer = {columns: [], styles: []}
     column_widths = []
-    
+
     header[:columns] << t('.account_name')
     header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
     footer[:columns] << "Tổng cộng"
     footer[:styles] << (s.add_style bg_footer.deep_merge(text_middle).merge(bold).deep_merge(border))
     column_widths << 40
     col_num = 0
-    
+
     header[:columns] << t('.begin_balance')
     header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
     footer[:columns] << @accounts.account_balance(to_date: (!@from.nil? ? (@from-1.day) : @from))
     footer[:styles] << (s.add_style bg_footer.deep_merge(vertical_center).deep_merge(number).deep_merge(bold).deep_merge(border))
     column_widths << 15
     col_num += 1
-    
+
     header[:columns] << t('.received')
     header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
     footer[:columns] << @accounts.received(from_date: @from, to_date: @to)
     footer[:styles] << (s.add_style bg_footer.deep_merge(vertical_center).deep_merge(number).deep_merge(bold).deep_merge(border))
     column_widths << 15
     col_num += 1
-    
+
     header[:columns] << t('.paid')
     header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
     footer[:columns] << @accounts.paid(from_date: @from, to_date: @to)
     footer[:styles] << (s.add_style bg_footer.deep_merge(vertical_center).deep_merge(number).deep_merge(bold).deep_merge(border))
     column_widths << 15
     col_num += 1
-    
+
     header[:columns] << t('.end_balance')
     header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
     footer[:columns] << @accounts.account_balance(to_date: @to)
     footer[:styles] << (s.add_style bg_footer.deep_merge(vertical_center).deep_merge(number).deep_merge(bold).deep_merge(border))
     column_widths << 15
     col_num += 1
-    
+
     sheet.add_row header[:columns], style: header[:styles], height: 25
     row_num += 1
-    
+
     # rows
     @accounts.each do |account|
       row = {columns: [], styles: []}
-    
+
       row[:columns] << account.name
       row[:styles] << (s.add_style text_left.deep_merge(vertical_center).deep_merge(border).deep_merge(bg_row))
-    
+
       row[:columns] << account.account_balance(to_date: (!@from.nil? ? (@from-1.day) : @from))
       row[:styles] << (s.add_style text_right.deep_merge(vertical_center).deep_merge(number).deep_merge(border).deep_merge(bg_row))
-    
+
       row[:columns] << account.received(from_date: @from, to_date: @to)
       row[:styles] << (s.add_style text_right.deep_merge(vertical_center).deep_merge(number).deep_merge(border).deep_merge(bg_row))
-    
+
       row[:columns] << account.paid(from_date: @from, to_date: @to)
       row[:styles] << (s.add_style text_right.deep_merge(vertical_center).deep_merge(number).deep_merge(border).deep_merge(bg_row))
-    
+
       row[:columns] << account.account_balance(to_date: @to)
       row[:styles] << (s.add_style text_right.deep_merge(vertical_center).deep_merge(number).deep_merge(border).deep_merge(bg_row))
-    
+
       sheet.add_row row[:columns], style: row[:styles], height: 20
       row_num += 1
     end
-    
+
     # footer
     sheet.add_row footer[:columns], style: footer[:styles], height: 25
     row_num += 1
-    
+
     # Setup
     sheet.merge_cells("#{('A'.codepoints.first).chr}4:#{('A'.codepoints.first + col_num).chr}4")
     sheet.merge_cells("#{('A'.codepoints.first).chr}5:#{('A'.codepoints.first + col_num).chr}5")
-    
+
     sheet.column_widths *column_widths
   end
 end

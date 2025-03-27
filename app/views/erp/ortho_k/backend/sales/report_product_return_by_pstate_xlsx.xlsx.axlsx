@@ -14,7 +14,7 @@ wb.styles do |s|
     number = {format_code: '#,##0'}
     border = {border: { style: :thin, color: "525252", :edges => [:top, :right, :bottom, :left] }}
     bold = {b: true}
-    
+
     if @from_date.present? || @to_date.present?
       if @period_name.nil?
         date = "(#{'TỪ ' + @from_date.strftime('%d/%m/%Y') if !@from_date.nil?}#{' ĐẾN ' + @to_date.strftime('%d/%m/%Y') if !@to_date.nil?})"
@@ -24,14 +24,14 @@ wb.styles do |s|
     end
 
     # Top head
-    sheet.add_row ["Chi nhánh tại Hà Nội - Công ty TNHH Ortho-K Việt Nam"], b: true
-    sheet.add_row ["Số 35 ngõ 41 Thái Hà, Phường Trung Liệt, Quận Đống Đa, Hà Nội"], b: true
+    sheet.add_row ["CÔNG TY TNHH CÔNG NGHỆ KIỂM SOÁT CẬN THỊ"], b: true
+    sheet.add_row ["Số 27 ngách 1 ngõ 178 Thái Hà, P. Trung Liệt, Q. Đống Đa, Hà Nội"], b: true
     row_num = 2
 
     # add empty row
     sheet.add_row ['']
     row_num += 1
-    
+
     # Title
     sheet.add_row ['DANH SÁCH KHÁCH HÀNG TRẢ HÀNG (MẪU 2)'], sz: 16, b: true, bg_color: "ffc801", style: (s.add_style text_center)
     row_num += 1
@@ -54,10 +54,10 @@ wb.styles do |s|
       toprow[:columns] << @totals[state[:name]]
       toprow[:styles] << (s.add_style text_center.deep_merge(middle_align).deep_merge(border).deep_merge(bg_toprow).deep_merge(bold))
     end
-    
+
     toprow[:columns] << @totals[:total]
     toprow[:styles] << (s.add_style text_center.deep_merge(middle_align).deep_merge(border).deep_merge(bg_toprow).deep_merge(bold))
-    
+
     @categories.each do |category|
       toprow[:columns] << @category_totals[category.name]
       toprow[:styles] << (s.add_style text_center.deep_merge(middle_align).deep_merge(border).deep_merge(bg_toprow).deep_merge(bold))
@@ -98,7 +98,7 @@ wb.styles do |s|
       col_num += 1
       column_widths << 15
     end
-    
+
     header[:columns] << ''
     header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
     subheader[:columns] << 'Tổng'
@@ -106,7 +106,7 @@ wb.styles do |s|
     col_num += 1
     column_widths << 15
     sheet.merge_cells("#{('A'.codepoints.first + (col_num-(@patient_states.count))).chr}#{header_row_num}:#{('A'.codepoints.first + col_num).chr}#{header_row_num}")
-    
+
     @categories.each do |category|
       header[:columns] << category.name
       header[:styles] << (s.add_style bg_info.deep_merge(text_center).deep_merge(middle_align).deep_merge(border).merge(bold))
@@ -125,26 +125,26 @@ wb.styles do |s|
     # rows
     @rows.each_with_index do |r,index|
       row = {columns: [], styles: []}
-  
+
       row[:columns] << (index+1)
       row[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(middle_align).deep_merge(bg_row))
-  
+
       row[:columns] << r[:customer].contact_name
       row[:styles] << (s.add_style text_left.deep_merge(border).deep_merge(bg_row))
-  
+
       @patient_states.each do |state|
         row[:columns] << r[state[:name]]
         row[:styles] << (s.add_style text_center.deep_merge(number).deep_merge(border).deep_merge(bg_row))
       end
-      
+
       row[:columns] << r[:total]
       row[:styles] << (s.add_style text_center.deep_merge(number).deep_merge(border).deep_merge(bg_row))
-      
+
       @categories.each do |category|
         row[:columns] << r[category.name]
         row[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_row))
       end
-      
+
       sheet.add_row row[:columns], style: row[:styles]
     end
 

@@ -16,109 +16,109 @@ wb.styles do |s|
     border = {border: { style: :thin, color: "525252", :edges => [:left, :right, :bottom] }}
     bold = {b: true}
     italic = {i: true}
-    
+
     # Top head
-    sheet.add_row ["Chi nhánh tại Hà Nội - Công ty TNHH Ortho-K Việt Nam"], b: true
-    sheet.add_row ["Số 35 ngõ 41 Thái Hà, Phường Trung Liệt, Quận Đống Đa, Hà Nội"], b: true
-    
+    sheet.add_row ["CÔNG TY TNHH CÔNG NGHỆ KIỂM SOÁT CẬN THỊ"], b: true
+    sheet.add_row ["Số 27 ngách 1 ngõ 178 Thái Hà, P. Trung Liệt, Q. Đống Đa, Hà Nội"], b: true
+
     # add empty row
     sheet.add_row [nil]
-    
+
     date = "#{'TỪ ' + @from.to_date.strftime('%d/%m/%Y') if !@from.nil?}#{' ĐẾN ' + @to.to_date.strftime('%d/%m/%Y') if !@to.nil?}"
-    
+
     sheet.add_row ['DANH SÁCH CÔNG NỢ NCC'], sz: 16, b: true, style: (s.add_style text_center)
     sheet.add_row ["(#{date})"], sz: 12, style: (s.add_style text_center)
-    
+
     # add empty row
     sheet.add_row [nil]
-    
+
     num_row = 6
-    
+
     # header
     header = {columns: [], styles: []}
     footer = {columns: [], styles: []}
-    
+
     header[:columns] << t('.ordinal_number')
     header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
     footer[:columns] << "Tổng cộng"
     footer[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(border).deep_merge(text_middle))
     num_col = 0
-    
+
     header[:columns] << t('.supplier_name')
     header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
     footer[:columns] << nil
     footer[:styles] << (s.add_style bg_footer.deep_merge(bold).deep_merge(border).deep_merge(text_left))
     num_col += 1
-    
+
     header[:columns] << t('.begin_period_debt_amount')
     header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
     footer[:columns] << @suppliers.purchase_debt_by_period_amount(to_date: (!@from.nil? ? (@from-1.day) : @from))
     footer[:styles] << (s.add_style bg_footer.deep_merge(number).deep_merge(bold).deep_merge(border).deep_merge(vertical_center))
     num_col += 1
-    
+
     header[:columns] << t('.total_debt_amount')
     header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
     footer[:columns] << @suppliers.purchase_total_amount(from_date: @from, to_date: @to)
     footer[:styles] << (s.add_style bg_footer.deep_merge(number).deep_merge(bold).deep_merge(border).deep_merge(vertical_center))
     num_col += 1
-    
+
     header[:columns] << t('.total_paid_amount')
     header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
     footer[:columns] << @suppliers.purchase_paid_by_period_amount(from_date: @from, to_date: @to)
     footer[:styles] << (s.add_style bg_footer.deep_merge(number).deep_merge(bold).deep_merge(border).deep_merge(vertical_center))
     num_col += 1
-    
+
     header[:columns] << t('.end_period_debt_amount')
     header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
     footer[:columns] << @suppliers.purchase_debt_by_period_amount(to_date: @to)
     footer[:styles] << (s.add_style bg_footer.deep_merge(number).deep_merge(bold).deep_merge(border).deep_merge(vertical_center))
     num_col += 1
-    
+
     #header[:columns] << t('.salesperson')
     #header[:styles] << (s.add_style bg_info.deep_merge(text_middle).merge(bold))
     #footer[:columns] << nil
     #footer[:styles] << (s.add_style bg_footer.deep_merge(border))
     #num_col += 1
-    
+
     sheet.add_row header[:columns], style: header[:styles], height: 25
     num_row += 1
-    
+
     # rows
     @suppliers.each_with_index do |supplier,index|
       row = {columns: [], styles: []}
       row[:columns] = []
-    
+
       row[:columns] << index+1
       row[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bg_row))
-    
+
       row[:columns] << supplier.name
       row[:styles] << (s.add_style text_left.deep_merge(border).deep_merge(bg_row))
-    
+
       row[:columns] << supplier.purchase_debt_by_period_amount(to_date: (!@from.nil? ? (@from-1.day) : @from))
       row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border).deep_merge(bg_row))
-    
+
       row[:columns] << supplier.purchase_total_amount(from_date: @from, to_date: @to)
       row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border).deep_merge(bg_row))
-    
+
       row[:columns] << supplier.purchase_paid_by_period_amount(from_date: @from, to_date: @to)
       row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border).deep_merge(bg_row))
-    
+
       row[:columns] << supplier.purchase_debt_by_period_amount(to_date: @to)
       row[:styles] << (s.add_style text_right.deep_merge(number).deep_merge(border).deep_merge(bg_row))
-    
+
       #row[:columns] << (!supplier.salesperson.nil? ? supplier.salesperson_name : nil)
       #row[:styles] << (s.add_style text_left.deep_merge(border).deep_merge(bg_row))
-    
+
       sheet.add_row row[:columns], style: row[:styles]
       num_row += 1
     end
-    
+
     # footer
     sheet.add_row footer[:columns], style: footer[:styles], height: 25
     num_row += 1
     sheet.merge_cells("A#{num_row}:B#{num_row}")
     sheet.column_widths 5, 35, 15, 15, 15, 15#, 22
-    
+
     # Setup
     sheet.merge_cells("#{('A'.codepoints.first).chr}4:#{('A'.codepoints.first + num_col).chr}4")
     sheet.merge_cells("#{('A'.codepoints.first).chr}5:#{('A'.codepoints.first + num_col).chr}5")

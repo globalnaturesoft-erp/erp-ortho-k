@@ -6,7 +6,7 @@ wb.styles do |s|
         @global_filter = m[:filter]
         @matrix = m[:matrix]
         @summary = m[:summary]
-        
+
         sheet_name = "(#{nnuumm+1}) "
         sheet_name += @global_filter[:categories].present? ? Erp::Products::Category.where(id: @global_filter[:categories]).map(&:name).join(', ') : 'Tất cả'
         sheet_name += ' | '
@@ -37,8 +37,8 @@ wb.styles do |s|
           italic = {i: true}
 
           # Top head
-          sheet.add_row ["Chi nhánh tại Hà Nội - Công ty TNHH Ortho-K Việt Nam"], b: true
-          sheet.add_row ["Số 35 ngõ 41 Thái Hà, Phường Trung Liệt, Quận Đống Đa, Hà Nội"], b: true
+          sheet.add_row ["CÔNG TY TNHH CÔNG NGHỆ KIỂM SOÁT CẬN THỊ"], b: true
+          sheet.add_row ["Số 27 ngách 1 ngõ 178 Thái Hà, P. Trung Liệt, Q. Đống Đa, Hà Nội"], b: true
 
           # add empty row
           sheet.add_row ['']

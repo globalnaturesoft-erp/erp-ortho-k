@@ -16,24 +16,24 @@ wb.styles do |s|
     border = {border: { style: :thin, color: "00", :edges => [:left, :right, :bottom, :top] }}
     bold = {b: true}
     italic = {i: true}
-    
+
     if @period.present?
       date = "(#{@period.name})"
     end
-    
+
     # Top head
-    sheet.add_row ["Chi nhánh tại Hà Nội - Công ty TNHH Ortho-K Việt Nam"], b: true
-    sheet.add_row ["Số 35 ngõ 41 Thái Hà, Phường Trung Liệt, Quận Đống Đa, Hà Nội"], b: true
-    
+    sheet.add_row ["CÔNG TY TNHH CÔNG NGHỆ KIỂM SOÁT CẬN THỊ"], b: true
+    sheet.add_row ["Số 27 ngách 1 ngõ 178 Thái Hà, P. Trung Liệt, Q. Đống Đa, Hà Nội"], b: true
+
     # add empty row
     sheet.add_row ['']
-    
+
     sheet.add_row ['HOA HỒNG CHO NHÂN VIÊN KINH DOANH (THU CÔNG NỢ)'], sz: 16, b: true, bg_color: "ffc801", style: (s.add_style text_center)
     sheet.add_row [date], sz: 14, bg_color: "ffc801", style: (s.add_style text_center)
-    
+
     # add empty row
     sheet.add_row ['']
-    
+
     # info
     info = {columns: [], styles: []}
     info[:columns] << ''
@@ -43,36 +43,36 @@ wb.styles do |s|
     info[:columns] << (!@employee.contact_name.nil? ? @employee.contact_name : @employee.name)
     info[:styles] << (s.add_style text_left.deep_merge(bold))
     sheet.add_row info[:columns], style: info[:styles]
-    
+
     sheet.add_row ['']
-    
+
     # header
     header = {columns: [], styles: []}
     subheader = {columns: [], styles: []}
     footer = {columns: [], styles: []}
     header[:columns] = []
-    
+
     header[:columns] << 'STT'
     header[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
     subheader[:columns] << ''
     subheader[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
     c = 0
     sheet.merge_cells("#{('A'.codepoints.first + c).chr}9:#{('A'.codepoints.first + c).chr}10")
-    
+
     header[:columns] << 'Tên khách hàng'
     header[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
     subheader[:columns] << ''
     subheader[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
     c += 1
     sheet.merge_cells("#{('A'.codepoints.first + c).chr}9:#{('A'.codepoints.first + c).chr}10")
-    
+
     header[:columns] << 'Ngày thu'
     header[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
     subheader[:columns] << ''
     subheader[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
     c += 1
     sheet.merge_cells("#{('A'.codepoints.first + c).chr}9:#{('A'.codepoints.first + c).chr}10")
-    
+
     header[:columns] << 'Số tiền thu'
     header[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
     subheader[:columns] << ''
@@ -80,7 +80,7 @@ wb.styles do |s|
     c += 1
     received_column = c
     sheet.merge_cells("#{('A'.codepoints.first + c).chr}9:#{('A'.codepoints.first + c).chr}10")
-    
+
     header[:columns] << 'Trừ chiết khấu'
     header[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
     subheader[:columns] << ''
@@ -88,21 +88,21 @@ wb.styles do |s|
     c += 1
     received_column = c
     sheet.merge_cells("#{('A'.codepoints.first + c).chr}9:#{('A'.codepoints.first + c).chr}10")
-    
+
     header[:columns] << 'Hoa hồng'
-    header[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))    
+    header[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
     subheader[:columns] << '% DS'
     subheader[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
     c += 1
     sheet.merge_cells("#{('A'.codepoints.first + c).chr}9:#{('A'.codepoints.first + (c+1)).chr}9")
-    
+
     header[:columns] << ''
     header[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
     subheader[:columns] << 'Thành tiền'
     subheader[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
     c += 1
     amount_column = c
-    
+
     header[:columns] << 'Thưởng Acc mới'
     header[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
     subheader[:columns] << ''
@@ -110,7 +110,7 @@ wb.styles do |s|
     c += 1
     new_acc_column = c
     sheet.merge_cells("#{('A'.codepoints.first + c).chr}9:#{('A'.codepoints.first + c).chr}10")
-    
+
     header[:columns] << 'Tổng chi'
     header[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
     subheader[:columns] << ''
@@ -118,95 +118,95 @@ wb.styles do |s|
     c += 1
     total_amount_column = c
     sheet.merge_cells("#{('A'.codepoints.first + c).chr}9:#{('A'.codepoints.first + c).chr}10")
-    
+
     header[:columns] << 'Ghi chú'
     header[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
     subheader[:columns] << ''
     subheader[:styles] << (s.add_style bg_info.deep_merge(wrap_text).merge(bold).deep_merge(border))
     c += 1
     sheet.merge_cells("#{('A'.codepoints.first + c).chr}9:#{('A'.codepoints.first + c).chr}10")
-    
+
     sheet.add_row header[:columns], style: header[:styles]
     sheet.add_row subheader[:columns], style: subheader[:styles]
-    
+
     r = 10
     current_row = 10
     # rows
     @payment_for_contact_sales_payment_records.each_with_index do |pr,index|
       row = {columns: [], styles: []}
       row[:columns] = []
-      
+
       current_row += 1
-      
+
       row[:columns] << (index + 1)
       row[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(bold))
-      
+
       row[:columns] << pr.customer_name
       row[:styles] << (s.add_style text_left.deep_merge(border).deep_merge(bold))
-      
+
       row[:columns] << pr.payment_date
       row[:styles] << (s.add_style text_center.deep_merge(border).deep_merge(date_format))
-      
+
       row[:columns] << pr.amount
       row[:styles] << (s.add_style text_right.deep_merge(border).deep_merge(number))
-      
+
       row[:columns] << pr.calculate_commission_amount(@options)
       row[:styles] << (s.add_style text_right.deep_merge(border).deep_merge(number))
-      
+
       row[:columns] << pr.customer_commission_percent.to_f
       row[:styles] << (s.add_style text_right.deep_merge(border))
-      
+
       row[:columns] << pr.for_contact_commission_amount(@options)
       row[:styles] << (s.add_style text_right.deep_merge(border).deep_merge(number))
-      
+
       row[:columns] << pr.new_account_commission_amount
       row[:styles] << (s.add_style text_right.deep_merge(border).deep_merge(number))
-      
+
       row[:columns] << "=SUM(#{('A'.codepoints.first + amount_column).chr}#{current_row}:#{('A'.codepoints.first + new_acc_column).chr}#{current_row})"
       row[:styles] << (s.add_style text_right.deep_merge(border).deep_merge(number))
-      
+
       row[:columns] << pr.description
       row[:styles] << (s.add_style border)
-      
+
       sheet.add_row row[:columns], style: row[:styles]
       r += 1
     end
-    
+
     # footer
     footer[:columns] << 'Tổng cộng'
     footer[:styles] << (s.add_style bold.deep_merge(wrap_text).deep_merge(border))
-    
+
     footer[:columns] << ''
     footer[:styles] << (s.add_style bold.deep_merge(border))
-    
+
     footer[:columns] << ''
     footer[:styles] << (s.add_style bold.deep_merge(border))
-    
+
     footer[:columns] << ''
     footer[:styles] << (s.add_style bold.deep_merge(border))
-    
+
     footer[:columns] << "=SUM(#{('A'.codepoints.first + received_column).chr}11:#{('A'.codepoints.first + received_column).chr}#{r})"
     footer[:styles] << (s.add_style number.deep_merge(bold).deep_merge(text_center).deep_merge(border))
-    
+
     footer[:columns] << ''
     footer[:styles] << (s.add_style bold.deep_merge(border))
-    
+
     footer[:columns] << "=SUM(#{('A'.codepoints.first + amount_column).chr}11:#{('A'.codepoints.first + amount_column).chr}#{r})"
     footer[:styles] << (s.add_style number.deep_merge(bold).deep_merge(text_right).deep_merge(border))
-    
+
     footer[:columns] << "=SUM(#{('A'.codepoints.first + new_acc_column).chr}11:#{('A'.codepoints.first + new_acc_column).chr}#{r})"
     footer[:styles] << (s.add_style number.deep_merge(bold).deep_merge(text_right).deep_merge(border))
-    
+
     footer[:columns] << "=SUM(#{('A'.codepoints.first + total_amount_column).chr}11:#{('A'.codepoints.first + total_amount_column).chr}#{r})"
     footer[:styles] << (s.add_style number.deep_merge(bold).deep_merge(text_right).deep_merge(border))
-    
+
     footer[:columns] << ''
     footer[:styles] << (s.add_style border)
-    
+
     sheet.add_row footer[:columns], style: footer[:styles]
     r += 1
     sheet.merge_cells("#{('A'.codepoints.first).chr}#{r}:#{('A'.codepoints.first + 2).chr}#{r}")
-    
+
     # Setup
     sheet.merge_cells("#{('A'.codepoints.first).chr}4:#{('A'.codepoints.first + (c - 1)).chr}4")
     sheet.merge_cells("#{('A'.codepoints.first).chr}5:#{('A'.codepoints.first + (c - 1)).chr}5")
