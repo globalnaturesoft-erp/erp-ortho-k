@@ -403,6 +403,180 @@ Erp::Contacts::Contact.class_eval do
     end
   end
 
+  # import init contact from file (Cty CN KSCT)
+  def self.import_init_contacts_hn_cnksct(file)
+    # config
+    timestamp = Time.now.to_i
+    xlsx = Roo::Spreadsheet.open(file)
+    user = Erp::User.first
+
+    # Read excel file. sheet tabs loop
+    xlsx.each_with_pagename do |name, sheet|
+      headers = sheet.row(6)
+
+      # data posistion
+      i_num = 0
+      i_code = 1
+      i_name = 2
+      i_type = 3 # Cá nhân or Tổ chức
+      i_type_2 = 4 # Nhà cung cấp or Khách hàng
+      i_group = 5
+      i_address = 6
+
+      i_phone = 9
+      i_email = 10
+      i_parent = 11
+
+      i_district = 7
+      i_city = 8
+      i_salesperson = 12
+      i_commission_percent = 13
+      i_init_debt_amount = 16
+      i_init_debt_date = '30/06/2025'.to_date.end_of_day - 2.hours
+
+      row_count = 1
+      sheet.each_row_streaming do |row|
+        # only rows with data
+        if row_count >= 2 and row[i_name].value.present?
+          contact = self.new
+          contact.name = row[i_name].value.strip
+          # contact.code = row[i_code].value.strip
+          contact.address = row[i_address].value.to_s.strip if row[i_address].present?
+          contact.phone = row[i_phone].value.to_s.strip if row[i_phone].present?
+          contact.email = row[i_email].value.to_s.strip if row[i_email].present?
+          contact.creator = user
+          contact.contact_type = self::TYPE_OTHER
+
+          group = Erp::Contacts::ContactGroup.where("LOWER(name) = ? ", row[i_group].value.downcase.strip).first
+          contact.contact_group = group
+
+          # create group if not exist
+          if group.nil?
+            group = Erp::Contacts::ContactGroup.create(id: 8, name: row[i_group].value.strip)
+          end
+
+          # create user if group is Nhân viên
+          # if group.name == 'Nhân viên'
+          #   user_email = contact.name.to_ascii.downcase.split(' ').last.strip + "."
+          #   contact.name.to_ascii.downcase.split(' ')[0..-2].each do |word|
+          #     user_email += word[0]
+          #   end
+          #   user_email += '@fargo.vn'
+
+          #   user = Erp::User.where(email: user_email).first
+
+          #   if user.nil?
+          #     user = Erp::User.create(
+          #       email: user_email,
+          #       password: "aA456321@",
+          #       name: contact.name,
+          #       backend_access: true,
+          #       confirmed_at: Time.now-1.day,
+          #       active: true
+          #     )
+          #   end
+
+          #   contact.user_id = user.id
+          # end
+
+          # KH or NCC
+          if row[i_type].value == 'Nhà cung cấp'
+            contact.is_supplier = true
+          else
+            contact.is_customer = true
+          end
+
+          # ca nhan or to chuc
+          if row[i_type_2].value == 'Cá nhân'
+            contact.contact_type = 'person'
+          else
+            contact.contact_type = 'company'
+          end
+
+          # parent
+          if row[i_parent].present?
+            pa = self.where(code: row[i_parent].value).first
+            contact.parent = pa
+          end
+
+          # puts contact.to_json
+          exist = Erp::Contacts::Contact.where(name: contact.name).first
+
+          # district
+          if row[i_district].present?
+            district_name = row[i_district].value
+
+            district = Erp::Areas::District.where("name LIKE ? or LOWER(name) LIKE ?", district_name.strip, district_name.downcase.strip).first
+
+            contact.district = district
+          end
+
+          # district
+          if row[i_city].present?
+            state_name = row[i_city].value
+
+            state = Erp::Areas::State.where("name LIKE ? or LOWER(name) LIKE ?", state_name.strip, state_name.downcase.strip).first
+
+            #puts "#{state.present?} - #{state_name}"
+
+            contact.state = state
+          end
+
+          # country
+          contact.country = Erp::Areas::Country.where(name: "Việt Nam").first
+
+          # salesperson
+          if row[i_salesperson].present?
+            sp_name = row[i_salesperson].value
+
+            salesperson = Erp::User.where(name: sp_name.strip).first
+
+            contact.salesperson = salesperson
+          end
+
+          # salesperson
+          contact.commission_percent = row[i_commission_percent].value
+
+          # init debt amount
+          if row[i_init_debt_amount].present? and row[i_init_debt_amount].value.present?
+            contact.init_debt_amount = row[i_init_debt_amount].value.to_f
+            contact.init_debt_date = i_init_debt_date
+          end
+
+          # contact.save
+          printf "%-10s %-10s %-10s %-40s %-10s %-10s %-10s %-10s %-15s %-25s %-20s %-10s\n",
+            row[i_num],
+            (exist.nil? ? "SUCCESS" : "EXIST"),
+            contact.code,
+            contact.name[0..30],
+            (contact.is_supplier ? "Supplier" : ((contact.is_customer ? "Customer" : '####'))),
+            contact.contact_type,
+            contact.contact_group_name,
+            (contact.user.present? ? contact.user.name : ''),
+            (contact.state.present? ? contact.state.name : ''),
+            (contact.district.present? ? contact.district.name : ''),
+            (contact.salesperson.present? ? contact.salesperson.name : ''),
+            contact.commission_percent,
+            contact.init_debt_amount,
+            contact.init_debt_date
+
+          exist = Erp::Contacts::Contact.where(name: contact.name).first
+
+          if exist.nil?
+            contact.save
+            puts "#{contact.valid?} ########### SAVED"
+            puts ""
+          else
+            puts "#{contact.valid?} ########### EXISTS"
+            puts ""
+          end
+        end
+
+        row_count += 1
+      end
+    end
+  end
+
   # get contacts list for payment chasing // Don hang ban le/PK
   def self.get_sales_orders_tracking_payment_chasing_contacts(options={})
     @from = options[:from_date]

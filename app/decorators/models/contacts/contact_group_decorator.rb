@@ -16,30 +16,42 @@ Erp::Contacts::ContactGroup.class_eval do
     self.create(
       id: GROUP_PATIENT,
       name: 'Bệnh nhân',
+      code: 'BN',
     )
     self.create(
       id: GROUP_DOCTOR,
       name: 'Bác sĩ',
+      code: 'BS',
     )
     self.create(
       id: GROUP_HOSPITAL,
       name: 'Bệnh viện',
+      code: 'BV',
     )
     self.create(
       id: GROUP_COMPANY,
       name: 'Công ty',
+      code: 'CT',
     )
     self.create(
       id: GROUP_CLINIC,
       name: 'Phòng khám',
+      code: 'PK',
     )
     self.create(
       id: GROUP_RETAIL_CUSTOMER,
       name: 'Khách lẻ',
+      code: 'KL',
     )
     self.create(
       id: GROUP_PHARMACY,
       name: 'Nhà thuốc',
+      code: 'NT',
+    )
+    self.create(
+      id: GROUP_STAFF,
+      name: 'Nhân viên',
+      code: 'NV',
     )
   end
 

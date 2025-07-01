@@ -44,11 +44,19 @@ vn.save
 
 # Default taxes
 puts "Create default taxes"
-taxes = [['VAT 0%', 'VAT 0%', 0], ['VAT 10%', 'VAT 10%', 10]]
+taxes = [['VAT 0%', 'VAT 0%', 0], ['VAT 5%', 'VAT 5%', 5], ['VAT 8%', 'VAT 8%', 8], ['VAT 10%', 'VAT 10%', 10]]
 Erp::Taxes::Tax.all.destroy_all
 taxes.each_with_index do |t,index|
     Erp::Taxes::Tax.create(
-        name: taxes[index][0],
+        name: 'Thuế bán hàng - ' + taxes[index][0],
+        short_name: taxes[index][1],
+        scope: Erp::Taxes::Tax::TAX_SCOPE_SALES,
+        computation: Erp::Taxes::Tax::TAX_COMPUTATION_PRICE,
+        amount: taxes[index][2],
+        creator_id: 1
+    )
+    Erp::Taxes::Tax.create(
+        name: 'Thuế mua hàng - ' + taxes[index][0],
         short_name: taxes[index][1],
         scope: Erp::Taxes::Tax::TAX_SCOPE_SALES,
         computation: Erp::Taxes::Tax::TAX_COMPUTATION_PRICE,
@@ -85,13 +93,13 @@ Erp::Periods::Period.create_year_periods(2017)
 Erp::OrthoK::PatientState.destroy_all
 Erp::OrthoK::PatientState.create(
   name: 'Mới',
-  description: 'Bệnh nhận mới'
+  description: 'Bệnh nhân mới'
 )
 Erp::OrthoK::PatientState.create(
   name: 'Đổi len',
-  description: 'Bệnh nhận đổi len'
+  description: 'Bệnh nhân đổi len'
 )
 Erp::OrthoK::PatientState.create(
   name: 'Trả len',
-  description: 'Bệnh nhận trả len'
+  description: 'Bệnh nhân trả len'
 )
