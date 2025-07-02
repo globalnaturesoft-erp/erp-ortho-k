@@ -526,7 +526,6 @@ Erp::Contacts::Contact.class_eval do
           contact.country = Erp::Areas::Country.where(name: "Việt Nam").first
 
           # salesperson
-          debugger if row[i_name].value == 'PK  Bác Sĩ Thủy- Cầu Giấy -606'
           if row[i_salesperson].present?
             sp_name = row[i_salesperson].value
 
