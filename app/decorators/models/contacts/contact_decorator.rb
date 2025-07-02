@@ -438,8 +438,8 @@ Erp::Contacts::Contact.class_eval do
       sheet.each_row_streaming do |row|
         # only rows with data
         if row_count >= 2 and row[i_name].value.present?
-          contact = self.new
-          contact.name = row[i_name].value.strip
+          contact = Erp::Contacts::Contact.find_or_initialize_by(name: row[i_name].value.strip)
+
           # contact.code = row[i_code].value.strip
           contact.address = row[i_address].value.to_s.strip if row[i_address].present?
           contact.phone = row[i_phone].value.to_s.strip if row[i_phone].present?
@@ -500,7 +500,7 @@ Erp::Contacts::Contact.class_eval do
           end
 
           # puts contact.to_json
-          exist = Erp::Contacts::Contact.where(name: contact.name).first
+          # exist = Erp::Contacts::Contact.where(name: contact.name).first
 
           # district
           if row[i_district].present?
@@ -526,6 +526,7 @@ Erp::Contacts::Contact.class_eval do
           contact.country = Erp::Areas::Country.where(name: "Việt Nam").first
 
           # salesperson
+          debugger if row[i_name].value == 'PK  Bác Sĩ Thủy- Cầu Giấy -606'
           if row[i_salesperson].present?
             sp_name = row[i_salesperson].value
 
@@ -546,7 +547,7 @@ Erp::Contacts::Contact.class_eval do
           # contact.save
           printf "%-10s %-10s %-10s %-40s %-10s %-10s %-10s %-10s %-15s %-25s %-20s %-10s\n",
             row[i_num],
-            (exist.nil? ? "SUCCESS" : "EXIST"),
+            (contact.new_record? ? "SUCCESS" : "EXIST"),
             contact.code,
             contact.name[0..30],
             (contact.is_supplier ? "Supplier" : ((contact.is_customer ? "Customer" : '####'))),
@@ -560,10 +561,7 @@ Erp::Contacts::Contact.class_eval do
             contact.init_debt_amount,
             contact.init_debt_date
 
-          exist = Erp::Contacts::Contact.where(name: contact.name).first
-
-          if exist.nil?
-            contact.save
+          if contact.save
             puts "#{contact.valid?} ########### SAVED"
             puts ""
           else
