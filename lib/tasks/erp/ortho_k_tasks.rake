@@ -49,13 +49,13 @@ namespace :products do
 
                   ten_san_pham = row[0]
                   # Tìm sản phẩm trong DB
-                  product = Erp::Products::Product.find_by(name: ten_san_pham, category: sheet_name)
+                  product = Erp::Products::Product.find_by(name: ten_san_pham)
                   # Cập nhật tồn kho: ưu tiên get_stock, nếu không có thì dùng stock, hoặc mặc định 0
                   ton_kho = product&.get_stock || 0
                   row[11] = ton_kho # Cập nhật cột Tồn kho (index 11)
 
                   ngoai_bang = product&.is_outside ? "Có" : "Không"
-                  don_vi = product&.unit || "Cái" # Mặc định là "Cái" nếu không có đơn vị
+                  don_vi = product&.unit_name || "Cái" # Mặc định là "Cái" nếu không có đơn vị
 
                   thuong_hieu = product&.brand_name || ""
 
