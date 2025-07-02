@@ -24,15 +24,15 @@ module Erp
           # get diameters
           diameter_ids = @global_filter[:diameters].present? ? @global_filter[:diameters] : nil
           @diameters = Erp::Products::PropertiesValue.where(id: diameter_ids)
-          
+
           # get numbers
           number_ids = @global_filter[:numbers].present? ? @global_filter[:numbers] : nil
           numbers = Erp::Products::PropertiesValue.where(id: number_ids).map(&:value)
-          
+
           # get letter
           letter_ids = @global_filter[:letters].present? ? @global_filter[:letters] : nil
           letters = Erp::Products::PropertiesValue.where(id: letter_ids).map(&:value)
-          
+
           # filter by diameters
           if diameter_ids.present?
             if !diameter_ids.kind_of?(Array)
@@ -91,17 +91,17 @@ module Erp
             if !numbers.present? or numbers.include?(row[:number])
               row_index = row_i + 2
               row_i += 1
-              
+
               @matrix[row_index] = []
-  
+
               @matrix[row_index][0] = {value: row[:degree_k]}
               @matrix[row_index][1] = {value: row[:number]}
-  
+
               Erp::Products::Product.matrix_cols.each do |col|
                 if !letters.present? or letters.include?(col[:letter])
                   chu_pv = Erp::Products::PropertiesValue.where(property_id: chu_p.id, value: col[:letter]).first
                   so_pv = Erp::Products::PropertiesValue.where(property_id: so_p.id, value: row[:number]).first
-    
+
                   product_ids = @product_query.find_by_properties_value_ids([chu_pv.id,so_pv.id]).select('id')
                   product_ids = -1 if product_ids.count == 0
                   filters = @global_filter.clone.merge({
@@ -114,7 +114,7 @@ module Erp
                   else
                     stock = Erp::Products::Product.get_stock_real(filters)
                   end
-    
+
                   @matrix[row_index] << {
                     value: stock,
                     url_data: {
@@ -125,10 +125,10 @@ module Erp
                       diameters: @global_filter[:diameters]
                     }
                   }
-    
+
                   # sumary
                   @summary[:total] += stock
-    
+
                   if stock <= 0
                     @summary[:out_of_stock] += 1
                   elsif stock == 1
@@ -140,7 +140,7 @@ module Erp
                   elsif stock >= 4
                     @summary[:from_4] += 1
                   end
-                  
+
                 end
               end
             end
@@ -156,9 +156,9 @@ module Erp
 
         def matrix_report_table
           authorize! :report_inventory_matrix, nil
-          
+
           @matrixes = []
-          
+
           # show virtual
           show_virtual = false
           if params.to_unsafe_hash["filters"].present?
@@ -227,7 +227,7 @@ module Erp
         # Delivery report
         def delivery_report
           authorize! :report_inventory_delivery, nil
-          
+
           # default from to date
           @from_date = Time.now.beginning_of_month
           @to_date = Time.now.end_of_day
@@ -242,10 +242,10 @@ module Erp
 
         def delivery_report_table
           authorize! :report_inventory_delivery, nil
-          
+
           # group bys
           @global_filters = params.to_unsafe_hash[:global_filter]
-          
+
           # period
           @from_date = @global_filters[:from_date].present? ? @global_filters[:from_date].to_date : nil
           @to_date = @global_filters[:to_date].present? ? @global_filters[:to_date].to_date : nil
@@ -277,9 +277,9 @@ module Erp
               @products_query = @products_query.where(category_id: @group_by_category)
             end
           end
-          
+
           @products = @products_query.order(:ordered_code)
-          
+
           File.open("tmp/delivery_report.yml", "w+") do |f|
             f.write({
               from_date: @from_date,
@@ -293,15 +293,15 @@ module Erp
               params: params
             }.to_yaml)
           end
-          
+
           @products = @products.paginate(:page => params[:page], :per_page => 50)
 
           render layout: nil
         end
-        
+
         def delivery_report_xlsx
           data = YAML.load_file("tmp/delivery_report.yml")
-          
+
           @from_date = data[:from_date]
           @to_date = data[:to_date]
           @global_filters = data[:global_filters]
@@ -311,9 +311,9 @@ module Erp
           @properties_values = data[:properties_values]
           @categories = data[:categories]
           params = data[:params]
-          
+
           @products_query = Erp::Products::Product.get_active.search(params).delivery_report(filters: @global_filters)
-          
+
           if @group_by_category.present?
             @categories = @group_by_category == 'all' ? Erp::Products::Category.order('name') : Erp::Products::Category.where(id: @group_by_category)
 
@@ -322,9 +322,9 @@ module Erp
               @products_query = @products_query.where(category_id: @group_by_category)
             end
           end
-          
+
           @products = @products_query.order(:ordered_code)
-          
+
           respond_to do |format|
             format.xlsx {
                 if @group_by_category.nil? and @group_by_property.nil?
@@ -385,11 +385,11 @@ module Erp
 
         def stock_importing_table
           authorize! :purchase_products_purchase_estimation_stock_importing, nil
-          
+
           global_filters = params.to_unsafe_hash[:global_filter]
 
           @warehouses = Erp::Warehouses::Warehouse.where(id: global_filters[:warehouses])
-          
+
           @state_id = global_filters[:state].present? ? global_filters[:state] : nil
           @warehouse_ids = global_filters[:warehouses].present? ? global_filters[:warehouses] : nil
 
@@ -418,7 +418,7 @@ module Erp
 
         def stock_transfering_table
           authorize! :inventory_stock_transfers_transfers_check_transfer, nil
-          
+
           global_filters = params.to_unsafe_hash[:global_filter]
 
           @from_warehouse = global_filters[:from_warehouse].present? ? Erp::Warehouses::Warehouse.find(global_filters[:from_warehouse]) : nil
@@ -516,7 +516,7 @@ module Erp
 
         def import_export_report_table
           authorize! :report_inventory_import_export, nil
-          
+
           @global_filters = params.to_unsafe_hash[:global_filter]
 
           # if has period
@@ -540,7 +540,7 @@ module Erp
               @totals = Erp::Products::Product.import_export_report(@global_filters)[:total]
             end
           end
-          
+
           File.open("tmp/import_export_report_table_#{current_user.id}.yml", "w+") do |f|
             f.write({
               global_filters: @global_filters,
@@ -559,11 +559,11 @@ module Erp
 
         def import_export_report_xlsx
           authorize! :report_inventory_import_export, nil
-          
+
           data = YAML.load_file("tmp/import_export_report_table_#{current_user.id}.yml")
-          
+
           @global_filters = data[:global_filters]
-          @period = data[:period]     
+          @period = data[:period]
           @from_date = data[:from_date]
           @to_date = data[:to_date]
           @group_by = data[:group_by]
@@ -591,7 +591,7 @@ module Erp
         # Import from excel
         def import
           authorize! :inventory_products_products_import_from_excel, nil
-          
+
           if request.post?
             # preview or get from tmp
             if params[:import_file].present?
@@ -614,8 +614,8 @@ module Erp
 
               # data raw
               data = {
-                name: row["Tên hàng"].to_s.strip,
-                category: row["Loại"].to_s.strip.downcase,
+                name: row[row.key?("Tên sản phẩm") ? "Tên sản phẩm" : "Tên hàng"].to_s.strip,
+                category: row[row.key?("Loại hàng") ? "Loại hàng" : "Loại"].to_s.strip.downcase,
                 brand: row["Thương hiệu"].to_s.strip.downcase,
                 diameter: row["Đường kính"].to_s.strip.downcase,
                 letter: row["Chữ"].to_s.strip,
@@ -636,7 +636,7 @@ module Erp
               else
                 errors << "Không tìm thấy chuyên mục"
               end
-              
+
               # brand
               brand = Erp::Products::Brand
                 .where("TRIM(LOWER(name)) = ?", data[:brand]).first
@@ -796,7 +796,7 @@ module Erp
         # Export purchasing list
         def purchasing_export_list
           authorize! :purchase_products_purchase_estimation_purchasing_export, nil
-          
+
           @rows = []
           @heads = []
           @totals = {}
@@ -804,21 +804,21 @@ module Erp
           @all_total = 0
 
           filters = params.to_unsafe_hash[:global_filter][:filters]
-          
+
           # show virtual stock
           show_virtual = params.to_unsafe_hash[:global_filter][:show_virtual] == 'yes' ? true : false
 
           #
           Erp::Products::Product.get_all_len_codes.each_with_index do |code, line_num|
             @line_totals[line_num] = '--'
-            
+
             row = {}
             row[:code] = code
 
             filters = params.to_unsafe_hash[:global_filter][:filters]
             filters.each_with_index do |m, index|
               @global_filter = m[1]
-              
+
               if @global_filter[:categories].present?
                 # period
                 @from = @global_filter[:from_date].present? ? @global_filter[:from_date].to_date : nil
@@ -828,11 +828,11 @@ module Erp
                   @from = @period.from_date
                   @to = @period.to_date
                 end
-  
+
                 # product query
                 @product_query = Erp::Products::Product.get_active
                 @product_query = @product_query.where(category_id: @global_filter[:categories]) if @global_filter[:categories].present?
-  
+
                 # get diameters
                 diameter_ids = @global_filter[:diameters].present? ? @global_filter[:diameters] : nil
                 @diameters = Erp::Products::PropertiesValue.where(id: diameter_ids)
@@ -851,22 +851,22 @@ module Erp
                     end
                   end
                 end
-  
+
                 # get area name
                 ns = []
                 ns << @diameters.map(&:value).join(',') if @diameters.present?
                 ns << Erp::Products::Category.where(id: @global_filter[:categories]).map(&:name).join('|') if @global_filter[:categories].present?
                 ns << Erp::Warehouses::Warehouse.where(id: @global_filter[:warehouses]).map(&:name).join('|') if @global_filter[:warehouses].present?
                 area_name = ns.join('-')
-  
+
                 # totals
                 if !@totals[area_name].present?
                   #product_ids = @product_query.find_by_properties_value_ids([chu_pv.id,so_pv.id]).select('id')
                   product_ids = @product_query.select('id')
-  
+
                   if @product_query.count > 0
                     product_ids = -1 if product_ids.count == 0
-  
+
                     filters = @global_filter.clone.merge({
                       product_id: product_ids,
                       state_ids: @global_filter[:states],
@@ -875,27 +875,28 @@ module Erp
                     if show_virtual
                       stock = Erp::Products::Product.get_stock_virtual(filters)
                     else
+                      debugger
                       stock = Erp::Products::Product.get_stock_real(filters)
                     end
                   else
                     stock = "--"
                   end
-  
+
                   @totals[area_name] = stock
-                  
+
                   # all total
                   @all_total += stock if stock != "--"
                 end
-  
+
                 # find by code
                 @product_query = @product_query.where("name LIKE ?", "#{code}-%")
-  
+
                 #product_ids = @product_query.find_by_properties_value_ids([chu_pv.id,so_pv.id]).select('id')
                 product_ids = @product_query.select('id')
-  
+
                 if @product_query.count > 0
                   product_ids = -1 if product_ids.count == 0
-  
+
                   filters = @global_filter.clone.merge({
                     product_id: product_ids,
                     state_ids: @global_filter[:states],
@@ -909,7 +910,7 @@ module Erp
                 else
                   stock = "--"
                 end
-                
+
                 # line total
                 if stock != '--'
                   if @line_totals[line_num] == '--'
@@ -918,10 +919,10 @@ module Erp
                     @line_totals[line_num] += stock
                   end
                 end
-  
+
                 # add row
                 row[area_name] = stock
-  
+
                 # heads name
                 @heads << area_name if !@heads.include?(area_name)
               end
@@ -941,7 +942,7 @@ module Erp
 
         def purchasing_export_xlsx
           authorize! :purchase_products_purchase_estimation_purchasing_export, nil
-          
+
           data = YAML.load_file(params[:file_name])
 
           @rows = data[:rows]
