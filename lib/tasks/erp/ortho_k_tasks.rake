@@ -23,6 +23,8 @@ namespace :products do
       # Đảm bảo kết nối cơ sở dữ liệu
       Erp::Products::Product.connection
 
+      warehouse_name = Erp::Warehouses::Warehouse.find_by(id: wh_id)&.name || ""
+
       input_files.each do |input_file|
         output_file = input_file.sub(/\.xlsx$/, " (UPDATED state_#{} wh_#{wh_id}).xlsx")
         puts "Đang xử lý file: #{input_file}"
@@ -38,6 +40,7 @@ namespace :products do
               headers << "Ngoài bảng" # Thêm cột mới
               headers << "Đơn vị" # Thêm cột mới
               headers << "Thương hiệu" # Thêm cột mới
+              headers << "Kho" # Thêm cột mới
 
               # Tạo sheet mới trong file Excel đầu ra
               wb.add_worksheet(name: sheet_name) do |sheet|
@@ -66,6 +69,7 @@ namespace :products do
                   row << ngoai_bang
                   row << don_vi
                   row << thuong_hieu
+                  row << warehouse_name
 
                   sheet.add_row row
                 end
