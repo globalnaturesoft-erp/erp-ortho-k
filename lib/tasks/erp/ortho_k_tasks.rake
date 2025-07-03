@@ -26,7 +26,7 @@ namespace :products do
       warehouse_name = Erp::Warehouses::Warehouse.find_by(id: wh_id)&.name || ""
 
       input_files.each do |input_file|
-        output_file = input_file.sub(/\.xlsx$/, " (UPDATED state_#{} wh_#{wh_id}).xlsx")
+        output_file = input_file.sub(/\.xlsx$/, " (UPDATED state_#{state_id} wh_#{wh_id}).xlsx")
         puts "Đang xử lý file: #{input_file}"
 
         # Mở file Excel
