@@ -7,10 +7,12 @@ namespace :products do
   require 'axlsx'
 
   desc "Cập nhật danh sách file Excel với cột 'Ngoài bảng' và số liệu 'Tồn kho' từ cơ sở dữ liệu"
-  task :update_excel, [:input_dir] => :environment do |t, args|
+  task :update_excel, [:input_dir, :wh_id, :state_id] => :environment do |t, args|
     input_dir = args[:input_dir] || "database/products"
+    wh_id = args[:wh_id] || "1" # Mặc định wh_id: 1
+    state_id = args[:state_id] || "1" # Mặc định state_id: 1
     # Lấy danh sách file .xlsx trong thư mục
-    input_files = Dir.glob(File.join(input_dir, "*.xlsx")).reject { |f| f.include?("(UPDATED)") }
+    input_files = Dir.glob(File.join(input_dir, "*.xlsx")).reject { |f| f.include?("(UPDATED state_#{} wh_#{wh_id})") }
 
     if input_files.empty?
       puts "Không tìm thấy file Excel nào trong thư mục #{input_dir}"
@@ -22,7 +24,7 @@ namespace :products do
       Erp::Products::Product.connection
 
       input_files.each do |input_file|
-        output_file = input_file.sub(/\.xlsx$/, " (UPDATED).xlsx")
+        output_file = input_file.sub(/\.xlsx$/, " (UPDATED state_#{} wh_#{wh_id}).xlsx")
         puts "Đang xử lý file: #{input_file}"
 
         # Mở file Excel
@@ -51,7 +53,8 @@ namespace :products do
                   # Tìm sản phẩm trong DB
                   product = Erp::Products::Product.find_by(name: ten_san_pham)
                   # Cập nhật tồn kho: ưu tiên get_stock, nếu không có thì dùng stock, hoặc mặc định 0
-                  ton_kho = product&.get_stock || 0
+                  ton_kho = product&.get_stock(state_ids: state_id, warehouse_ids: wh_id) || 0
+
                   row[11] = ton_kho # Cập nhật cột Tồn kho (index 11)
 
                   ngoai_bang = product&.is_outside ? "Có" : "Không"
