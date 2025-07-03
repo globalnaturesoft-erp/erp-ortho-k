@@ -36,7 +36,7 @@ namespace :products do
             # Duyệt qua từng sheet
             xlsx.sheets.each do |sheet_name|
               xlsx.default_sheet = sheet_name
-              headers = xlsx.row(4) # Tiêu đề ở dòng 4
+              headers = xlsx.row(1) # Tiêu đề ở dòng 1
               headers << "Ngoài bảng" # Thêm cột mới
               headers << "Đơn vị" # Thêm cột mới
               headers << "Thương hiệu" # Thêm cột mới
@@ -86,50 +86,102 @@ namespace :products do
     end
   end
 
-  desc "Nhập sản phẩm từ file Excel vào cơ sở dữ liệu"
+  desc "Tạo Delivery và DeliveryDetails từ file Excel"
   task :import, [:file_path] => :environment do |t, args|
-    file_path = args[:file_path] || "Danh sach san pham_cap_nhat.xlsx"
+    file_path = args[:file_path] || "database/products/Danh_sach_san_pham_cap_nhat.xlsx"
 
     begin
+      Erp::Products::Product.connection
       xlsx = Roo::Excelx.new(file_path)
-      xlsx.sheets.each do |sheet_name|
-        xlsx.default_sheet = sheet_name
-        (5..xlsx.last_row).each do |i|
-          row = xlsx.row(i)
-          next if row[0].to_s.downcase.include?("tổng cộng") # Bỏ qua dòng tổng
 
-          # Ánh xạ dữ liệu Excel sang thuộc tính sản phẩm
-          product_attributes = {
-            name: row[0],
-            code: row[1],
-            letter: row[2],
-            number: row[3]&.to_i,
-            diameter: row[4]&.to_f,
-            type: row[5],
-            power: row[6]&.to_f,
-            k_power: row[7],
-            k2_power: row[8],
-            cost_price: row[9]&.to_f,
-            selling_price: row[10]&.to_f,
-            stock: row[11]&.to_i,
-            note: row[12],
-            is_outside: row[13] == "Có", # Chuyển "Có" thành true, "Không" thành false
-            category: sheet_name
-          }
+      user = Erp::User.first
+      state = Erp::Products::State.first  # Mới
 
-          # Kiểm tra sản phẩm đã tồn tại
-          existing_product = Product.find_by(name: product_attributes[:name])
-          if existing_product
-            puts "Bỏ qua sản phẩm trùng lặp: #{product_attributes[:name]} trong chuyên mục #{sheet_name}"
-          else
-            Product.create!(product_attributes)
-            puts "Đã nhập sản phẩm: #{product_attributes[:name]} trong chuyên mục #{sheet_name}"
+      # Theo dõi tên sản phẩm trên toàn bộ file để tránh trùng lặp
+      processed_product_names = Set.new
+
+      ActiveRecord::Base.transaction do
+        xlsx.sheets.each do |sheet_name|
+          xlsx.default_sheet = sheet_name
+
+          # Lấy tiêu đề từ dòng đầu tiên
+          headers = xlsx.row(1)
+          # Tìm chỉ số cột dựa trên tên
+          name_col_index = headers.index("Tên sản phẩm")
+          stock_col_index = headers.index("Tồn kho")
+          warehouse_col_index = headers.index("Kho")
+
+          unless name_col_index && stock_col_index
+            puts "Lỗi: Không tìm thấy cột 'Tên sản phẩm' hoặc 'Tồn kho' trong sheet #{sheet_name}"
+            next
           end
+
+          # Tạo Delivery cho category (sheet)
+          delivery = Erp::Qdeliveries::Delivery.new(
+            creator_id: user.id,
+            date: '2025-06-30'.to_date,
+            delivery_type: "custom_import",
+            note: "NHẬP TỒN ĐẦU: #{sheet_name}",
+            status: "delivered",
+            archived: false,
+            employee_id: user.id
+          )
+
+          (5..xlsx.last_row).each do |i|
+            row = xlsx.row(i)
+            next if row[name_col_index].to_s.downcase.include?("tổng cộng")
+
+            ten_san_pham = row[name_col_index]&.to_s
+            next unless ten_san_pham
+            next if processed_product_names.include?(ten_san_pham)
+
+            # Bỏ qua nếu tồn kho bằng 0
+            stock = row[stock_col_index]&.to_i || 0
+            next if stock.zero?
+
+            # Tìm sản phẩm trong DB
+            product = Erp::Products::Product.find_by(name: ten_san_pham)
+            unless product
+              puts "Không tìm thấy sản phẩm: #{ten_san_pham}, bỏ qua"
+              next
+            end
+
+            warehouse_name = row[warehouse_col_index]&.to_s&.strip&.downcase
+            wh_name = (warehouse_name == 'kho hàng y tế mỹ' || warehouse_name == 'ytm') ? 'hn' : warehouse_name
+            warehouse = Erp::Warehouses::Warehouse.where("TRIM(LOWER(name)) = ?", wh_name).first
+            unless warehouse
+              puts "Không tìm thấy kho: #{wh_name}, bỏ qua"
+              next
+            end
+
+            # Xây dựng DeliveryDetails trong bộ nhớ
+            delivery.delivery_details.build(
+              product_id: product.id,
+              quantity: stock,
+              state_id: state.id,
+              warehouse_id: warehouse.id
+            )
+
+            puts "Đang xử lý: #{product.name} (Delivery ID: #{delivery.id || 'chưa lưu'}, Stock: #{stock})"
+
+            # Thêm tên sản phẩm vào danh sách đã xử lý
+            processed_product_names.add(ten_san_pham)
+          end
+
+          # Lưu Delivery và các DeliveryDetails
+          if delivery.delivery_details.empty?
+            puts "Mục #{sheet_name} không có số lượng tồn để nhập, bỏ qua"
+            next
+          end
+
+          delivery.save!
+          puts "Đã tạo phiếu nhập tồn đầu cho: #{sheet_name} (DeliveryID: #{delivery.id})"
         end
       end
-      puts "Hoàn tất nhập sản phẩm"
+      puts "FINISHED: #{file_path}"
     rescue StandardError => e
-      puts "Lỗi khi nhập sản phẩm: #{e.message}"
+      puts "ERROR: #{e.message}"
+      raise # Đảm bảo rollback transaction nếu có lỗi
     end
   end
 end
