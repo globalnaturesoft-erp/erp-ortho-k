@@ -880,7 +880,6 @@ module Erp
                     if show_virtual
                       stock = Erp::Products::Product.get_stock_virtual(filters)
                     else
-                      debugger
                       stock = Erp::Products::Product.get_stock_real(filters)
                     end
                   else
