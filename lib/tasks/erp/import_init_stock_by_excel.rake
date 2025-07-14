@@ -85,7 +85,7 @@ namespace :products do
             next if processed_product_names.include?(ten_san_pham)
 
             stock = row[stock_col_index]&.to_i || 0
-            next if stock.zero?
+            next if stock.zero? || stock.negative?
 
             product = Erp::Products::Product.find_by(name: ten_san_pham)
             unless product
