@@ -620,9 +620,9 @@ module Erp
                   name: row[row.key?("Tên sản phẩm") ? "Tên sản phẩm" : "Tên hàng"].to_s.strip,
                   category: row[row.key?("Loại hàng") ? "Loại hàng" : "Loại"].to_s.strip.downcase,
                   brand: row["Thương hiệu"].to_s.strip.downcase,
-                  diameter: row["Đường kính"].to_s.strip.downcase,
+                  diameter: row["Đường kính"].to_f.to_s.strip.downcase,
                   letter: row["Chữ"].to_s.strip,
-                  degree: row["Độ"].to_s.strip.downcase,
+                  degree: row["Độ"].to_f.to_s.strip.downcase,
                   number: (row["Số"].to_s.strip.downcase.present? ? row["Số"].to_s.strip.downcase.rjust(2, '0') : ''),
                   degree_k: row["Độ K"].to_s.strip.downcase,
                   unit: row["Đơn vị"].to_s.strip.downcase,
@@ -727,8 +727,48 @@ module Erp
                 errors << "Không tạo được tên hàng" if !data[:name].present?
 
                 # check exist
-                if !Erp::Products::Product.where(name: names).empty?
-                  errors << "Sản phẩm trùng tên"
+                product = Erp::Products::Product.where(name: names).first
+                if product.present?
+                  if !params[:import_file].present? && errors.empty?
+                    # Sản phẩm trùng tên, cập nhật PropertiesValue còn thiếu
+                    properties_values = Erp::Products::ProductsValue.where(product_id: product.id).pluck(:properties_value_id)
+
+                    if letter_p.present? && letter_pv.present? && !properties_values.include?(letter_pv.id)
+                      Erp::Products::ProductsValue.create(product_id: product.id, properties_value_id: letter_pv.id)
+                    else
+                      warnings << "Chữ đã có => không bổ sung" unless letter_p || letter_pv
+                    end
+
+                    if diameter_p.present? && diameter_pv.present? && !properties_values.include?(diameter_pv.id)
+                      Erp::Products::ProductsValue.create(product_id: product.id, properties_value_id: diameter_pv.id)
+                    else
+                      warnings << "Đường kính đã có => không bổ sung" unless diameter_p || diameter_pv
+                    end
+
+                    if number_p.present? && number_pv.present? && !properties_values.include?(number_pv.id)
+                      Erp::Products::ProductsValue.create(product_id: product.id, properties_value_id: number_pv.id)
+                    else
+                      warnings << "Số đã có => không bổ sung" unless number_p || number_pv
+                    end
+
+                    if degree_p.present? && degree_pv.present? && !properties_values.include?(degree_pv.id)
+                      Erp::Products::ProductsValue.create(product_id: product.id, properties_value_id: degree_pv.id)
+                    else
+                      warnings << "Độ đã có => không bổ sung" unless degree_p || degree_pv
+                    end
+
+                    if degree_k_p.present? && degree_k_pv.present? && !properties_values.include?(degree_k_pv.id)
+                      Erp::Products::ProductsValue.create(product_id: product.id, properties_value_id: degree_k_pv.id)
+                    else
+                      warnings << "Độ K đã có => không bổ sung" unless degree_k_p || degree_k_pv
+                    end
+
+                    product.update_cache_properties
+                    errors << "Sản phẩm trùng tên"
+                    warnings << "Đã kiểm tra & bổ sung thuộc tính bị thiếu"
+                  else
+                    errors << "Sản phẩm trùng tên"
+                  end
                 end
 
                 # save products
