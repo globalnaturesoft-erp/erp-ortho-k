@@ -359,7 +359,7 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
 
         # Top head
         sheet.add_row ["CÔNG TY TNHH CÔNG NGHỆ KIỂM SOÁT CẬN THỊ"], b: true
-        sheet.add_row ["Số 27 ngách 1 ngõ 178 Thái Hà, P. Trung Liệt, Q. Đống Đa, Hà Nội"], b: true
+        sheet.add_row ["Số 27 ngách 1 ngõ 178 Thái Hà, P. Đống Đa, TP. Hà Nội"], b: true
 
         # add empty row
         sheet.add_row [nil]
@@ -1956,8 +1956,8 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
         end
 
         # Top head
-        sheet.add_row ["CÔNG TY TNHH ORTHO-K VIỆT NAM"], b: true
-        sheet.add_row ["535 An Dương Vương, Phường 8, Quận 5, TP. Hồ Chí Minh, Việt Nam"], b: true
+        sheet.add_row ["CÔNG TY TNHH CÔNG NGHỆ KIỂM SOÁT CẬN THỊ"], b: true
+        sheet.add_row ["Số 27 ngách 1 ngõ 178 Thái Hà, P. Đống Đa, TP. Hà Nội"], b: true
 
         # add empty row
         sheet.add_row [nil]
@@ -3089,7 +3089,7 @@ Erp::Payments::Backend::PaymentRecordsController.class_eval do
         # Column 2
         sign[:columns] << Time.now.strftime('Ngày %d tháng %m năm %Y')
         sign[:styles] << (s.add_style text_center.merge(italic))
-        sign1[:columns] << 'KẾ TOÁN - CÔNG TY TNHH ORTHO-K VIỆT NAM'
+        sign1[:columns] << 'KẾ TOÁN - CÔNG TY TNHH CÔNG NGHỆ KIỂM SOÁT CẬN THỊ'
         sign1[:styles] << (s.add_style text_center.merge(bold))
         sign2[:columns] << '(Ký, họ tên)'
         sign2[:styles] << (s.add_style text_center.merge(italic))
