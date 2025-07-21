@@ -717,7 +717,7 @@ module Erp
                   data[:name]
                 ]
 
-                if diameter_pv.present? and letter_pv.present? and number_pv.present? and category.present?
+                if diameter_pv.present? and letter_pv.present? and number_pv.present? and category.present? and data[:category] != 'cus okcyl'
                   n = "#{letter_pv.value}#{number_pv.value}-#{diameter_pv.value}-#{category.name}"
                   names << n
                   data[:name] = n
