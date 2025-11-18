@@ -753,7 +753,7 @@ Erp::Orders::Order.class_eval do
   #
   def import(file, order_params={})
     self.order_details = []
-    
+
     spreadsheet = Roo::Spreadsheet.open(file.path)
     header = spreadsheet.row(1)
     (2..spreadsheet.last_row).each do |i|
@@ -763,7 +763,7 @@ Erp::Orders::Order.class_eval do
       # p_name = "#{row["code"].to_s.strip}-#{row["diameter"].to_s.strip}-#{row["category"].to_s.strip}"
       p_name = row["product name"]
 
-      if p_name.split('-').count == 3 and p_name[0..2].downcase != 'cus' and (p_name =~ /\A\d.+/).nil?
+      if p_name.split('-').count == 3 and p_name[0..2].downcase != 'cus' and (p_name =~ /\A\d.+/).nil? and !p_name.include?('/')
         lns = p_name.scan(/\d+|\D+/)
 
         # number
@@ -787,11 +787,11 @@ Erp::Orders::Order.class_eval do
 
         # default price from imported file
         price = row["price"] if row["price"].present?
-        
+
         # warehouse
         warehouse = row["warehouse"].present? ? Erp::Warehouses::Warehouse.where(name: row["warehouse"].strip).all_active.first : nil
-        warehouse_id = warehouse.present? ? warehouse.id : order_params[:warehouse_id]        
-        
+        warehouse_id = warehouse.present? ? warehouse.id : order_params[:warehouse_id]
+
         if row["quantity"].to_i > 0
           self.order_details.build(
             id: nil,
@@ -826,22 +826,22 @@ Erp::Orders::Order.class_eval do
   def doctor_name
     doctor.present? ? doctor.name : ''
   end
-  
+
   def update_default_prices
     self.order_details.each do |od|
       p = 0.0
-      
+
       if self.sales?
         pp = od.product.get_default_sales_price(quantity: od.quantity)
       elsif self.purchase?
         pp = od.product.get_default_purchase_price(quantity: od.quantity)
       end
-      
+
       p = pp.price if pp.present?
       od.update_attribute(:price, p)
-    end 
+    end
   end
-  
+
   # update cache sales debt amount //contact
   after_save :update_contact_cache_sales_debt_amount
   def update_contact_cache_sales_debt_amount
@@ -849,7 +849,7 @@ Erp::Orders::Order.class_eval do
       customer.update_cache_sales_debt_amount
     end
   end
-  
+
   # update cache purchase debt amount //contact
   after_save :update_contact_cache_purchase_debt_amount
   def update_contact_cache_purchase_debt_amount
