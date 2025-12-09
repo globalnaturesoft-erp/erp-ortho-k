@@ -25,6 +25,8 @@ Erp::Orders::Order.class_eval do
   TYPE_SALES_EXPORT = 'sales_export'
   TYPE_SALES_IMPORT = 'sales_import'
 
+  LENS_REGEX = /\A[A-Z]+\d{2}-\d+(\.\d+)?-[A-Z\s]+\z/i
+
   def self.sort_by_dates()
     [
       {
@@ -763,7 +765,8 @@ Erp::Orders::Order.class_eval do
       # p_name = "#{row["code"].to_s.strip}-#{row["diameter"].to_s.strip}-#{row["category"].to_s.strip}"
       p_name = row["product name"]
 
-      if p_name.split('-').count == 3 and p_name[0..2].downcase != 'cus' and (p_name =~ /\A\d.+/).nil? and !p_name.include?('/')
+
+      if p_name.split('-').count == 3 and p_name[0..2].downcase != 'cus' and (p_name =~ /\A\d.+/).nil? and p_name=~LENS_REGEX # and !p_name.include?('/')
         lns = p_name.scan(/\d+|\D+/)
 
         # number
