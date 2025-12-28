@@ -620,7 +620,7 @@ module Erp
                   name: row[row.key?("Tên sản phẩm") ? "Tên sản phẩm" : "Tên hàng"].to_s.strip,
                   category: row[row.key?("Loại hàng") ? "Loại hàng" : "Loại"].to_s.strip.downcase,
                   brand: row["Thương hiệu"].to_s.strip.downcase,
-                  diameter: row["Đường kính"].to_f.to_s.strip.downcase,
+                  diameter: row["Đường kính"].to_s.strip.downcase,
                   letter: row["Chữ"].to_s.strip,
                   degree: row["Độ"].to_f.to_s.strip.downcase,
                   number: (row["Số"].to_s.strip.downcase.present? ? row["Số"].to_s.strip.downcase.rjust(2, '0') : ''),
@@ -856,7 +856,6 @@ module Erp
           #
           Erp::Products::Product.get_all_len_codes.each_with_index do |code, line_num|
             @line_totals[line_num] = '--'
-
             row = {}
             row[:code] = code
 
@@ -865,6 +864,7 @@ module Erp
               @global_filter = m[1]
 
               if @global_filter[:categories].present?
+
                 # period
                 @from = @global_filter[:from_date].present? ? @global_filter[:from_date].to_date : nil
                 @to = @global_filter[:to_date].present? ? @global_filter[:to_date].to_date : nil
@@ -931,7 +931,6 @@ module Erp
                   # all total
                   @all_total += stock if stock != "--"
                 end
-
                 # find by code
                 @product_query = @product_query.where("name LIKE ?", "#{code}-%")
 
