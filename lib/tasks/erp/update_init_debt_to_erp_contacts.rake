@@ -4,7 +4,6 @@ namespace :erp do
   namespace :contacts do
     desc "Update initial debt for contacts from an Excel file. Only processes rows where the debt amount is a valid number. Usage: FILE_PATH='path/to/your/file.xlsx' bundle exec rake erp:contacts:update_initial_debt"
     task update_initial_debt: :environment do |t|
-      debugger
       # --- Cấu hình ---
       file_path = ENV['FILE_PATH']
 
